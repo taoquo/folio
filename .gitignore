@@ -24,3 +24,5 @@ assets/examples/
 
 .superpowers/
 docs/
+.font-libs/
+dist/
