@@ -1,7 +1,7 @@
 <div align="center">
-  <img src="https://gw.alipayobjects.com/zos/k/vl/logo.svg" width="120" />
+  <img src="assets/images/folio-mark.svg" width="120" />
   <h1>Folio</h1>
-  <p><b>好内容，值得好版面。</b></p>
+  <p><b>值得留存的文档版式。</b></p>
   <p><sub><a href="README.md">English</a></sub></p>
   <p><sub>Folio fork 自 <a href="https://github.com/tw93/Kami">Kami</a>，并在此基础上扩展成一套面向 agent 生成交付物的文档设计系统。</sub></p>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License"></a>

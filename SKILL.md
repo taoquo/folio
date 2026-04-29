@@ -7,7 +7,7 @@ description: 'Typeset professional documents: one-pagers, long docs, letters, po
 
 **Folio** - the paper your deliverables land on.
 
-Good content deserves good paper. One design language across eight document types: warm parchment canvas, cinnabar-coral accent, serif-led hierarchy, tight editorial rhythm.
+For documents worth keeping. One design language across eight document types: warm parchment canvas, cinnabar-coral accent, serif-led hierarchy, tight editorial rhythm.
 
 Folio delivers professional documents across eight templates and fourteen diagram types.
 

@@ -1,0 +1,9 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Folio Mark</title>
+  <rect x="11" y="11" width="106" height="106" rx="24" fill="#F8F1EA" stroke="#B83D2E" stroke-width="2"/>
+  <rect x="26" y="26" width="76" height="76" rx="15" stroke="#D6C2B5" stroke-width="1.5"/>
+  <path d="M44 38H75C81.0751 38 86 42.9249 86 49V55H56C49.9249 55 45 59.9249 45 66V83" stroke="#191514" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M56 55H86V81C86 85.4183 82.4183 89 78 89H56V55Z" fill="#B83D2E" fill-opacity="0.1" stroke="#191514" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M76 38V55H59" stroke="#191514" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="64" cy="102" r="3.5" fill="#B83D2E"/>
+</svg>

@@ -1,7 +1,7 @@
 <div align="center">
-  <img src="https://gw.alipayobjects.com/zos/k/vl/logo.svg" width="120" />
+  <img src="assets/images/folio-mark.svg" width="120" />
   <h1>Folio</h1>
-  <p><b>Good content deserves good paper.</b></p>
+  <p><b>For documents worth keeping.</b></p>
   <p><sub><a href="README.zh-CN.md">简体中文</a></sub></p>
   <p><sub>Folio is forked from <a href="https://github.com/tw93/Kami">Kami</a> and extended into a document-first design system for agent-generated deliverables.</sub></p>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License"></a>
