@@ -34,25 +34,31 @@ Folio auto-triggers from natural requests. Tell it:
 
 Example prompts:
 
-- English: `make a one-pager for my startup` / `turn this research into a long doc` / `write a formal letter` / `make a portfolio of my projects` / `build me a resume` / `design a slide deck for my talk` / `write an equity report on Tesla` / `format these release notes`
-- 中文: `帮我做一份一页纸` / `帮我排版一份长文档` / `帮我写一封正式信件` / `帮我做一份作品集` / `帮我做一份简历` / `帮我做一套演讲幻灯片` / `帮我写一份个股研报` / `帮我整理更新日志`
+- `make a one-pager for my startup`
+- `turn this research into a long doc`
+- `write a formal letter`
+- `make a portfolio of my projects`
+- `build me a resume`
+- `design a slide deck for my talk`
+- `write an equity report on NVIDIA`
+- `format these release notes`
 
 Optional: create `~/.config/folio/brand.md` to persist identity, document defaults, and writing habits. Start from [brand.example.md](references/brand.example.md). Folio uses it as fallback context when the current request is ambiguous.
 
 ## Document Types
 
-| Type | Best for | Demo |
-|---|---|---|
-| One-Pager | launch brief, proposal, exec summary | [demo-orbit-onepager.pdf](assets/demos/demo-orbit-onepager.pdf) |
-| Long Doc | white paper, review, technical report | [demo-agent-ops-longdoc.pdf](assets/demos/demo-agent-ops-longdoc.pdf) |
-| Letter | formal letter, memo, statement | [demo-board-letter.pdf](assets/demos/demo-board-letter.pdf) |
-| Portfolio | case studies, selected works | [demo-ridge-portfolio.pdf](assets/demos/demo-ridge-portfolio.pdf) |
-| Resume | professional resume / CV | [demo-musk-resume.pdf](assets/demos/demo-musk-resume.pdf) |
-| Slides | talk deck, keynote, internal presentation | [demo-agent-slides.pdf](assets/demos/demo-agent-slides.pdf) |
-| Equity Report | investment memo, earnings brief | [demo-tesla.pdf](assets/demos/demo-tesla.pdf) |
-| Changelog | release notes, version update | [demo-folio-changelog.pdf](assets/demos/demo-folio-changelog.pdf) |
+| Type          | Best for                                  | Example                                                              |
+| ------------- | ----------------------------------------- | -------------------------------------------------------------------- |
+| One-Pager     | launch brief, proposal, exec summary      | [Orbit Cache launch one-pager](assets/demos/demo-orbit-onepager.pdf) |
+| Long Doc      | white paper, review, technical report     | [Agent Operations Review](assets/demos/demo-agent-ops-longdoc.pdf)   |
+| Letter        | formal letter, memo, statement            | [Agent review council letter](assets/demos/demo-board-letter.pdf)    |
+| Portfolio     | case studies, selected works              | [Lena Park portfolio](assets/demos/demo-ridge-portfolio.pdf)         |
+| Resume        | professional resume / CV                  | [Elon Musk resume](assets/demos/demo-musk-resume.pdf)                |
+| Slides        | talk deck, keynote, internal presentation | [Agent development slides deck](assets/demos/demo-agent-slides.pdf)  |
+| Equity Report | investment memo, earnings brief           | [NVIDIA equity report](assets/demos/demo-nvidia-equity-report.pdf)   |
+| Changelog     | release notes, version update             | [Folio release notes](assets/demos/demo-folio-changelog.pdf)         |
 
-Templates live in `assets/templates/`. Every type above has a real demo asset in `assets/demos/`: clickable PDF, matching HTML source, and PNG preview.
+Templates live in `assets/templates/`. Rendered showcase assets in `assets/demos/` are kept as `PDF + PNG` only, so the table above now links every document type to a PDF example.
 
 ## Core Capabilities
 
@@ -125,14 +131,19 @@ Use the short guide first, then go deeper only when needed.
 
 Folio also works as a brief for image models and drawing tools. Point them at the `references/` folder and ask them to follow Folio's warm parchment palette, cinnabar-coral restraint, serif-led hierarchy, and editorial spacing.
 
-Examples live in `assets/illustrations/`:
+Example illustration briefs:
 
-- Tesla Optimus patent overview
-- SpatialVLA architecture redraw
-- 3D representation tradeoff chart
+- Alpine night-train travel atlas with station callouts, timetable chips, and warm editorial annotations
+  ![Alpine night-train travel atlas](assets/illustrations/travel-tesla-optimus.png)
+
+- Coastal weekend route poster with tide windows, cafe stops, and hand-marked walking segments
+  ![Coastal weekend route poster](assets/illustrations/travel-spatialvla.png)
+
+- Desert design hotel field guide with arrival map, packing cues, and restrained artifact photography framing
+  ![Desert design hotel field guide](assets/illustrations/travel-3d-representations.png)
 
 ## Support
 
 - Open an issue or PR if you find a bug, wording drift, or layout regression.
 - MIT License for code and templates.
-- LXGW WenKai is open-source. Charter and CJK fallbacks rely on system or open-licensed availability.
+- LXGW WenKai is open-source. Charter fallbacks rely on system or open-licensed availability.

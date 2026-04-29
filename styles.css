@@ -857,6 +857,19 @@
     margin: 2px 0 0;
   }
 
+  .travel-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .travel-grid .demo-card a {
+    display: block;
+  }
+  .travel-grid .demo-card a img {
+    display: block;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+
   /* Chart showcase */
   .chart-showcase {
     display: grid;
@@ -1007,6 +1020,7 @@
 
   /* Grids: single column */
   .demo-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .travel-grid { grid-template-columns: 1fr; gap: 14px; }
   .demo-card { min-width: 0; }
   .demo-card .demo-desc { overflow-wrap: break-word; word-break: break-word; }
   .swatches { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
