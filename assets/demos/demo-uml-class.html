@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Folio UML Class Demo</title>
+<style>
+  :root {
+    --parchment: #F6F0EA;
+    --ivory: #FBF7F3;
+    --near-black: #191514;
+    --olive: #5A4A43;
+    --stone: #85776F;
+    --brand: #B83D2E;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 32px 24px;
+    background: var(--parchment);
+    color: var(--near-black);
+    font-family: Charter, Georgia, serif;
+  }
+
+  main {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .eyebrow {
+    margin: 0 0 8px;
+    color: var(--stone);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0 0 16px;
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 1.15;
+  }
+
+  .frame {
+    padding: 20px;
+    background: var(--ivory);
+    border: 1px solid #E9DED4;
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .caption {
+    margin: 14px 0 0;
+    color: var(--olive);
+    font-size: 15px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">UML Class Demo</p>
+    <h1>Diagram Models</h1>
+    <div class="frame">
+      <img src="../diagrams/generated/png/uml-class-demo.png" alt="Folio UML class diagram demo">
+    </div>
+    <p class="caption">A generated UML class diagram rendered in Folio's warm editorial palette and exported through the same standalone artifact pipeline.</p>
+  </main>
+</body>
+</html>
