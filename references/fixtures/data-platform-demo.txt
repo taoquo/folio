@@ -1,0 +1,3 @@
+Source systems publish events to Kafka. A stream processor transforms records and writes them
+into a warehouse. Analysts query dashboards through a serving API, while observability tracks
+pipeline health in the background.

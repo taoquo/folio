@@ -1,0 +1,56 @@
+{
+  "kind": "uml-class",
+  "title": "ECS World Model",
+  "layout": "class-grid",
+  "focus": "World",
+  "types": [
+    {
+      "id": "World",
+      "kind": "class",
+      "name": "World",
+      "attributes": ["entities: EntityPool", "stores: ComponentRegistry"],
+      "methods": ["spawn() -> Entity", "query(mask) -> View"]
+    },
+    {
+      "id": "Entity",
+      "kind": "class",
+      "name": "Entity",
+      "attributes": ["id: int", "generation: int"],
+      "methods": ["is_alive() -> bool"]
+    },
+    {
+      "id": "ComponentStore",
+      "kind": "class",
+      "name": "ComponentStore<T>",
+      "attributes": ["dense: list[T]", "sparse: list[int]"],
+      "methods": ["insert(entity, value) -> None", "get(entity) -> T"]
+    },
+    {
+      "id": "MovementSystem",
+      "kind": "class",
+      "name": "MovementSystem",
+      "attributes": ["required: Velocity|Transform"],
+      "methods": ["update(dt) -> None"]
+    }
+  ],
+  "relationships": [
+    {
+      "source": "World",
+      "target": "Entity",
+      "kind": "aggregation",
+      "target_multiplicity": "*"
+    },
+    {
+      "source": "World",
+      "target": "ComponentStore",
+      "kind": "composition",
+      "target_multiplicity": "*"
+    },
+    {
+      "source": "MovementSystem",
+      "target": "World",
+      "kind": "association",
+      "label": "queries"
+    }
+  ]
+}

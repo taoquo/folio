@@ -117,7 +117,13 @@ If unsure, ask a one-liner about the scenario rather than guess.
 
 ### Diagrams (primitives, not a 7th doc type)
 
-When the user asks for **a diagram inside** a document or deck (not a standalone document), route to `assets/diagrams/` rather than a top-level template. Common hosts: long-doc, portfolio, one-pager, equity-report, and slides.
+When the user asks for a standalone **architecture diagram** or **UML class diagram**, use the diagram artifact pipeline first.
+
+- standalone request -> generate `SVG + PNG + PDF`
+- HTML document request -> generate the diagram `SVG`, then embed it into a `<figure>`
+- slides request -> generate the diagram `SVG`, then place the derived image artifact into the slide
+
+When the user asks for **a diagram inside** a document or deck and it is not one of the generator-backed standalone artifact kinds, route to `assets/diagrams/` rather than a top-level template. Common hosts: long-doc, portfolio, one-pager, equity-report, and slides.
 
 | User says                                                      | Diagram       | Template                             |
 | -------------------------------------------------------------- | ------------- | ------------------------------------ |

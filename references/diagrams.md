@@ -2,7 +2,18 @@
 
 folio's drawing capability. **14 diagram types** covering structural, process, and data chart scenarios. All wear folio's skin (parchment + cinnabar-coral + warm grays). No second design system.
 
-Every diagram is a **self-contained HTML + inline SVG**. No Mermaid, no JS, no build step. Browse them as standalone pages, or copy the `<svg>...</svg>` block into a long-doc `<figure>` to embed.
+Most built-in diagrams are **self-contained HTML + inline SVG**. No Mermaid, no JS, no build step. Browse them as standalone pages, or copy the `<svg>...</svg>` block into a long-doc `<figure>` to embed.
+
+Two standalone diagram artifacts also have a generator-backed path:
+
+- architecture diagrams
+- UML class diagrams
+
+Artifact flow:
+
+- `JSON spec -> SVG -> PNG -> PDF`
+
+The generated `SVG` is the source reused by documents and slides.
 
 ---
 
@@ -55,6 +66,8 @@ If "no", don't draw. Diagrams add signal to hierarchy, direction, and magnitude.
 ### Standalone preview
 
 Open `assets/diagrams/architecture.html` (or `flowchart.html`, `quadrant.html`) directly. Each file is a complete HTML page with title, SVG, and caption.
+
+For generator-backed standalone artifacts, use the generated outputs under `assets/diagrams/generated/` instead of the handwritten template previews.
 
 ### Embed in a folio document
 

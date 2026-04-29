@@ -99,6 +99,11 @@ def add_card(slide, left, top, width, height,
     return card
 
 
+def add_diagram_png(slide, path, left, top, width, height):
+    """Place a generated diagram PNG derived from the single-source SVG."""
+    return slide.shapes.add_picture(str(path), left, top, width=width, height=height)
+
+
 # ═══════════════════════════════════════════════════════════
 # Slide templates
 # ═══════════════════════════════════════════════════════════

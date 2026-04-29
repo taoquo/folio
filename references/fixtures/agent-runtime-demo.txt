@@ -1,0 +1,3 @@
+Client requests enter an API gateway and are handed to a task planner.
+The planner coordinates a model runtime, which invokes a tool runtime for execution.
+The tool runtime reads a memory store for retrieval context and writes observability events in the background.

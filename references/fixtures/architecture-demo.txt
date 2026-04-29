@@ -1,0 +1,4 @@
+The game engine uses an ECS runtime. Input events and scene loading feed a fixed-tick scheduler.
+The scheduler advances the ECS world each frame. Systems query entities by component masks,
+mutate component stores, and stream resources through a cache. The world owns entity lifetimes
+and component registration, while systems do not own persistent state.

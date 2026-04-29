@@ -7,6 +7,10 @@ ROOT = Path(__file__).resolve().parent.parent
 TEMPLATES = ROOT / "assets" / "templates"
 DIAGRAMS = ROOT / "assets" / "diagrams"
 EXAMPLES = ROOT / "assets" / "examples"
+GENERATED_DIAGRAMS = ROOT / "assets" / "diagrams" / "generated"
+GENERATED_DIAGRAM_SVG = GENERATED_DIAGRAMS / "svg"
+GENERATED_DIAGRAM_PNG = GENERATED_DIAGRAMS / "png"
+GENERATED_DIAGRAM_PDF = GENERATED_DIAGRAMS / "pdf"
 TOKENS_FILE = ROOT / "references" / "tokens.json"
 
 # Cool / neutral gray hex values that violate the "warm undertone only" rule.

@@ -20,13 +20,14 @@
 
 ## See Folio First
 
-Folio is a document design system for the AI era: eight document types, fourteen inline SVG diagram types, and bilingual English/Chinese paths built for agent-generated deliverables.
+Folio is a document design system for the AI era: eight document types, fourteen inline SVG diagram types, two standalone diagram artifact kinds, and bilingual English/Chinese paths built for agent-generated deliverables.
 
 It optimizes for stable, readable, professional output rather than novelty.
 
 What matters on first contact:
 
 - eight document types, each with a stable editorial layout
+- standalone architecture and UML class diagram artifacts with `SVG + PNG + PDF` output
 - bilingual English and Chinese generation paths
 - PDF- and PPTX-oriented outputs instead of generic HTML mockups
 - visual consistency across one-pagers, reports, decks, resumes, and release notes
@@ -84,11 +85,29 @@ What matters on first contact:
   </tr>
 </table>
 
+## Diagram Artifact Gallery
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="assets/demos/demo-architecture.pdf"><img src="assets/demos/demo-architecture.png" alt="Architecture diagram artifact preview"></a><br>
+      <b>Agent Runtime Artifact</b><br>
+      Main showcase case: gateway ingress, task planning, model runtime, tool execution, retrieval memory, and observability.
+    </td>
+    <td width="50%" valign="top">
+      <a href="assets/demos/demo-workflow-engine.pdf"><img src="assets/demos/demo-workflow-engine.png" alt="Workflow engine diagram artifact preview"></a><br>
+      <b>Workflow Engine Artifact</b><br>
+      Secondary showcase case: orchestration, worker execution, state persistence, and event-driven continuation paths.
+    </td>
+  </tr>
+</table>
+
 ## From Prompt To Output
 
 1. Start with raw notes, a draft, source links, or a loose request like `make a one-pager for my startup`.
 2. Folio routes the request to the right document type and language path, then reshapes the content into a template-ready structure.
 3. The output lands as a stable PDF or PPTX with Folio's parchment canvas, serif hierarchy, and restrained cinnabar-coral accent.
+4. For standalone architecture or UML class requests, the output can also land as a reusable `SVG + PNG + PDF` diagram artifact.
 
 ## Quick Start
 
@@ -119,6 +138,8 @@ Example prompts:
 - `design a slide deck for my talk`
 - `write an equity report on NVIDIA`
 - `format these release notes`
+- `generate a system architecture diagram`
+- `draw a UML class diagram for this module`
 
 Optional: create `~/.config/folio/brand.md` to persist identity, document defaults, and writing habits. Start from [brand.example.md](references/brand.example.md). Folio uses it as fallback context when the current request is ambiguous.
 
@@ -156,6 +177,7 @@ Folio supports two main output paths:
 
 - HTML templates -> PDF
 - Python slide templates -> PPTX
+- Diagram specs -> SVG + PNG + PDF
 
 Showcase demos usually keep `HTML + PDF + PNG` together so the homepage and README stay truthful.
 

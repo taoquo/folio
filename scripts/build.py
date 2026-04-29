@@ -26,7 +26,21 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from shared import COOL_GRAY_BLOCKLIST, DIAGRAMS, EXAMPLES, ROOT, TEMPLATES, TOKENS_FILE
+from diagram_export import export_pdf, export_png
+from diagram_models import load_diagram_spec_file
+from diagram_render_svg import render_diagram_svg
+from diagram_semantic_planning import plan_architecture_from_text
+from shared import (
+    COOL_GRAY_BLOCKLIST,
+    DIAGRAMS,
+    EXAMPLES,
+    GENERATED_DIAGRAM_PDF,
+    GENERATED_DIAGRAM_PNG,
+    GENERATED_DIAGRAM_SVG,
+    ROOT,
+    TEMPLATES,
+    TOKENS_FILE,
+)
 
 
 @dataclass(frozen=True)
@@ -78,6 +92,21 @@ DIAGRAM_TARGETS: dict[str, str] = {
     "diagram-venn":          "venn.html",
     "diagram-candlestick":   "candlestick.html",
     "diagram-waterfall":     "waterfall.html",
+}
+DIAGRAM_ARTIFACT_TARGETS: dict[str, dict[str, str]] = {
+    "artifact-architecture-demo": {
+        "text": "references/fixtures/architecture-demo.txt",
+        "title": "ECS Game Engine Runtime",
+        "svg": "architecture-demo.svg",
+        "png": "architecture-demo.png",
+        "pdf": "architecture-demo.pdf",
+    },
+    "artifact-uml-class-demo": {
+        "spec": "references/fixtures/uml-class-demo.json",
+        "svg": "uml-class-demo.svg",
+        "png": "uml-class-demo.png",
+        "pdf": "uml-class-demo.pdf",
+    },
 }
 
 _PDF_BUILD_DEPS: tuple[Any | None, Any | None, str | None] | None = None
@@ -254,6 +283,39 @@ def build_slides(name: str = "slides") -> bool:
     return False
 
 
+def build_diagram_artifact(name: str) -> bool:
+    config = DIAGRAM_ARTIFACT_TARGETS.get(name)
+    if config is None:
+        print(f"ERROR: {name}: unknown diagram artifact target")
+        return False
+
+    try:
+        if "text" in config:
+            text = (ROOT / config["text"]).read_text(encoding="utf-8")
+            spec = plan_architecture_from_text(text, config["title"])
+        else:
+            spec = load_diagram_spec_file(ROOT / config["spec"])
+        svg = render_diagram_svg(spec)
+
+        GENERATED_DIAGRAM_SVG.mkdir(parents=True, exist_ok=True)
+        GENERATED_DIAGRAM_PNG.mkdir(parents=True, exist_ok=True)
+        GENERATED_DIAGRAM_PDF.mkdir(parents=True, exist_ok=True)
+
+        svg_path = GENERATED_DIAGRAM_SVG / config["svg"]
+        png_path = GENERATED_DIAGRAM_PNG / config["png"]
+        pdf_path = GENERATED_DIAGRAM_PDF / config["pdf"]
+
+        svg_path.write_text(svg, encoding="utf-8")
+        export_png(svg_path, png_path)
+        export_pdf(svg_path, pdf_path, spec.title)
+    except Exception as exc:
+        print(f"ERROR: {name}: artifact build failed ({exc})")
+        return False
+
+    print(f"OK: {name}: generated {svg_path.name}, {png_path.name}, {pdf_path.name}")
+    return True
+
+
 def build_all() -> int:
     failures = 0
     for name, spec in HTML_TARGETS.items():
@@ -261,6 +323,9 @@ def build_all() -> int:
             failures += 1
     for name, source in DIAGRAM_TARGETS.items():
         if not build_html(name, source, 1, 9999, src_dir=DIAGRAMS):
+            failures += 1
+    for name in DIAGRAM_ARTIFACT_TARGETS:
+        if not build_diagram_artifact(name):
             failures += 1
     for name in PPTX_TARGETS:
         if not build_slides(name):
@@ -279,9 +344,11 @@ def build_single(name: str) -> int:
         source = DIAGRAM_TARGETS[name]
         ok = build_html(name, source, 1, 9999, src_dir=DIAGRAMS)
         return 0 if ok else 1
+    if name in DIAGRAM_ARTIFACT_TARGETS:
+        return 0 if build_diagram_artifact(name) else 1
     if name in PPTX_TARGETS:
         return 0 if build_slides(name) else 1
-    known = list(HTML_TARGETS) + list(DIAGRAM_TARGETS) + list(PPTX_TARGETS)
+    known = list(HTML_TARGETS) + list(DIAGRAM_TARGETS) + list(DIAGRAM_ARTIFACT_TARGETS) + list(PPTX_TARGETS)
     print(f"ERROR: unknown target: {name}. Known: {', '.join(known)}")
     return 2
 
@@ -530,13 +597,15 @@ def verify_slides_target(name: str) -> list[str]:
 
 
 def verify_all(target: str | None = None) -> int:
-    targets_to_run: dict[str, tuple[str, int, int, Path] | None] = {}
+    targets_to_run: dict[str, tuple[str, str, int, int, Path] | None] = {}
     if target:
         if target in HTML_TARGETS:
             spec = HTML_TARGETS[target]
-            targets_to_run[target] = (spec.source, spec.min_pages, spec.max_pages, TEMPLATES)
+            targets_to_run[target] = ("html", spec.source, spec.min_pages, spec.max_pages, TEMPLATES)
         elif target in DIAGRAM_TARGETS:
-            targets_to_run[target] = (DIAGRAM_TARGETS[target], 1, 9999, DIAGRAMS)
+            targets_to_run[target] = ("diagram", DIAGRAM_TARGETS[target], 1, 9999, DIAGRAMS)
+        elif target in DIAGRAM_ARTIFACT_TARGETS:
+            targets_to_run[target] = ("artifact", "", 1, 1, ROOT)
         elif target in PPTX_TARGETS:
             targets_to_run[target] = None
         else:
@@ -544,9 +613,11 @@ def verify_all(target: str | None = None) -> int:
             return 2
     else:
         for name, spec in HTML_TARGETS.items():
-            targets_to_run[name] = (spec.source, spec.min_pages, spec.max_pages, TEMPLATES)
+            targets_to_run[name] = ("html", spec.source, spec.min_pages, spec.max_pages, TEMPLATES)
         for name, src in DIAGRAM_TARGETS.items():
-            targets_to_run[name] = (src, 1, 9999, DIAGRAMS)
+            targets_to_run[name] = ("diagram", src, 1, 9999, DIAGRAMS)
+        for name in DIAGRAM_ARTIFACT_TARGETS:
+            targets_to_run[name] = ("artifact", "", 1, 1, ROOT)
         for name in PPTX_TARGETS:
             targets_to_run[name] = None
 
@@ -556,8 +627,11 @@ def verify_all(target: str | None = None) -> int:
         if config is None:
             issues = verify_slides_target(name)
         else:
-            source, min_pages, max_pages, src_dir = config
-            issues = verify_target(name, source, min_pages, max_pages, src_dir)
+            target_kind, source, min_pages, max_pages, src_dir = config
+            if target_kind == "artifact":
+                issues = [] if build_diagram_artifact(name) else ["artifact build failed"]
+            else:
+                issues = verify_target(name, source, min_pages, max_pages, src_dir)
         if issues:
             rows.append((f"ERROR: {name}", "; ".join(issues)))
             failures += 1
