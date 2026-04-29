@@ -13,7 +13,7 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 | `references/production.md` | WeasyPrint build and troubleshooting runbook, English-only source | Medium |
 | `assets/templates/` | 8 document templates in 2 base language families | Medium |
 | `assets/demos/` | README showcase demos, regenerate after visual changes | Medium |
-| `scripts/build.py` | PDF / PNG / PPTX build and verification script | Low |
+| `scripts/build.py` | PDF / PPTX build and verification script, plus placeholder / orphan / rhythm checks | Low |
 | `scripts/package-skill.sh` | Codex Desktop ZIP packager, excluding large fonts | Low |
 | `dist/folio.zip` | Codex Desktop ZIP artifact, updated from main | Medium |
 
@@ -23,8 +23,9 @@ Do not use graphic emoticons in docs, template comments, or script output. Use `
 ## Verification
 
 ```bash
-python3 scripts/build.py          # build all outputs
-python3 scripts/build.py --check  # scan CSS invariants and token drift
+python3 scripts/build.py          # build all example PDFs, diagram PDFs, and slide PPTX
+python3 scripts/build.py --check  # scan templates for CSS rule violations
+python3 scripts/build.py --sync   # check CSS token drift across templates
 python3 scripts/build.py --verify # verify templates, page counts, fonts, and slides
 python3 scripts/build.py --check-placeholders path/to/filled.html
 python3 scripts/build.py --check-orphans [path/to/doc.pdf]  # scan for orphan text (last line <= 2 words)

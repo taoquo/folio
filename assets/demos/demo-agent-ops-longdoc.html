@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<!-- ==================================================================
+     LONG DOCUMENT · English · parchment design system
+     Multi-page A4 white paper / tech report / annual review
+     Flow: cover -> toc -> exec summary -> chapters -> appendix
+     ================================================================== -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Agent Operations Review · Q2 2026</title>
+<meta name="author" content="Folio contributors">
+<meta name="description" content="A long-form operating review of agent deployment reliability, model cost, and incident patterns across the second quarter of 2026.">
+<meta name="keywords" content="agents, operations review, long doc, reliability, Q2 2026">
+<meta name="generator" content="Folio">
+<style>
+  /* Palatino is a system font, no @font-face needed */
+  @font-face { font-family: "JetBrains Mono"; src: url("../fonts/JetBrainsMono.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+  @font-face { font-family: "JetBrains Mono"; src: url("../fonts/JetBrainsMono.woff2") format("woff2"); font-weight: 500; font-style: normal; }
+
+  @page {
+    size: A4;
+    margin: 20mm 22mm 22mm 22mm;
+    background: #F6F0EA;
+
+    @top-right {
+      content: string(section-title);
+      font-family: Charter, Georgia, Palatino, serif;
+      font-size: 8pt;
+      color: #85776F;
+    }
+
+    @bottom-center {
+      content: counter(page) "  ·  Agent Operations Review · Q2 2026";
+      font-family: Charter, Georgia, Palatino, serif;
+      font-size: 9pt;
+      color: #85776F;
+    }
+  }
+  @page:first {
+    @top-right { content: ""; }
+    @bottom-center { content: ""; }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --parchment: #F6F0EA;
+    --ivory:     #FBF7F3;
+    --near-black:#191514;
+    --dark-warm: #3A312D;
+    --olive:     #5A4A43;
+    --stone:     #85776F;
+    --brand:     #B83D2E;
+    --border:    #E9DED4;
+    --border-soft:#E8DED6;
+    --tag-bg:    #F1D2CC;
+
+    --serif: Charter, Georgia,
+             Palatino, "Times New Roman", serif;
+    --sans: var(--serif);
+    --mono:  "JetBrains Mono", "SF Mono", "Fira Code",
+             Consolas, Monaco, monospace;
+  }
+
+  html, body { background: var(--parchment); }
+
+  @media screen {
+    body { max-width: 210mm; margin: 0 auto; padding: 20mm 22mm 22mm 22mm; }
+  }
+
+  body {
+    color: var(--near-black);
+    font-family: var(--serif);
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+
+  .sans { font-family: var(--sans); }
+
+  /* COVER */
+  .cover {
+    min-height: 240mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 40mm 0 0 0;
+    break-after: page;
+  }
+  .cover-eyebrow {
+    font-family: var(--sans);
+    font-size: 10pt;
+    color: var(--brand);
+    letter-spacing: 2pt;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 18pt;
+  }
+  .cover-title {
+    font-size: 40pt;
+    font-weight: 500;
+    color: var(--near-black);
+    line-height: 1.12;
+    letter-spacing: -0.5pt;
+    margin-bottom: 16pt;
+  }
+  .cover-sub {
+    font-family: var(--sans);
+    font-size: 14pt;
+    color: var(--olive);
+    line-height: 1.45;
+    max-width: 85%;
+    margin-bottom: 30pt;
+  }
+  .cover-meta {
+    font-family: var(--sans);
+    font-size: 10pt;
+    color: var(--stone);
+    line-height: 1.55;
+    font-variant-numeric: tabular-nums;
+  }
+  .cover-meta strong { color: var(--dark-warm); font-weight: 500; }
+
+  /* TOC */
+  .toc { break-after: page; }
+  .toc h2 {
+    font-size: 22pt;
+    font-weight: 500;
+    margin-bottom: 14pt;
+    border-left: 2.5pt solid var(--brand);
+    border-radius: 1.5pt;
+    padding-left: 8pt;
+  }
+  .toc-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 6pt 0;
+    border-bottom: 0.3pt dotted var(--border);
+    font-size: 11pt;
+  }
+  .toc-item:last-of-type { border-bottom: none; }
+  .toc-num {
+    color: var(--brand);
+    font-weight: 500;
+    min-width: 30pt;
+    font-variant-numeric: tabular-nums;
+  }
+  .toc-title {
+    flex: 1;
+    color: var(--near-black);
+    padding-left: 6pt;
+  }
+  .toc-page {
+    color: var(--stone);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* HEADINGS */
+  h1 {
+    font-size: 24pt;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.3pt;
+    margin: 0 0 10pt 0;
+    border-left: 2.5pt solid var(--brand);
+    border-radius: 1.5pt;
+    padding-left: 8pt;
+    color: var(--near-black);
+    break-after: avoid;
+  }
+  h2 {
+    font-size: 16pt;
+    font-weight: 500;
+    line-height: 1.25;
+    margin: 24pt 0 6pt 0;
+    color: var(--near-black);
+    break-after: avoid;
+    string-set: section-title content();
+  }
+  h3 {
+    font-size: 13pt;
+    font-weight: 500;
+    line-height: 1.3;
+    margin: 18pt 0 4pt 0;
+    color: var(--dark-warm);
+    break-after: avoid;
+  }
+
+  .chapter-num {
+    font-family: var(--sans);
+    font-size: 10pt;
+    color: var(--brand);
+    letter-spacing: 1pt;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 6pt;
+  }
+
+  /* PARAGRAPHS */
+  p { margin: 0 0 10pt 0; line-height: 1.55; color: var(--near-black); }
+
+  .lead {
+    font-size: 12pt;
+    line-height: 1.55;
+    color: var(--dark-warm);
+    margin-bottom: 14pt;
+  }
+
+  .hl { color: var(--brand); font-weight: 500; }
+  strong { font-weight: 500; }
+
+  /* LISTS */
+  ul, ol {
+    margin: 6pt 0 10pt 0;
+    padding-left: 20pt;
+    line-height: 1.55;
+  }
+  ul li::marker { color: var(--brand); }
+  ol li::marker { color: var(--brand); font-weight: 500; }
+
+  /* QUOTE */
+  blockquote, .quote {
+    border-left: 2pt solid var(--brand);
+    margin: 12pt 0;
+    padding: 4pt 0 4pt 16pt;
+    color: var(--olive);
+    line-height: 1.55;
+    break-inside: avoid;
+  }
+  blockquote .cite, .quote .cite {
+    display: block;
+    font-family: var(--sans);
+    font-size: 9pt;
+    color: var(--stone);
+    margin-top: 4pt;
+  }
+
+  /* CODE */
+  code {
+    font-family: var(--mono);
+    font-size: 9pt;
+    background: var(--ivory);
+    padding: 1pt 4pt;
+    border-radius: 2pt;
+    color: var(--dark-warm);
+  }
+  pre {
+    font-family: var(--mono);
+    font-size: 9pt;
+    line-height: 1.5;
+    background: var(--ivory);
+    border-radius: 4pt;
+    padding: 10pt 14pt;
+    margin: 10pt 0;
+    white-space: pre-wrap;
+    color: var(--near-black);
+    break-inside: avoid;
+  }
+  pre code { background: transparent; padding: 0; font-size: inherit; }
+
+  /* TABLE (folio-table) */
+  table, .folio-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9.5pt;
+    margin: 12pt 0;
+    break-inside: avoid;
+  }
+  table th, .folio-table th {
+    text-align: left;
+    font-family: var(--sans);
+    font-weight: 500;
+    color: var(--dark-warm);
+    padding: 6pt 8pt;
+    border-bottom: 1pt solid var(--border);
+    background: var(--ivory);
+  }
+  table td, .folio-table td {
+    padding: 5pt 8pt;
+    border-bottom: 0.3pt solid var(--border-soft);
+    vertical-align: top;
+  }
+  table.compact th, .folio-table.compact th { padding: 3pt 6pt; font-size: 8pt; }
+  table.compact td, .folio-table.compact td { padding: 2pt 6pt; font-size: 8pt; line-height: 1.4; }
+  table.financial td:not(:first-child), .folio-table.financial td:not(:first-child) {
+    text-align: right; font-variant-numeric: tabular-nums;
+  }
+  table.financial th:not(:first-child), .folio-table.financial th:not(:first-child) { text-align: right; }
+  table.striped tbody tr:nth-child(even) td, .folio-table.striped tbody tr:nth-child(even) td {
+    background: var(--ivory);
+  }
+  table .total td, .folio-table .total td {
+    font-weight: 500; border-top: 1pt solid var(--brand); border-bottom: none; color: var(--near-black);
+  }
+
+  /* CALLOUT / TAKEAWAY */
+  .callout {
+    background: var(--ivory);
+    border-left: 2pt solid var(--brand);
+    padding: 10pt 14pt;
+    border-radius: 3pt;
+    margin: 12pt 0;
+    line-height: 1.55;
+    break-inside: avoid;
+  }
+  .callout blockquote,
+  .callout .quote {
+    border-left: none;
+    padding-left: 0;
+    margin: 6pt 0;
+    color: var(--olive);
+  }
+  .callout blockquote:first-child,
+  .callout .quote:first-child { margin-top: 0; }
+  .callout blockquote:last-child,
+  .callout .quote:last-child  { margin-bottom: 0; }
+  .takeaway {
+    background: var(--ivory);
+    border-radius: 4pt;
+    padding: 10pt 14pt;
+    margin: 14pt 0;
+    break-inside: avoid;
+  }
+  .takeaway-label {
+    font-family: var(--sans);
+    font-size: 9pt;
+    color: var(--brand);
+    letter-spacing: 1pt;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 4pt;
+  }
+
+  /* TAG */
+  .tag {
+    display: inline-block;
+    background: var(--tag-bg);
+    color: var(--brand);
+    font-family: var(--sans);
+    font-size: 9pt;
+    font-weight: 500;
+    padding: 1pt 6pt;
+    border-radius: 3pt;
+    letter-spacing: 0.4pt;
+    text-transform: uppercase;
+    margin-right: 4pt;
+  }
+
+  /* FIGURE */
+  figure { margin: 14pt 0; break-inside: avoid; }
+  figure img { max-width: 100%; border-radius: 4pt; }
+  figcaption {
+    font-family: var(--sans);
+    font-size: 9pt;
+    color: var(--stone);
+    margin-top: 6pt;
+    text-align: center;
+  }
+
+  /* CHAPTER BREAK */
+  .chapter { break-before: page; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<section class="cover">
+  <div>
+    <div class="cover-eyebrow">Operating Review</div>
+    <div class="cover-title">Agent Operations Review<br>Q2 2026</div>
+    <div class="cover-sub">A working brief for platform, product, and applied AI leads running production agents.</div>
+  </div>
+  <div class="cover-meta">
+    <strong>Applied Systems Team</strong><br>
+    Version 1.1 · 2026.04<br>
+    North Ridge Labs
+  </div>
+</section>
+
+<!-- TOC -->
+<section class="toc">
+  <h2>Contents</h2>
+  <div class="toc-item"><span class="toc-num">01</span><span class="toc-title">Executive Summary</span><span class="toc-page">03</span></div>
+  <div class="toc-item"><span class="toc-num">02</span><span class="toc-title">Background &amp; Problem Statement</span><span class="toc-page">04</span></div>
+  <div class="toc-item"><span class="toc-num">03</span><span class="toc-title">Methodology &amp; Findings</span><span class="toc-page">06</span></div>
+  <div class="toc-item"><span class="toc-num">04</span><span class="toc-title">Conclusions &amp; Recommendations</span><span class="toc-page">09</span></div>
+  <div class="toc-item"><span class="toc-num">05</span><span class="toc-title">Appendix</span><span class="toc-page">11</span></div>
+</section>
+
+<!-- Chapter 01 -->
+<section class="chapter">
+  <div class="chapter-num">01 · Executive Summary</div>
+  <h1>Executive Summary</h1>
+
+  <p class="lead">
+    Production agent quality improved in Q2 because the team stopped treating latency, cost, and failure recovery as separate concerns. The operating model now centers on one shared scorecard, and the result is a <span class="hl">37% drop in user-visible failures</span> without slowing release velocity.
+  </p>
+
+  <h2>Key Takeaways</h2>
+  <ul>
+    <li>User-visible failure rate fell from 4.3% to 2.7% after introducing replay-safe tool calls and runbook-based retries.</li>
+    <li>Cost per successful run dropped 18% once prompt caching and retrieval batching were measured as one workflow instead of separate optimizations.</li>
+    <li>The next constraint is not model quality; it is operator throughput during multi-service incidents.</li>
+  </ul>
+
+  <div class="takeaway">
+    <div class="takeaway-label">Questions this document answers</div>
+    Where are agents still failing in ways users notice?<br>Which interventions reduced cost without cutting answer quality?<br>What must the platform team change before the next scale step?
+  </div>
+</section>
+
+<!-- Chapter 02 -->
+<section class="chapter">
+  <div class="chapter-num">02 · Background</div>
+  <h1>Background &amp; Problem Statement</h1>
+
+  <p class="lead">
+    This chapter defines the baseline: what changed in traffic, what broke most often, and why the prior operating model no longer fit the workload.
+  </p>
+
+  <h2>Current State</h2>
+  <p>By the end of Q2, the platform served 1.8M agent runs per week across support, research, and internal automation. Mean completion time held near 8.4 seconds, but high-variance tool chains created long-tail delays and most escalations clustered in three services.</p>
+
+  <h2>The Core Problem</h2>
+  <p>The core problem was not a single weak model. It was a fragmented control plane: prompts were versioned in one place, tool policies in another, and incident learning in a third, so every improvement arrived late and only partially.</p>
+
+  <div class="callout">
+    We were shipping agent behavior faster than we were shipping the operating discipline required to trust it.
+  </div>
+
+  <h2>Metrics of Success</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Dimension</th>
+        <th>Current</th>
+        <th>Target</th>
+        <th>Gap</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>User-visible failure rate</td><td>4.3%</td><td>4.3%</td><td>-1.8 pts</td></tr>
+      <tr><td>Median cost per successful run</td><td>4.3%</td><td>4.3%</td><td>-1.8 pts</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- Chapter 03 -->
+<section class="chapter">
+  <div class="chapter-num">03 · Methodology</div>
+  <h1>Methodology &amp; Findings</h1>
+
+  <p class="lead">We combined trace review, incident postmortems, and cohort analysis of tool paths to separate noise from repeatable failure modes.</p>
+
+  <h2>Approach</h2>
+  <p>Every production run was labeled by task family, tool fan-out, retry depth, and human takeover status. We then reviewed the top decile of failure clusters and mapped changes back to release windows, policy shifts, and queue behavior.</p>
+
+  <pre><code>def analyze(data):
+    return transform(data)</code></pre>
+
+  <h2>Key Findings</h2>
+
+  <h3>Finding 1 - Retry safety reduced cascading failures</h3>
+  <p>Idempotent tool wrappers removed duplicate writes in 91% of previously unsafe retry paths. In the two highest-volume workflows, that change alone accounted for <span class="hl">0.8 percentage points</span> of failure-rate improvement.</p>
+
+  <h3>Finding 2 - Retry safety reduced cascading failures</h3>
+  <p>The most effective latency reduction came from queue shaping and retrieval prefetching, not model swaps. Teams that cut queue contention saw the p95 completion time improve by 22% without touching model selection.</p>
+
+  <blockquote>
+    The biggest trust gain came when the system failed fast and told us what to do next, not when it tried one more invisible recovery step.
+    <span class="cite"> - Support operations lead, 2026-04-18</span>
+  </blockquote>
+</section>
+
+<!-- Chapter 04 -->
+<section class="chapter">
+  <div class="chapter-num">04 · Conclusions</div>
+  <h1>Conclusions &amp; Recommendations</h1>
+
+  <p class="lead">Q2 proved that agent quality is now an operations problem as much as a model problem. The recommendations below focus on that shift.</p>
+
+  <h2>Core Conclusions</h2>
+  <ol>
+    <li>Unifying traces, policies, and prompts under one review rhythm is now the highest-leverage management move.</li>
+    <li>Run-level cost controls work best when attached to task cohorts rather than global model limits.</li>
+    <li>Incident response must be optimized for cross-service diagnosis, not only per-service uptime.</li>
+  </ol>
+
+  <h2>Recommended Next Steps</h2>
+  <p>Create one weekly operating review with product, platform, and support in the same room; ship queue-shaping defaults to all retrieval-heavy workloads; and require every new tool path to declare retry safety before launch.</p>
+
+  <div class="takeaway">
+    <div class="takeaway-label">Call to Action</div>
+    Merge prompt, trace, and incident review into one operator dashboard before scaling the next agent workflow.
+  </div>
+</section>
+
+<!-- Chapter 05 -->
+<section class="chapter">
+  <div class="chapter-num">05 · Appendix</div>
+  <h1>Appendix</h1>
+
+  <h2>A. References</h2>
+  <ul>
+    <li>Internal trace review, North Ridge Labs, Q2 2026.</li>
+    <li>Incident postmortem archive, March-April 2026.</li>
+  </ul>
+
+  <h2>B. Glossary</h2>
+  <p><strong>Replay-safe tool call</strong> - A tool invocation that can be retried without duplicating side effects.</p>
+  <p><strong>Replay-safe tool call</strong> - A tool invocation that can be retried without duplicating side effects.</p>
+
+  <h2>C. Acknowledgements</h2>
+  <p>Prepared with input from product operations, support engineering, and the applied systems team.</p>
+</section>
+
+</body>
+</html>

@@ -141,7 +141,7 @@ WeasyPrint reads standard meta tags in `<head>` and writes them into the PDF (Ti
 | Field | Source |
 |---|---|
 | `<title>` | H1 heading or `.header .title` text |
-| `author` | Resume / letter / portfolio: person's name from the document; everything else: `"Folio"` |
+| `author` | Resume / letter / portfolio: person's name from the document; everything else: leave the placeholder and let `build.py` infer `git config user.name` -> `FOLIO_AUTHOR` -> `"Folio"` |
 | `description` | One sentence extracted from the first 2 paragraphs, ≤150 characters |
 | `keywords` | 3-5 keywords from title + section headings, comma-separated |
 | `generator` | Fixed `"Folio"`, already set in template, do not change |

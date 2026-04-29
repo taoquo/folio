@@ -17,6 +17,15 @@ SPEC.loader.exec_module(build)
 
 
 class BuildScriptTests(TestCase):
+    def test_architecture_demo_assets_exist(self) -> None:
+        demo_html = ROOT / "assets" / "demos" / "demo-architecture.html"
+        demo_png = ROOT / "assets" / "demos" / "demo-architecture.png"
+        demo_pdf = ROOT / "assets" / "demos" / "demo-architecture.pdf"
+
+        self.assertTrue(demo_html.exists(), demo_html)
+        self.assertTrue(demo_png.exists(), demo_png)
+        self.assertTrue(demo_pdf.exists(), demo_pdf)
+
     def test_verify_target_reports_oserror_from_weasyprint_import(self) -> None:
         original_import = builtins.__import__
 

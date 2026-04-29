@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<!-- ==================================================================
+     PORTFOLIO · English · parchment design system
+     Multi-page A4 portfolio / case studies
+     Structure: cover -> About -> project pages -> Contact
+     Each project 1-2 pages, visuals over words
+     ================================================================== -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Lena Park · Portfolio</title>
+<meta name="author" content="Lena Park">
+<meta name="description" content="Selected product and AI systems work by Lena Park across workflow software, research tooling, and operational design.">
+<meta name="keywords" content="portfolio, product design, AI systems, selected works">
+<meta name="generator" content="Folio">
+<style>
+  @font-face { font-family: "JetBrains Mono"; src: url("../fonts/JetBrainsMono.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+  @font-face { font-family: "JetBrains Mono"; src: url("../fonts/JetBrainsMono.woff2") format("woff2"); font-weight: 500; font-style: normal; }
+
+  @page {
+    size: A4;
+    margin: 12mm 15mm 12mm 15mm;
+    background: #F6F0EA;
+  }
+  @page:first { margin: 0; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --parchment: #F6F0EA;
+    --ivory:     #FBF7F3;
+    --near-black:#191514;
+    --dark-warm: #3A312D;
+    --olive:     #5A4A43;
+    --stone:     #85776F;
+    --brand:     #B83D2E;
+    --brand-deep:#7E241C;
+    --border:    #E9DED4;
+    --border-soft:#E8DED6;
+    --tag-bg:    #F1D2CC;
+
+    --serif: Charter, Georgia,
+             Palatino, "Times New Roman", serif;
+    --sans: var(--serif);
+  }
+
+  html, body { background: var(--parchment); }
+
+  @media screen {
+    body { max-width: 210mm; margin: 0 auto; padding: 12mm 15mm; }
+  }
+
+  body {
+    color: var(--near-black);
+    font-family: var(--serif);
+    font-size: 10pt;
+    line-height: 1.45;
+  }
+
+  .serif { font-family: var(--serif); }
+
+  /* COVER */
+  .cover {
+    width: 100%;
+    height: 297mm;
+    padding: 25mm 20mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    break-after: page;
+  }
+  .cover-top {
+    font-family: var(--sans);
+    font-size: 10pt;
+    color: var(--brand);
+    letter-spacing: 2.5pt;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .cover-center {
+    display: flex;
+    flex-direction: column;
+    gap: 14pt;
+  }
+  .cover-name {
+    font-family: var(--serif);
+    font-size: 64pt;
+    font-weight: 500;
+    line-height: 1.02;
+    color: var(--near-black);
+    letter-spacing: -1pt;
+  }
+  .cover-tagline {
+    font-family: var(--serif);
+    font-size: 18pt;
+    color: var(--olive);
+    line-height: 1.4;
+    max-width: 80%;
+  }
+  .cover-line {
+    width: 80pt;
+    height: 2pt;
+    background: var(--brand);
+    margin: 18pt 0 4pt 0;
+  }
+  .cover-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-size: 10pt;
+    color: var(--stone);
+    font-variant-numeric: tabular-nums;
+  }
+  .cover-meta strong {
+    color: var(--dark-warm);
+    font-weight: 500;
+  }
+
+  /* ABOUT */
+  section.about {
+    break-after: page;
+    padding: 10mm 0;
+  }
+  .about-eyebrow {
+    font-family: var(--sans);
+    font-size: 9pt;
+    color: var(--brand);
+    letter-spacing: 1.5pt;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 8pt;
+  }
+  .about-title {
+    font-family: var(--serif);
+    font-size: 34pt;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.5pt;
+    margin-bottom: 20pt;
+    border-left: 2.5pt solid var(--brand);
+    border-radius: 1.5pt;
+    padding-left: 8pt;
+  }
+  .about-lead {
+    font-family: var(--serif);
+    font-size: 15pt;
+    line-height: 1.5;
+    color: var(--dark-warm);
+    margin-bottom: 24pt;
+    max-width: 90%;
+  }
+  .about-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24pt;
+  }
+  .about-body p { line-height: 1.45; margin-bottom: 10pt; }
+  .about-body h3 {
+    font-family: var(--serif);
+    font-size: 13pt;
+    font-weight: 500;
+    color: var(--near-black);
+    margin-bottom: 6pt;
+  }
+
+  /* PROJECT PAGE */
+  .project {
+    break-before: page;
+    break-after: page;
+    padding: 8mm 0;
+  }
+  .project-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 14pt;
+    border-left: 2.5pt solid var(--brand);
+    border-radius: 1.5pt;
+    padding-left: 8pt;
+  }
+  .project-num {
+    font-family: var(--serif);
+    font-size: 48pt;
+    font-weight: 500;
+    color: var(--brand);
+    line-height: 1;
+    margin-right: 18pt;
+    letter-spacing: -1pt;
+  }
+  .project-title-block { flex: 1; padding-top: 6pt; }
+  .project-type {
+    font-family: var(--sans);
+    font-size: 9pt;
+    color: var(--brand);
+    letter-spacing: 1.5pt;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 3pt;
+  }
+  .project-title {
+    font-family: var(--serif);
+    font-size: 24pt;
+    font-weight: 500;
+    color: var(--near-black);
+    line-height: 1.2;
+    letter-spacing: -0.3pt;
+    margin-bottom: 4pt;
+  }
+  .project-subtitle {
+    font-size: 11pt;
+    color: var(--olive);
+    line-height: 1.4;
+  }
+  .project-date {
+    text-align: right;
+    font-size: 9pt;
+    color: var(--stone);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    min-width: 80pt;
+    padding-top: 10pt;
+  }
+
+  /* Tags */
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4pt;
+    margin-bottom: 14pt;
+  }
+  .tag {
+    background: var(--tag-bg);
+    color: var(--brand);
+    font-family: var(--sans);
+    font-size: 9pt;
+    font-weight: 500;
+    padding: 2pt 8pt;
+    border-radius: 3pt;
+    letter-spacing: 0.4pt;
+    text-transform: uppercase;
+  }
+
+  /* Hero image */
+  .project-hero {
+    width: 100%;
+    height: 110mm;
+    background: var(--ivory);
+    border-radius: 6pt;
+    margin-bottom: 14pt;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--stone);
+    font-size: 10pt;
+  }
+  .project-hero img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* 3-column body */
+  .project-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16pt;
+  }
+  .project-block h3 {
+    font-family: var(--serif);
+    font-size: 12pt;
+    font-weight: 500;
+    color: var(--brand);
+    margin-bottom: 4pt;
+    letter-spacing: 0.3pt;
+  }
+  .project-block p {
+    font-size: 9.5pt;
+    line-height: 1.5;
+    color: var(--dark-warm);
+  }
+  .project-block .hl { color: var(--brand); font-weight: 500; }
+
+  /* Results */
+  .project-results {
+    display: flex;
+    gap: 14pt;
+    margin-top: 14pt;
+    padding-top: 10pt;
+    border-top: 0.5pt dotted var(--border);
+  }
+  .result-item { flex: 1; }
+  .result-value {
+    font-family: var(--serif);
+    font-size: 20pt;
+    font-weight: 500;
+    color: var(--brand);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .result-label {
+    font-size: 9pt;
+    color: var(--olive);
+    margin-top: 2pt;
+    line-height: 1.3;
+  }
+
+  /* 2-image variant */
+  .project-visuals-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10pt;
+    margin-bottom: 14pt;
+  }
+  .project-visuals-2col .project-hero {
+    height: 80mm;
+    margin-bottom: 0;
+  }
+
+  /* SELECTED WORKS */
+  section.more-works {
+    break-before: page;
+    padding-top: 10mm;
+  }
+  .more-works-title {
+    font-family: var(--serif);
+    font-size: 26pt;
+    font-weight: 500;
+    letter-spacing: -0.3pt;
+    margin-bottom: 16pt;
+    border-left: 2.5pt solid var(--brand);
+    border-radius: 1.5pt;
+    padding-left: 8pt;
+  }
+  .work-item {
+    display: grid;
+    grid-template-columns: 40pt 1fr 80pt;
+    gap: 12pt;
+    padding: 8pt 0;
+    border-bottom: 0.3pt dotted var(--border);
+    align-items: baseline;
+  }
+  .work-item:last-of-type { border-bottom: none; }
+  .work-year {
+    font-family: var(--serif);
+    color: var(--brand);
+    font-size: 11pt;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .work-title-block .title {
+    font-family: var(--serif);
+    font-size: 11pt;
+    font-weight: 500;
+    color: var(--near-black);
+  }
+  .work-title-block .desc {
+    font-size: 9pt;
+    color: var(--olive);
+    margin-top: 1pt;
+  }
+  .work-link {
+    text-align: right;
+    font-size: 9pt;
+    color: var(--stone);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* CONTACT */
+  section.contact {
+    break-before: page;
+    padding: 20mm 0;
+    min-height: 230mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .contact-eyebrow {
+    font-family: var(--sans);
+    font-size: 10pt;
+    color: var(--brand);
+    letter-spacing: 2pt;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 12pt;
+  }
+  .contact-title {
+    font-family: var(--serif);
+    font-size: 52pt;
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -1pt;
+    margin-bottom: 20pt;
+    color: var(--near-black);
+  }
+  .contact-line {
+    width: 80pt;
+    height: 2pt;
+    background: var(--brand);
+    margin-bottom: 24pt;
+  }
+  .contact-list {
+    font-size: 12pt;
+    line-height: 1.55;
+    color: var(--dark-warm);
+  }
+  .contact-list strong {
+    font-family: var(--sans);
+    color: var(--stone);
+    font-weight: 500;
+    font-size: 10pt;
+    letter-spacing: 1pt;
+    margin-right: 12pt;
+    display: inline-block;
+    min-width: 80pt;
+    text-transform: uppercase;
+  }
+  .contact-list a {
+    color: var(--brand);
+    text-decoration: none;
+  }
+
+  /* TABLE (folio-table) */
+  table, .folio-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9.5pt;
+    margin: 10pt 0;
+    break-inside: avoid;
+  }
+  table th, .folio-table th {
+    text-align: left;
+    font-weight: 500;
+    color: var(--dark-warm);
+    padding: 5pt 8pt;
+    border-bottom: 1pt solid var(--border);
+    background: transparent;
+  }
+  table td, .folio-table td {
+    padding: 4pt 8pt;
+    border-bottom: 0.3pt solid var(--border-soft);
+    vertical-align: top;
+  }
+  table.compact th, .folio-table.compact th { padding: 3pt 6pt; font-size: 8pt; }
+  table.compact td, .folio-table.compact td { padding: 2pt 6pt; font-size: 8pt; line-height: 1.4; }
+  table.financial td:not(:first-child), .folio-table.financial td:not(:first-child) {
+    text-align: right; font-variant-numeric: tabular-nums;
+  }
+  table.financial th:not(:first-child), .folio-table.financial th:not(:first-child) { text-align: right; }
+  table.striped tbody tr:nth-child(even) td, .folio-table.striped tbody tr:nth-child(even) td {
+    background: var(--ivory);
+  }
+  table .total td, .folio-table .total td {
+    font-weight: 500; border-top: 1pt solid var(--brand); border-bottom: none; color: var(--near-black);
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-top">Selected Works 2023–2026</div>
+
+  <div class="cover-center">
+    <div class="cover-name">Lena Park<br>Portfolio</div>
+    <div class="cover-tagline">Designing tools that make complex systems readable under pressure.</div>
+    <div class="cover-line"></div>
+  </div>
+
+  <div class="cover-meta">
+    <div>
+      <strong>Product Design · AI Systems</strong><br>
+      San Francisco, CA
+    </div>
+    <div style="text-align: right;">
+      lena@ridge.studio<br>
+      ridge.studio / @lenapark
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about">
+  <div class="about-eyebrow">About</div>
+  <div class="about-title">I design product surfaces, operating views, and decision systems for technical teams.</div>
+  <div class="about-lead">
+    My best work sits between interface design and operating design. I care about clarity under load: making tools easier to use when the task is ambiguous, cross-functional, or expensive to get wrong.
+  </div>
+  <div class="about-body">
+    <div>
+      <h3>Background</h3>
+      <p>I started in workflow software, then moved into data products and applied AI. Across each shift, the pattern stayed the same: define the real decision, remove ornamental complexity, and make the page teach the system.</p>
+    </div>
+    <div>
+      <h3>Focus</h3>
+      <p>Today I focus on agent products, research tooling, and service interfaces. I work from evidence outward, using traces, interviews, and operating constraints before I choose the visual system.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECT 01 -->
+<section class="project">
+  <div class="project-header">
+    <div class="project-num">01</div>
+    <div class="project-title-block">
+      <div class="project-type">AI Workflow Platform</div>
+      <div class="project-title">North Ridge Copilot Console</div>
+      <div class="project-subtitle">A control surface for high-stakes support agents used by operations teams.</div>
+    </div>
+    <div class="project-date">2025.03 - 2026.01</div>
+  </div>
+
+  <div class="project-tags">
+    <span class="tag">Agent Ops</span>
+    <span class="tag">Workflow</span>
+    <span class="tag">B2B SaaS</span>
+  </div>
+
+  <div class="project-hero">
+    <!-- Replace with: <img src="project-01-hero.png" alt=""> -->
+    <img src="demo-agent-slides.png" alt="North Ridge Copilot Console preview">
+  </div>
+
+  <div class="project-body">
+    <div class="project-block">
+      <h3>Context</h3>
+      <p>Support operators had no stable way to understand why an agent answered the way it did. The product had strong model behavior but weak operational legibility, so escalations were slow and trust eroded.</p>
+    </div>
+    <div class="project-block">
+      <h3>Approach</h3>
+      <p>I centered the page on trace readability: one persistent claim, one timeline of tool use, and one clear recovery path when confidence dropped. The layout reduced cross-panel scanning and gave reviewers a single visual hierarchy.</p>
+    </div>
+    <div class="project-block">
+      <h3>Outcome</h3>
+      <p>Escalation handling time fell <span class="hl">34%</span>, quality-review throughput rose 2.1x, and onboarding time for new operators dropped from 10 days to 6.</p>
+    </div>
+  </div>
+
+  <div class="project-results">
+    <div class="result-item">
+      <div class="result-value">34%</div>
+      <div class="result-label">Escalation time down</div>
+    </div>
+    <div class="result-item">
+      <div class="result-value">34%</div>
+      <div class="result-label">Escalation time down</div>
+    </div>
+    <div class="result-item">
+      <div class="result-value">34%</div>
+      <div class="result-label">Escalation time down</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECT 02 (2-image variant) -->
+<section class="project">
+  <div class="project-header">
+    <div class="project-num">02</div>
+    <div class="project-title-block">
+      <div class="project-type">Research Tooling</div>
+      <div class="project-title">North Ridge Copilot Console</div>
+      <div class="project-subtitle">An internal report composer that turns research traces into executive-ready briefs.</div>
+    </div>
+    <div class="project-date">2024.06 - 2025.02</div>
+  </div>
+
+  <div class="project-tags">
+    <span class="tag">Research</span>
+    <span class="tag">Research</span>
+  </div>
+
+  <div class="project-visuals-2col">
+    <div class="project-hero"><img src="demo-tesla.png" alt="Briefing Builder report sample"></div>
+    <div class="project-hero"><img src="demo-musk-resume.png" alt="Briefing Builder layout sample"></div>
+  </div>
+
+  <div class="project-body">
+    <div class="project-block">
+      <h3>Context</h3>
+      <p>Analysts were producing strong raw research but weak final communication. The product goal was to bridge that gap without forcing everyone into a slide-first workflow.</p>
+    </div>
+    <div class="project-block">
+      <h3>Approach</h3>
+      <p>I treated templates as decision aids rather than decoration, with reusable evidence blocks, narrative scaffolds, and source visibility built into the layout.</p>
+    </div>
+    <div class="project-block">
+      <h3>Outcome</h3>
+      <p>Weekly briefing output rose from 3 to 8 deliverables, and leadership teams began using the product for recurring board materials.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MORE WORKS -->
+<section class="more-works">
+  <div class="more-works-title">Selected Works</div>
+
+  <div class="work-item">
+    <span class="work-year">2025</span>
+    <div class="work-title-block">
+      <div class="title">Service Blueprint Library</div>
+      <div class="desc">An internal report composer that turns research traces into executive-ready briefs.</div>
+    </div>
+    <div class="work-link">Internal</div>
+  </div>
+
+  <div class="work-item">
+    <span class="work-year">2024</span>
+    <div class="work-title-block">
+      <div class="title">Service Blueprint Library</div>
+      <div class="desc">An internal report composer that turns research traces into executive-ready briefs.</div>
+    </div>
+    <div class="work-link">Internal</div>
+  </div>
+
+  <div class="work-item">
+    <span class="work-year">2023</span>
+    <div class="work-title-block">
+      <div class="title">Service Blueprint Library</div>
+      <div class="desc">An internal report composer that turns research traces into executive-ready briefs.</div>
+    </div>
+    <div class="work-link">Internal</div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact">
+  <div class="contact-eyebrow">Let's Talk</div>
+  <div class="contact-title">Available for product design, systems thinking, and editorial design collaborations.</div>
+  <div class="contact-line"></div>
+  <div class="contact-list">
+    <div><strong>Email</strong><a href="mailto:lena@ridge.studio">lena@ridge.studio</a></div>
+    <div><strong>Phone</strong>+1 (415) 555-0198</div>
+    <div><strong>Website</strong><a href="https://ridge.studio">https://ridge.studio</a></div>
+    <div><strong>X</strong><a href="https://ridge.studio">@lenapark</a></div>
+  </div>
+</section>
+
+</body>
+</html>

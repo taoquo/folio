@@ -7,7 +7,7 @@ One-page quick reference. Scan before filling a template or tweaking a detail. F
 1. Page background `#F6F0EA` (parchment), never pure white
 2. Single accent: cinnabar-coral `#B83D2E`
 3. All grays **warm-toned** (yellow-brown undertone), no cool blue-gray
-4. English: serif for headlines and body. Chinese: serif headlines, sans body. Sans for UI only
+4. One serif per page by default. English and Chinese templates both use serif for headlines and body; `--sans` is a utility alias, not a second design language
 5. Serif weight locked at 500, no bold
 6. Line-height: headlines 1.1-1.3 / dense 1.4-1.45 / reading 1.5-1.55
 7. Letter-spacing: Chinese body 0.3pt; English body 0; tracking for short labels only
@@ -233,7 +233,7 @@ Combine freely: `<table class="folio-table financial striped">`.
 
 ## Diagram components
 
-Twelve built-in diagram types. Extract the `<svg>` block and embed in a `<figure>` in long-doc / portfolio:
+Fourteen built-in diagram types. Extract the `<svg>` block and embed in a `<figure>` in the active document or deck:
 
 
 | Type          | File                                 | Use                                             |
@@ -265,7 +265,7 @@ Usage: extract the `<svg>` block from the HTML file and paste into the template'
 Alternate light/dark rhythm: add `.sd-alt` to any section container.
 
 - Background switches to `--deep-dark` (`#191514`)
-- Body text switches to `--warm-silver` (`#b0aea5`)
+- Body text switches to warm gray `#b0aea5`
 - Headings switch to `--ivory`
 - Appropriate for: section-level light/dark alternation in long-doc / portfolio
 - Restriction: showcase pages only, never in print templates
@@ -331,7 +331,7 @@ Page 2 font sizes stay at template defaults. The density variant only tightens p
 | ------------------- | -------------------------------------------------------------- |
 | Headline            | serif 500, line-height 1.10-1.30                               |
 | Reading body (EN)   | serif 400, 9.5-10pt, 1.55                                      |
-| Reading body (CN)   | sans 400, 9.5-10pt, 1.55                                       |
+| Reading body (CN)   | serif 400, 9.5-10pt, 1.55                                      |
 | Emphasize a number  | `color: var(--brand)`, no bold                                 |
 | Divide two sections | 2.5pt brand left bar, or 0.5pt warm dotted                     |
 | Quote               | 2pt brand left border + olive color                            |

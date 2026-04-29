@@ -11,10 +11,10 @@ This is not a UI framework. It is a constraint system for print, designed to kee
 1. Page background parchment `#F6F0EA`, never pure white
 2. Single accent: cinnabar-coral `#B83D2E`, no second chromatic color
 3. All grays warm-toned (yellow-brown undertone), no cool blue-grays
-4. English: serif for everything (headlines and body). Chinese: serif headlines, sans body. Sans only for UI elements (labels, eyebrows, meta) in both
+4. One serif per page by default. English and Chinese templates both use serif for headlines and body; utility slots may reuse the same face through `--sans`
 5. Serif weight locked at 500, no bold
 6. Line-heights: tight headlines 1.1-1.3, dense body 1.4-1.45, reading body 1.5-1.55
-7. Letter-spacing: Chinese body 0.3pt for comfortable reading; English body 0; tracking only for short labels and overlines
+7. Letter-spacing: Chinese print body usually 0.3pt; English body 0; tracking only for short labels and overlines
 8. Tag backgrounds must be solid hex, never rgba (WeasyPrint renders a double rectangle)
 9. Depth via ring shadow or whisper shadow, never hard drop shadows
 10. **No italic anywhere**. No `font-style: italic` in any template or demo. No italic @font-face declarations needed
@@ -160,8 +160,8 @@ Print documents are **tighter** than English web body. English web typically run
 
 ### Letter-spacing
 
-- Body text: **0**
-- Chinese body text with LXGW WenKai: **0–0.1pt** when needed; the font opens more naturally than denser calligraphic faces
+- Body text: **English 0; Chinese print body usually 0.3pt**
+- Chinese body text with LXGW WenKai may tighten slightly only when a specific template needs it; do not assume 0 tracking as the default
 - Chinese lede text (14–22pt) with LXGW WenKai: **0.02–0.05em** to open up large-body paragraphs without making them float; EN lede: **0**
 - Chinese display text (24pt+): **0.2–1pt** optical spacing for visual breathing room at large sizes; scale with font size
 - English headings may use subtle optical tightening when needed; keep it localized, never inherited by body copy

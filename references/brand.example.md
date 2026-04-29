@@ -29,7 +29,7 @@ language: ""                # cn / en. Used when the request language is ambiguo
 default_doc_type: ""        # one-pager / long-doc / letter / portfolio / resume / slides / equity-report / changelog
 output_format: pdf          # pdf / pptx / both
 page_size: a4               # a4 / letter
-always_include_toc: false   # true to auto-add TOC in long-doc and portfolio
+always_include_toc: false   # true to keep the long-doc TOC section by default
 
 # ─── Content conventions ───
 date_format: "YYYY-MM-DD"   # Date format used in content

@@ -1,6 +1,6 @@
 ---
 name: folio
-description: 'Typeset professional documents: resumes, one-pagers, white papers, letters, portfolios, slide decks. Warm parchment, cinnabar-coral accent, serif-led hierarchy. CN uses LXGW WenKai, EN uses Charter. Triggers on "做 PDF / 排版 / 一页纸 / 白皮书 / 作品集 / 简历 / PPT / slides", or "build me a resume / make a one-pager / design a slide deck / turn this into a PDF / make this presentable".'
+description: 'Typeset professional documents: one-pagers, long docs, letters, portfolios, resumes, slide decks, equity reports, and changelogs. Warm parchment, cinnabar-coral accent, serif-led hierarchy. CN uses LXGW WenKai, EN uses Charter. Triggers on "做 PDF / 排版 / 一页纸 / 白皮书 / 作品集 / 简历 / PPT / slides / 研报 / 更新日志", or "build me a resume / make a one-pager / design a slide deck / turn this into a PDF / write an equity report / format release notes / make this presentable".'
 ---
 
 # folio
@@ -24,20 +24,20 @@ If found, parse the YAML frontmatter for structured fields and treat the Markdow
 
 Apply at template edit time: replace matching `{{...}}` placeholders in the HTML body with profile values before building.
 
-| Profile field | Template placeholder(s)                                             |
-| ------------- | ------------------------------------------------------------------- |
-| `name`        | `{{NAME}}`, `{{作者}}`, `{{AUTHOR}}`                                |
-| `role_title`  | `{{ROLE_TITLE}}`                                                    |
-| `email`       | `{{EMAIL}}`                                                         |
-| `website`     | `{{WEBSITE}}`, `{{PERSONAL_SITE}}`                                  |
-| `github`      | `{{GITHUB_URL}}` (expand to full URL: `https://github.com/<value>`) |
-| `x`           | `{{X_URL}}` (expand to `https://x.com/<value>`)                     |
-| `city`        | `{{CITY}}`                                                          |
-| `country`     | `{{COUNTRY}}`                                                       |
-| `company`     | `{{COMPANY}}`                                                       |
-| `tagline`     | `{{TAGLINE}}`                                                       |
+| Profile field | Template placeholder(s)                                                                 |
+| ------------- | --------------------------------------------------------------------------------------- |
+| `name`        | `{{NAME}}`, `{{作者}}`, `{{AUTHOR}}`                                                    |
+| `role_title`  | `{{ROLE_TITLE}}` or the nearest role-title slot with inline example text               |
+| `email`       | `{{EMAIL}}`                                                                             |
+| `website`     | `{{WEBSITE}}`, `{{WEBSITE / SOCIAL}}`                                                   |
+| `github`      | `{{GITHUB_URL}}` (expand to `https://github.com/<value>`); also fill `{{GITHUB_ID}}`   |
+| `x`           | `{{X_URL}}` (expand to `https://x.com/<value>`); also fill `{{X_ID}}`                  |
+| `city`        | `{{CITY}}` or the nearest city slot in CN templates                                     |
+| `country`     | `{{COUNTRY_OR_REGION}}`                                                                 |
 
 Rule: explicit instructions in the current conversation always override profile values (e.g. "sign it as Alex" beats `name: Tang`). Profile fills slots only — if the template has no matching placeholder, do not insert the field.
+
+Fields such as `company`, `tagline`, `date_format`, and `signature_block` are context defaults today, not universal placeholders. Use them only when the active template already has a natural slot or the user explicitly asks for them.
 
 ### Layer B — Session defaults
 
@@ -52,14 +52,14 @@ Apply when the current request is ambiguous. Use profile fields to fill in missi
 | Currency context unclear | `currency_locale`    | `USD` → $, M/B; `CNY` → 元, 万/亿                                         |
 | Tone unclear             | `tone`               | `formal` → deferential register; `casual` → relaxed; `balanced` → default |
 | Footer unclear           | `footer_note`        | Append standing disclaimer if present                                     |
-| TOC decision unclear     | `always_include_toc` | `true` → auto-add TOC in long-doc / portfolio                             |
+| TOC decision unclear     | `always_include_toc` | `true` → keep the long-doc TOC section instead of removing it             |
 
 ### Layer C — Visual customization
 
 Apply after template content is filled, before calling `build.py`:
 
 - `brand_color`: edit the `--brand` CSS variable in the template `<style>` block. Warn if the hue departs significantly from cinnabar-coral — the warm palette constraint (parchment + neutrals) remains in force regardless.
-- `logo`: insert file path into any `<img src="…">` logo slot in one-pager / portfolio / slides cover.
+- `logo`: use it only where the active template already has an image slot or the user explicitly asks to add one. Portfolio has the clearest built-in image placeholders; otherwise keep the layout text-first.
 
 ### Layer D — Habit notes
 
@@ -117,7 +117,7 @@ If unsure, ask a one-liner about the scenario rather than guess.
 
 ### Diagrams (primitives, not a 7th doc type)
 
-When the user asks for **a diagram inside** a long-doc / portfolio / slide (not a standalone document), route to `assets/diagrams/` rather than a template:
+When the user asks for **a diagram inside** a document or deck (not a standalone document), route to `assets/diagrams/` rather than a top-level template. Common hosts: long-doc, portfolio, one-pager, equity-report, and slides.
 
 | User says                                                      | Diagram       | Template                             |
 | -------------------------------------------------------------- | ------------- | ------------------------------------ |
@@ -136,7 +136,7 @@ When the user asks for **a diagram inside** a long-doc / portfolio / slide (not 
 | "K 线 / candlestick / OHLC / 股价走势 / price history"         | Candlestick   | `assets/diagrams/candlestick.html`   |
 | "瀑布图 / waterfall / 收入桥 / revenue bridge / decomposition" | Waterfall     | `assets/diagrams/waterfall.html`     |
 
-Read `references/diagrams.md` before drawing - it has the selection guide, folio token map, and the AI-slop anti-pattern table. Extract the `<svg>` block from the template and drop it into a `<figure>` inside long-doc / portfolio.
+Read `references/diagrams.md` before drawing - it has the selection guide, folio token map, and the AI-slop anti-pattern table. For HTML documents, extract the `<svg>` block from the template and drop it into a `<figure>`. For slides, reuse the diagram structure as a slide visual instead of treating the HTML file itself as a deliverable.
 
 Before drawing, always ask: **would a well-written paragraph teach the reader less than this diagram?** If no, don't draw.
 
@@ -147,16 +147,16 @@ Before drawing, always ask: **would a well-written paragraph teach the reader le
 | Has open/high/low/close fields, or per-day price                       | Candlestick    |
 | Has + and - contributions that sum to a total (bridge, waterfall, P&L) | Waterfall      |
 | One series, values sum to ~100%, items ≤ 6                             | Donut          |
-| One series, values sum to ~100%, items ≥ 7                             | Horizontal bar |
-| Two or more series across time (months, quarters, years)               | Line           |
-| One series across time, large count changes dominate (not rate)        | Bar            |
-| Multiple categories, same time snapshot, 2+ series                     | Grouped bar    |
+| One series, values sum to ~100%, items ≥ 7                             | Bar            |
+| Two or more series across time (months, quarters, years)               | Line Chart     |
+| One series across time, large count changes dominate (not rate)        | Bar Chart      |
+| Multiple categories, same time snapshot, 2+ series                     | Bar Chart      |
 | 2×2 strategic or priority positioning                                  | Quadrant       |
 | Hierarchical data with depth ≥ 2                                       | Tree           |
 | Process with decision branches                                         | Flowchart      |
 | Cross-team or cross-role process with ≥ 3 actors                       | Swimlane       |
 | Set overlaps or shared attributes between 2-3 groups                   | Venn           |
-| Category comparison, single series, no time axis                       | Bar            |
+| Category comparison, single series, no time axis                       | Bar Chart      |
 
 When data fits multiple types, prefer the one that shows variance most clearly. Always embed inside a `<figure>` with a caption that states the insight, not just the data range.
 
@@ -292,8 +292,9 @@ The full spec files for reference:
 
 ## Step 4 · Fill content into the template
 
-- Copy the template into your working directory; don't write HTML from scratch
-- **CSS stays untouched**, only edit the body
+- For HTML documents, copy the nearest `.html` template into your working area; don't write the whole file from scratch
+- For slides, copy `slides.py` / `slides-en.py` and edit the content blocks; the deliverable is `output.pptx`
+- Keep styling changes minimal and inside the existing system. Content edits come first; only touch tokens or layout rules when the task actually requires it
 - Content follows `writing.md`: data over adjectives, distinctive phrasing over industry clichés
 - **Before filling, read the quality bar for your document type** in `writing.md` section "Quality bars by document type". Structure is necessary but not sufficient: a resume bullet needs Action + Scope + Result + Business Outcome; an equity report needs variant perception + quantified catalysts; slides need assertion-evidence titles. Meeting the quality bar is as important as filling every placeholder.
 
@@ -322,15 +323,16 @@ For personal documents (resume/letter/portfolio), the HTML `<meta name="author">
 
 Do not ask the user which format to export. Decide from context:
 
-| Signal                                             | Output            | Why                                                |
-| -------------------------------------------------- | ----------------- | -------------------------------------------------- |
-| Any document request                               | HTML + PDF        | PDF is the default deliverable, HTML is the source |
-| Slides / PPT / deck                                | HTML + PDF + PPTX | Presentations need a projectable format            |
-| "分享" / "发朋友圈" / "share" / "post" / "preview" | + PNG             | Social platforms and messaging need images         |
-| "嵌入" / "插图" / "embed in another doc"           | PNG only          | Used as material inside other documents            |
-| User explicitly says a format                      | Follow the user   | Explicit request overrides auto-selection          |
+| Signal                                             | Output                     | Why                                                           |
+| -------------------------------------------------- | -------------------------- | ------------------------------------------------------------- |
+| HTML document request                              | HTML + PDF                 | PDF is the default deliverable, HTML is the editable source   |
+| Slides / PPT / deck                                | PPTX                       | Current slide templates build directly to PowerPoint          |
+| Slides that explicitly need PDF sharing            | PPTX + follow-up PDF export | PDF is a downstream export step, not the primary build target |
+| "分享" / "发朋友圈" / "share" / "post" / "preview" | + PNG                      | Social platforms and messaging need images                    |
+| "嵌入" / "插图" / "embed in another doc"           | PNG only                   | Used as material inside other documents                       |
+| User explicitly says a format                      | Follow the user            | Explicit request overrides auto-selection                     |
 
-PDF always ships. PPTX follows slides. PNG follows sharing context. The user should never need to think about formats.
+For HTML documents, PDF always ships. For slides, PPTX is the primary output. PNG follows sharing context.
 
 ## Step 5 · Build & verify
 
@@ -338,6 +340,7 @@ PDF always ships. PPTX follows slides. PNG follows sharing context. The user sho
 python3 scripts/build.py --verify           # build all templates + page count + font check + slides
 python3 scripts/build.py --verify resume-en # single target full verification
 python3 scripts/build.py --verify slides    # single slide deck verification
+python3 scripts/build.py --check-rhythm     # slide rhythm check for slides / slides-en
 python3 scripts/build.py --check-placeholders path/to/filled.html
 python3 scripts/build.py --check            # CSS rule violations only (fast, no build)
 ```
