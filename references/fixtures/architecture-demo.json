@@ -1,0 +1,22 @@
+{
+  "kind": "architecture",
+  "title": "Folio Diagram Pipeline",
+  "layout": "horizontal-layers",
+  "focus": "renderer",
+  "layers": [
+    { "id": "input", "label": "Input" },
+    { "id": "render", "label": "Render" },
+    { "id": "output", "label": "Output" }
+  ],
+  "nodes": [
+    { "id": "spec", "kind": "external", "label": "JSON Spec", "layer": "input" },
+    { "id": "renderer", "kind": "service", "label": "SVG Renderer", "layer": "render", "sublabel": "single source" },
+    { "id": "png", "kind": "cloud", "label": "PNG Export", "layer": "output" },
+    { "id": "pdf", "kind": "store", "label": "PDF Export", "layer": "output" }
+  ],
+  "edges": [
+    { "source": "spec", "target": "renderer", "kind": "primary", "label": "render" },
+    { "source": "renderer", "target": "png", "kind": "secondary", "label": "rsvg" },
+    { "source": "renderer", "target": "pdf", "kind": "secondary", "label": "weasy" }
+  ]
+}

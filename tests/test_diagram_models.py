@@ -88,3 +88,10 @@ class DiagramModelTests(TestCase):
 
         with self.assertRaisesRegex(ValueError, "unsupported UML relationship kind"):
             models.load_diagram_spec(payload)
+
+    def test_reference_fixtures_load(self) -> None:
+        arch = models.load_diagram_spec_file(ROOT / "references" / "fixtures" / "architecture-demo.json")
+        uml = models.load_diagram_spec_file(ROOT / "references" / "fixtures" / "uml-class-demo.json")
+
+        self.assertEqual("architecture", arch.kind)
+        self.assertEqual("uml-class", uml.kind)

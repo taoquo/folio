@@ -27,8 +27,6 @@ def export_png(svg_path: str | Path, png_path: str | Path, width: int = 1920) ->
 
 
 def export_pdf(svg_path: str | Path, pdf_path: str | Path, title: str) -> None:
-    if HTML is None:
-        raise RuntimeError(f"weasyprint unavailable: {_WEASYPRINT_IMPORT_ERROR}")
     svg = Path(svg_path)
     pdf = Path(pdf_path)
     pdf.parent.mkdir(parents=True, exist_ok=True)
@@ -48,4 +46,32 @@ def export_pdf(svg_path: str | Path, pdf_path: str | Path, title: str) -> None:
   <div class="canvas">{svg.read_text(encoding="utf-8")}</div>
 </body>
 </html>"""
-    HTML(string=html, base_url=str(svg.parent)).write_pdf(str(pdf))
+    if HTML is not None:
+        HTML(string=html, base_url=str(svg.parent)).write_pdf(str(pdf))
+        return
+
+    fallback = Path(__file__).resolve().parents[1] / ".venv-weasy" / "bin" / "python"
+    if not fallback.exists():
+        raise RuntimeError(f"weasyprint unavailable: {_WEASYPRINT_IMPORT_ERROR}")
+
+    script = (
+        "from weasyprint import HTML\n"
+        "import pathlib, sys\n"
+        "html_path = pathlib.Path(sys.argv[1])\n"
+        "pdf_path = pathlib.Path(sys.argv[2])\n"
+        "base_url = sys.argv[3]\n"
+        "HTML(string=html_path.read_text(encoding='utf-8'), base_url=base_url).write_pdf(str(pdf_path))\n"
+    )
+    html_path = pdf.with_suffix(".html")
+    html_path.write_text(html, encoding="utf-8")
+    try:
+        result = subprocess.run(
+            [str(fallback), "-c", script, str(html_path), str(pdf), str(svg.parent)],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    finally:
+        html_path.unlink(missing_ok=True)
+    if result.returncode != 0:
+        raise RuntimeError(result.stderr.strip() or "weasyprint fallback failed")

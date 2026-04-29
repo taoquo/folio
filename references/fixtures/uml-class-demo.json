@@ -1,0 +1,30 @@
+{
+  "kind": "uml-class",
+  "title": "Diagram Models",
+  "layout": "class-grid",
+  "focus": "ArchitectureDiagramSpec",
+  "types": [
+    {
+      "id": "ArchitectureDiagramSpec",
+      "kind": "class",
+      "name": "ArchitectureDiagramSpec",
+      "attributes": ["title: str", "layout: str", "nodes: list[ArchitectureNodeSpec]"],
+      "methods": ["validate() -> None"]
+    },
+    {
+      "id": "ArchitectureNodeSpec",
+      "kind": "class",
+      "name": "ArchitectureNodeSpec",
+      "attributes": ["id: str", "kind: str", "label: str"],
+      "methods": []
+    }
+  ],
+  "relationships": [
+    {
+      "source": "ArchitectureDiagramSpec",
+      "target": "ArchitectureNodeSpec",
+      "kind": "composition",
+      "target_multiplicity": "*"
+    }
+  ]
+}

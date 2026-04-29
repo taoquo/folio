@@ -50,3 +50,14 @@ class BuildScriptTests(TestCase):
             "page underflow: 3 pages (expected 4-10)",
             build.page_count_issue("slides", 3, 4, 10),
         )
+
+    def test_build_single_accepts_diagram_artifact_target(self) -> None:
+        with mock.patch.object(build, "build_diagram_artifact", return_value=True) as artifact_mock:
+            with mock.patch.dict(build.DIAGRAM_ARTIFACT_TARGETS, {"artifact-architecture-demo": {}}, clear=True):
+                code = build.build_single("artifact-architecture-demo")
+
+        self.assertEqual(0, code)
+        artifact_mock.assert_called_once_with("artifact-architecture-demo")
+
+    def test_page_count_issue_allows_single_page_diagram_pdf(self) -> None:
+        self.assertIsNone(build.page_count_issue("artifact-architecture-demo", 1, 1, 1))
