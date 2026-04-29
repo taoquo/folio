@@ -1,30 +1,56 @@
 {
   "kind": "uml-class",
-  "title": "Diagram Models",
+  "title": "ECS World Model",
   "layout": "class-grid",
-  "focus": "ArchitectureDiagramSpec",
+  "focus": "World",
   "types": [
     {
-      "id": "ArchitectureDiagramSpec",
+      "id": "World",
       "kind": "class",
-      "name": "ArchitectureDiagramSpec",
-      "attributes": ["title: str", "layout: str", "nodes: list[ArchitectureNodeSpec]"],
-      "methods": ["validate() -> None"]
+      "name": "World",
+      "attributes": ["entities: EntityPool", "stores: ComponentRegistry"],
+      "methods": ["spawn() -> Entity", "query(mask) -> View"]
     },
     {
-      "id": "ArchitectureNodeSpec",
+      "id": "Entity",
       "kind": "class",
-      "name": "ArchitectureNodeSpec",
-      "attributes": ["id: str", "kind: str", "label: str"],
-      "methods": []
+      "name": "Entity",
+      "attributes": ["id: int", "generation: int"],
+      "methods": ["is_alive() -> bool"]
+    },
+    {
+      "id": "ComponentStore",
+      "kind": "class",
+      "name": "ComponentStore<T>",
+      "attributes": ["dense: list[T]", "sparse: list[int]"],
+      "methods": ["insert(entity, value) -> None", "get(entity) -> T"]
+    },
+    {
+      "id": "MovementSystem",
+      "kind": "class",
+      "name": "MovementSystem",
+      "attributes": ["required: Velocity|Transform"],
+      "methods": ["update(dt) -> None"]
     }
   ],
   "relationships": [
     {
-      "source": "ArchitectureDiagramSpec",
-      "target": "ArchitectureNodeSpec",
+      "source": "World",
+      "target": "Entity",
+      "kind": "aggregation",
+      "target_multiplicity": "*"
+    },
+    {
+      "source": "World",
+      "target": "ComponentStore",
       "kind": "composition",
       "target_multiplicity": "*"
+    },
+    {
+      "source": "MovementSystem",
+      "target": "World",
+      "kind": "association",
+      "label": "queries"
     }
   ]
 }

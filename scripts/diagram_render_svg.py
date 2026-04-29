@@ -59,6 +59,20 @@ def render_architecture_svg(spec: ArchitectureDiagramSpec) -> str:
             )
 
     node_fragments = []
+    layer_fragments = []
+    if spec.layout == "horizontal-layers" and spec.layers:
+        rows = _architecture_layer_rows(spec, boxes)
+        for layer, (top, bottom) in rows:
+            center_y = (top + bottom) // 2
+            layer_fragments.append(
+                f'<text x="32" y="{center_y}" fill="{STONE}" font-size="11" '
+                'font-family="\'JetBrains Mono\', monospace" letter-spacing="0.08em">'
+                f"{escape(layer.label.upper())}</text>"
+            )
+            layer_fragments.append(
+                f'<line x1="70" y1="{bottom + 18}" x2="{spec.width - 40}" y2="{bottom + 18}" stroke="{BORDER}" stroke-width="1" />'
+            )
+
     for node in spec.nodes:
         box = boxes[node.id]
         is_focus = node.id == spec.focus
@@ -91,7 +105,7 @@ def render_architecture_svg(spec: ArchitectureDiagramSpec) -> str:
         f'<text x="{spec.width // 2}" y="40" fill="{NEAR_BLACK}" font-size="24" '
         'font-family="Charter, Georgia, serif" text-anchor="middle">'
         f"{escape(spec.title)}</text>"
-        f'{"".join(edge_fragments)}{"".join(node_fragments)}</svg>'
+        f'{"".join(layer_fragments)}{"".join(edge_fragments)}{"".join(node_fragments)}</svg>'
     )
 
 
@@ -164,12 +178,45 @@ def _architecture_boxes(spec: ArchitectureDiagramSpec) -> dict[str, Box]:
             boxes[node.id] = Box(x, y, 200, 64)
         return boxes
 
-    x = 60
+    rows = []
+    layer_order = [layer.id for layer in spec.layers]
+    if layer_order:
+        for layer_id in layer_order:
+            rows.append([node for node in spec.nodes if node.layer == layer_id])
+        unlayered = [node for node in spec.nodes if node.layer not in layer_order]
+        if unlayered:
+            rows.append(unlayered)
+    else:
+        rows.append(list(spec.nodes))
+
     boxes = {}
-    for node in spec.nodes:
-        boxes[node.id] = Box(x, 220, 160, 64)
-        x += 200
+    row_gap = 118
+    start_y = 96
+    for row_index, row_nodes in enumerate(rows):
+        if not row_nodes:
+            continue
+        count = len(row_nodes)
+        width = 160
+        gap = 40
+        total = count * width + (count - 1) * gap
+        x = max(84, (spec.width - total) // 2)
+        y = start_y + row_index * row_gap
+        for node in row_nodes:
+            boxes[node.id] = Box(x, y, width, 64)
+            x += width + gap
     return boxes
+
+
+def _architecture_layer_rows(spec: ArchitectureDiagramSpec, boxes: dict[str, Box]) -> list[tuple[object, tuple[int, int]]]:
+    rows = []
+    for layer in spec.layers:
+        layer_boxes = [boxes[node.id] for node in spec.nodes if node.layer == layer.id and node.id in boxes]
+        if not layer_boxes:
+            continue
+        top = min(box.y for box in layer_boxes)
+        bottom = max(box.y + box.h for box in layer_boxes)
+        rows.append((layer, (top, bottom)))
+    return rows
 
 
 def _node_stroke(kind: str) -> str:

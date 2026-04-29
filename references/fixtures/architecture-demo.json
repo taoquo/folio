@@ -1,22 +1,29 @@
 {
   "kind": "architecture",
-  "title": "Folio Diagram Pipeline",
+  "title": "ECS Game Engine Runtime",
   "layout": "horizontal-layers",
-  "focus": "renderer",
+  "focus": "world",
   "layers": [
-    { "id": "input", "label": "Input" },
-    { "id": "render", "label": "Render" },
-    { "id": "output", "label": "Output" }
+    { "id": "surface", "label": "Surface Layer" },
+    { "id": "runtime", "label": "Runtime Layer" },
+    { "id": "data", "label": "Data Layer" }
   ],
   "nodes": [
-    { "id": "spec", "kind": "external", "label": "JSON Spec", "layer": "input" },
-    { "id": "renderer", "kind": "service", "label": "SVG Renderer", "layer": "render", "sublabel": "single source" },
-    { "id": "png", "kind": "cloud", "label": "PNG Export", "layer": "output" },
-    { "id": "pdf", "kind": "store", "label": "PDF Export", "layer": "output" }
+    { "id": "input", "kind": "external", "label": "Input Router", "layer": "surface", "sublabel": "keyboard · gamepad" },
+    { "id": "scene", "kind": "external", "label": "Scene Loader", "layer": "surface", "sublabel": "prefabs · assets" },
+    { "id": "scheduler", "kind": "service", "label": "Frame Scheduler", "layer": "runtime", "sublabel": "fixed tick" },
+    { "id": "world", "kind": "service", "label": "ECS World", "layer": "runtime", "sublabel": "entity orchestration" },
+    { "id": "systems", "kind": "service", "label": "System Pipeline", "layer": "runtime", "sublabel": "physics · AI · render" },
+    { "id": "components", "kind": "store", "label": "Component Stores", "layer": "data", "sublabel": "dense arrays" },
+    { "id": "resources", "kind": "cloud", "label": "Resource Cache", "layer": "data", "sublabel": "meshes · textures" }
   ],
   "edges": [
-    { "source": "spec", "target": "renderer", "kind": "primary", "label": "render" },
-    { "source": "renderer", "target": "png", "kind": "secondary", "label": "rsvg" },
-    { "source": "renderer", "target": "pdf", "kind": "secondary", "label": "weasy" }
+    { "source": "input", "target": "scheduler", "kind": "secondary", "label": "events" },
+    { "source": "scene", "target": "world", "kind": "secondary", "label": "spawn" },
+    { "source": "scheduler", "target": "world", "kind": "primary", "label": "tick" },
+    { "source": "world", "target": "systems", "kind": "primary", "label": "query" },
+    { "source": "world", "target": "components", "kind": "secondary", "label": "attach" },
+    { "source": "systems", "target": "components", "kind": "secondary", "label": "read/write" },
+    { "source": "systems", "target": "resources", "kind": "async", "label": "stream" }
   ]
 }

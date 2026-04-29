@@ -92,12 +92,12 @@ What matters on first contact:
     <td width="50%" valign="top">
       <a href="assets/demos/demo-architecture.pdf"><img src="assets/demos/demo-architecture.png" alt="Architecture diagram artifact preview"></a><br>
       <b>Architecture Artifact</b><br>
-      Standalone system architecture output in Folio style, exported as SVG, PNG, and PDF.
+      ECS game-engine runtime architecture with scheduler, world orchestration, systems, and component stores, exported as SVG, PNG, and PDF.
     </td>
     <td width="50%" valign="top">
       <a href="assets/demos/demo-uml-class.pdf"><img src="assets/demos/demo-uml-class.png" alt="UML class diagram artifact preview"></a><br>
       <b>UML Class Artifact</b><br>
-      Standalone class-diagram output for type relationships, still using the same warm editorial palette.
+      ECS world-model class diagram showing world ownership, component-store composition, and system queries in the same warm editorial palette.
     </td>
   </tr>
 </table>
