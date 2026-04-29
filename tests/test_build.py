@@ -2,6 +2,7 @@ import builtins
 import importlib.util
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 from unittest import TestCase, mock
 
 
@@ -61,3 +62,29 @@ class BuildScriptTests(TestCase):
 
     def test_page_count_issue_allows_single_page_diagram_pdf(self) -> None:
         self.assertIsNone(build.page_count_issue("artifact-architecture-demo", 1, 1, 1))
+
+    def test_build_diagram_artifact_supports_text_source(self) -> None:
+        fake_spec = SimpleNamespace(title="From Text")
+        generated_svg = build.GENERATED_DIAGRAM_SVG / "from-text.svg"
+        with mock.patch.dict(
+            build.DIAGRAM_ARTIFACT_TARGETS,
+            {
+                "artifact-text-demo": {
+                    "text": "references/fixtures/architecture-demo.txt",
+                    "title": "From Text",
+                    "svg": "from-text.svg",
+                    "png": "from-text.png",
+                    "pdf": "from-text.pdf",
+                }
+            },
+            clear=False,
+        ):
+            with mock.patch.object(build, "plan_architecture_from_text", return_value=fake_spec) as plan_mock:
+                with mock.patch.object(build, "render_diagram_svg", return_value="<svg/>"):
+                    with mock.patch.object(build, "export_png"):
+                        with mock.patch.object(build, "export_pdf"):
+                            ok = build.build_diagram_artifact("artifact-text-demo")
+
+        self.assertTrue(ok)
+        plan_mock.assert_called_once()
+        generated_svg.unlink(missing_ok=True)

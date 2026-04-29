@@ -28,6 +28,11 @@ mutate component stores, and stream resources through a cache. The world owns en
 and component registration, while systems do not own persistent state.
 """
 
+AGENT_TEXT = """
+Client requests enter an API gateway. The task planner coordinates a model runtime.
+Tool runtime reads a memory store and writes observability events in the background.
+"""
+
 
 class DiagramSemanticPlanningTests(TestCase):
     def test_extract_architecture_semantics_finds_ecs_roles(self) -> None:
@@ -55,3 +60,11 @@ class DiagramSemanticPlanningTests(TestCase):
         self.assertEqual("world", spec.focus)
         self.assertEqual(["scheduler", "world", "systems"], spec.focus_path)
         self.assertIn("query", [edge.flow for edge in spec.edges])
+
+    def test_plan_architecture_from_non_ecs_text_returns_meaningful_spec(self) -> None:
+        spec = planning.plan_architecture_from_text(AGENT_TEXT, "Agent Runtime")
+
+        self.assertEqual("architecture", spec.kind)
+        self.assertIn(spec.focus, {"planner", "runtime"})
+        self.assertTrue(any(node.role == "orchestrator" for node in spec.nodes))
+        self.assertTrue(any(edge.flow in {"control", "read", "write"} for edge in spec.edges))

@@ -29,6 +29,7 @@ from typing import Any
 from diagram_export import export_pdf, export_png
 from diagram_models import load_diagram_spec_file
 from diagram_render_svg import render_diagram_svg
+from diagram_semantic_planning import plan_architecture_from_text
 from shared import (
     COOL_GRAY_BLOCKLIST,
     DIAGRAMS,
@@ -94,7 +95,8 @@ DIAGRAM_TARGETS: dict[str, str] = {
 }
 DIAGRAM_ARTIFACT_TARGETS: dict[str, dict[str, str]] = {
     "artifact-architecture-demo": {
-        "spec": "references/fixtures/architecture-demo.json",
+        "text": "references/fixtures/architecture-demo.txt",
+        "title": "ECS Game Engine Runtime",
         "svg": "architecture-demo.svg",
         "png": "architecture-demo.png",
         "pdf": "architecture-demo.pdf",
@@ -288,7 +290,11 @@ def build_diagram_artifact(name: str) -> bool:
         return False
 
     try:
-        spec = load_diagram_spec_file(ROOT / config["spec"])
+        if "text" in config:
+            text = (ROOT / config["text"]).read_text(encoding="utf-8")
+            spec = plan_architecture_from_text(text, config["title"])
+        else:
+            spec = load_diagram_spec_file(ROOT / config["spec"])
         svg = render_diagram_svg(spec)
 
         GENERATED_DIAGRAM_SVG.mkdir(parents=True, exist_ok=True)
