@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Optional
 from xml.sax.saxutils import escape
 
 from diagram_models import ArchitectureDiagramSpec, DiagramSpec, UmlClassDiagramSpec
@@ -38,22 +39,20 @@ def render_architecture_svg(spec: ArchitectureDiagramSpec) -> str:
     for edge in spec.edges:
         start = boxes[edge.source]
         end = boxes[edge.target]
-        x1 = start.x + start.w
-        y1 = start.y + start.h // 2
-        x2 = end.x
-        y2 = end.y + end.h // 2
+        points = _route_architecture_edge(start, end)
+        (x1, y1), (x2, y2) = points[0], points[-1]
         stroke = BRAND if edge.kind == "primary" else OLIVE
         edge_fragments.append(
-            f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{stroke}" stroke-width="1.4" />'
+            f'<path d="{_path_from_points(points)}" fill="none" stroke="{stroke}" stroke-width="1.4" />'
         )
-        edge_fragments.append(_chevron(x2, y2, stroke))
+        edge_fragments.append(_chevron_for_segment(points[-2], points[-1], stroke))
         if edge.label:
-            label_x = (x1 + x2) // 2
+            label_x, label_y = _label_point(points)
             edge_fragments.append(
-                f'<rect x="{label_x - 24}" y="{y1 - 18}" width="48" height="12" rx="2" fill="{PARCHMENT}" />'
+                f'<rect x="{label_x - 24}" y="{label_y - 18}" width="48" height="12" rx="2" fill="{PARCHMENT}" />'
             )
             edge_fragments.append(
-                f'<text x="{label_x}" y="{y1 - 9}" fill="{stroke}" font-size="8" '
+                f'<text x="{label_x}" y="{label_y - 9}" fill="{stroke}" font-size="8" '
                 'font-family="\'JetBrains Mono\', monospace" text-anchor="middle">'
                 f"{escape(edge.label)}</text>"
             )
@@ -110,6 +109,9 @@ def render_architecture_svg(spec: ArchitectureDiagramSpec) -> str:
 
 
 def render_uml_class_svg(spec: UmlClassDiagramSpec) -> str:
+    boxes = _uml_boxes(spec)
+    source_side_counts: dict[tuple[str, str], int] = {}
+    target_side_counts: dict[tuple[str, str], int] = {}
     fragments = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {spec.width} {spec.height}">',
         f'<rect width="{spec.width}" height="{spec.height}" fill="{PARCHMENT}" />',
@@ -117,9 +119,49 @@ def render_uml_class_svg(spec: UmlClassDiagramSpec) -> str:
         'font-family="Charter, Georgia, serif" text-anchor="middle">'
         f"{escape(spec.title)}</text>",
     ]
-    x = 80
-    y = 100
+    relation_fragments = []
+    for relation in spec.relationships:
+        source = boxes[relation.source]
+        target = boxes[relation.target]
+        source_side, target_side = _uml_sides(source, target)
+        source_key = (relation.source, source_side)
+        target_key = (relation.target, target_side)
+        source_slot = source_side_counts.get(source_key, 0)
+        target_slot = target_side_counts.get(target_key, 0)
+        source_side_counts[source_key] = source_slot + 1
+        target_side_counts[target_key] = target_slot + 1
+        start, end = _uml_anchors(source, target, source_side, target_side, source_slot, target_slot)
+        line_start, line_end = start, end
+        if relation.kind in {"aggregation", "composition"}:
+            diamond, line_start = _diamond_at_point(start, end, filled=relation.kind == "composition")
+            relation_fragments.append(diamond)
+        if relation.kind == "inheritance":
+            triangle, line_end = _triangle_at_point(end, start)
+            relation_fragments.append(triangle)
+
+        relation_fragments.append(
+            f'<path class="uml-edge" d="{_path_from_points([line_start, line_end])}" fill="none" stroke="{OLIVE}" stroke-width="1.2" />'
+        )
+        if relation.kind == "association":
+            relation_fragments.append(_chevron_for_segment(line_start, line_end, OLIVE, klass="uml-edge-head"))
+        if relation.label:
+            label_x, label_y = _label_point([line_start, line_end])
+            relation_fragments.append(
+                f'<text x="{label_x}" y="{label_y - 8}" fill="{STONE}" font-size="9" font-family="\'JetBrains Mono\', monospace" text-anchor="middle">{escape(relation.label)}</text>'
+            )
+        if relation.source_multiplicity:
+            relation_fragments.append(
+                f'<text x="{line_start[0] - 10}" y="{line_start[1] - 6}" fill="{STONE}" font-size="9" font-family="\'JetBrains Mono\', monospace" text-anchor="end">{escape(relation.source_multiplicity)}</text>'
+            )
+        if relation.target_multiplicity:
+            relation_fragments.append(
+                f'<text x="{line_end[0] + 10}" y="{line_end[1] - 6}" fill="{STONE}" font-size="9" font-family="\'JetBrains Mono\', monospace">{escape(relation.target_multiplicity)}</text>'
+            )
+
+    fragments.extend(relation_fragments)
+
     for item in spec.types:
+        x, y = boxes[item.id].x, boxes[item.id].y
         body_h = 62 + 18 * len(item.attributes) + 18 * len(item.methods)
         stroke = BRAND if item.id == spec.focus else NEAR_BLACK
         fragments.append(
@@ -153,10 +195,6 @@ def render_uml_class_svg(spec: UmlClassDiagramSpec) -> str:
                 f"{escape(method)}</text>"
             )
             method_y += 18
-        x += 280
-        if x + 220 > spec.width:
-            x = 80
-            y += 220
     fragments.append("</svg>")
     return "".join(fragments)
 
@@ -207,6 +245,31 @@ def _architecture_boxes(spec: ArchitectureDiagramSpec) -> dict[str, Box]:
     return boxes
 
 
+def _route_architecture_edge(start: Box, end: Box) -> list[tuple[int, int]]:
+    same_row = abs(start.y - end.y) < 8
+    if same_row:
+        if start.x <= end.x:
+            return [
+                (start.x + start.w, start.y + start.h // 2),
+                (end.x, end.y + end.h // 2),
+            ]
+        return [
+            (start.x, start.y + start.h // 2),
+            (end.x + end.w, end.y + end.h // 2),
+        ]
+
+    downward = start.y < end.y
+    start_point = (start.x + start.w // 2, start.y + start.h if downward else start.y)
+    end_point = (end.x + end.w // 2, end.y if downward else end.y + end.h)
+    mid_y = (start_point[1] + end_point[1]) // 2
+    return [
+        start_point,
+        (start_point[0], mid_y),
+        (end_point[0], mid_y),
+        end_point,
+    ]
+
+
 def _architecture_layer_rows(spec: ArchitectureDiagramSpec, boxes: dict[str, Box]) -> list[tuple[object, tuple[int, int]]]:
     rows = []
     for layer in spec.layers:
@@ -219,6 +282,68 @@ def _architecture_layer_rows(spec: ArchitectureDiagramSpec, boxes: dict[str, Box
     return rows
 
 
+def _uml_boxes(spec: UmlClassDiagramSpec) -> dict[str, Box]:
+    boxes: dict[str, Box] = {}
+    x = 80
+    y = 100
+    for item in spec.types:
+        body_h = 62 + 18 * len(item.attributes) + 18 * len(item.methods)
+        boxes[item.id] = Box(x, y, 220, body_h)
+        x += 280
+        if x + 220 > spec.width:
+            x = 80
+            y += 220
+    return boxes
+
+
+def _uml_sides(source: Box, target: Box) -> tuple[str, str]:
+    if source.x + source.w <= target.x:
+        return "right", "left"
+    if target.x + target.w <= source.x:
+        return "left", "right"
+    if source.y < target.y:
+        return "bottom", "top"
+    return "top", "bottom"
+
+
+def _uml_anchors(
+    source: Box,
+    target: Box,
+    source_side: str,
+    target_side: str,
+    source_slot: int,
+    target_slot: int,
+) -> tuple[tuple[int, int], tuple[int, int]]:
+    return (
+        _box_anchor(source, source_side, source_slot),
+        _box_anchor(target, target_side, target_slot),
+    )
+
+
+def _box_anchor(box: Box, side: str, slot: int) -> tuple[int, int]:
+    slot_positions = [0.34, 0.66, 0.5]
+    ratio = slot_positions[slot % len(slot_positions)]
+    if side == "right":
+        return (box.x + box.w, box.y + int(box.h * ratio))
+    if side == "left":
+        return (box.x, box.y + int(box.h * ratio))
+    if side == "bottom":
+        return (box.x + int(box.w * ratio), box.y + box.h)
+    return (box.x + int(box.w * ratio), box.y)
+
+
+def _path_from_points(points: list[tuple[int, int]]) -> str:
+    return "M " + " L ".join(f"{x} {y}" for x, y in points)
+
+
+def _label_point(points: list[tuple[int, int]]) -> tuple[int, int]:
+    segments = list(zip(points, points[1:]))
+    if not segments:
+        return points[0]
+    start, end = max(segments, key=lambda pair: abs(pair[0][0] - pair[1][0]) + abs(pair[0][1] - pair[1][1]))
+    return ((start[0] + end[0]) // 2, (start[1] + end[1]) // 2)
+
+
 def _node_stroke(kind: str) -> str:
     return {
         "external": STONE,
@@ -228,6 +353,61 @@ def _node_stroke(kind: str) -> str:
     }.get(kind, NEAR_BLACK)
 
 
-def _chevron(x: int, y: int, stroke: str) -> str:
-    d = f"M {x - 8} {y - 4} L {x} {y} L {x - 8} {y + 4}"
-    return f'<path d="{d}" fill="none" stroke="{stroke}" stroke-width="1.4" stroke-linecap="round" />'
+def _chevron_for_segment(start: tuple[int, int], end: tuple[int, int], stroke: str, klass: Optional[str] = None) -> str:
+    x1, y1 = start
+    x2, y2 = end
+    if x2 > x1:
+        d = f"M {x2 - 8} {y2 - 4} L {x2} {y2} L {x2 - 8} {y2 + 4}"
+    elif x2 < x1:
+        d = f"M {x2 + 8} {y2 - 4} L {x2} {y2} L {x2 + 8} {y2 + 4}"
+    elif y2 > y1:
+        d = f"M {x2 - 4} {y2 - 8} L {x2} {y2} L {x2 + 4} {y2 - 8}"
+    else:
+        d = f"M {x2 - 4} {y2 + 8} L {x2} {y2} L {x2 + 4} {y2 + 8}"
+    class_attr = f' class="{klass}"' if klass else ""
+    return f'<path{class_attr} d="{d}" fill="none" stroke="{stroke}" stroke-width="1.4" stroke-linecap="round" />'
+
+
+def _diamond_at_point(start: tuple[int, int], end: tuple[int, int], filled: bool) -> tuple[str, tuple[int, int]]:
+    x1, y1 = start
+    x2, y2 = end
+    fill = OLIVE if filled else PARCHMENT
+    if x2 > x1:
+        points = [(x1, y1), (x1 + 8, y1 - 5), (x1 + 16, y1), (x1 + 8, y1 + 5)]
+        line_start = (x1 + 16, y1)
+    elif x2 < x1:
+        points = [(x1, y1), (x1 - 8, y1 - 5), (x1 - 16, y1), (x1 - 8, y1 + 5)]
+        line_start = (x1 - 16, y1)
+    elif y2 > y1:
+        points = [(x1, y1), (x1 - 5, y1 + 8), (x1, y1 + 16), (x1 + 5, y1 + 8)]
+        line_start = (x1, y1 + 16)
+    else:
+        points = [(x1, y1), (x1 - 5, y1 - 8), (x1, y1 - 16), (x1 + 5, y1 - 8)]
+        line_start = (x1, y1 - 16)
+    polygon = " ".join(f"{x},{y}" for x, y in points)
+    return (
+        f'<polygon class="uml-diamond" points="{polygon}" fill="{fill}" stroke="{OLIVE}" stroke-width="1.2" />',
+        line_start,
+    )
+
+
+def _triangle_at_point(tip: tuple[int, int], toward: tuple[int, int]) -> tuple[str, tuple[int, int]]:
+    x1, y1 = toward
+    x2, y2 = tip
+    if x2 > x1:
+        points = [(x2, y2), (x2 - 12, y2 - 6), (x2 - 12, y2 + 6)]
+        line_end = (x2 - 12, y2)
+    elif x2 < x1:
+        points = [(x2, y2), (x2 + 12, y2 - 6), (x2 + 12, y2 + 6)]
+        line_end = (x2 + 12, y2)
+    elif y2 > y1:
+        points = [(x2, y2), (x2 - 6, y2 - 12), (x2 + 6, y2 - 12)]
+        line_end = (x2, y2 - 12)
+    else:
+        points = [(x2, y2), (x2 - 6, y2 + 12), (x2 + 6, y2 + 12)]
+        line_end = (x2, y2 + 12)
+    polygon = " ".join(f"{x},{y}" for x, y in points)
+    return (
+        f'<polygon class="uml-triangle" points="{polygon}" fill="{PARCHMENT}" stroke="{OLIVE}" stroke-width="1.2" />',
+        line_end,
+    )

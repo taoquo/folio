@@ -1,4 +1,5 @@
 import importlib.util
+import re
 import sys
 from pathlib import Path
 from unittest import TestCase
@@ -66,6 +67,26 @@ class DiagramRendererTests(TestCase):
         self.assertNotIn("marker-end", svg)
         self.assertIn("<path", svg)
 
+    def test_render_architecture_svg_orients_cross_layer_arrowhead(self) -> None:
+        spec = models.load_diagram_spec(
+            {
+                "kind": "architecture",
+                "title": "Cross Layer",
+                "layout": "horizontal-layers",
+                "layers": [{"id": "top", "label": "Top"}, {"id": "bottom", "label": "Bottom"}],
+                "nodes": [
+                    {"id": "entry", "kind": "external", "label": "Input", "layer": "top"},
+                    {"id": "store", "kind": "store", "label": "Store", "layer": "bottom"},
+                ],
+                "edges": [{"source": "entry", "target": "store", "kind": "secondary", "label": "sync"}],
+            }
+        )
+
+        svg = renderer.render_diagram_svg(spec)
+
+        self.assertRegex(svg, r'M \d+ \d+ L \d+ \d+ L \d+ \d+" fill="none" stroke=')
+        self.assertNotIn("M 292 360 L 300 364 L 292 368", svg)
+
     def test_render_uml_class_svg_contains_compartments(self) -> None:
         spec = models.load_diagram_spec(
             {
@@ -90,3 +111,28 @@ class DiagramRendererTests(TestCase):
         self.assertIn("PageSpec", svg)
         self.assertIn("source: str", svg)
         self.assertIn("validate() -&gt; None", svg)
+
+    def test_render_uml_class_svg_renders_relationship_layer(self) -> None:
+        spec = models.load_diagram_spec(
+            {
+                "kind": "uml-class",
+                "title": "World Model",
+                "layout": "class-grid",
+                "focus": "World",
+                "types": [
+                    {"id": "World", "kind": "class", "name": "World"},
+                    {"id": "Entity", "kind": "class", "name": "Entity"},
+                    {"id": "ComponentStore", "kind": "class", "name": "ComponentStore<T>"},
+                ],
+                "relationships": [
+                    {"source": "World", "target": "Entity", "kind": "aggregation", "target_multiplicity": "*"},
+                    {"source": "World", "target": "ComponentStore", "kind": "composition", "target_multiplicity": "*"},
+                ],
+            }
+        )
+
+        svg = renderer.render_diagram_svg(spec)
+
+        self.assertIn('class="uml-edge"', svg)
+        self.assertIn('class="uml-diamond"', svg)
+        self.assertIn(">*</text>", svg)
