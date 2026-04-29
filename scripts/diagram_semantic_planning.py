@@ -475,7 +475,8 @@ def extract_architecture_semantics(text: str) -> dict[str, Any]:
     evidence = collect_architecture_evidence(text)
     nodes = select_architecture_nodes(evidence)
     node_ids = {node["id"] for node in nodes}
-    edges = _select_edges(text, node_ids)
+    edge_evidence = collect_edge_evidence(text, node_ids)
+    edges = select_edges(edge_evidence)
     layers = _build_layers(nodes)
     groups = _build_groups(node_ids)
     focus_node = _choose_focus_node(evidence, node_ids)
@@ -525,17 +526,31 @@ def plan_architecture_from_text(text: str, title: str) -> Any:
     return load_diagram_spec(payload)
 
 
-def _select_edges(text: str, node_ids: set[str]) -> list[dict[str, Any]]:
+def collect_edge_evidence(text: str, node_ids: set[str]) -> dict[tuple[str, str], dict[str, Any]]:
     lowered = text.lower()
-    edges = []
+    evidence: dict[tuple[str, str], dict[str, Any]] = {}
     for rule in EDGE_RULES:
         if rule.source not in node_ids or rule.target not in node_ids:
             continue
         score = 0
+        reasons = []
         for matcher in rule.rules:
             if re.search(matcher.pattern, lowered):
                 score += matcher.score
-        if score < rule.min_score:
+                reasons.append(matcher.pattern)
+        evidence[(rule.source, rule.target)] = {
+            "score": score,
+            "reasons": reasons,
+            "edge_rule": rule,
+        }
+    return evidence
+
+
+def select_edges(edge_evidence: dict[tuple[str, str], dict[str, Any]]) -> list[dict[str, Any]]:
+    edges = []
+    for item in edge_evidence.values():
+        rule: EdgeRule = item["edge_rule"]
+        if item["score"] < rule.min_score:
             continue
         edges.append(
             {

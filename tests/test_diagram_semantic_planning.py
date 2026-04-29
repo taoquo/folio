@@ -67,6 +67,23 @@ class DiagramSemanticPlanningTests(TestCase):
         self.assertNotIn("input", node_ids)
         self.assertNotIn("systems", node_ids)
 
+    def test_collect_edge_evidence_scores_relationships_from_text(self) -> None:
+        node_ids = {"gateway", "planner", "runtime", "tools", "memory", "observability"}
+        evidence = planning.collect_edge_evidence(AGENT_TEXT, node_ids)
+
+        self.assertGreater(evidence[("gateway", "planner")]["score"], 0)
+        self.assertGreater(evidence[("planner", "runtime")]["score"], 0)
+        self.assertGreater(evidence[("runtime", "tools")]["score"], 0)
+        self.assertGreater(evidence[("tools", "memory")]["score"], 0)
+
+    def test_select_edges_does_not_connect_present_but_unrelated_nodes(self) -> None:
+        text = "An API gateway and a warehouse are both present in the platform."
+        node_ids = {"gateway", "warehouse"}
+        evidence = planning.collect_edge_evidence(text, node_ids)
+        edges = planning.select_edges(evidence)
+
+        self.assertEqual([], edges)
+
     def test_extract_architecture_semantics_finds_ecs_roles(self) -> None:
         semantics = planning.extract_architecture_semantics(ECS_TEXT)
 
