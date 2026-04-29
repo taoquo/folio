@@ -33,6 +33,18 @@ Client requests enter an API gateway. The task planner coordinates a model runti
 Tool runtime reads a memory store and writes observability events in the background.
 """
 
+WORKFLOW_TEXT = """
+Requests enter an API gateway and are handed to a workflow orchestrator.
+The orchestrator schedules worker steps, persists workflow state in a state store,
+and publishes events to an event bus for retries and async continuations.
+"""
+
+DATA_PLATFORM_TEXT = """
+Source systems publish events to Kafka. A stream processor transforms records and writes them
+into a warehouse. Analysts query dashboards through a serving API, while observability tracks
+pipeline health in the background.
+"""
+
 
 class DiagramSemanticPlanningTests(TestCase):
     def test_extract_architecture_semantics_finds_ecs_roles(self) -> None:
@@ -68,3 +80,20 @@ class DiagramSemanticPlanningTests(TestCase):
         self.assertIn(spec.focus, {"planner", "runtime"})
         self.assertTrue(any(node.role == "orchestrator" for node in spec.nodes))
         self.assertTrue(any(edge.flow in {"control", "read", "write"} for edge in spec.edges))
+
+    def test_plan_architecture_from_workflow_text_returns_orchestration_path(self) -> None:
+        spec = planning.plan_architecture_from_text(WORKFLOW_TEXT, "Workflow Engine")
+
+        self.assertEqual("architecture", spec.kind)
+        self.assertIn(spec.focus, {"orchestrator", "planner"})
+        self.assertTrue(any(node.role in {"orchestrator", "event-bus", "storage"} for node in spec.nodes))
+        self.assertTrue(any(edge.flow in {"control", "event", "write"} for edge in spec.edges))
+        self.assertGreaterEqual(len(spec.focus_path), 2)
+
+    def test_plan_architecture_from_data_platform_text_returns_pipeline_shape(self) -> None:
+        spec = planning.plan_architecture_from_text(DATA_PLATFORM_TEXT, "Data Platform")
+
+        self.assertEqual("architecture", spec.kind)
+        self.assertTrue(any(node.role in {"event-bus", "executor", "storage", "entry"} for node in spec.nodes))
+        self.assertTrue(any(edge.flow in {"stream", "write", "read"} for edge in spec.edges))
+        self.assertIn(spec.layout, {"horizontal-layers", "vertical-stack"})

@@ -67,6 +67,18 @@ NODE_CATALOG = [
         "keywords": ["planner", "task planner", "coordinates", "coordinate"],
     },
     {
+        "id": "orchestrator",
+        "label": "Workflow Orchestrator",
+        "kind": "service",
+        "role": "orchestrator",
+        "layer": "runtime",
+        "sublabel": "step coordination",
+        "importance": "primary",
+        "state_owner": False,
+        "lifecycle_phase": "runtime",
+        "keywords": ["workflow orchestrator", "orchestrator", "workflow"],
+    },
+    {
         "id": "runtime",
         "label": "Model Runtime",
         "kind": "service",
@@ -77,6 +89,30 @@ NODE_CATALOG = [
         "state_owner": False,
         "lifecycle_phase": "runtime",
         "keywords": ["model runtime", "runtime"],
+    },
+    {
+        "id": "workers",
+        "label": "Worker Pool",
+        "kind": "service",
+        "role": "executor",
+        "layer": "runtime",
+        "sublabel": "step execution",
+        "importance": "secondary",
+        "state_owner": False,
+        "lifecycle_phase": "runtime",
+        "keywords": ["worker", "workers", "worker steps", "step execution"],
+    },
+    {
+        "id": "processor",
+        "label": "Stream Processor",
+        "kind": "service",
+        "role": "executor",
+        "layer": "runtime",
+        "sublabel": "transform stage",
+        "importance": "primary",
+        "state_owner": False,
+        "lifecycle_phase": "runtime",
+        "keywords": ["stream processor", "processor", "transforms records", "transform"],
     },
     {
         "id": "world",
@@ -138,6 +174,66 @@ NODE_CATALOG = [
         "state_owner": True,
         "lifecycle_phase": "runtime",
         "keywords": ["memory store", "memory"],
+    },
+    {
+        "id": "state-store",
+        "label": "State Store",
+        "kind": "store",
+        "role": "storage",
+        "layer": "data",
+        "sublabel": "workflow state",
+        "importance": "secondary",
+        "state_owner": True,
+        "lifecycle_phase": "runtime",
+        "keywords": ["state store", "workflow state", "persists workflow state"],
+    },
+    {
+        "id": "kafka",
+        "label": "Kafka Bus",
+        "kind": "cloud",
+        "role": "event-bus",
+        "layer": "data",
+        "sublabel": "event stream",
+        "importance": "primary",
+        "state_owner": True,
+        "lifecycle_phase": "runtime",
+        "keywords": ["kafka", "publish events"],
+    },
+    {
+        "id": "warehouse",
+        "label": "Warehouse",
+        "kind": "store",
+        "role": "storage",
+        "layer": "data",
+        "sublabel": "analytics state",
+        "importance": "secondary",
+        "state_owner": True,
+        "lifecycle_phase": "runtime",
+        "keywords": ["warehouse"],
+    },
+    {
+        "id": "serving-api",
+        "label": "Serving API",
+        "kind": "service",
+        "role": "entry",
+        "layer": "surface",
+        "sublabel": "query access",
+        "importance": "secondary",
+        "state_owner": False,
+        "lifecycle_phase": "runtime",
+        "keywords": ["serving api"],
+    },
+    {
+        "id": "dashboards",
+        "label": "Dashboards",
+        "kind": "external",
+        "role": "entry",
+        "layer": "surface",
+        "sublabel": "analyst queries",
+        "importance": "background",
+        "state_owner": False,
+        "lifecycle_phase": "runtime",
+        "keywords": ["dashboards", "analysts query dashboards", "analysts"],
     },
     {
         "id": "cache",
@@ -230,6 +326,123 @@ EDGE_RULES = [
         "source_port": "right",
         "target_port": "left",
         "route_hint": "straight",
+        "phase": "runtime",
+    },
+    {
+        "source": "gateway",
+        "target": "orchestrator",
+        "kind": "primary",
+        "flow": "control",
+        "interaction": "routes",
+        "label": "start",
+        "priority": "primary",
+        "source_port": "bottom",
+        "target_port": "top",
+        "route_hint": "drop_to_lower_layer",
+        "phase": "runtime",
+    },
+    {
+        "source": "orchestrator",
+        "target": "workers",
+        "kind": "primary",
+        "flow": "control",
+        "interaction": "schedules",
+        "label": "steps",
+        "priority": "primary",
+        "source_port": "right",
+        "target_port": "left",
+        "route_hint": "straight",
+        "phase": "runtime",
+    },
+    {
+        "source": "orchestrator",
+        "target": "state-store",
+        "kind": "secondary",
+        "flow": "write",
+        "interaction": "writes",
+        "label": "state",
+        "priority": "secondary",
+        "source_port": "bottom",
+        "target_port": "top",
+        "route_hint": "drop_to_lower_layer",
+        "phase": "runtime",
+    },
+    {
+        "source": "orchestrator",
+        "target": "observability",
+        "kind": "secondary",
+        "flow": "event",
+        "interaction": "publishes",
+        "label": "events",
+        "priority": "background",
+        "source_port": "bottom",
+        "target_port": "top",
+        "route_hint": "drop_to_lower_layer",
+        "phase": "background",
+    },
+    {
+        "source": "gateway",
+        "target": "kafka",
+        "kind": "secondary",
+        "flow": "event",
+        "interaction": "publishes",
+        "label": "events",
+        "priority": "secondary",
+        "source_port": "bottom",
+        "target_port": "top",
+        "route_hint": "drop_to_lower_layer",
+        "phase": "runtime",
+    },
+    {
+        "source": "kafka",
+        "target": "processor",
+        "kind": "primary",
+        "flow": "stream",
+        "interaction": "feeds",
+        "label": "stream",
+        "priority": "primary",
+        "source_port": "top",
+        "target_port": "bottom",
+        "route_hint": "rise_to_upper_layer",
+        "phase": "runtime",
+    },
+    {
+        "source": "processor",
+        "target": "warehouse",
+        "kind": "secondary",
+        "flow": "write",
+        "interaction": "writes",
+        "label": "load",
+        "priority": "secondary",
+        "source_port": "bottom",
+        "target_port": "top",
+        "route_hint": "drop_to_lower_layer",
+        "phase": "runtime",
+    },
+    {
+        "source": "dashboards",
+        "target": "serving-api",
+        "kind": "secondary",
+        "flow": "read",
+        "interaction": "queries",
+        "label": "query",
+        "priority": "background",
+        "source_port": "bottom",
+        "target_port": "top",
+        "route_hint": "drop_to_lower_layer",
+        "phase": "runtime",
+    },
+    {
+        "source": "serving-api",
+        "target": "warehouse",
+        "kind": "secondary",
+        "flow": "read",
+        "interaction": "reads",
+        "label": "serve",
+        "priority": "secondary",
+        "source_port": "bottom",
+        "target_port": "top",
+        "route_hint": "drop_to_lower_layer",
         "phase": "runtime",
     },
     {
@@ -326,7 +539,18 @@ EDGE_RULES = [
 ]
 
 
-FOCUS_PRIORITIES = ["world", "planner", "runtime", "scheduler", "systems", "tools", "gateway"]
+FOCUS_PRIORITIES = [
+    "world",
+    "planner",
+    "orchestrator",
+    "runtime",
+    "scheduler",
+    "processor",
+    "systems",
+    "tools",
+    "kafka",
+    "gateway",
+]
 
 
 def extract_architecture_semantics(text: str) -> dict[str, Any]:
@@ -430,6 +654,30 @@ def _build_groups(node_ids: set[str]) -> list[dict[str, Any]]:
                 "summary": "Request orchestration and tool execution",
             }
         )
+    workflow_core = [node_id for node_id in ["gateway", "orchestrator", "workers"] if node_id in node_ids]
+    if len(workflow_core) >= 2:
+        groups.append(
+            {
+                "id": "workflow-core",
+                "label": "Workflow Core",
+                "kind": "subsystem",
+                "layer": "runtime",
+                "members": workflow_core,
+                "summary": "Workflow routing and step execution",
+            }
+        )
+    data_pipeline = [node_id for node_id in ["kafka", "processor", "warehouse"] if node_id in node_ids]
+    if len(data_pipeline) >= 2:
+        groups.append(
+            {
+                "id": "data-pipeline",
+                "label": "Data Pipeline",
+                "kind": "subsystem",
+                "layer": "runtime",
+                "members": data_pipeline,
+                "summary": "Streaming ingest and analytics load path",
+            }
+        )
     return groups
 
 
@@ -443,8 +691,10 @@ def _choose_focus_node(node_ids: set[str]) -> str:
 def _choose_focus_path(node_ids: set[str]) -> list[str]:
     candidates = [
         ["scheduler", "world", "systems"],
+        ["gateway", "orchestrator", "workers"],
         ["gateway", "planner", "runtime"],
         ["planner", "runtime", "tools"],
+        ["kafka", "processor", "warehouse"],
         ["runtime", "tools", "memory"],
     ]
     for path in candidates:
@@ -456,10 +706,14 @@ def _choose_focus_path(node_ids: set[str]) -> list[str]:
 def _focus_reason(focus_node: str, focus_path: list[str]) -> str:
     if focus_node == "world":
         return "World owns runtime state while systems execute frame work."
+    if focus_node == "orchestrator":
+        return "Orchestrator coordinates long-running workflow state and worker execution."
     if focus_node == "planner":
         return "Planner coordinates request flow and hands execution to the runtime."
     if focus_node == "runtime":
         return "Runtime is the execution hub between orchestration and tools."
+    if focus_node == "processor":
+        return "Processor is the transformation hinge between ingest and warehouse state."
     return f"Primary path centers on {' -> '.join(focus_path)}."
 
 
