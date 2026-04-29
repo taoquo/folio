@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!-- ==================================================================
+     DIAGRAM · Venn (folio palette)
+     Two or three overlapping circles showing set relationships.
+     Focal circle in cinnabar-coral tint; intersection label in serif callout.
+     ================================================================== -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Venn · folio diagram</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --parchment:  #F6F0EA;
+    --ivory:      #FBF7F3;
+    --near-black: #191514;
+    --olive:      #5A4A43;
+    --stone:      #85776F;
+    --brand:      #B83D2E;
+    --brand-tint: #F7E6E1;
+    --border:     #E9DED4;
+
+    --serif: Charter, Georgia, Palatino, serif;
+    --sans: var(--serif);
+    --mono:  "JetBrains Mono", "SF Mono", Consolas, monospace;
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--parchment);
+    color: var(--near-black);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+  }
+
+  .frame { max-width: 1000px; width: 100%; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--stone);
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: 1.9rem;
+    font-weight: 500;
+    letter-spacing: -0.3pt;
+    line-height: 1.15;
+    margin-bottom: 1.6rem;
+  }
+
+  svg { width: 100%; min-width: 860px; display: block; }
+
+  .caption {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--olive);
+    margin-top: 1rem;
+    max-width: 52ch;
+  }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Venn · folio diagram</p>
+    <h1>{{Topic A}} and {{Topic B}} intersection</h1>
+
+    <svg viewBox="0 0 960 460" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r="0.9" fill="rgba(25,21,20,0.08)"/>
+        </pattern>
+      </defs>
+
+      <rect width="100%" height="100%" fill="#F6F0EA"/>
+      <rect width="100%" height="100%" fill="url(#dots)" opacity="0.55"/>
+
+      <!-- ── Venn circles ── -->
+      <!-- Circle A (FOCAL): cx=376 cy=208 r=152 -->
+      <circle cx="376" cy="208" r="152"
+              fill="rgba(184,61,46,0.08)" stroke="#B83D2E" stroke-width="1.2"/>
+
+      <!-- Circle B: cx=584 cy=208 r=152 -->
+      <circle cx="584" cy="208" r="152"
+              fill="rgba(90,74,67,0.07)" stroke="#5A4A43" stroke-width="1.2"/>
+
+      <!-- ── Zone labels ── -->
+
+      <!-- A-only zone (cx≈264) -->
+      <text x="264" y="196" fill="#191514" font-size="12" font-weight="600"
+            font-family="inherit" text-anchor="middle">{{Set A only}}</text>
+      <text x="264" y="214" fill="#5A4A43" font-size="9" font-family="'JetBrains Mono', monospace"
+            text-anchor="middle">unique to A</text>
+
+      <!-- Intersection zone (cx=480), focal callout -->
+      <text x="480" y="198" fill="#B83D2E" font-size="13" font-weight="600"
+            font-family="inherit" font-style="italic"
+            text-anchor="middle">{{Shared}}</text>
+      <text x="480" y="218" fill="#B83D2E" font-size="9" font-family="'JetBrains Mono', monospace"
+            text-anchor="middle">overlap</text>
+
+      <!-- B-only zone (cx≈696) -->
+      <text x="696" y="196" fill="#191514" font-size="12" font-weight="600"
+            font-family="inherit" text-anchor="middle">{{Set B only}}</text>
+      <text x="696" y="214" fill="#5A4A43" font-size="9" font-family="'JetBrains Mono', monospace"
+            text-anchor="middle">unique to B</text>
+
+      <!-- ── Circle labels (top of each circle) ── -->
+      <text x="296" y="88" fill="#B83D2E" font-size="10" font-weight="600"
+            font-family="'JetBrains Mono', monospace" text-anchor="middle"
+            letter-spacing="0.1em">SET A</text>
+      <text x="664" y="88" fill="#5A4A43" font-size="10" font-weight="600"
+            font-family="'JetBrains Mono', monospace" text-anchor="middle"
+            letter-spacing="0.1em">SET B</text>
+
+      <!-- ── Example label rows (bottom of circles) ── -->
+      <text x="264" y="292" fill="#85776F" font-size="9" font-family="inherit"
+            text-anchor="middle">item · item · item</text>
+      <text x="480" y="292" fill="#85776F" font-size="9" font-family="inherit"
+            text-anchor="middle">item · item</text>
+      <text x="696" y="292" fill="#85776F" font-size="9" font-family="inherit"
+            text-anchor="middle">item · item · item</text>
+
+      <!-- ── Legend ── -->
+      <line x1="40" y1="372" x2="920" y2="372" stroke="rgba(25,21,20,0.10)" stroke-width="0.8"/>
+      <text x="40" y="388" fill="#5A4A43" font-size="8" font-family="'JetBrains Mono', monospace"
+            letter-spacing="0.22em">LEGEND</text>
+
+      <circle cx="47" cy="406" r="12" fill="rgba(184,61,46,0.08)" stroke="#B83D2E" stroke-width="1"/>
+      <text x="66" y="410" fill="#5A4A43" font-size="8.5" font-family="inherit">Focal set (A)</text>
+
+      <circle cx="199" cy="406" r="12" fill="rgba(90,74,67,0.07)" stroke="#5A4A43" stroke-width="1"/>
+      <text x="218" y="410" fill="#5A4A43" font-size="8.5" font-family="inherit">Secondary set (B)</text>
+
+      <text x="375" y="402" fill="#B83D2E" font-size="11" font-family="inherit"
+            font-style="italic">Overlap</text>
+      <text x="435" y="410" fill="#5A4A43" font-size="8.5" font-family="inherit">Intersection label (serif callout)</text>
+    </svg>
+
+    <p class="caption">Focal rule: the circle whose contents matter most to the argument gets the cinnabar-coral stroke. The intersection label uses a serif italic callout to draw the eye to the overlap, which is usually the point of the diagram.</p>
+  </div>
+</body>
+</html>
