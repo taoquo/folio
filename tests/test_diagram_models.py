@@ -95,3 +95,66 @@ class DiagramModelTests(TestCase):
 
         self.assertEqual("architecture", arch.kind)
         self.assertEqual("uml-class", uml.kind)
+
+    def test_load_architecture_semantic_fields(self) -> None:
+        payload = {
+            "kind": "architecture",
+            "title": "Semantic Architecture",
+            "layout": "horizontal-layers",
+            "focus": "world",
+            "focus_path": ["scheduler", "world", "systems"],
+            "focus_reason": "Main runtime loop",
+            "layers": [{"id": "runtime", "label": "Runtime", "purpose": "Frame execution", "order": 2}],
+            "groups": [
+                {
+                    "id": "loop",
+                    "label": "Runtime Loop",
+                    "kind": "runtime-loop",
+                    "layer": "runtime",
+                    "members": ["scheduler", "world", "systems"],
+                    "summary": "Main tick path",
+                }
+            ],
+            "nodes": [
+                {
+                    "id": "world",
+                    "kind": "service",
+                    "label": "World",
+                    "role": "world",
+                    "group": "loop",
+                    "description": "State owner",
+                    "importance": "primary",
+                    "state_owner": True,
+                    "lifecycle_phase": "runtime",
+                }
+            ],
+            "edges": [
+                {
+                    "source": "scheduler",
+                    "target": "world",
+                    "kind": "primary",
+                    "flow": "control",
+                    "interaction": "schedules",
+                    "priority": "primary",
+                    "dashed": False,
+                    "source_port": "right",
+                    "target_port": "left",
+                    "route_hint": "straight",
+                    "phase": "runtime",
+                }
+            ],
+            "legend": [
+                {"flow": "control", "label": "Main runtime flow", "reason": "Frame loop"}
+            ],
+        }
+
+        spec = models.load_diagram_spec(payload)
+
+        self.assertEqual(["scheduler", "world", "systems"], spec.focus_path)
+        self.assertEqual("Main runtime loop", spec.focus_reason)
+        self.assertEqual("runtime-loop", spec.groups[0].kind)
+        self.assertEqual("world", spec.nodes[0].role)
+        self.assertTrue(spec.nodes[0].state_owner)
+        self.assertEqual("control", spec.edges[0].flow)
+        self.assertEqual("schedules", spec.edges[0].interaction)
+        self.assertEqual("Main runtime flow", spec.legend[0].label)

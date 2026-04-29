@@ -9,6 +9,8 @@ from typing import Any, Union
 ARCHITECTURE_LAYOUTS = {"horizontal-layers", "vertical-stack", "hub-and-spoke"}
 ARCHITECTURE_NODE_KINDS = {"external", "service", "store", "cloud"}
 ARCHITECTURE_EDGE_KINDS = {"primary", "secondary", "async"}
+ARCHITECTURE_IMPORTANCE = {"primary", "secondary", "background"}
+ARCHITECTURE_LIFECYCLE_PHASES = {"bootstrap", "runtime", "background", "shutdown"}
 UML_TYPE_KINDS = {"class", "interface", "enum"}
 UML_RELATIONSHIP_KINDS = {"inheritance", "association", "aggregation", "composition"}
 
@@ -17,6 +19,26 @@ UML_RELATIONSHIP_KINDS = {"inheritance", "association", "aggregation", "composit
 class LayerSpec:
     id: str
     label: str
+    purpose: str | None = None
+    order: int | None = None
+
+
+@dataclass(frozen=True)
+class GroupSpec:
+    id: str
+    label: str
+    kind: str
+    layer: str | None = None
+    members: list[str] = field(default_factory=list)
+    side_label: str | None = None
+    summary: str | None = None
+
+
+@dataclass(frozen=True)
+class LegendItemSpec:
+    flow: str
+    label: str
+    reason: str | None = None
 
 
 @dataclass(frozen=True)
@@ -26,6 +48,12 @@ class ArchitectureNodeSpec:
     label: str
     layer: str | None = None
     sublabel: str | None = None
+    role: str | None = None
+    group: str | None = None
+    description: str | None = None
+    importance: str | None = None
+    state_owner: bool | None = None
+    lifecycle_phase: str | None = None
 
 
 @dataclass(frozen=True)
@@ -34,6 +62,14 @@ class ArchitectureEdgeSpec:
     target: str
     kind: str
     label: str | None = None
+    flow: str | None = None
+    interaction: str | None = None
+    priority: str | None = None
+    dashed: bool = False
+    source_port: str | None = None
+    target_port: str | None = None
+    route_hint: str | None = None
+    phase: str | None = None
 
 
 @dataclass(frozen=True)
@@ -46,10 +82,13 @@ class ArchitectureDiagramSpec:
     subtitle: str | None = None
     caption: str | None = None
     focus: str | None = None
+    focus_path: list[str] = field(default_factory=list)
+    focus_reason: str | None = None
     layers: list[LayerSpec] = field(default_factory=list)
+    groups: list[GroupSpec] = field(default_factory=list)
     nodes: list[ArchitectureNodeSpec] = field(default_factory=list)
     edges: list[ArchitectureEdgeSpec] = field(default_factory=list)
-    legend: list[str] = field(default_factory=list)
+    legend: list[LegendItemSpec] = field(default_factory=list)
 
 
 @dataclass(frozen=True)
@@ -99,12 +138,38 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
     if layout not in ARCHITECTURE_LAYOUTS:
         raise ValueError(f"unsupported architecture layout: {layout}")
 
-    layers = [LayerSpec(id=item["id"], label=item["label"]) for item in payload.get("layers", [])]
+    layers = [
+        LayerSpec(
+            id=item["id"],
+            label=item["label"],
+            purpose=item.get("purpose"),
+            order=item.get("order"),
+        )
+        for item in payload.get("layers", [])
+    ]
+    groups = [
+        GroupSpec(
+            id=item["id"],
+            label=item["label"],
+            kind=item["kind"],
+            layer=item.get("layer"),
+            members=list(item.get("members", [])),
+            side_label=item.get("side_label"),
+            summary=item.get("summary"),
+        )
+        for item in payload.get("groups", [])
+    ]
     nodes = []
     for item in payload.get("nodes", []):
         kind = item["kind"]
         if kind not in ARCHITECTURE_NODE_KINDS:
             raise ValueError(f"unsupported architecture node kind: {kind}")
+        importance = item.get("importance")
+        if importance is not None and importance not in ARCHITECTURE_IMPORTANCE:
+            raise ValueError(f"unsupported architecture importance: {importance}")
+        lifecycle_phase = item.get("lifecycle_phase")
+        if lifecycle_phase is not None and lifecycle_phase not in ARCHITECTURE_LIFECYCLE_PHASES:
+            raise ValueError(f"unsupported architecture lifecycle_phase: {lifecycle_phase}")
         nodes.append(
             ArchitectureNodeSpec(
                 id=item["id"],
@@ -112,6 +177,12 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
                 label=item["label"],
                 layer=item.get("layer"),
                 sublabel=item.get("sublabel"),
+                role=item.get("role"),
+                group=item.get("group"),
+                description=item.get("description"),
+                importance=importance,
+                state_owner=item.get("state_owner"),
+                lifecycle_phase=lifecycle_phase,
             )
         )
 
@@ -126,8 +197,29 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
                 target=item["target"],
                 kind=kind,
                 label=item.get("label"),
+                flow=item.get("flow"),
+                interaction=item.get("interaction"),
+                priority=item.get("priority"),
+                dashed=bool(item.get("dashed", False)),
+                source_port=item.get("source_port"),
+                target_port=item.get("target_port"),
+                route_hint=item.get("route_hint"),
+                phase=item.get("phase"),
             )
         )
+
+    legend = []
+    for item in payload.get("legend", []):
+        if isinstance(item, str):
+            legend.append(LegendItemSpec(flow="unspecified", label=item))
+        else:
+            legend.append(
+                LegendItemSpec(
+                    flow=item["flow"],
+                    label=item["label"],
+                    reason=item.get("reason"),
+                )
+            )
 
     return ArchitectureDiagramSpec(
         kind="architecture",
@@ -138,10 +230,13 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
         subtitle=payload.get("subtitle"),
         caption=payload.get("caption"),
         focus=payload.get("focus"),
+        focus_path=list(payload.get("focus_path", [])),
+        focus_reason=payload.get("focus_reason"),
         layers=layers,
+        groups=groups,
         nodes=nodes,
         edges=edges,
-        legend=list(payload.get("legend", [])),
+        legend=legend,
     )
 
 
