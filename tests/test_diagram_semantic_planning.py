@@ -47,6 +47,26 @@ pipeline health in the background.
 
 
 class DiagramSemanticPlanningTests(TestCase):
+    def test_collect_architecture_evidence_scores_specific_roles(self) -> None:
+        evidence = planning.collect_architecture_evidence(AGENT_TEXT)
+
+        self.assertGreater(evidence["gateway"]["score"], 0)
+        self.assertGreater(evidence["planner"]["score"], 0)
+        self.assertGreater(evidence["runtime"]["score"], 0)
+        self.assertGreater(evidence["tools"]["score"], 0)
+        self.assertEqual(0, evidence["input"]["score"])
+
+    def test_select_architecture_nodes_suppresses_unbacked_candidates(self) -> None:
+        evidence = planning.collect_architecture_evidence(DATA_PLATFORM_TEXT)
+        nodes = planning.select_architecture_nodes(evidence)
+        node_ids = {node["id"] for node in nodes}
+
+        self.assertIn("kafka", node_ids)
+        self.assertIn("processor", node_ids)
+        self.assertIn("warehouse", node_ids)
+        self.assertNotIn("input", node_ids)
+        self.assertNotIn("systems", node_ids)
+
     def test_extract_architecture_semantics_finds_ecs_roles(self) -> None:
         semantics = planning.extract_architecture_semantics(ECS_TEXT)
 
@@ -80,6 +100,7 @@ class DiagramSemanticPlanningTests(TestCase):
         self.assertIn(spec.focus, {"planner", "runtime"})
         self.assertTrue(any(node.role == "orchestrator" for node in spec.nodes))
         self.assertTrue(any(edge.flow in {"control", "read", "write"} for edge in spec.edges))
+        self.assertFalse(any(node.id == "input" for node in spec.nodes))
 
     def test_plan_architecture_from_workflow_text_returns_orchestration_path(self) -> None:
         spec = planning.plan_architecture_from_text(WORKFLOW_TEXT, "Workflow Engine")
@@ -89,6 +110,8 @@ class DiagramSemanticPlanningTests(TestCase):
         self.assertTrue(any(node.role in {"orchestrator", "event-bus", "storage"} for node in spec.nodes))
         self.assertTrue(any(edge.flow in {"control", "event", "write"} for edge in spec.edges))
         self.assertGreaterEqual(len(spec.focus_path), 2)
+        self.assertTrue(any(node.id == "event-bus" for node in spec.nodes))
+        self.assertFalse(any(node.id == "input" for node in spec.nodes))
 
     def test_plan_architecture_from_data_platform_text_returns_pipeline_shape(self) -> None:
         spec = planning.plan_architecture_from_text(DATA_PLATFORM_TEXT, "Data Platform")
@@ -97,3 +120,5 @@ class DiagramSemanticPlanningTests(TestCase):
         self.assertTrue(any(node.role in {"event-bus", "executor", "storage", "entry"} for node in spec.nodes))
         self.assertTrue(any(edge.flow in {"stream", "write", "read"} for edge in spec.edges))
         self.assertIn(spec.layout, {"horizontal-layers", "vertical-stack"})
+        self.assertFalse(any(node.id == "input" for node in spec.nodes))
+        self.assertFalse(any(node.id == "systems" for node in spec.nodes))

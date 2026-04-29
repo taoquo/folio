@@ -1,0 +1,3 @@
+Requests enter an API gateway and are handed to a workflow orchestrator.
+The orchestrator schedules worker steps, persists workflow state in a state store,
+and publishes events to an event bus for retries and async continuations.
