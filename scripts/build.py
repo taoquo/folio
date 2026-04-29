@@ -24,33 +24,42 @@ import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 from shared import COOL_GRAY_BLOCKLIST, DIAGRAMS, EXAMPLES, ROOT, TEMPLATES, TOKENS_FILE
 
-# name -> (source, max_pages). max_pages=0 means no hard check.
-HTML_TARGETS: dict[str, tuple[str, int]] = {
+
+@dataclass(frozen=True)
+class PageSpec:
+    source: str
+    min_pages: int
+    max_pages: int
+
+
+# name -> page spec
+HTML_TARGETS: dict[str, PageSpec] = {
     # Chinese
-    "one-pager":    ("one-pager.html", 1),
-    "letter":       ("letter.html", 1),
-    "long-doc":     ("long-doc.html", 0),
-    "portfolio":    ("portfolio.html", 0),
-    "resume":       ("resume.html", 2),
+    "one-pager":    PageSpec("one-pager.html", 1, 1),
+    "letter":       PageSpec("letter.html", 1, 1),
+    "long-doc":     PageSpec("long-doc.html", 5, 9),
+    "portfolio":    PageSpec("portfolio.html", 4, 8),
+    "resume":       PageSpec("resume.html", 2, 2),
     # English
-    "one-pager-en": ("one-pager-en.html", 1),
-    "letter-en":    ("letter-en.html", 1),
-    "long-doc-en":  ("long-doc-en.html", 0),
-    "portfolio-en": ("portfolio-en.html", 0),
-    "resume-en":    ("resume-en.html", 2),
+    "one-pager-en": PageSpec("one-pager-en.html", 1, 1),
+    "letter-en":    PageSpec("letter-en.html", 1, 1),
+    "long-doc-en":  PageSpec("long-doc-en.html", 5, 9),
+    "portfolio-en": PageSpec("portfolio-en.html", 4, 8),
+    "resume-en":    PageSpec("resume-en.html", 2, 2),
     # Equity Report
-    "equity-report":    ("equity-report.html", 3),
-    "equity-report-en": ("equity-report-en.html", 3),
+    "equity-report":    PageSpec("equity-report.html", 2, 3),
+    "equity-report-en": PageSpec("equity-report-en.html", 2, 3),
     # Changelog
-    "changelog":    ("changelog.html", 2),
-    "changelog-en": ("changelog-en.html", 2),
+    "changelog":    PageSpec("changelog.html", 1, 2),
+    "changelog-en": PageSpec("changelog-en.html", 1, 2),
 }
-PPTX_TARGETS: dict[str, str] = {
-    "slides":    "slides.py",
-    "slides-en": "slides-en.py",
+PPTX_TARGETS: dict[str, PageSpec] = {
+    "slides":    PageSpec("slides.py", 4, 10),
+    "slides-en": PageSpec("slides-en.py", 4, 10),
 }
 
 # Diagram HTMLs live in a separate directory and have no page-count contract.
@@ -70,6 +79,8 @@ DIAGRAM_TARGETS: dict[str, str] = {
     "diagram-candlestick":   "candlestick.html",
     "diagram-waterfall":     "waterfall.html",
 }
+
+_PDF_BUILD_DEPS: tuple[Any | None, Any | None, str | None] | None = None
 
 
 # ------------------------- build -------------------------
@@ -147,13 +158,40 @@ def set_pdf_metadata(pdf_path: Path, author: str | None = None) -> None:
         writer.write(f)
 
 
-def build_html(name: str, source: str, max_pages: int,
-               src_dir: Path = TEMPLATES) -> bool:
+def _load_pdf_build_deps() -> tuple[Any | None, Any | None, str | None]:
+    global _PDF_BUILD_DEPS
+    if _PDF_BUILD_DEPS is not None:
+        return _PDF_BUILD_DEPS
     try:
         from weasyprint import HTML
         from pypdf import PdfReader
     except ImportError:
-        print("ERROR: missing deps: pip install weasyprint pypdf --break-system-packages")
+        _PDF_BUILD_DEPS = (None, None, "missing deps: pip install weasyprint pypdf --break-system-packages")
+        return _PDF_BUILD_DEPS
+    except OSError as exc:
+        _PDF_BUILD_DEPS = (None, None, f"dependency load failed: {exc}")
+        return _PDF_BUILD_DEPS
+    _PDF_BUILD_DEPS = (HTML, PdfReader, None)
+    return _PDF_BUILD_DEPS
+
+
+def page_count_issue(name: str, count: int, min_pages: int, max_pages: int) -> str | None:
+    expected = str(min_pages) if min_pages == max_pages else f"{min_pages}-{max_pages}"
+    if count < min_pages:
+        return f"page underflow: {count} pages (expected {expected})"
+    if count > max_pages:
+        hint = ""
+        if "resume" in name and count == max_pages + 1:
+            hint = '; add class="resume--dense" to <body> or tighten .proj-text line-height to 1.38'
+        return f"page overflow: {count} pages (expected {expected}){hint}"
+    return None
+
+
+def build_html(name: str, source: str, min_pages: int, max_pages: int,
+               src_dir: Path = TEMPLATES) -> bool:
+    HTML, PdfReader, dep_error = _load_pdf_build_deps()
+    if dep_error:
+        print(f"ERROR: {dep_error}")
         return False
 
     src = src_dir / source
@@ -166,28 +204,31 @@ def build_html(name: str, source: str, max_pages: int,
 
     # weasyprint resolves @font-face relative to CWD. Run from the source dir
     # so fonts placed next to the HTML are found.
-    HTML(str(src), base_url=str(src.parent)).write_pdf(str(out))
+    try:
+        HTML(str(src), base_url=str(src.parent)).write_pdf(str(out))
+    except Exception as exc:
+        print(f"ERROR: {name}: render failed ({exc})")
+        return False
 
     # Set PDF metadata (only replaces placeholders, preserves filled values)
     author = infer_author()
     set_pdf_metadata(out, author=author)
 
     n = len(PdfReader(str(out)).pages)
-    msg = f"OK: {name}: {n} pages"
-    if max_pages and n > max_pages:
-        msg = f"ERROR: {name}: {n} pages (limit {max_pages})"
-        print(msg)
+    issue = page_count_issue(name, n, min_pages, max_pages)
+    if issue:
+        print(f"ERROR: {name}: {issue}")
         return False
-    print(msg)
+    print(f"OK: {name}: {n} pages")
     return True
 
 
 def build_slides(name: str = "slides") -> bool:
-    source = PPTX_TARGETS.get(name)
-    if source is None:
+    spec = PPTX_TARGETS.get(name)
+    if spec is None:
         print(f"ERROR: {name}: unknown slides target")
         return False
-    src = TEMPLATES / source
+    src = TEMPLATES / spec.source
     if not src.exists():
         print(f"ERROR: {name}: source not found ({src})")
         return False
@@ -215,11 +256,11 @@ def build_slides(name: str = "slides") -> bool:
 
 def build_all() -> int:
     failures = 0
-    for name, (source, max_pages) in HTML_TARGETS.items():
-        if not build_html(name, source, max_pages):
+    for name, spec in HTML_TARGETS.items():
+        if not build_html(name, spec.source, spec.min_pages, spec.max_pages):
             failures += 1
     for name, source in DIAGRAM_TARGETS.items():
-        if not build_html(name, source, 0, src_dir=DIAGRAMS):
+        if not build_html(name, source, 1, 9999, src_dir=DIAGRAMS):
             failures += 1
     for name in PPTX_TARGETS:
         if not build_slides(name):
@@ -229,14 +270,14 @@ def build_all() -> int:
 
 def build_single(name: str) -> int:
     if name in HTML_TARGETS:
-        source, max_pages = HTML_TARGETS[name]
-        ok = build_html(name, source, max_pages)
+        spec = HTML_TARGETS[name]
+        ok = build_html(name, spec.source, spec.min_pages, spec.max_pages)
         if ok:
             show_fonts(EXAMPLES / f"{name}.pdf")
         return 0 if ok else 1
     if name in DIAGRAM_TARGETS:
         source = DIAGRAM_TARGETS[name]
-        ok = build_html(name, source, 0, src_dir=DIAGRAMS)
+        ok = build_html(name, source, 1, 9999, src_dir=DIAGRAMS)
         return 0 if ok else 1
     if name in PPTX_TARGETS:
         return 0 if build_slides(name) else 1
@@ -400,18 +441,16 @@ def _check_font_sources(html_path: Path) -> list[str]:
     return missing
 
 
-def verify_target(name: str, source: str, max_pages: int, src_dir: Path) -> list[str]:
+def verify_target(name: str, source: str, min_pages: int, max_pages: int, src_dir: Path) -> list[str]:
     issues: list[str] = []
     src = src_dir / source
     if not src.exists():
         issues.append(f"source not found: {src}")
         return issues
 
-    try:
-        from weasyprint import HTML
-        from pypdf import PdfReader
-    except ImportError:
-        issues.append("missing deps: pip install weasyprint pypdf --break-system-packages")
+    HTML, PdfReader, dep_error = _load_pdf_build_deps()
+    if dep_error:
+        issues.append(dep_error)
         return issues
 
     EXAMPLES.mkdir(parents=True, exist_ok=True)
@@ -422,7 +461,11 @@ def verify_target(name: str, source: str, max_pages: int, src_dir: Path) -> list
     for mf in missing_fonts:
         print(f"  [FONT MISS] {name}: {mf} not found — render will fall back to Source Han Serif SC → Noto Serif CJK SC → Songti SC → Georgia")
 
-    HTML(str(src), base_url=str(src.parent)).write_pdf(str(out))
+    try:
+        HTML(str(src), base_url=str(src.parent)).write_pdf(str(out))
+    except Exception as exc:
+        issues.append(f"render failed: {exc}")
+        return issues
 
     # Set PDF metadata (only replaces placeholders, preserves filled values)
     author = infer_author()
@@ -430,12 +473,9 @@ def verify_target(name: str, source: str, max_pages: int, src_dir: Path) -> list
 
     # page count check
     n = len(PdfReader(str(out)).pages)
-    if max_pages and n > max_pages:
-        over = n - max_pages
-        hint = ""
-        if "resume" in name and over == 1:
-            hint = '; add class="resume--dense" to <body> or tighten .proj-text line-height to 1.38'
-        issues.append(f"page overflow: {n} pages (limit {max_pages}){hint}")
+    issue = page_count_issue(name, n, min_pages, max_pages)
+    if issue:
+        issues.append(issue)
 
     # font check
     embedded = _pdf_font_names(out)
@@ -464,28 +504,49 @@ def verify_target(name: str, source: str, max_pages: int, src_dir: Path) -> list
     return issues
 
 
+def _pptx_slide_count(pptx_path: Path) -> int:
+    from xml.etree import ElementTree
+    from zipfile import ZipFile
+
+    ns = {"p": "http://schemas.openxmlformats.org/presentationml/2006/main"}
+    with ZipFile(pptx_path) as archive:
+        root = ElementTree.fromstring(archive.read("ppt/presentation.xml"))
+    slide_list = root.find("p:sldIdLst", ns)
+    return 0 if slide_list is None else len(list(slide_list))
+
+
 def verify_slides_target(name: str) -> list[str]:
-    return [] if build_slides(name) else ["slides build failed"]
+    spec = PPTX_TARGETS.get(name)
+    if spec is None:
+        return ["slides target not found"]
+    if not build_slides(name):
+        return ["slides build failed"]
+    out = EXAMPLES / f"{name}.pptx"
+    if not out.exists():
+        return ["slides output not found"]
+    count = _pptx_slide_count(out)
+    issue = page_count_issue(name, count, spec.min_pages, spec.max_pages)
+    return [issue] if issue else []
 
 
 def verify_all(target: str | None = None) -> int:
-    targets_to_run: dict[str, tuple[str, int, Path] | None] = {}
+    targets_to_run: dict[str, tuple[str, int, int, Path] | None] = {}
     if target:
         if target in HTML_TARGETS:
-            src, mp = HTML_TARGETS[target]
-            targets_to_run[target] = (src, mp, TEMPLATES)
+            spec = HTML_TARGETS[target]
+            targets_to_run[target] = (spec.source, spec.min_pages, spec.max_pages, TEMPLATES)
         elif target in DIAGRAM_TARGETS:
-            targets_to_run[target] = (DIAGRAM_TARGETS[target], 0, DIAGRAMS)
+            targets_to_run[target] = (DIAGRAM_TARGETS[target], 1, 9999, DIAGRAMS)
         elif target in PPTX_TARGETS:
             targets_to_run[target] = None
         else:
             print(f"ERROR: unknown target: {target}")
             return 2
     else:
-        for name, (src, mp) in HTML_TARGETS.items():
-            targets_to_run[name] = (src, mp, TEMPLATES)
+        for name, spec in HTML_TARGETS.items():
+            targets_to_run[name] = (spec.source, spec.min_pages, spec.max_pages, TEMPLATES)
         for name, src in DIAGRAM_TARGETS.items():
-            targets_to_run[name] = (src, 0, DIAGRAMS)
+            targets_to_run[name] = (src, 1, 9999, DIAGRAMS)
         for name in PPTX_TARGETS:
             targets_to_run[name] = None
 
@@ -495,8 +556,8 @@ def verify_all(target: str | None = None) -> int:
         if config is None:
             issues = verify_slides_target(name)
         else:
-            source, max_pages, src_dir = config
-            issues = verify_target(name, source, max_pages, src_dir)
+            source, min_pages, max_pages, src_dir = config
+            issues = verify_target(name, source, min_pages, max_pages, src_dir)
         if issues:
             rows.append((f"ERROR: {name}", "; ".join(issues)))
             failures += 1
@@ -771,12 +832,12 @@ def check_rhythm(targets: list[str]) -> int:
     failures = 0
 
     for name in names:
-        source = PPTX_TARGETS.get(name)
-        if source is None:
+        spec = PPTX_TARGETS.get(name)
+        if spec is None:
             print(f"ERROR: {name}: not a known slides target")
             failures += 1
             continue
-        src = TEMPLATES / source
+        src = TEMPLATES / spec.source
         if not src.exists():
             print(f"ERROR: {name}: source not found ({src})")
             failures += 1

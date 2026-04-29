@@ -16,14 +16,14 @@ Folio is a document design system for the AI era: one constraint language, eight
 <table>
 <tr>
   <td align="center" width="25%">
-    <a href="assets/demos/demo-tesla.pdf"><img src="assets/demos/demo-tesla.png" alt="Tesla company one-pager"></a>
-    <br><b>One-Pager</b> · 中文
-    <br><sub>Tesla 公司介绍 · 单页</sub>
+    <a href="assets/demos/demo-tesla.pdf"><img src="assets/demos/demo-tesla.png" alt="Tesla equity report"></a>
+    <br><b>Equity Report</b> · 中文
+    <br><sub>Tesla 2026 Q1 财报快报 · 3 页</sub>
   </td>
   <td align="center" width="25%">
     <a href="assets/demos/demo-agent-slides.pdf"><img src="assets/demos/demo-agent-slides.png" alt="Agent keynote slides" /></a>
     <br><b>Slides</b> · English
-    <br><sub>Agent keynote, 6 slides</sub>
+    <br><sub>Agent keynote, 7 slides</sub>
   </td>
   <td align="center" width="25%">
     <a href="assets/demos/demo-musk-resume.pdf"><img src="assets/demos/demo-musk-resume.png" alt="Elon Musk resume"></a>

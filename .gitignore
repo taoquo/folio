@@ -14,7 +14,7 @@ assets/examples/
 
 /tmp/
 /dist/*
-!/dist/kami.zip
+!/dist/folio.zip
 *.log
 .vercel
 
