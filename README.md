@@ -7,11 +7,89 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License"></a>
 </div>
 
-## What Folio Is
+<p align="center">
+  <a href="index-en.html">
+    <img src="assets/demos/readme-overview-en.png" alt="Folio document overview" width="100%">
+  </a>
+</p>
+
+<p align="center">
+  <a href="index-en.html"><b>Visual Gallery</b></a> ·
+  <a href="assets/demos/"><b>All Demos</b></a> ·
+  <a href="README.zh-CN.md"><b>中文说明</b></a>
+</p>
+
+## See Folio First
 
 Folio is a document design system for the AI era: eight document types, fourteen inline SVG diagram types, and bilingual English/Chinese paths built for agent-generated deliverables.
 
 It optimizes for stable, readable, professional output rather than novelty.
+
+What matters on first contact:
+
+- eight document types, each with a stable editorial layout
+- bilingual English and Chinese generation paths
+- PDF- and PPTX-oriented outputs instead of generic HTML mockups
+- visual consistency across one-pagers, reports, decks, resumes, and release notes
+
+## Document Gallery
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="assets/demos/demo-orbit-onepager.pdf"><img src="assets/demos/demo-orbit-onepager.png" alt="Orbit Cache one-pager preview"></a><br>
+      <b>One-Pager</b><br>
+      Launch brief, proposal, exec summary.
+    </td>
+    <td width="50%" valign="top">
+      <a href="assets/demos/demo-agent-ops-longdoc.pdf"><img src="assets/demos/demo-agent-ops-longdoc.png" alt="Agent operations long doc preview"></a><br>
+      <b>Long Doc</b><br>
+      White paper, review, technical report.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="assets/demos/demo-board-letter.pdf"><img src="assets/demos/demo-board-letter.png" alt="Board letter preview"></a><br>
+      <b>Letter</b><br>
+      Formal letter, memo, statement.
+    </td>
+    <td width="50%" valign="top">
+      <a href="assets/demos/demo-ridge-portfolio.pdf"><img src="assets/demos/demo-ridge-portfolio.png" alt="Portfolio preview"></a><br>
+      <b>Portfolio</b><br>
+      Case studies, selected works.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="assets/demos/demo-musk-resume.pdf"><img src="assets/demos/demo-musk-resume.png" alt="Resume preview"></a><br>
+      <b>Resume</b><br>
+      Professional resume and CV.
+    </td>
+    <td width="50%" valign="top">
+      <a href="assets/demos/demo-agent-slides.pdf"><img src="assets/demos/demo-agent-slides.png" alt="Slides preview"></a><br>
+      <b>Slides</b><br>
+      Talk deck, keynote, internal presentation.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="assets/demos/demo-nvidia-equity-report.pdf"><img src="assets/demos/demo-nvidia-equity-report.png" alt="Equity report preview"></a><br>
+      <b>Equity Report</b><br>
+      Investment memo, earnings brief.
+    </td>
+    <td width="50%" valign="top">
+      <a href="assets/demos/demo-folio-changelog.pdf"><img src="assets/demos/demo-folio-changelog.png" alt="Changelog preview"></a><br>
+      <b>Changelog</b><br>
+      Release notes, version update.
+    </td>
+  </tr>
+</table>
+
+## From Prompt To Output
+
+1. Start with raw notes, a draft, source links, or a loose request like `make a one-pager for my startup`.
+2. Folio routes the request to the right document type and language path, then reshapes the content into a template-ready structure.
+3. The output lands as a stable PDF or PPTX with Folio's parchment canvas, serif hierarchy, and restrained cinnabar-coral accent.
 
 ## Quick Start
 
@@ -45,20 +123,7 @@ Example prompts:
 
 Optional: create `~/.config/folio/brand.md` to persist identity, document defaults, and writing habits. Start from [brand.example.md](references/brand.example.md). Folio uses it as fallback context when the current request is ambiguous.
 
-## Document Types
-
-| Type          | Best for                                  | Example                                                              |
-| ------------- | ----------------------------------------- | -------------------------------------------------------------------- |
-| One-Pager     | launch brief, proposal, exec summary      | [Orbit Cache launch one-pager](assets/demos/demo-orbit-onepager.pdf) |
-| Long Doc      | white paper, review, technical report     | [Agent Operations Review](assets/demos/demo-agent-ops-longdoc.pdf)   |
-| Letter        | formal letter, memo, statement            | [Agent review council letter](assets/demos/demo-board-letter.pdf)    |
-| Portfolio     | case studies, selected works              | [Lena Park portfolio](assets/demos/demo-ridge-portfolio.pdf)         |
-| Resume        | professional resume / CV                  | [Elon Musk resume](assets/demos/demo-musk-resume.pdf)                |
-| Slides        | talk deck, keynote, internal presentation | [Agent development slides deck](assets/demos/demo-agent-slides.pdf)  |
-| Equity Report | investment memo, earnings brief           | [NVIDIA equity report](assets/demos/demo-nvidia-equity-report.pdf)   |
-| Changelog     | release notes, version update             | [Folio release notes](assets/demos/demo-folio-changelog.pdf)         |
-
-Templates live in `assets/templates/`. Rendered showcase assets in `assets/demos/` are kept as `PDF + PNG` only, so the table above now links every document type to a PDF example.
+Templates live in `assets/templates/`. Rendered showcase assets in `assets/demos/` are kept as `PDF + PNG`, so README can stay visual without trying to recreate the full homepage inside Markdown.
 
 ## Core Capabilities
 
@@ -133,14 +198,22 @@ Folio also works as a brief for image models and drawing tools. Point them at th
 
 Example illustration briefs:
 
-- Alpine night-train travel atlas with station callouts, timetable chips, and warm editorial annotations
-  ![Alpine night-train travel atlas](assets/illustrations/travel-tesla-optimus.png)
-
-- Coastal weekend route poster with tide windows, cafe stops, and hand-marked walking segments
-  ![Coastal weekend route poster](assets/illustrations/travel-spatialvla.png)
-
-- Desert design hotel field guide with arrival map, packing cues, and restrained artifact photography framing
-  ![Desert design hotel field guide](assets/illustrations/travel-3d-representations.png)
+<table>
+  <tr>
+    <td width="33.33%" valign="top" align="center">
+      <img src="assets/illustrations/travel-tesla-optimus.png" alt="Alpine night-train travel atlas"><br>
+      Alpine night-train travel atlas with station callouts, timetable chips, and warm editorial annotations
+    </td>
+    <td width="33.33%" valign="top" align="center">
+      <img src="assets/illustrations/travel-spatialvla.png" alt="Coastal weekend route poster"><br>
+      Coastal weekend route poster with tide windows, cafe stops, and hand-marked walking segments
+    </td>
+    <td width="33.33%" valign="top" align="center">
+      <img src="assets/illustrations/travel-3d-representations.png" alt="Desert design hotel field guide"><br>
+      Desert design hotel field guide with arrival map, packing cues, and restrained artifact photography framing
+    </td>
+  </tr>
+</table>
 
 ## Support
 
