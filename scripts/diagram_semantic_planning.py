@@ -477,10 +477,11 @@ def extract_architecture_semantics(text: str) -> dict[str, Any]:
     node_ids = {node["id"] for node in nodes}
     edge_evidence = collect_edge_evidence(text, node_ids)
     edges = select_edges(edge_evidence)
+    focus_path = _choose_focus_path(node_ids, edges)
+    focus_node = _choose_focus_node(evidence, node_ids, focus_path)
+    edges = _promote_focus_edges(edges, focus_path)
     layers = _build_layers(nodes)
     groups = _build_groups(node_ids)
-    focus_node = _choose_focus_node(evidence, node_ids)
-    focus_path = _choose_focus_path(node_ids, edges)
     focus_reason = _focus_reason(focus_node, focus_path)
     legend = _build_legend(edges)
 
@@ -596,7 +597,13 @@ def _build_groups(node_ids: set[str]) -> list[dict[str, Any]]:
     return groups
 
 
-def _choose_focus_node(evidence: dict[str, dict[str, Any]], node_ids: set[str]) -> str:
+def _choose_focus_node(evidence: dict[str, dict[str, Any]], node_ids: set[str], focus_path: list[str]) -> str:
+    if len(focus_path) >= 3:
+        return focus_path[len(focus_path) // 2]
+    if len(focus_path) == 2:
+        return focus_path[1]
+    if len(focus_path) == 1:
+        return focus_path[0]
     scored = []
     for node_id in node_ids:
         item = evidence[node_id]
@@ -621,6 +628,18 @@ def _choose_focus_path(node_ids: set[str], edges: list[dict[str, Any]]) -> list[
         if all(node in node_ids for node in path) and all((path[i], path[i + 1]) in edge_pairs for i in range(len(path) - 1)):
             return path
     return sorted(node_ids)[:1]
+
+
+def _promote_focus_edges(edges: list[dict[str, Any]], focus_path: list[str]) -> list[dict[str, Any]]:
+    focus_pairs = {(focus_path[i], focus_path[i + 1]) for i in range(len(focus_path) - 1)}
+    promoted = []
+    for edge in edges:
+        updated = dict(edge)
+        if (edge["source"], edge["target"]) in focus_pairs:
+            updated["kind"] = "primary"
+            updated["priority"] = "primary"
+        promoted.append(updated)
+    return promoted
 
 
 def _focus_reason(focus_node: str, focus_path: list[str]) -> str:

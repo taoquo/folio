@@ -100,6 +100,7 @@ class DiagramSemanticPlanningTests(TestCase):
 
         self.assertEqual(["scheduler", "world", "systems"], semantics["focus_path"])
         self.assertEqual("World owns runtime state while systems execute frame work.", semantics["focus_reason"])
+        self.assertEqual("world", semantics["focus_node"])
 
     def test_plan_architecture_from_text_returns_diagram_spec(self) -> None:
         spec = planning.plan_architecture_from_text(ECS_TEXT, "ECS Runtime")
@@ -139,3 +140,8 @@ class DiagramSemanticPlanningTests(TestCase):
         self.assertIn(spec.layout, {"horizontal-layers", "vertical-stack"})
         self.assertFalse(any(node.id == "input" for node in spec.nodes))
         self.assertFalse(any(node.id == "systems" for node in spec.nodes))
+        self.assertEqual("processor", spec.focus)
+        focus_edges = {(spec.focus_path[i], spec.focus_path[i + 1]) for i in range(len(spec.focus_path) - 1)}
+        for edge in spec.edges:
+            if (edge.source, edge.target) in focus_edges:
+                self.assertEqual("primary", edge.kind)

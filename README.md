@@ -91,13 +91,13 @@ What matters on first contact:
   <tr>
     <td width="50%" valign="top">
       <a href="assets/demos/demo-architecture.pdf"><img src="assets/demos/demo-architecture.png" alt="Architecture diagram artifact preview"></a><br>
-      <b>Architecture Artifact</b><br>
-      ECS game-engine runtime architecture with scheduler, world orchestration, systems, and component stores, exported as SVG, PNG, and PDF.
+      <b>Agent Runtime Artifact</b><br>
+      Main showcase case: gateway ingress, task planning, model runtime, tool execution, retrieval memory, and observability.
     </td>
     <td width="50%" valign="top">
-      <a href="assets/demos/demo-uml-class.pdf"><img src="assets/demos/demo-uml-class.png" alt="UML class diagram artifact preview"></a><br>
-      <b>UML Class Artifact</b><br>
-      ECS world-model class diagram showing world ownership, component-store composition, and system queries in the same warm editorial palette.
+      <a href="assets/demos/demo-workflow-engine.pdf"><img src="assets/demos/demo-workflow-engine.png" alt="Workflow engine diagram artifact preview"></a><br>
+      <b>Workflow Engine Artifact</b><br>
+      Secondary showcase case: orchestration, worker execution, state persistence, and event-driven continuation paths.
     </td>
   </tr>
 </table>
