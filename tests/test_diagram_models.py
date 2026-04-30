@@ -77,6 +77,50 @@ class DiagramModelTests(TestCase):
         self.assertEqual("uml-class", spec.kind)
         self.assertEqual("PageSpec", spec.types[0].name)
 
+    def test_load_uml_relationship_route_policy(self) -> None:
+        payload = {
+            "kind": "uml-class",
+            "title": "Route Policy",
+            "layout": "class-grid",
+            "types": [
+                {"id": "A", "kind": "class", "name": "A"},
+                {"id": "B", "kind": "class", "name": "B"},
+            ],
+            "relationships": [
+                {"source": "A", "target": "B", "kind": "association", "route_policy": "top-lane"}
+            ],
+        }
+
+        spec = models.load_diagram_spec(payload)
+
+        self.assertEqual("top-lane", spec.relationships[0].route_policy)
+
+    def test_load_uml_relationship_label_lane(self) -> None:
+        payload = {
+            "kind": "uml-class",
+            "title": "Label Lane",
+            "layout": "class-grid",
+            "types": [
+                {"id": "A", "kind": "class", "name": "A"},
+                {"id": "B", "kind": "class", "name": "B"},
+            ],
+            "relationships": [
+                {
+                    "source": "A",
+                    "target": "B",
+                    "kind": "association",
+                    "label": "retrieves",
+                    "label_lane": "top",
+                    "label_offset": -8,
+                }
+            ],
+        }
+
+        spec = models.load_diagram_spec(payload)
+
+        self.assertEqual("top", spec.relationships[0].label_lane)
+        self.assertEqual(-8, spec.relationships[0].label_offset)
+
     def test_reject_unknown_relationship_kind(self) -> None:
         payload = {
             "kind": "uml-class",
@@ -95,6 +139,9 @@ class DiagramModelTests(TestCase):
 
         self.assertEqual("architecture", arch.kind)
         self.assertEqual("uml-class", uml.kind)
+        self.assertTrue(any(item.kind == "interface" for item in uml.types))
+        self.assertTrue(any(item.kind == "enum" for item in uml.types))
+        self.assertFalse(any(rel.source == "ToolCall" and rel.target == "RunnableStep" for rel in uml.relationships))
 
     def test_load_architecture_semantic_fields(self) -> None:
         payload = {
@@ -104,7 +151,7 @@ class DiagramModelTests(TestCase):
             "focus": "world",
             "focus_path": ["scheduler", "world", "systems"],
             "focus_reason": "Main runtime loop",
-            "layers": [{"id": "runtime", "label": "Runtime", "purpose": "Frame execution", "order": 2}],
+            "layers": [{"id": "runtime", "label": "Runtime", "purpose": "Frame execution", "order": 2, "row_policy": "pipeline"}],
             "groups": [
                 {
                     "id": "loop",
@@ -112,6 +159,7 @@ class DiagramModelTests(TestCase):
                     "kind": "runtime-loop",
                     "layer": "runtime",
                     "members": ["scheduler", "world", "systems"],
+                    "layout_policy": "pipeline",
                     "summary": "Main tick path",
                 }
             ],
@@ -153,6 +201,8 @@ class DiagramModelTests(TestCase):
         self.assertEqual(["scheduler", "world", "systems"], spec.focus_path)
         self.assertEqual("Main runtime loop", spec.focus_reason)
         self.assertEqual("runtime-loop", spec.groups[0].kind)
+        self.assertEqual("pipeline", spec.groups[0].layout_policy)
+        self.assertEqual("pipeline", spec.layers[0].row_policy)
         self.assertEqual("world", spec.nodes[0].role)
         self.assertTrue(spec.nodes[0].state_owner)
         self.assertEqual("control", spec.edges[0].flow)

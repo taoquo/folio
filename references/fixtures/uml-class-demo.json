@@ -1,56 +1,90 @@
 {
   "kind": "uml-class",
-  "title": "ECS World Model",
+  "title": "Agent Session Model",
   "layout": "class-grid",
-  "focus": "World",
+  "focus": "AgentSession",
   "types": [
     {
-      "id": "World",
+      "id": "AgentSession",
       "kind": "class",
-      "name": "World",
-      "attributes": ["entities: EntityPool", "stores: ComponentRegistry"],
-      "methods": ["spawn() -> Entity", "query(mask) -> View"]
+      "name": "AgentSession",
+      "x": 120,
+      "y": 120,
+      "attributes": ["id: UUID", "status: SessionStatus", "active_step: int"],
+      "methods": ["advance() -> None", "append(result) -> None"]
     },
     {
-      "id": "Entity",
-      "kind": "class",
-      "name": "Entity",
-      "attributes": ["id: int", "generation: int"],
-      "methods": ["is_alive() -> bool"]
+      "id": "RunnableStep",
+      "kind": "interface",
+      "name": "RunnableStep",
+      "x": 430,
+      "y": 250,
+      "attributes": ["kind: str"],
+      "methods": ["run(ctx) -> StepResult"]
     },
     {
-      "id": "ComponentStore",
+      "id": "MemoryStore",
       "kind": "class",
-      "name": "ComponentStore<T>",
-      "attributes": ["dense: list[T]", "sparse: list[int]"],
-      "methods": ["insert(entity, value) -> None", "get(entity) -> T"]
+      "name": "MemoryStore",
+      "x": 680,
+      "y": 120,
+      "attributes": ["namespace: str", "last_sync: datetime"],
+      "methods": ["retrieve(query) -> list[Record]", "persist(batch) -> None"]
     },
     {
-      "id": "MovementSystem",
+      "id": "PlanStep",
       "kind": "class",
-      "name": "MovementSystem",
-      "attributes": ["required: Velocity|Transform"],
-      "methods": ["update(dt) -> None"]
+      "name": "PlanStep",
+      "x": 120,
+      "y": 420,
+      "attributes": ["prompt: PromptBlock", "tools: list[ToolCall]"],
+      "methods": ["resolve(state) -> ToolCall"]
+    },
+    {
+      "id": "ToolCall",
+      "kind": "class",
+      "name": "ToolCall",
+      "x": 430,
+      "y": 420,
+      "attributes": ["tool_name: str", "arguments: dict[str, Any]"],
+      "methods": ["execute() -> ToolResult"]
+    },
+    {
+      "id": "SessionStatus",
+      "kind": "enum",
+      "name": "SessionStatus",
+      "x": 680,
+      "y": 420,
+      "attributes": ["QUEUED", "RUNNING", "WAITING_TOOL", "COMPLETED"],
+      "methods": []
     }
   ],
   "relationships": [
     {
-      "source": "World",
-      "target": "Entity",
-      "kind": "aggregation",
-      "target_multiplicity": "*"
-    },
-    {
-      "source": "World",
-      "target": "ComponentStore",
+      "source": "AgentSession",
+      "target": "PlanStep",
       "kind": "composition",
       "target_multiplicity": "*"
     },
     {
-      "source": "MovementSystem",
-      "target": "World",
+      "source": "PlanStep",
+      "target": "RunnableStep",
+      "kind": "inheritance"
+    },
+    {
+      "source": "AgentSession",
+      "target": "MemoryStore",
       "kind": "association",
-      "label": "queries"
+      "label": "retrieves",
+      "route_policy": "top-lane",
+      "label_lane": "top",
+      "label_offset": -10
+    },
+    {
+      "source": "PlanStep",
+      "target": "ToolCall",
+      "kind": "aggregation",
+      "target_multiplicity": "*"
     }
   ]
 }

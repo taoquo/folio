@@ -20,6 +20,11 @@ Optional semantic planning fields:
 - `groups`
 - `legend`
 
+Optional layout policy fields:
+
+- `layers[].row_policy`
+- `groups[].layout_policy`
+
 Node kinds:
 
 - `external`
@@ -57,6 +62,19 @@ Recommended role values:
 - `event-bus`
 - `renderer`
 - `tool-runtime`
+
+Recommended row policy values:
+
+- `centered`
+- `pipeline`
+- `attachments-right`
+
+Recommended group layout policy values:
+
+- `center-band`
+- `pipeline`
+- `sidecar`
+- `stack`
 
 Edge semantic fields:
 

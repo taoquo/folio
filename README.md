@@ -89,15 +89,27 @@ What matters on first contact:
 
 <table>
   <tr>
-    <td width="50%" valign="top">
+    <td width="33.33%" valign="top">
       <a href="assets/demos/demo-architecture.pdf"><img src="assets/demos/demo-architecture.png" alt="Architecture diagram artifact preview"></a><br>
       <b>Agent Runtime Artifact</b><br>
       Main showcase case: gateway ingress, task planning, model runtime, tool execution, retrieval memory, and observability.
     </td>
-    <td width="50%" valign="top">
+    <td width="33.33%" valign="top">
       <a href="assets/demos/demo-workflow-engine.pdf"><img src="assets/demos/demo-workflow-engine.png" alt="Workflow engine diagram artifact preview"></a><br>
       <b>Workflow Engine Artifact</b><br>
       Secondary showcase case: orchestration, worker execution, state persistence, and event-driven continuation paths.
+    </td>
+    <td width="33.33%" valign="top">
+      <a href="assets/demos/demo-data-platform.pdf"><img src="assets/demos/demo-data-platform.png" alt="Data platform artifact preview"></a><br>
+      <b>Data Platform Artifact</b><br>
+      Policy-driven layout case: pipeline spine, support reads, and grouped data-path structure rendered from the same architecture grammar.
+    </td>
+  </tr>
+  <tr>
+    <td width="33.33%" valign="top">
+      <a href="assets/demos/demo-uml-class.pdf"><img src="assets/demos/demo-uml-class.png" alt="UML class artifact preview"></a><br>
+      <b>UML Class Artifact</b><br>
+      Agent session domain model with interfaces, enum lifecycle state, composition, aggregation, and service-to-memory associations.
     </td>
   </tr>
 </table>

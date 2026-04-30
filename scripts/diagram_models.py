@@ -11,6 +11,8 @@ ARCHITECTURE_NODE_KINDS = {"external", "service", "store", "cloud"}
 ARCHITECTURE_EDGE_KINDS = {"primary", "secondary", "async"}
 ARCHITECTURE_IMPORTANCE = {"primary", "secondary", "background"}
 ARCHITECTURE_LIFECYCLE_PHASES = {"bootstrap", "runtime", "background", "shutdown"}
+ARCHITECTURE_ROW_POLICIES = {"centered", "pipeline", "attachments-right"}
+ARCHITECTURE_GROUP_LAYOUT_POLICIES = {"center-band", "pipeline", "sidecar", "stack"}
 UML_TYPE_KINDS = {"class", "interface", "enum"}
 UML_RELATIONSHIP_KINDS = {"inheritance", "association", "aggregation", "composition"}
 
@@ -21,6 +23,7 @@ class LayerSpec:
     label: str
     purpose: str | None = None
     order: int | None = None
+    row_policy: str | None = None
 
 
 @dataclass(frozen=True)
@@ -30,6 +33,7 @@ class GroupSpec:
     kind: str
     layer: str | None = None
     members: list[str] = field(default_factory=list)
+    layout_policy: str | None = None
     side_label: str | None = None
     summary: str | None = None
 
@@ -98,6 +102,8 @@ class UmlTypeSpec:
     name: str
     attributes: list[str] = field(default_factory=list)
     methods: list[str] = field(default_factory=list)
+    x: int | None = None
+    y: int | None = None
 
 
 @dataclass(frozen=True)
@@ -108,6 +114,9 @@ class UmlRelationshipSpec:
     label: str | None = None
     source_multiplicity: str | None = None
     target_multiplicity: str | None = None
+    route_policy: str | None = None
+    label_lane: str | None = None
+    label_offset: int | None = None
 
 
 @dataclass(frozen=True)
@@ -144,9 +153,13 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
             label=item["label"],
             purpose=item.get("purpose"),
             order=item.get("order"),
+            row_policy=item.get("row_policy"),
         )
         for item in payload.get("layers", [])
     ]
+    for layer in layers:
+        if layer.row_policy is not None and layer.row_policy not in ARCHITECTURE_ROW_POLICIES:
+            raise ValueError(f"unsupported architecture row_policy: {layer.row_policy}")
     groups = [
         GroupSpec(
             id=item["id"],
@@ -154,11 +167,15 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
             kind=item["kind"],
             layer=item.get("layer"),
             members=list(item.get("members", [])),
+            layout_policy=item.get("layout_policy"),
             side_label=item.get("side_label"),
             summary=item.get("summary"),
         )
         for item in payload.get("groups", [])
     ]
+    for group in groups:
+        if group.layout_policy is not None and group.layout_policy not in ARCHITECTURE_GROUP_LAYOUT_POLICIES:
+            raise ValueError(f"unsupported architecture layout_policy: {group.layout_policy}")
     nodes = []
     for item in payload.get("nodes", []):
         kind = item["kind"]
@@ -257,6 +274,8 @@ def _load_uml_class(payload: dict[str, Any]) -> UmlClassDiagramSpec:
                 name=item["name"],
                 attributes=list(item.get("attributes", [])),
                 methods=list(item.get("methods", [])),
+                x=item.get("x"),
+                y=item.get("y"),
             )
         )
 
@@ -273,6 +292,9 @@ def _load_uml_class(payload: dict[str, Any]) -> UmlClassDiagramSpec:
                 label=item.get("label"),
                 source_multiplicity=item.get("source_multiplicity"),
                 target_multiplicity=item.get("target_multiplicity"),
+                route_policy=item.get("route_policy"),
+                label_lane=item.get("label_lane"),
+                label_offset=item.get("label_offset"),
             )
         )
 
