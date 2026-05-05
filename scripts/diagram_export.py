@@ -4,12 +4,22 @@ import subprocess
 from pathlib import Path
 from typing import Optional
 
-try:
-    from weasyprint import HTML
-    _WEASYPRINT_IMPORT_ERROR: Optional[Exception] = None
-except (ImportError, OSError) as exc:
-    HTML = None
-    _WEASYPRINT_IMPORT_ERROR = exc
+HTML = None
+_WEASYPRINT_IMPORT_ERROR: Optional[Exception] = None
+
+
+def _get_weasyprint_html():
+    global HTML, _WEASYPRINT_IMPORT_ERROR
+    if HTML is not None:
+        return HTML
+    try:
+        from weasyprint import HTML as weasy_html
+    except (ImportError, OSError) as exc:
+        _WEASYPRINT_IMPORT_ERROR = exc
+        return None
+    HTML = weasy_html
+    _WEASYPRINT_IMPORT_ERROR = None
+    return HTML
 
 
 def export_png(svg_path: str | Path, png_path: str | Path, width: int = 1920) -> None:
@@ -46,8 +56,9 @@ def export_pdf(svg_path: str | Path, pdf_path: str | Path, title: str) -> None:
   <div class="canvas">{svg.read_text(encoding="utf-8")}</div>
 </body>
 </html>"""
-    if HTML is not None:
-        HTML(string=html, base_url=str(svg.parent)).write_pdf(str(pdf))
+    html_builder = _get_weasyprint_html()
+    if html_builder is not None:
+        html_builder(string=html, base_url=str(svg.parent)).write_pdf(str(pdf))
         return
 
     fallback = Path(__file__).resolve().parents[1] / ".venv-weasy" / "bin" / "python"

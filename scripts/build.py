@@ -22,17 +22,18 @@ import os
 import re
 import subprocess
 import sys
+from html import escape
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from diagram_export import export_pdf, export_png
 from diagram_models import load_diagram_spec_file
 from diagram_render_svg import render_diagram_svg
 from diagram_semantic_planning import plan_architecture_from_text
 from shared import (
     COOL_GRAY_BLOCKLIST,
     DIAGRAMS,
+    DEMOS,
     EXAMPLES,
     GENERATED_DIAGRAM_PDF,
     GENERATED_DIAGRAM_PNG,
@@ -96,20 +97,68 @@ DIAGRAM_TARGETS: dict[str, str] = {
 DIAGRAM_ARTIFACT_TARGETS: dict[str, dict[str, str]] = {
     "artifact-architecture-demo": {
         "text": "references/fixtures/architecture-demo.txt",
-        "title": "ECS Game Engine Runtime",
-        "svg": "architecture-demo.svg",
-        "png": "architecture-demo.png",
-        "pdf": "architecture-demo.pdf",
+        "title": "Agent Runtime",
+        "svg": "agent-runtime-demo.svg",
+        "png": "agent-runtime-demo.png",
+        "pdf": "agent-runtime-demo.pdf",
+        "showcase": {
+            "basename": "demo-architecture",
+            "eyebrow": "Architecture Demo",
+            "heading": "Agent Runtime",
+            "alt": "Agent runtime architecture",
+            "caption": "A request-driven agent runtime showing gateway ingress, planning, model execution, tool use, retrieval memory, and observability in Folio's warm editorial language.",
+        },
+    },
+    "artifact-workflow-engine-demo": {
+        "text": "references/fixtures/workflow-engine-demo.txt",
+        "title": "Workflow Engine",
+        "svg": "workflow-engine-demo.svg",
+        "png": "workflow-engine-demo.png",
+        "pdf": "workflow-engine-demo.pdf",
+        "showcase": {
+            "basename": "demo-workflow-engine",
+            "eyebrow": "Architecture Demo",
+            "heading": "Workflow Engine",
+            "alt": "Workflow engine architecture",
+            "caption": "A workflow orchestration case showing gateway ingress, orchestration, worker execution, state persistence, and event-based continuation.",
+        },
+    },
+    "artifact-data-platform-demo": {
+        "text": "references/fixtures/data-platform-demo.txt",
+        "title": "Data Platform",
+        "svg": "data-platform-demo.svg",
+        "png": "data-platform-demo.png",
+        "pdf": "data-platform-demo.pdf",
+        "showcase": {
+            "basename": "demo-data-platform",
+            "eyebrow": "Architecture Demo",
+            "heading": "Data Platform",
+            "alt": "Data platform architecture",
+            "caption": "A policy-driven data platform diagram showing stream ingest, transform, warehouse serving, and supporting read paths through one reusable grammar.",
+        },
     },
     "artifact-uml-class-demo": {
         "spec": "references/fixtures/uml-class-demo.json",
         "svg": "uml-class-demo.svg",
         "png": "uml-class-demo.png",
         "pdf": "uml-class-demo.pdf",
+        "showcase": {
+            "basename": "demo-uml-class",
+            "eyebrow": "UML Class Demo",
+            "heading": "Agent Session Model",
+            "alt": "Agent session model UML class diagram",
+            "caption": "A standalone UML class artifact covering session ownership, runnable step interfaces, tool-call execution, retrieval memory, and enum-backed lifecycle state.",
+        },
     },
 }
 
 _PDF_BUILD_DEPS: tuple[Any | None, Any | None, str | None] | None = None
+
+
+def _load_diagram_exporters():
+    from diagram_export import export_pdf, export_png
+
+    return export_pdf, export_png
 
 
 # ------------------------- build -------------------------
@@ -306,14 +355,114 @@ def build_diagram_artifact(name: str) -> bool:
         pdf_path = GENERATED_DIAGRAM_PDF / config["pdf"]
 
         svg_path.write_text(svg, encoding="utf-8")
+        export_pdf, export_png = _load_diagram_exporters()
         export_png(svg_path, png_path)
         export_pdf(svg_path, pdf_path, spec.title)
+        _sync_diagram_showcase(config, png_path, pdf_path)
     except Exception as exc:
         print(f"ERROR: {name}: artifact build failed ({exc})")
         return False
 
     print(f"OK: {name}: generated {svg_path.name}, {png_path.name}, {pdf_path.name}")
     return True
+
+
+def _showcase_demo_html(showcase: dict[str, str], generated_png_name: str) -> str:
+    eyebrow = escape(showcase["eyebrow"])
+    heading = escape(showcase["heading"])
+    alt = escape(showcase["alt"])
+    caption = escape(showcase["caption"])
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{heading} Demo</title>
+<style>
+  :root {{
+    --parchment: #F6F0EA;
+    --ivory: #FBF7F3;
+    --near-black: #191514;
+    --olive: #5A4A43;
+    --stone: #85776F;
+    --brand: #B83D2E;
+  }}
+
+  * {{ box-sizing: border-box; }}
+
+  body {{
+    margin: 0;
+    padding: 32px 24px;
+    background: var(--parchment);
+    color: var(--near-black);
+    font-family: Charter, Georgia, serif;
+  }}
+
+  main {{
+    max-width: 1000px;
+    margin: 0 auto;
+  }}
+
+  .eyebrow {{
+    margin: 0 0 8px;
+    color: var(--stone);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }}
+
+  h1 {{
+    margin: 0 0 16px;
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 1.15;
+  }}
+
+  .frame {{
+    padding: 20px;
+    background: var(--ivory);
+    border: 1px solid #E9DED4;
+  }}
+
+  img {{
+    display: block;
+    width: 100%;
+    height: auto;
+  }}
+
+  .caption {{
+    margin: 14px 0 0;
+    color: var(--olive);
+    font-size: 15px;
+  }}
+</style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">{eyebrow}</p>
+    <h1>{heading}</h1>
+    <div class="frame">
+      <img src="../diagrams/generated/png/{escape(generated_png_name)}" alt="{alt}">
+    </div>
+    <p class="caption">{caption}</p>
+  </main>
+</body>
+</html>"""
+
+
+def _sync_diagram_showcase(config: dict[str, Any], png_path: Path, pdf_path: Path) -> None:
+    showcase = config.get("showcase")
+    if not showcase:
+        return
+
+    DEMOS.mkdir(parents=True, exist_ok=True)
+    basename = showcase["basename"]
+    demo_png = DEMOS / f"{basename}.png"
+    demo_pdf = DEMOS / f"{basename}.pdf"
+    demo_html = DEMOS / f"{basename}.html"
+
+    demo_png.write_bytes(png_path.read_bytes())
+    demo_pdf.write_bytes(pdf_path.read_bytes())
+    demo_html.write_text(_showcase_demo_html(showcase, config["png"]), encoding="utf-8")
 
 
 def build_all() -> int:

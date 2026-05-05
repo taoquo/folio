@@ -1,7 +1,10 @@
 import builtins
+import contextlib
+import io
 import importlib.util
 import sys
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 from unittest import TestCase, mock
 
@@ -18,6 +21,22 @@ SPEC.loader.exec_module(build)
 
 
 class BuildScriptTests(TestCase):
+    def test_build_import_does_not_emit_weasyprint_warning_for_static_commands(self) -> None:
+        sys.modules.pop("diagram_export", None)
+        unique_name = "folio_build_static_import"
+        sys.modules.pop(unique_name, None)
+
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            spec = importlib.util.spec_from_file_location(unique_name, SCRIPTS_DIR / "build.py")
+            module = importlib.util.module_from_spec(spec)
+            assert spec.loader is not None
+            sys.modules[spec.name] = module
+            spec.loader.exec_module(module)
+
+        self.assertEqual("", stderr.getvalue().strip())
+        self.assertTrue(hasattr(module, "sync_check"))
+
     def test_architecture_demo_assets_exist(self) -> None:
         demo_html = ROOT / "assets" / "demos" / "demo-architecture.html"
         demo_png = ROOT / "assets" / "demos" / "demo-architecture.png"
@@ -81,6 +100,76 @@ class BuildScriptTests(TestCase):
     def test_page_count_issue_allows_single_page_diagram_pdf(self) -> None:
         self.assertIsNone(build.page_count_issue("artifact-architecture-demo", 1, 1, 1))
 
+    def test_diagram_artifact_targets_cover_showcase_gallery(self) -> None:
+        expected_showcases = {
+            "demo-architecture",
+            "demo-workflow-engine",
+            "demo-data-platform",
+            "demo-uml-class",
+        }
+        actual_showcases = {
+            config["showcase"]["basename"]
+            for config in build.DIAGRAM_ARTIFACT_TARGETS.values()
+        }
+
+        self.assertEqual(expected_showcases, actual_showcases)
+
+        for doc_name in ("README.md", "README.zh-CN.md", "index.html", "index-zh.html"):
+            text = (ROOT / doc_name).read_text(encoding="utf-8")
+            for basename in expected_showcases:
+                self.assertIn(f"assets/demos/{basename}.pdf", text)
+
+    def test_build_diagram_artifact_syncs_showcase_assets(self) -> None:
+        fake_spec = SimpleNamespace(title="Workflow Engine")
+
+        with TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            svg_dir = tmp_path / "generated" / "svg"
+            png_dir = tmp_path / "generated" / "png"
+            pdf_dir = tmp_path / "generated" / "pdf"
+            demos_dir = tmp_path / "demos"
+
+            def fake_export_png(_svg_path: Path, out_path: Path) -> None:
+                out_path.parent.mkdir(parents=True, exist_ok=True)
+                out_path.write_bytes(b"png")
+
+            def fake_export_pdf(_svg_path: Path, out_path: Path, _title: str) -> None:
+                out_path.parent.mkdir(parents=True, exist_ok=True)
+                out_path.write_bytes(b"pdf")
+
+            config = {
+                "text": "references/fixtures/workflow-engine-demo.txt",
+                "title": "Workflow Engine",
+                "svg": "workflow-engine-demo.svg",
+                "png": "workflow-engine-demo.png",
+                "pdf": "workflow-engine-demo.pdf",
+                "showcase": {
+                    "basename": "demo-workflow-engine",
+                    "eyebrow": "Architecture Demo",
+                    "heading": "Workflow Engine",
+                    "alt": "Workflow engine architecture",
+                    "caption": "A workflow orchestration case showing gateway ingress, orchestration, worker execution, state persistence, and event-based continuations.",
+                },
+            }
+
+            with mock.patch.object(build, "GENERATED_DIAGRAM_SVG", svg_dir):
+                with mock.patch.object(build, "GENERATED_DIAGRAM_PNG", png_dir):
+                    with mock.patch.object(build, "GENERATED_DIAGRAM_PDF", pdf_dir):
+                        with mock.patch.object(build, "DEMOS", demos_dir):
+                            with mock.patch.dict(build.DIAGRAM_ARTIFACT_TARGETS, {"artifact-demo": config}, clear=False):
+                                with mock.patch.object(build, "plan_architecture_from_text", return_value=fake_spec):
+                                    with mock.patch.object(build, "render_diagram_svg", return_value="<svg/>"):
+                                        with mock.patch.object(build, "_load_diagram_exporters", return_value=(fake_export_pdf, fake_export_png)):
+                                                ok = build.build_diagram_artifact("artifact-demo")
+
+            self.assertTrue(ok)
+            self.assertEqual(b"png", (demos_dir / "demo-workflow-engine.png").read_bytes())
+            self.assertEqual(b"pdf", (demos_dir / "demo-workflow-engine.pdf").read_bytes())
+            self.assertTrue((demos_dir / "demo-workflow-engine.html").exists())
+            demo_html = (demos_dir / "demo-workflow-engine.html").read_text(encoding="utf-8")
+            self.assertIn("../diagrams/generated/png/workflow-engine-demo.png", demo_html)
+            self.assertIn("Workflow Engine", demo_html)
+
     def test_build_diagram_artifact_supports_text_source(self) -> None:
         fake_spec = SimpleNamespace(title="From Text")
         generated_svg = build.GENERATED_DIAGRAM_SVG / "from-text.svg"
@@ -99,8 +188,7 @@ class BuildScriptTests(TestCase):
         ):
             with mock.patch.object(build, "plan_architecture_from_text", return_value=fake_spec) as plan_mock:
                 with mock.patch.object(build, "render_diagram_svg", return_value="<svg/>"):
-                    with mock.patch.object(build, "export_png"):
-                        with mock.patch.object(build, "export_pdf"):
+                    with mock.patch.object(build, "_load_diagram_exporters", return_value=(mock.Mock(), mock.Mock())):
                             ok = build.build_diagram_artifact("artifact-text-demo")
 
         self.assertTrue(ok)

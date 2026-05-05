@@ -23,28 +23,30 @@ exports = load_module("diagram_export", "diagram_export.py")
 
 
 class DiagramExportTests(TestCase):
-    @mock.patch("diagram_export.subprocess.run")
-    def test_export_png_uses_rsvg_convert(self, run_mock) -> None:
-        run_mock.return_value.returncode = 0
-        with TemporaryDirectory() as tmp:
-            svg_path = Path(tmp) / "demo.svg"
-            png_path = Path(tmp) / "demo.png"
-            svg_path.write_text("<svg/>", encoding="utf-8")
+    def test_export_png_uses_rsvg_convert(self) -> None:
+        with mock.patch.object(exports.subprocess, "run") as run_mock:
+            run_mock.return_value.returncode = 0
+            with TemporaryDirectory() as tmp:
+                svg_path = Path(tmp) / "demo.svg"
+                png_path = Path(tmp) / "demo.png"
+                svg_path.write_text("<svg/>", encoding="utf-8")
 
-            exports.export_png(svg_path, png_path, width=1600)
+                exports.export_png(svg_path, png_path, width=1600)
 
         run_mock.assert_called_once()
         command = run_mock.call_args[0][0]
         self.assertEqual("rsvg-convert", command[0])
 
-    @mock.patch("diagram_export.HTML")
-    def test_export_pdf_wraps_svg_in_single_page_html(self, html_mock) -> None:
+    def test_export_pdf_wraps_svg_in_single_page_html(self) -> None:
+        html_mock = mock.Mock()
         instance = html_mock.return_value
-        with TemporaryDirectory() as tmp:
-            svg_path = Path(tmp) / "demo.svg"
-            pdf_path = Path(tmp) / "demo.pdf"
-            svg_path.write_text("<svg/>", encoding="utf-8")
+        with mock.patch.object(exports, "_get_weasyprint_html", return_value=html_mock) as html_loader_mock:
+            with TemporaryDirectory() as tmp:
+                svg_path = Path(tmp) / "demo.svg"
+                pdf_path = Path(tmp) / "demo.pdf"
+                svg_path.write_text("<svg/>", encoding="utf-8")
 
-            exports.export_pdf(svg_path, pdf_path, "Demo")
+                exports.export_pdf(svg_path, pdf_path, "Demo")
 
+        html_loader_mock.assert_called_once()
         instance.write_pdf.assert_called_once()
