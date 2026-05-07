@@ -342,7 +342,7 @@
     letter-spacing: 0.4px;
   }
   .archive-statement {
-    margin: 0 0 20px;
+    margin: 0 0 16px;
     font-family: var(--serif);
     font-size: 19px;
     line-height: 1.5;
@@ -350,10 +350,10 @@
   }
   .archive-notes {
     display: grid;
-    gap: 14px;
+    gap: 10px;
   }
   .archive-note {
-    padding-top: 14px;
+    padding-top: 10px;
     border-top: 1px solid var(--border-soft);
   }
   .archive-note:first-child {
@@ -361,7 +361,7 @@
     border-top: none;
   }
   .archive-value {
-    margin: 0 0 6px;
+    margin: 0 0 4px;
     font-family: var(--serif);
     font-size: 20px;
     line-height: 1.2;
@@ -392,10 +392,10 @@
     gap: 28px;
   }
   .catalog-head {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
   .catalog-title {
-    margin: 0 0 10px;
+    margin: 0 0 8px;
     font-family: var(--serif);
     font-weight: 500;
     font-size: 26px;
@@ -412,7 +412,7 @@
   .catalog-table td {
     text-align: left;
     vertical-align: top;
-    padding: 11px 10px;
+    padding: 9px 10px;
     border-bottom: 1px solid var(--border-soft);
   }
   .catalog-table th {
