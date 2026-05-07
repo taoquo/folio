@@ -119,6 +119,31 @@ class BuildScriptTests(TestCase):
             for basename in expected_showcases:
                 self.assertIn(f"assets/demos/{basename}.pdf", text)
 
+    def test_homepage_manifesto_catalog_uses_archive_matrix_structure(self) -> None:
+        english = (ROOT / "index.html").read_text(encoding="utf-8")
+        chinese = (ROOT / "index-zh.html").read_text(encoding="utf-8")
+
+        for text in (english, chinese):
+            self.assertIn('class="master-index-shell"', text)
+            self.assertIn('class="archive-sidebar"', text)
+            self.assertIn('class="archive-main"', text)
+            self.assertIn('class="catalog-index"', text)
+            self.assertIn('class="specimen-matrix"', text)
+            self.assertNotIn('class="catalog-metadata"', text)
+            self.assertNotIn('class="archive-intro"', text)
+
+        self.assertIn("Master Index", english)
+        self.assertIn("Document Classes", english)
+        self.assertIn("Specimen Matrix", english)
+        self.assertIn("Artifact Records", english)
+        self.assertIn("Archive-led system", english)
+
+        self.assertIn("总目录", chinese)
+        self.assertIn("文档类型", chinese)
+        self.assertIn("样本矩阵", chinese)
+        self.assertIn("图形档案", chinese)
+        self.assertIn("档案型首页", chinese)
+
     def test_build_diagram_artifact_syncs_showcase_assets(self) -> None:
         fake_spec = SimpleNamespace(title="Workflow Engine")
 

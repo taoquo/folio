@@ -24,6 +24,10 @@ Folio is a document design system for the AI era: eight document types, fourteen
 
 It optimizes for stable, readable, professional output rather than novelty.
 
+Folio does not treat documents as neutral output. It treats them as the form through which thought becomes public, readable, and durable. Warm parchment slows the page down, serif gives judgment a voice, cinnabar marks what matters, and whitespace protects the reader's attention.
+
+Read the full project text in [references/manifesto.md](references/manifesto.md). Chinese edition: [MANIFESTO.zh-CN.md](MANIFESTO.zh-CN.md).
+
 What matters on first contact:
 
 - eight document types, each with a stable editorial layout
