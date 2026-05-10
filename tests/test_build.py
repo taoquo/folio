@@ -119,7 +119,7 @@ class BuildScriptTests(TestCase):
             for basename in expected_showcases:
                 self.assertIn(f"assets/demos/{basename}.pdf", text)
 
-    def test_homepage_manifesto_catalog_uses_archive_matrix_structure(self) -> None:
+    def test_homepage_catalog_uses_hybrid_document_tool_structure(self) -> None:
         english = (ROOT / "index.html").read_text(encoding="utf-8")
         chinese = (ROOT / "index-zh.html").read_text(encoding="utf-8")
 
@@ -129,20 +129,54 @@ class BuildScriptTests(TestCase):
             self.assertIn('class="archive-main"', text)
             self.assertIn('class="catalog-index"', text)
             self.assertIn('class="specimen-matrix"', text)
+            self.assertIn('class="section-rail"', text)
             self.assertNotIn('class="catalog-metadata"', text)
             self.assertNotIn('class="archive-intro"', text)
+            anchors = (
+                "output-system",
+                "principles",
+                "usage",
+                "color",
+                "type",
+                "rhythm",
+                "modules",
+                "artifacts",
+                "web-guidance",
+                "travel",
+                "lookup",
+                "anti-patterns",
+            )
+            for anchor in anchors:
+                self.assertIn(f'href="#{anchor}"', text)
+                self.assertIn(f'id="{anchor}"', text)
+            rail_start = text.index('class="section-rail"')
+            rail_end = text.index("</nav>", rail_start)
+            rail = text[rail_start:rail_end]
+            rail_positions = [rail.index(f'href="#{anchor}"') for anchor in anchors]
+            section_positions = [text.index(f'<section id="{anchor}"') for anchor in anchors]
+            self.assertEqual(rail_positions, sorted(rail_positions))
+            self.assertEqual(section_positions, sorted(section_positions))
+            self.assertNotIn('id="components"', text)
 
-        self.assertIn("Master Index", english)
+        self.assertIn("Output System", english)
+        self.assertIn('<a href="#web-guidance"><span>08</span>Web</a>', english)
+        self.assertIn("08 · Web Guidance", english)
+        self.assertIn("Hybrid / Document Tool", english)
         self.assertIn("Document Classes", english)
         self.assertIn("Specimen Matrix", english)
         self.assertIn("Artifact Records", english)
-        self.assertIn("Archive-led system", english)
+        self.assertIn("Section rail + numbered rows", english)
+        self.assertIn("Browse outputs", english)
 
-        self.assertIn("总目录", chinese)
+        self.assertIn("输出系统", chinese)
+        self.assertIn('<a href="#web-guidance"><span>08</span>Web</a>', chinese)
+        self.assertIn("08 · Web Guidance", chinese)
+        self.assertIn("Hybrid / Document Tool", chinese)
         self.assertIn("文档类型", chinese)
         self.assertIn("样本矩阵", chinese)
         self.assertIn("图形档案", chinese)
-        self.assertIn("档案型首页", chinese)
+        self.assertIn("章节 rail + 编号行", chinese)
+        self.assertIn("查看输出", chinese)
 
     def test_build_diagram_artifact_syncs_showcase_assets(self) -> None:
         fake_spec = SimpleNamespace(title="Workflow Engine")

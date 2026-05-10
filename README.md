@@ -265,7 +265,7 @@ Use the short guide first, then go deeper only when needed.
 - [references/diagrams.md](references/diagrams.md): inline SVG diagram rules
 - [references/web-foundation.md](references/web-foundation.md): Web guidance foundation for reading pages and product workspaces
 
-## Travel / Image Prompting
+## Image Prompting
 
 Folio also works as a brief for image models and drawing tools. Point them at the `references/` folder and ask them to follow Folio's warm parchment palette, cinnabar-coral restraint, serif-led hierarchy, and editorial spacing.
 

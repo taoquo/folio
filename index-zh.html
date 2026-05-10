@@ -19,7 +19,7 @@
       <span class="hero-links">本地 ZIP · 自托管</span>
     </div>
     <h1>Folio</h1>
-    <p class="tagline">值得留存的文档版式。Folio 把一页纸、研报、幻灯片、简历和图形 artifact 视为一套可归档的编辑性系统，而不是一堆一次性导出物。</p>
+    <p class="tagline">Folio 帮 agent 把原始笔记转成稳定的 PDF、PPTX、SVG artifact 和 Web 设计指导。这个页面用来选择输出路径、查看真实样本，并按规则扩展系统。</p>
     <div class="hero-tokens">
       <span><b>Classes</b>8 种文档</span>
       <span><b>Artifacts</b>4 个可重建 demo</span>
@@ -27,39 +27,59 @@
       <span><b>Guidance</b>阅读网页 · 工作台 UI</span>
       <span><b>Languages</b>中文 · English</span>
     </div>
+    <div class="hero-actions" aria-label="下一步">
+      <a class="action-link primary" href="#output-system">查看输出</a>
+      <a class="action-link" href="#usage">安装</a>
+      <a class="action-link" href="#web-guidance">读 Web 规范</a>
+    </div>
   </header>
 
+  <nav class="section-rail" aria-label="页面章节">
+    <a href="#output-system"><span>00</span>输出</a>
+    <a href="#principles"><span>01</span>伦理</a>
+    <a href="#usage"><span>02</span>使用</a>
+    <a href="#color"><span>03</span>颜色</a>
+    <a href="#type"><span>04</span>字体</a>
+    <a href="#rhythm"><span>05</span>节奏</a>
+    <a href="#modules"><span>06</span>模块</a>
+    <a href="#artifacts"><span>07</span>图形</a>
+    <a href="#web-guidance"><span>08</span>Web</a>
+    <a href="#travel"><span>09</span>生图</a>
+    <a href="#lookup"><span>10</span>速查</a>
+    <a href="#anti-patterns"><span>11</span>反例</a>
+  </nav>
+
   <!-- ============ 00 MASTER INDEX ============ -->
-  <section>
+  <section id="output-system">
     <div class="section-head">
       <p class="section-num">00 · Master Index</p>
-      <h2 class="section-title">总目录</h2>
-      <p class="section-lede">档案型首页先建立分类和可信度，再让样本出场。Folio 先列出系统本身，再用样本矩阵证明它的层级、密度和气质。</p>
+      <h2 class="section-title">输出系统</h2>
+      <p class="section-lede">先选择 Folio 要产出什么。目录把用户请求映射到 PDF、PPTX、SVG 或 Web guidance；样本矩阵展示真实输出语言。</p>
     </div>
 
     <div class="master-index-shell">
       <aside class="archive-sidebar">
-        <p class="archive-kicker">档案型首页</p>
-        <p class="archive-statement">Folio 先命名文档系统，再呈现证据。首页应当像一页被编目的档案索引，而不是一块宣传式的样本拼贴。</p>
+        <p class="archive-kicker">Hybrid / Document Tool</p>
+        <p class="archive-statement">这个页面把输出选择和参考规则分开：先选交付物，再看样本，需要扩展时再进入下方规范。</p>
 
         <div class="archive-notes">
           <div class="archive-note">
-            <p class="archive-label">文档类型</p>
-            <p class="archive-value">8 种编辑格式</p>
-            <p class="archive-desc">覆盖一页纸、信件、长文、作品集、简历、幻灯片、个股研报和更新日志。</p>
+            <p class="archive-label">Page Job</p>
+            <p class="archive-value">选择输出路径</p>
+            <p class="archive-desc">先从交付物出发，不从组件或装饰出发。</p>
           </div>
           <div class="archive-note">
-            <p class="archive-label">图形档案</p>
-            <p class="archive-value">4 个可重建样本</p>
-            <p class="archive-desc">运行时架构、工作流引擎、数据平台和 Agent Session Model 都可以作为可移植记录独立导出。</p>
+            <p class="archive-label">Primary Object</p>
+            <p class="archive-value">目录 + 样本</p>
+            <p class="archive-desc">目录定义系统，样本证明密度、气质和导出纪律。</p>
           </div>
           <div class="archive-note">
-            <p class="archive-label">输出集合</p>
-            <p class="archive-value">PDF · PPTX · SVG</p>
+            <p class="archive-label">Orientation</p>
+            <p class="archive-value">章节 rail + 编号行</p>
           </div>
           <div class="archive-note">
-            <p class="archive-label">语言路径</p>
-            <p class="archive-value">中文 · English</p>
+            <p class="archive-label">Motion Thesis</p>
+            <p class="archive-value">Reveal · hover · press</p>
           </div>
         </div>
       </aside>
@@ -69,7 +89,7 @@
           <div class="catalog-head">
             <p class="catalog-overline">文档类型</p>
             <h3 class="catalog-title">系统目录</h3>
-            <p class="catalog-copy">每一种类型都对应稳定的导出路径，用同一套暖调印刷语法去承接不同的内容密度和叙事方式。</p>
+            <p class="catalog-copy">每一种类型都把自然语言请求映射到稳定的输出路径和可预测的格式。</p>
           </div>
           <table class="catalog-table">
             <tr><th>序号</th><th>类型</th><th>功能</th><th>格式</th></tr>
@@ -90,7 +110,7 @@
           <div class="catalog-head">
             <p class="catalog-overline">样本矩阵</p>
             <h3 class="catalog-title">精选输出</h3>
-            <p class="catalog-copy">六个样本足以证明层级、密度和导出纪律，不需要把首页重新铺回泛化样本墙。</p>
+            <p class="catalog-copy">精选样本让你先检查真实输出，再进入更细的参考规则。</p>
           </div>
           <div class="specimen-grid">
             <a class="specimen-card" href="assets/demos/demo-qinglan-onepager-zh.pdf" target="_blank">
@@ -124,56 +144,10 @@
     </div>
   </section>
 
-  <!-- ============ 01 WEB GUIDANCE ============ -->
-  <section>
-    <div class="section-head">
-      <p class="section-num">01 · Web Guidance</p>
-      <h2 class="section-title">带有文档判断的浏览器页面</h2>
-      <p class="section-lede">Folio 现在带有给 agent 使用的 Web 设计指导，用来约束浏览器页面的布局、动效和交互判断，但不新增 Web 构建链，也不改变 PDF / PPTX / SVG 输出路径。</p>
-    </div>
-    <div class="catalog-index">
-      <div class="catalog-head">
-        <p class="catalog-overline">设计流程</p>
-        <h3 class="catalog-title">先确定页面任务，而不是先画组件</h3>
-        <p class="catalog-copy">每个 Web 请求先建立设计合同：page job、archetype、primary object、orientation、required states、motion thesis、content plan 和 mobile collapse。</p>
-      </div>
-      <table class="catalog-table">
-        <tr><th>类型</th><th>页面任务</th><th>必须暴露</th><th>参考</th></tr>
-        <tr><td>Reading</td><td>跟随论点并检查证据</td><td>opening block、contents rail、article body、figure band、source notes</td><td><code>web-reading.md</code></td></tr>
-        <tr><td>Workspace</td><td>检查状态并重复操作</td><td>nav、toolbar、primary work area、inspector、feedback</td><td><code>web-workspace.md</code></td></tr>
-        <tr><td>Hybrid</td><td>分离正文阅读和操作区域</td><td>reading rail、document preview、operation panel、status</td><td><code>web-foundation.md</code></td></tr>
-      </table>
-      <div class="catalog-head" style="margin-top:24px;">
-        <p class="catalog-overline">Agent 合同</p>
-        <h3 class="catalog-title">布局前必须先决定什么</h3>
-        <p class="catalog-copy">agent 必须先建立设计合同，再提出 mockup 或代码；这样动效和组件才会跟随页面任务，而不是脱离主题单独表演。</p>
-      </div>
-      <table class="catalog-table">
-        <tr><th>步骤</th><th>决策</th><th>可见结果</th><th>质量门槛</th></tr>
-        <tr><td>01</td><td>page job + primary object</td><td>第一屏说明页面要解决什么问题</td><td>只有一条主焦点路径</td></tr>
-        <tr><td>02</td><td>content plan + page skeleton</td><td>Reading、Workspace 或 Hybrid 区域被明确命名</td><td>不用泛化卡片网格凑页面</td></tr>
-        <tr><td>03</td><td>state coverage + motion thesis</td><td>loading、empty、error、selected、success 状态已规划</td><td>每个动效都解释状态意义</td></tr>
-        <tr><td>04</td><td>mobile collapse + final quality gate</td><td>rail、inspector、table 和 action 有窄屏行为</td><td>移动端不依赖 hover</td></tr>
-      </table>
-      <div class="catalog-head" style="margin-top:24px;">
-        <p class="catalog-overline">Motion Thesis</p>
-        <h3 class="catalog-title">动效必须说明意义</h3>
-        <p class="catalog-copy">每个动效都必须能写成 <code>This motion means ...</code>。hover 只表达控件可操作，不能成为整套动效系统。</p>
-      </div>
-      <table class="catalog-table">
-        <tr><th>层级</th><th>语义任务</th><th>模板句</th><th>限制</th></tr>
-        <tr><td>Page</td><td>说明用户在页面中的位置</td><td>This motion means the user is oriented by ...</td><td>阅读正文时不移动正文</td></tr>
-        <tr><td>Region</td><td>附着或移除二级上下文</td><td>This motion means context is attached to ...</td><td>必须保留选中对象的来源关系</td></tr>
-        <tr><td>Object</td><td>说明当前对象或当前段落</td><td>This motion means this row, figure, source, or section is current</td><td>不让相邻内容不可预测地位移</td></tr>
-        <tr><td>Control</td><td>确认可操作、下压或完成</td><td>This motion means the control can be acted on or has completed</td><td>不能替代 page、region 或 object 动效</td></tr>
-      </table>
-    </div>
-  </section>
-
   <!-- ============ 01 MANIFESTO ============ -->
-  <section>
+  <section id="principles">
     <div class="section-head">
-      <p class="section-num">02 · Manifesto</p>
+      <p class="section-num">01 · Manifesto</p>
       <h2 class="section-title">文档伦理</h2>
     </div>
     <p class="manifesto">Folio 不把文档视为中性的输出，而把它看作思想获得公共形体、可读性与留存性的方式。暖米纸底让页面慢下来，serif 让判断有声音，朱砂色标出真正重要之处，留白则保护读者的注意力。它追求的不是装饰性的精致，而是赋予内容秩序、重音与值得保存的重量。</p>
@@ -192,9 +166,9 @@
   </section>
 
   <!-- ============ 02 INSTALL ============ -->
-  <section>
+  <section id="usage">
     <div class="section-head">
-      <p class="section-num">03 · Usage</p>
+      <p class="section-num">02 · Usage</p>
       <h2 class="section-title">安装与调用</h2>
       <p class="section-lede">直接告诉 Claude 你要什么，比如「帮我排版一份白皮书」「做一份简历」「帮我写一份个股研报」「帮我整理更新日志」，skill 会自动触发，无需斜杠命令。</p>
     </div>
@@ -206,10 +180,10 @@
     <p class="section-lede" style="font-size:14px;">Claude Desktop：直接上传 <span style="color:var(--brand); font-weight:500;">dist/folio.zip</span> 到 Customize &gt; Skills &gt; "+" &gt; Create skill。</p>
   </section>
 
-  <!-- ============ 01 COLOR ============ -->
-  <section>
+  <!-- ============ 03 COLOR ============ -->
+  <section id="color">
     <div class="section-head">
-      <p class="section-num">04 · Color</p>
+      <p class="section-num">03 · Color</p>
       <h2 class="section-title">暖调克制</h2>
       <p class="section-lede">唯一强调色、纯暖调中性灰、零冷色；印章朱红全文档不超过 <b>5%</b> 面积，超过就从克制变成堆砌。</p>
     </div>
@@ -249,10 +223,10 @@
     </div>
   </section>
 
-  <!-- ============ 02 TYPE ============ -->
-  <section>
+  <!-- ============ 04 TYPE ============ -->
+  <section id="type">
     <div class="section-head">
-      <p class="section-num">05 · Typography</p>
+      <p class="section-num">04 · Typography</p>
       <h2 class="section-title">字体系统</h2>
       <p class="section-lede">Serif 承担层级，sans 承担功能；serif 正文 400，标题 500。</p>
     </div>
@@ -324,10 +298,10 @@
     </div>
   </section>
 
-  <!-- ============ 03 SPACING ============ -->
-  <section>
+  <!-- ============ 05 SPACING ============ -->
+  <section id="rhythm">
     <div class="section-head">
-      <p class="section-num">06 · Spacing &amp; Shape</p>
+      <p class="section-num">05 · Spacing &amp; Shape</p>
       <h2 class="section-title">节奏与形</h2>
       <p class="section-lede">基础单位 4pt，密度越高 margin 越小，场合越正式 margin 越大。</p>
     </div>
@@ -361,7 +335,7 @@
     <div class="shadow-row">
       <div class="shadow-demo sd-ring">
         <p class="t">Ring Shadow</p>
-        <p class="s">0 0 0 1pt var(--ring-warm)<br>&nbsp;<br>按钮 · 卡片 hover</p>
+        <p class="s">0 0 0 1pt var(--border)<br>&nbsp;<br>按钮 · focus ring</p>
       </div>
       <div class="shadow-demo sd-whisper">
         <p class="t">Whisper Shadow</p>
@@ -374,19 +348,19 @@
     </div>
   </section>
 
-  <!-- ============ 04 COMPONENTS ============ -->
-  <section>
+  <!-- ============ 06 COMPONENTS ============ -->
+  <section id="modules">
     <div class="section-head">
-      <p class="section-num">07 · Components</p>
-      <h2 class="section-title">原子组件</h2>
-      <p class="section-lede">组件不求多，只保留能解决具体问题的一组。</p>
+      <p class="section-num">06 · Components</p>
+      <h2 class="section-title">参考模块</h2>
+      <p class="section-lede">用于 PDF 和 artifact 组合的文档原子模块。这里是参考材料，不是 Web 组件展台。</p>
     </div>
 
     <div class="comp-grid">
 
       <div class="comp">
         <h4>Buttons</h4>
-        <p class="hint">ring shadow 替代硬投影 · 8pt 圆角</p>
+        <p class="hint">ring state · active 下压 1px · 8pt 圆角</p>
         <div class="demo" style="display:flex; gap:10px; flex-wrap:wrap;">
           <span class="btn btn-primary">Primary CTA</span>
           <span class="btn btn-secondary">Secondary</span>
@@ -450,7 +424,7 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
 
       <div class="comp">
         <h4>Featured Card</h4>
-        <p class="hint">whisper shadow + 16pt 圆角</p>
+        <p class="hint">安静 artifact surface + 16pt 圆角</p>
         <div class="demo featured-card">
           <p style="font-family:var(--serif); font-weight:500; font-size:15px; margin:0 0 6px; color:var(--near-black);">Tesla 公司介绍 · One-Pager</p>
           <p style="font-size:12px; color:var(--olive); margin:0 0 10px; line-height:1.5;">单页 A4 · 中文版 · 4 张指标卡 + 3 段正文 + 时间线</p>
@@ -465,10 +439,10 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
     </div>
   </section>
 
-  <!-- ============ 05b DIAGRAMS ============ -->
-  <section>
+  <!-- ============ 07 DIAGRAMS ============ -->
+  <section id="artifacts">
     <div class="section-head">
-      <p class="section-num">08 · Diagrams</p>
+      <p class="section-num">07 · Diagrams</p>
       <h2 class="section-title">内联图表</h2>
       <p class="section-lede">十四种内联 SVG 图表覆盖架构、流程、数据三大场景，可直接嵌入文档。现在也支持独立的架构图与 UML 类图 artifact，统一导出为 SVG、PNG、PDF，并保持同一套暖纸底与朱红焦点语言。</p>
     </div>
@@ -566,32 +540,65 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
       </div>
       <div class="chart-card">
         <div class="chart-label">Agent Runtime</div>
-        <a href="assets/demos/demo-architecture.pdf" target="_blank"><img src="assets/demos/demo-architecture.png" alt="架构图 artifact 预览" style="display:block; width:100%; border:1px solid var(--border-cream);"></a>
+        <a href="assets/demos/demo-architecture.pdf" target="_blank"><img src="assets/demos/demo-architecture.png" alt="架构图 artifact 预览" style="display:block; width:100%; border:1px solid var(--border-soft);"></a>
         <p class="chart-caption">请求驱动运行时案例：覆盖网关入口、任务规划、模型执行、工具调用、检索内存和可观测性。</p>
       </div>
       <div class="chart-card">
         <div class="chart-label">Workflow Engine</div>
-        <a href="assets/demos/demo-workflow-engine.pdf" target="_blank"><img src="assets/demos/demo-workflow-engine.png" alt="工作流引擎 artifact 预览" style="display:block; width:100%; border:1px solid var(--border-cream);"></a>
+        <a href="assets/demos/demo-workflow-engine.pdf" target="_blank"><img src="assets/demos/demo-workflow-engine.png" alt="工作流引擎 artifact 预览" style="display:block; width:100%; border:1px solid var(--border-soft);"></a>
         <p class="chart-caption">工作流编排案例：覆盖入口接入、流程编排、Worker 执行、状态持久化和事件式延续。</p>
       </div>
       <div class="chart-card">
         <div class="chart-label">Data Platform</div>
-        <a href="assets/demos/demo-data-platform.pdf" target="_blank"><img src="assets/demos/demo-data-platform.png" alt="数据平台 artifact 预览" style="display:block; width:100%; border:1px solid var(--border-cream);"></a>
+        <a href="assets/demos/demo-data-platform.pdf" target="_blank"><img src="assets/demos/demo-data-platform.png" alt="数据平台 artifact 预览" style="display:block; width:100%; border:1px solid var(--border-soft);"></a>
         <p class="chart-caption">策略化布局案例：用一套可复用 grammar 渲染管线主带、仓储服务和支撑读路径。</p>
       </div>
       <div class="chart-card">
         <div class="chart-label">Agent Session Model</div>
-        <a href="assets/demos/demo-uml-class.pdf" target="_blank"><img src="assets/demos/demo-uml-class.png" alt="Agent Session Model UML artifact 预览" style="display:block; width:100%; border:1px solid var(--border-cream);"></a>
+        <a href="assets/demos/demo-uml-class.pdf" target="_blank"><img src="assets/demos/demo-uml-class.png" alt="Agent Session Model UML artifact 预览" style="display:block; width:100%; border:1px solid var(--border-soft);"></a>
         <p class="chart-caption">UML 领域模型案例：覆盖接口、枚举生命周期、组合、聚合，以及检索记忆关联。</p>
       </div>
     </div>
   </section>
 
-  <!-- ============ 08 TRAVEL ============ -->
-  <section>
+  <!-- ============ 08 WEB GUIDANCE ============ -->
+  <section id="web-guidance">
     <div class="section-head">
-      <p class="section-num">09 · Travel / 图片提示词</p>
-      <h2 class="section-title">旅行插图案例</h2>
+      <p class="section-num">08 · Web Guidance</p>
+      <h2 class="section-title">Web 页面规范</h2>
+      <p class="section-lede">这是 guidance reference，不是组件展台。它用 page job、skeleton、state coverage 和语义动效约束 Web 页面，同时不新增 Web 构建链。</p>
+    </div>
+    <div class="web-guidance-panel">
+      <div class="catalog-head">
+        <p class="catalog-overline">设计流程</p>
+        <h3 class="catalog-title">页面任务先行</h3>
+        <p class="catalog-copy">每个 Web 请求先建立设计合同，再进入布局：page job、archetype、primary object、orientation、states、skeleton、motion thesis 和 mobile collapse。</p>
+      </div>
+      <table class="catalog-table">
+        <tr><th>模式</th><th>骨架</th><th>状态重点</th><th>参考</th></tr>
+        <tr><td>Reading</td><td>opening block / contents rail / article body / figure band / source notes</td><td>progress、sources、captions</td><td><code>web-reading.md</code></td></tr>
+        <tr><td>Workspace</td><td>nav / toolbar / primary work area / inspector / feedback</td><td>loading、empty、error、selected、success</td><td><code>web-workspace.md</code></td></tr>
+        <tr><td>Hybrid</td><td>reading rail / document preview / operation panel / status</td><td>selected document、generation state、review findings</td><td><code>web-foundation.md</code></td></tr>
+      </table>
+      <div class="catalog-head" style="margin-top:24px;">
+        <p class="catalog-overline">Motion Thesis</p>
+        <h3 class="catalog-title">动效描述结构</h3>
+        <p class="catalog-copy">每个动效都必须能写成 <code>This motion means ...</code>。hover 只表达控件可操作，不能成为整套动效系统。</p>
+      </div>
+      <table class="catalog-table">
+        <tr><th>层级</th><th>意义</th><th>首页用法</th><th>限制</th></tr>
+        <tr><td>Page</td><td>This motion means the user is oriented within the page</td><td>只用于初始进入</td><td>尊重 reduced motion</td></tr>
+        <tr><td>Object</td><td>This motion means this specimen can be inspected</td><td>样本 hover</td><td>不造成布局位移</td></tr>
+        <tr><td>Control</td><td>This motion means the control is pressed or focused</td><td>action link press / focus</td><td>不能替代 page 或 object 动效</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 09 IMAGE PROMPTS ============ -->
+  <section id="travel">
+    <div class="section-head">
+      <p class="section-num">09 · 生图提示词</p>
+      <h2 class="section-title">生图提示词</h2>
       <p class="section-lede">Folio 也可以反向作为图片模型的视觉 brief。下面这 3 张图沿用了同一套暖纸底色、朱红克制和 serif 注释逻辑，但主题切到旅行图册、路线海报和酒店 field guide。</p>
     </div>
     <div class="demo-grid travel-grid">
@@ -613,8 +620,8 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
     </div>
   </section>
 
-  <!-- ============ 05 DECISION TABLE ============ -->
-  <section>
+  <!-- ============ 10 DECISION TABLE ============ -->
+  <section id="lookup">
     <div class="section-head">
       <p class="section-num">10 · Decision Lookup</p>
       <h2 class="section-title">决策速查</h2>
@@ -636,8 +643,8 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
     </table>
   </section>
 
-  <!-- ============ 06 ANTI ============ -->
-  <section>
+  <!-- ============ 11 ANTI ============ -->
+  <section id="anti-patterns">
     <div class="section-head">
       <p class="section-num">11 · Anti-Patterns</p>
       <h2 class="section-title">反面示例</h2>

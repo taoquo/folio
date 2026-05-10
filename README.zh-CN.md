@@ -265,7 +265,7 @@ Folio 不只是模板集合，还带了一份紧凑的操作参考：[CHEATSHEET
 - [references/diagrams.md](references/diagrams.md)：内联 SVG 图表规则
 - [references/web-foundation.md](references/web-foundation.md)：阅读页面和产品工作台的 Web 设计指导基础
 
-## Travel / 图片提示词
+## 生图提示词
 
 Folio 也可以作为图片模型或绘图工具的风格 brief。把 `references/` 交给它们，并明确要求遵守 Folio 的暖纸底色、朱红克制、serif 层级和编辑式留白。
 
