@@ -24,6 +24,7 @@
       <span><b>Classes</b>8 document types</span>
       <span><b>Artifacts</b>4 reproducible demos</span>
       <span><b>Outputs</b>PDF · PPTX · SVG</span>
+      <span><b>Guidance</b>Reading Web · Workspace UI</span>
       <span><b>Languages</b>English · Chinese</span>
     </div>
   </header>
@@ -81,6 +82,7 @@
             <tr><td>07</td><td>Equity Report</td><td>Investment memo and earnings brief</td><td>PDF</td></tr>
             <tr><td>08</td><td>Changelog</td><td>Release notes and version narrative</td><td>PDF</td></tr>
             <tr><td>09</td><td>Artifact Records</td><td>Architecture and UML diagram specimens</td><td>SVG · PNG · PDF</td></tr>
+            <tr><td>10</td><td>Web Guidance</td><td>Reading pages and product workspaces guided by Folio rules</td><td>Reference</td></tr>
           </table>
         </div>
 
@@ -122,10 +124,56 @@
     </div>
   </section>
 
+  <!-- ============ 01 WEB GUIDANCE ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">01 · Web Guidance</p>
+      <h2 class="section-title">Browser Pages With Document Judgment</h2>
+      <p class="section-lede">Folio now carries Web guidance for agents designing browser pages. It guides layout, motion, and interaction choices without adding a Web build chain or changing the PDF / PPTX / SVG output paths.</p>
+    </div>
+    <div class="catalog-index">
+      <div class="catalog-head">
+        <p class="catalog-overline">Design Workflow</p>
+        <h3 class="catalog-title">Start from page job, not components</h3>
+        <p class="catalog-copy">Every Web request now starts with a design contract: page job, archetype, primary object, orientation, required states, motion thesis, content plan, and mobile collapse.</p>
+      </div>
+      <table class="catalog-table">
+        <tr><th>Type</th><th>Page job</th><th>Must expose</th><th>Reference</th></tr>
+        <tr><td>Reading</td><td>Follow a claim and inspect evidence</td><td>Opening block, contents rail, article body, figure band, source notes</td><td><code>web-reading.md</code></td></tr>
+        <tr><td>Workspace</td><td>Inspect state and take repeated action</td><td>Nav, toolbar, primary work area, inspector, feedback</td><td><code>web-workspace.md</code></td></tr>
+        <tr><td>Hybrid</td><td>Separate prose reading from operations</td><td>Reading rail, document preview, operation panel, status</td><td><code>web-foundation.md</code></td></tr>
+      </table>
+      <div class="catalog-head" style="margin-top:24px;">
+        <p class="catalog-overline">Agent Contract</p>
+        <h3 class="catalog-title">What must be decided before layout</h3>
+        <p class="catalog-copy">The agent must establish the design contract before proposing a mockup or code, so motion and components follow the page task.</p>
+      </div>
+      <table class="catalog-table">
+        <tr><th>Step</th><th>Decision</th><th>Visible result</th><th>Quality gate</th></tr>
+        <tr><td>01</td><td>Page job + primary object</td><td>First viewport explains what the page is for</td><td>One focal path</td></tr>
+        <tr><td>02</td><td>Content plan + page skeleton</td><td>Reading, workspace, or hybrid regions are named</td><td>No generic card grid</td></tr>
+        <tr><td>03</td><td>State coverage + motion thesis</td><td>Loading, empty, error, selected, and success states are planned</td><td>Motion explains state</td></tr>
+        <tr><td>04</td><td>Mobile collapse + final quality gate</td><td>Rails, inspectors, tables, and actions have narrow-screen behavior</td><td>No hover-only mobile actions</td></tr>
+      </table>
+      <div class="catalog-head" style="margin-top:24px;">
+        <p class="catalog-overline">Motion Thesis</p>
+        <h3 class="catalog-title">Motion must explain meaning</h3>
+        <p class="catalog-copy">Each motion must be written as <code>This motion means ...</code>. Hover is only control affordance; it cannot become the whole motion system.</p>
+      </div>
+      <table class="catalog-table">
+        <tr><th>Layer</th><th>Semantic job</th><th>Template sentence</th><th>Limit</th></tr>
+        <tr><td>Page</td><td>Orient the user within the page</td><td>This motion means the user is oriented by ...</td><td>Do not move reading text while it is being read</td></tr>
+        <tr><td>Region</td><td>Attach or remove secondary context</td><td>This motion means context is attached to ...</td><td>Keep the selected object traceable</td></tr>
+        <tr><td>Object</td><td>Show the current object or section</td><td>This motion means this row, figure, source, or section is current</td><td>Do not shift neighbors unpredictably</td></tr>
+        <tr><td>Control</td><td>Confirm affordance, press, or completion</td><td>This motion means the control can be acted on or has completed</td><td>Cannot replace page, region, or object motion</td></tr>
+      </table>
+    </div>
+  </section>
+
   <!-- ============ 01 MANIFESTO ============ -->
   <section>
     <div class="section-head">
-      <p class="section-num">01 · Manifesto</p>
+      <p class="section-num">02 · Manifesto</p>
       <h2 class="section-title">Document Ethic</h2>
     </div>
     <p class="manifesto">Folio treats a document not as neutral output, but as the form through which thought becomes public, readable, and durable. Warm parchment slows the page down, serif gives judgment a voice, cinnabar marks what matters, and whitespace protects the reader's attention. The goal is not decorative polish. It is to give content order, emphasis, and enough weight to be worth keeping.</p>
@@ -146,7 +194,7 @@
   <!-- ============ 02 INSTALL ============ -->
   <section>
     <div class="section-head">
-      <p class="section-num">02 · Usage</p>
+      <p class="section-num">03 · Usage</p>
       <h2 class="section-title">Install &amp; Invoke</h2>
       <p class="section-lede">Tell Claude what you need, for example "build me a resume", "make a one-pager for my startup", "write an equity report", or "format these release notes". The skill auto-triggers, no slash command needed.</p>
     </div>
@@ -161,7 +209,7 @@
   <!-- ============ 03 COLOR ============ -->
   <section>
     <div class="section-head">
-      <p class="section-num">03 · Color</p>
+      <p class="section-num">04 · Color</p>
       <h2 class="section-title">Cinnabar Focus</h2>
       <p class="section-lede">One accent + warm neutrals + zero cool colors. Cinnabar-coral covers no more than <b>5%</b> of any page. Beyond that is clutter, not restraint.</p>
     </div>
@@ -204,7 +252,7 @@
   <!-- ============ 04 TYPE ============ -->
   <section>
     <div class="section-head">
-      <p class="section-num">04 · Typography</p>
+      <p class="section-num">05 · Typography</p>
       <h2 class="section-title">Type System</h2>
       <p class="section-lede">Serif carries hierarchy, sans carries function. Serif body at 400, headings at 500.</p>
     </div>
@@ -267,7 +315,7 @@
   <!-- ============ 05 SPACING ============ -->
   <section>
     <div class="section-head">
-      <p class="section-num">05 · Spacing &amp; Shape</p>
+      <p class="section-num">06 · Spacing &amp; Shape</p>
       <h2 class="section-title">Rhythm &amp; Form</h2>
       <p class="section-lede">Base unit: 4pt. Denser layouts get smaller margins; more formal documents get larger ones.</p>
     </div>
@@ -315,7 +363,7 @@
   <!-- ============ 06 COMPONENTS ============ -->
   <section>
     <div class="section-head">
-      <p class="section-num">06 · Components</p>
+      <p class="section-num">07 · Components</p>
       <h2 class="section-title">Atomic Modules</h2>
       <p class="section-lede">A small fixed set, kept only where it solves a concrete document problem.</p>
     </div>
@@ -381,7 +429,7 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
       <div class="comp">
         <h4>Featured Card</h4>
         <p class="hint">whisper shadow + 16pt radius</p>
-        <div class="demo" style="background:var(--ivory); border-radius:16px; padding:18px 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.05); border: 1px solid var(--border-cream);">
+        <div class="demo featured-card">
           <p style="font-family:var(--serif); font-weight:500; font-size:15px; margin:0 0 6px; color:var(--near-black);">Tesla Company Profile · One-Pager</p>
           <p style="font-size:12px; color:var(--olive); margin:0 0 10px; line-height:1.5;">Single A4 page · 4 metric cards + 3 body sections + timeline</p>
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
@@ -397,7 +445,7 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
   <!-- ============ 07 DIAGRAMS ============ -->
   <section>
     <div class="section-head">
-      <p class="section-num">07 · Diagrams</p>
+      <p class="section-num">08 · Diagrams</p>
       <h2 class="section-title">Inline Charts</h2>
       <p class="section-lede">Fourteen inline SVG diagram types cover architecture, process, and data chart scenarios inside documents. Folio now also supports standalone architecture and UML class diagram artifacts that export as SVG, PNG, and PDF in the same warm visual language.</p>
     </div>
@@ -515,7 +563,7 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
   <!-- ============ 08 TRAVEL ============ -->
   <section>
     <div class="section-head">
-      <p class="section-num">08 · Travel / Image Prompting</p>
+      <p class="section-num">09 · Travel / Image Prompting</p>
       <h2 class="section-title">Editorial Travel Illustration</h2>
       <p class="section-lede">Folio also works as a visual brief for image models. These three examples translate the same parchment palette, cinnabar-coral restraint, and serif-led annotation logic into travel posters that still feel like designed documents.</p>
     </div>
@@ -541,7 +589,7 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
   <!-- ============ 07 DECISION TABLE ============ -->
   <section>
     <div class="section-head">
-      <p class="section-num">09 · Decision Lookup</p>
+      <p class="section-num">10 · Decision Lookup</p>
       <h2 class="section-title">Quick Reference</h2>
       <p class="section-lede">When in doubt about what to use, consult this table. If it's not here, go back to first principles.</p>
     </div>
@@ -564,7 +612,7 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
   <!-- ============ 08 ANTI ============ -->
   <section>
     <div class="section-head">
-      <p class="section-num">10 · Anti-Patterns</p>
+      <p class="section-num">11 · Anti-Patterns</p>
       <h2 class="section-title">What to Avoid</h2>
       <p class="section-lede">Exceptions are allowed, but the reason should be explicit.</p>
     </div>

@@ -260,6 +260,61 @@ Usage: extract the `<svg>` block from the HTML file and paste into the template'
 
 **Editing data**: only modify elements between `<!-- DATA START -->` / `<!-- DATA END -->`, leave CSS untouched. All coordinates must be divisible by 4.
 
+## Web guidance
+
+Folio Web guidance is for browser-page design. It does not add a Web build chain.
+
+| Mode | Use | Read |
+|---|---|---|
+| Reading / Publication | Long articles, web reports, case studies, research pages | `references/web-foundation.md` + `references/web-reading.md` |
+| Workspace / Product UI | Dashboards, editors, review queues, admin tools | `references/web-foundation.md` + `references/web-workspace.md` |
+| Mixed | Pages with both prose and operations | Separate reading and workspace regions, then use `references/web-checklist.md` |
+
+Page structure:
+
+| Archetype | Page job | Must expose |
+|---|---|---|
+| Reading / Publication | Follow a claim and inspect evidence | title block, section path, captions, sources |
+| Workspace / Product UI | Inspect state and take repeated action | navigation, selected object, action state, feedback |
+| Hybrid / Document Tool | Separate prose from operations | reading rail plus operational panel or inspector |
+
+Design contract:
+
+| Step | Output |
+|---|---|
+| Visual thesis | Mood, material, and energy in one sentence |
+| Page job | What the page helps the user understand or do |
+| Content plan | Required content regions, evidence, actions, and feedback in page order |
+| Primary object | What must be visible in the first viewport |
+| Page skeleton | Regions in reading or workspace order |
+| Interaction thesis | 2-3 motions using the Motion Thesis Template |
+| State coverage | Loading, empty, error, disabled, selected, success as needed |
+| Mobile collapse | Rails, inspectors, tables, and actions below 768px |
+| Final quality gate | Why the page is not a generic card grid or decorative animation |
+
+Motion Thesis Template:
+
+```text
+Motion thesis:
+- Page motion: This motion means the user is oriented within the page by ...
+- Region motion: This motion means secondary context is attached to or removed from ...
+- Object motion: This motion means the current object, row, figure, source, or section is ...
+- Control motion: This motion means the control can be acted on, is being pressed, or has completed ...
+```
+
+Use only the layers that serve the page job. Prefer 2-3 meaningful motions, include at least one page, region, or object motion unless the page is only a simple form or static notice, and write `Not used because ...` for omitted layers.
+
+Fast rules:
+
+1. Keep parchment warmth, cinnabar-coral restraint, and warm neutrals.
+2. Start from the page job, not from components.
+3. Cards are for real repeated or selectable objects, not default section styling.
+4. Reading pages need orientation: contents, progress, captions, or source rails.
+5. Workspace pages need states: loading, empty, error, disabled, active, selected, success.
+6. Motion clarifies position, state, or progressive disclosure; it is never decoration.
+7. Dense operational UI may be more functional than editorial; keep Folio through material and restraint.
+8. Mobile-critical actions must not depend on hover.
+
 ## Dark section
 
 Alternate light/dark rhythm: add `.sd-alt` to any section container.

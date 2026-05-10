@@ -115,6 +115,36 @@ Always use `CHEATSHEET.md` and `references/*.md` for design, writing, production
 
 If unsure, ask a one-liner about the scenario rather than guess.
 
+### Web guidance
+
+When the user asks for website design, webpage layout, product UI, dashboard, editor UI, admin page, browser-page design guidance, or turning a document into a webpage, use the Web guidance references before answering or designing.
+
+Folio Web guidance does not mean Folio builds a Web app. It means Folio's visual judgment, editorial restraint, and interaction rules are used to guide a browser-page design.
+
+Read in this order:
+
+1. `references/web-foundation.md`
+2. `references/web-reading.md` for content-heavy pages: long articles, reports, case studies, research pages, release stories, and document-to-Web publishing
+3. `references/web-workspace.md` for operational pages: dashboards, editors, review queues, admin tools, settings, monitors, and product UI
+4. `references/web-checklist.md` before finalizing guidance, mockups, or implementation code
+
+Before proposing a Web layout, mockup, or implementation, establish the Web design contract from `web-foundation.md`:
+
+- visual thesis
+- page job
+- archetype
+- content plan
+- primary object
+- page skeleton
+- interaction thesis using the Motion Thesis Template from `web-foundation.md`
+- state coverage
+- mobile collapse plan
+- final quality gate
+
+For Web motion, each motion must be expressible as `This motion means ...`. Do not let hover, active, or focus become the whole motion system unless the page is only a simple form or static notice.
+
+If a page mixes reading and workspace behavior, separate the reading region from the operational region instead of blending article hierarchy and app controls into one surface.
+
 ### Diagrams (primitives, not a 7th doc type)
 
 When the user asks for a standalone **architecture diagram** or **UML class diagram**, use the diagram artifact pipeline first.

@@ -777,7 +777,7 @@
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 28px 28px 24px;
-    transition: box-shadow 0.2s;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
     display: flex;
     flex-direction: column;
     min-width: 0;
@@ -811,6 +811,7 @@
     cursor: pointer;
     user-select: none;
     letter-spacing: 0.4px;
+    transition: transform 0.12s ease, box-shadow 0.18s ease, background 0.18s ease, opacity 0.18s ease;
   }
   .btn-primary {
     background: var(--brand);
@@ -826,6 +827,21 @@
     background: transparent;
     color: var(--brand);
     box-shadow: 0 0 0 1px var(--brand);
+  }
+  .btn:hover:not(:disabled) {
+    box-shadow: 0 0 0 1px var(--brand), 0 4px 18px rgba(0,0,0,0.05);
+  }
+  .btn:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: 0 0 0 1px var(--brand);
+  }
+  .btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #F1D2CC, 0 0 0 4px rgba(184,61,46,0.16);
+  }
+  .btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.48;
   }
 
   /* Tags */
@@ -877,6 +893,20 @@
   .metric-label {
     font-size: 12px;
     color: var(--olive);
+  }
+
+  .featured-card {
+    background: var(--ivory);
+    border: 1px solid var(--border-cream);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+    padding: 18px 20px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .featured-card:hover {
+    border-color: var(--border);
+    box-shadow: 0 6px 28px rgba(0,0,0,0.06);
+    transform: translateY(-1px);
   }
 
   /* Section title inline sample: size-led hierarchy, no decoration */
@@ -1169,6 +1199,24 @@
     padding: 1px 4px;
     border-radius: 2px;
   }
+
+@media (prefers-reduced-motion: reduce) {
+  .specimen-card img,
+  .swatch,
+  .comp,
+  .shadow-demo,
+  .btn,
+  .featured-card {
+    animation: none !important;
+    transition: none !important;
+  }
+  .specimen-card:hover img,
+  .btn:hover,
+  .btn:active,
+  .featured-card:hover {
+    transform: none !important;
+  }
+}
 
 @media (max-width: 768px) {
   /* Container + spacing */
