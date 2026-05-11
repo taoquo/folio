@@ -372,6 +372,19 @@ For HTML documents, PDF always ships. For slides, PPTX is the primary output. PN
 
 ## Step 5 · Build & verify
 
+Prefer the product CLI for day-to-day work:
+
+```bash
+python3 scripts/folio.py doctor        # check local PDF/PPTX/diagram dependencies
+python3 scripts/folio.py list-targets  # show supported build targets
+python3 scripts/folio.py check         # CSS rule + token checks
+python3 scripts/folio.py build resume-en
+python3 scripts/folio.py verify resume-en
+python3 scripts/folio.py package       # refresh dist/folio.zip
+```
+
+The lower-level build script remains available:
+
 ```bash
 python3 scripts/build.py --verify           # build all templates + page count + font check + slides
 python3 scripts/build.py --verify resume-en # single target full verification

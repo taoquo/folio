@@ -7,6 +7,7 @@ Usage:
     python3 scripts/build.py --check              # scan templates for CSS rule violations
     python3 scripts/build.py --check -v           # verbose (show each scanned file)
     python3 scripts/build.py --sync               # check CSS token drift across templates
+    python3 scripts/build.py --doctor             # check local PDF/PPTX/diagram dependencies
     python3 scripts/build.py --verify             # build all + page count + font checks
     python3 scripts/build.py --verify resume-en   # single target full verification
     python3 scripts/build.py --check-placeholders path/to/doc.html
@@ -20,8 +21,11 @@ from __future__ import annotations
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
+import contextlib
+import io
 from html import escape
 from dataclasses import dataclass
 from pathlib import Path
@@ -155,6 +159,20 @@ DIAGRAM_ARTIFACT_TARGETS: dict[str, dict[str, str]] = {
 _PDF_BUILD_DEPS: tuple[Any | None, Any | None, str | None] | None = None
 
 
+def _dependency_fix_hint() -> str:
+    return (
+        "Fix: macOS: brew install pango librsvg poppler; "
+        "Debian/Ubuntu: sudo apt-get install -y libpango-1.0-0 "
+        "libpangoft2-1.0-0 libgdk-pixbuf-2.0-0 libcairo2 libglib2.0-0 "
+        "shared-mime-info librsvg2-bin poppler-utils fonts-noto-cjk; "
+        "Python: python3 -m pip install weasyprint pypdf python-pptx"
+    )
+
+
+def _format_dependency_error(message: str) -> str:
+    return f"dependency load failed: {message}. {_dependency_fix_hint()}"
+
+
 def _load_diagram_exporters():
     from diagram_export import export_pdf, export_png
 
@@ -247,7 +265,7 @@ def _load_pdf_build_deps() -> tuple[Any | None, Any | None, str | None]:
         _PDF_BUILD_DEPS = (None, None, "missing deps: pip install weasyprint pypdf --break-system-packages")
         return _PDF_BUILD_DEPS
     except OSError as exc:
-        _PDF_BUILD_DEPS = (None, None, f"dependency load failed: {exc}")
+        _PDF_BUILD_DEPS = (None, None, _format_dependency_error(str(exc)))
         return _PDF_BUILD_DEPS
     _PDF_BUILD_DEPS = (HTML, PdfReader, None)
     return _PDF_BUILD_DEPS
@@ -512,6 +530,87 @@ def show_fonts(pdf: Path) -> None:
             print(out.stdout.rstrip())
     except FileNotFoundError:
         pass  # pdffonts not installed; silent
+
+
+# ------------------------- doctor -------------------------
+
+def _doctor_import(label: str, module: str, package: str | None = None) -> tuple[bool, str | None]:
+    install_name = package or module
+    try:
+        with open(os.devnull, "w") as devnull:
+            saved_stdout_fd = os.dup(1)
+            saved_stderr_fd = os.dup(2)
+            try:
+                os.dup2(devnull.fileno(), 1)
+                os.dup2(devnull.fileno(), 2)
+                with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                    __import__(module)
+            finally:
+                os.dup2(saved_stdout_fd, 1)
+                os.dup2(saved_stderr_fd, 2)
+                os.close(saved_stdout_fd)
+                os.close(saved_stderr_fd)
+    except ImportError as exc:
+        return False, f"ERROR: {label}: missing Python package ({exc}). Run: python3 -m pip install {install_name}"
+    except OSError as exc:
+        return False, f"ERROR: {label}: {exc}. {_dependency_fix_hint()}"
+    return True, None
+
+
+def _doctor_command(label: str, command: str, install_hint: str) -> tuple[bool, str | None]:
+    if shutil.which(command):
+        return True, None
+    return False, f"ERROR: {label}: '{command}' not found. {install_hint}"
+
+
+def run_doctor() -> int:
+    checks: list[tuple[str, bool, str | None]] = []
+
+    ok, msg = _doctor_import("WeasyPrint", "weasyprint")
+    checks.append(("WeasyPrint", ok, msg))
+    ok, msg = _doctor_import("pypdf", "pypdf")
+    checks.append(("pypdf", ok, msg))
+    ok, msg = _doctor_import("python-pptx", "pptx", "python-pptx")
+    checks.append(("python-pptx", ok, msg))
+
+    ok, msg = _doctor_command(
+        "rsvg-convert",
+        "rsvg-convert",
+        "macOS: brew install librsvg; Debian/Ubuntu: sudo apt-get install -y librsvg2-bin",
+    )
+    checks.append(("rsvg-convert", ok, msg))
+    ok, msg = _doctor_command(
+        "pdffonts",
+        "pdffonts",
+        "macOS: brew install poppler; Debian/Ubuntu: sudo apt-get install -y poppler-utils",
+    )
+    checks.append(("pdffonts", ok, msg))
+
+    required_fonts = [
+        ROOT / "assets" / "fonts" / "LXGWWenKai-Regular.ttf",
+        ROOT / "assets" / "fonts" / "LXGWWenKai-Medium.ttf",
+    ]
+    missing_fonts = [path.relative_to(ROOT) for path in required_fonts if not path.exists()]
+    if missing_fonts:
+        checks.append((
+            "LXGW WenKai fonts",
+            False,
+            "ERROR: LXGW WenKai fonts: missing "
+            + ", ".join(str(path) for path in missing_fonts)
+            + ". Run the font recovery curl commands in SKILL.md before building Chinese PDFs.",
+        ))
+    else:
+        checks.append(("LXGW WenKai fonts", True, None))
+
+    failures = 0
+    for label, ok, msg in checks:
+        if ok:
+            print(f"OK: {label}")
+        else:
+            failures += 1
+            print(msg)
+
+    return 0 if failures == 0 else 1
 
 
 # ------------------------- sync -------------------------
@@ -1120,6 +1219,8 @@ def main(argv: list[str]) -> int:
     if args[0] == "--sync":
         verbose = "-v" in args[1:] or "--verbose" in args[1:]
         return sync_check(verbose)
+    if args[0] == "--doctor":
+        return run_doctor()
     if args[0] == "--verify":
         target = args[1] if len(args) > 1 and not args[1].startswith("-") else None
         return verify_all(target)

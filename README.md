@@ -128,6 +128,21 @@ What matters on first contact:
 
 ## Quick Start
 
+**CLI**
+
+Use `scripts/folio.py` as the stable project entrypoint:
+
+```bash
+python3 scripts/folio.py doctor
+python3 scripts/folio.py list-targets
+python3 scripts/folio.py check
+python3 scripts/folio.py build resume-en
+python3 scripts/folio.py verify resume-en
+python3 scripts/folio.py package
+```
+
+Run `doctor` first on a new machine. It checks WeasyPrint native libraries, PDF tools, diagram export tools, PPTX support, and Chinese font availability before you spend time debugging a render failure.
+
 **Claude Desktop**
 
 Build or copy `dist/folio.zip`, open Customize > Skills > "+" > Create skill, and upload the ZIP directly.

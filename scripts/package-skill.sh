@@ -11,7 +11,10 @@ cd "$ROOT"
 
 MANIFEST="$(mktemp)"
 FILTERED_MANIFEST="$(mktemp)"
-trap 'rm -f "$MANIFEST" "$FILTERED_MANIFEST"' EXIT
+ZIP_MANIFEST="$(mktemp)"
+MISSING_MANIFEST="$(mktemp)"
+EXTRA_MANIFEST="$(mktemp)"
+trap 'rm -f "$MANIFEST" "$FILTERED_MANIFEST" "$ZIP_MANIFEST" "$MISSING_MANIFEST" "$EXTRA_MANIFEST"' EXIT
 
 git ls-files > "$MANIFEST"
 awk '
@@ -29,6 +32,23 @@ awk '
 ' "$MANIFEST" > "$FILTERED_MANIFEST"
 
 zip -q "$OUT" -@ < "$FILTERED_MANIFEST"
+
+zipinfo -1 "$OUT" | sort > "$ZIP_MANIFEST"
+sort "$FILTERED_MANIFEST" -o "$FILTERED_MANIFEST"
+comm -23 "$FILTERED_MANIFEST" "$ZIP_MANIFEST" > "$MISSING_MANIFEST"
+comm -13 "$FILTERED_MANIFEST" "$ZIP_MANIFEST" > "$EXTRA_MANIFEST"
+
+if [ -s "$MISSING_MANIFEST" ]; then
+  echo "ERROR: package missing tracked source file(s):" >&2
+  sed 's/^/  /' "$MISSING_MANIFEST" >&2
+  exit 1
+fi
+
+if [ -s "$EXTRA_MANIFEST" ]; then
+  echo "ERROR: package contains unexpected file(s):" >&2
+  sed 's/^/  /' "$EXTRA_MANIFEST" >&2
+  exit 1
+fi
 
 if zipinfo -1 "$OUT" | grep -qE 'assets/fonts/LXGWWenKai-(Regular|Medium)\.ttf$'; then
   echo "ERROR: bundled LXGWWenKai TTF found in $OUT" >&2

@@ -2,11 +2,14 @@ import builtins
 import contextlib
 import io
 import importlib.util
+import os
+import subprocess
 import sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 from unittest import TestCase, mock
+from zipfile import ZipFile
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -64,7 +67,7 @@ class BuildScriptTests(TestCase):
         self.assertTrue(demo_png.exists(), demo_png)
         self.assertTrue(demo_pdf.exists(), demo_pdf)
 
-    def test_verify_target_reports_oserror_from_weasyprint_import(self) -> None:
+    def test_verify_target_reports_actionable_weasyprint_native_failure(self) -> None:
         original_import = builtins.__import__
 
         def failing_import(name, globals=None, locals=None, fromlist=(), level=0):
@@ -75,10 +78,76 @@ class BuildScriptTests(TestCase):
         with mock.patch("builtins.__import__", side_effect=failing_import):
             issues = build.verify_target("one-pager", "one-pager.html", 1, 1, build.TEMPLATES)
 
-        self.assertEqual(
-            ["dependency load failed: cannot load library 'libgobject-2.0-0'"],
-            issues,
-        )
+        self.assertEqual(1, len(issues))
+        self.assertIn("dependency load failed: cannot load library 'libgobject-2.0-0'", issues[0])
+        self.assertIn("brew install pango", issues[0])
+        self.assertIn("apt-get install", issues[0])
+
+    def test_doctor_reports_weasyprint_native_failure_with_fix(self) -> None:
+        original_import = builtins.__import__
+
+        def failing_import(name, globals=None, locals=None, fromlist=(), level=0):
+            if name == "weasyprint":
+                os.write(1, b"WeasyPrint stdout noise.\n")
+                os.write(2, b"WeasyPrint could not import some external libraries.\n")
+                raise OSError("cannot load library 'libgobject-2.0-0'")
+            return original_import(name, globals, locals, fromlist, level)
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        with mock.patch("builtins.__import__", side_effect=failing_import):
+            with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+                code = build.run_doctor()
+
+        text = stdout.getvalue()
+        self.assertEqual(1, code)
+        self.assertIn("ERROR: WeasyPrint", text)
+        self.assertIn("libgobject-2.0-0", text)
+        self.assertIn("brew install pango", text)
+        self.assertIn("apt-get install", text)
+        self.assertNotIn("WeasyPrint stdout noise", text)
+        self.assertEqual("", stderr.getvalue())
+
+    def test_package_skill_zip_matches_current_functional_sources(self) -> None:
+        with TemporaryDirectory() as tmp:
+            out = Path(tmp) / "folio.zip"
+            result = subprocess.run(
+                ["bash", str(ROOT / "scripts" / "package-skill.sh"), str(out)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+            self.assertEqual(0, result.returncode, result.stderr)
+            names = set(ZipFile(out).namelist())
+
+        required = {
+            "scripts/folio.py",
+            "scripts/diagram_export.py",
+            "scripts/diagram_models.py",
+            "scripts/diagram_render_svg.py",
+            "scripts/diagram_semantic_planning.py",
+            "references/web-foundation.md",
+            "references/web-reading.md",
+            "references/web-workspace.md",
+            "references/web-checklist.md",
+            "references/fixtures/architecture-demo.txt",
+            "references/fixtures/workflow-engine-demo.txt",
+            "references/fixtures/data-platform-demo.txt",
+            "references/fixtures/uml-class-demo.json",
+            "tests/test_diagram_export.py",
+        }
+        excluded = {
+            "assets/fonts/LXGWWenKai-Regular.ttf",
+            "assets/fonts/LXGWWenKai-Medium.ttf",
+            "assets/demos/demo-tesla.pdf",
+            "assets/examples/one-pager.pdf",
+            ".font-libs/libgobject-2.0-0",
+        }
+
+        self.assertTrue(required.issubset(names), required - names)
+        self.assertTrue(excluded.isdisjoint(names), excluded & names)
 
     def test_page_count_issue_allows_values_inside_range(self) -> None:
         self.assertIsNone(build.page_count_issue("portfolio", 6, 4, 8))
