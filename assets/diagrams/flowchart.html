@@ -62,7 +62,6 @@
 
   .caption {
     font-family: var(--serif);
-    font-style: italic;
     font-size: 0.95rem;
     color: var(--olive);
     margin-top: 1rem;
@@ -76,39 +75,37 @@
     <h1>{{Question the flow answers}}</h1>
 
     <svg viewBox="0 0 860 520" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-          <polygon points="0 0, 8 3, 0 6" fill="#5A4A43"/>
-        </marker>
-        <marker id="arrow-brand" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-          <polygon points="0 0, 8 3, 0 6" fill="#B83D2E"/>
-        </marker>
-      </defs>
 
       <rect width="100%" height="100%" fill="#F6F0EA"/>
 
       <!-- ========== Flow ========== -->
       <!-- Start → Check -->
-      <line x1="430" y1="72" x2="430" y2="112" stroke="#5A4A43" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <line x1="430" y1="72" x2="430" y2="112" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M 426 104 L 430 112 L 434 104" fill="none" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
 
       <!-- Check → Decision (focal) -->
-      <line x1="430" y1="176" x2="430" y2="216" stroke="#5A4A43" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <line x1="430" y1="176" x2="430" y2="216" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M 426 208 L 430 216 L 434 208" fill="none" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
 
       <!-- Decision → Yes branch (brand) -->
-      <path d="M 360 268 L 200 268 L 200 332" fill="none" stroke="#B83D2E" stroke-width="1.4" marker-end="url(#arrow-brand)"/>
+      <path d="M 360 268 L 200 268 L 200 332" fill="none" stroke="#B83D2E" stroke-width="1.4" stroke-linecap="round"/>
+      <path d="M 196 324 L 200 332 L 204 324" fill="none" stroke="#B83D2E" stroke-width="1.4" stroke-linecap="round"/>
       <rect x="170" y="284" width="34" height="14" rx="2" fill="#F6F0EA"/>
       <text x="187" y="294" fill="#B83D2E" font-size="8" font-family="'JetBrains Mono', monospace" text-anchor="middle" letter-spacing="0.12em">YES</text>
 
       <!-- Decision → No branch -->
-      <path d="M 500 268 L 660 268 L 660 332" fill="none" stroke="#5A4A43" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M 500 268 L 660 268 L 660 332" fill="none" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M 656 324 L 660 332 L 664 324" fill="none" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
       <rect x="636" y="284" width="30" height="14" rx="2" fill="#F6F0EA"/>
       <text x="651" y="294" fill="#5A4A43" font-size="8" font-family="'JetBrains Mono', monospace" text-anchor="middle" letter-spacing="0.12em">NO</text>
 
       <!-- Yes outcome → End -->
-      <path d="M 200 396 L 200 440 L 396 440" fill="none" stroke="#5A4A43" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M 200 396 L 200 440 L 396 440" fill="none" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M 388 436 L 396 440 L 388 444" fill="none" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
 
       <!-- No outcome → End -->
-      <path d="M 660 396 L 660 440 L 464 440" fill="none" stroke="#5A4A43" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M 660 396 L 660 440 L 464 440" fill="none" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M 472 436 L 464 440 L 472 444" fill="none" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
 
       <!-- ========== Nodes ========== -->
 

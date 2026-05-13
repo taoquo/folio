@@ -444,7 +444,7 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
     <div class="section-head">
       <p class="section-num">07 · Diagrams</p>
       <h2 class="section-title">内联图表</h2>
-      <p class="section-lede">十四种内联 SVG 图表覆盖架构、流程、数据三大场景，可直接嵌入文档。现在也支持独立的架构图与 UML 类图 artifact，统一导出为 SVG、PNG、PDF，并保持同一套暖纸底与朱红焦点语言。</p>
+      <p class="section-lede">十四种内联 SVG 图表覆盖架构、流程、数据三大场景，可直接嵌入文档。箭头、节点、图例、网格和标签统一为 Folio 技术插图笔触，手写图、生成 artifact 与首页缩略图保持一致。</p>
     </div>
     <div class="chart-showcase">
       <!-- Architecture mini -->
@@ -453,9 +453,11 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
         <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" style="font-family:inherit">
           <rect width="280" height="160" fill="#F6F0EA"/>
           <!-- Browser → API -->
-          <path d="M 84,79.5 L 103,79.5 L 103,78 L 107,80 L 103,82 L 103,80.5 L 84,80.5 Z" fill="#85776F"/>
+          <line x1="84" y1="80" x2="107" y2="80" stroke="#85776F" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M 101 76 L 107 80 L 101 84" fill="none" stroke="#85776F" stroke-width="1.2" stroke-linecap="round"/>
           <!-- API → Database -->
-          <path d="M 172,79.5 L 191,79.5 L 191,78 L 195,80 L 191,82 L 191,80.5 L 172,80.5 Z" fill="#5A4A43"/>
+          <line x1="172" y1="80" x2="195" y2="80" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M 189 76 L 195 80 L 189 84" fill="none" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
           <!-- Node: Client -->
           <rect x="20" y="58" width="64" height="44" rx="3" fill="#F6F0EA" stroke="#85776F" stroke-width="0.8"/>
           <text x="52" y="76" text-anchor="middle" font-size="7" letter-spacing="0.5" fill="#85776F">CLIENT</text>
@@ -480,18 +482,21 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
           <rect x="100" y="8" width="80" height="28" rx="14" fill="#191514"/>
           <text x="140" y="25" text-anchor="middle" font-size="9" fill="#F6F0EA">Start</text>
           <!-- Start → diamond (arrow down) -->
-          <path d="M 139.5,36 L 139.5,48 L 138,48 L 140,52 L 142,48 L 140.5,48 L 140.5,36 Z" fill="#5A4A43"/>
+          <line x1="140" y1="36" x2="140" y2="52" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M 136 44 L 140 52 L 144 44" fill="none" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
           <!-- Decision diamond -->
           <polygon points="140,52 172,72 140,92 108,72" fill="#F6F0EA" stroke="#191514" stroke-width="1"/>
           <text x="140" y="76" text-anchor="middle" font-size="8" fill="#191514">Valid?</text>
           <!-- Yes arrow right -->
-          <path d="M 172,71.5 L 204,71.5 L 204,70 L 208,72 L 204,74 L 204,72.5 L 172,72.5 Z" fill="#B83D2E"/>
+          <line x1="172" y1="72" x2="208" y2="72" stroke="#B83D2E" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M 200 68 L 208 72 L 200 76" fill="none" stroke="#B83D2E" stroke-width="1.2" stroke-linecap="round"/>
           <text x="186" y="68" text-anchor="middle" font-size="8" fill="#B83D2E">Yes</text>
           <!-- Success node (focal) -->
           <rect x="208" y="56" width="64" height="32" rx="4" fill="#F7E6E1" stroke="#B83D2E" stroke-width="1"/>
           <text x="240" y="75" text-anchor="middle" font-size="9" fill="#191514">Process</text>
           <!-- No arrow down -->
-          <path d="M 139.5,92 L 139.5,112 L 138,112 L 140,116 L 142,112 L 140.5,112 L 140.5,92 Z" fill="#5A4A43"/>
+          <line x1="140" y1="92" x2="140" y2="116" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M 136 108 L 140 116 L 144 108" fill="none" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
           <text x="151" y="106" font-size="8" fill="#5A4A43">No</text>
           <!-- Reject node -->
           <rect x="96" y="116" width="88" height="32" rx="4" fill="#F6F0EA" stroke="#85776F" stroke-width="0.8"/>

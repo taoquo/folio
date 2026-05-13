@@ -17,6 +17,28 @@ The generated `SVG` is the source reused by documents and slides.
 
 ---
 
+## 0. Folio Technical Illustration Stroke
+
+All diagrams should look drawn by the same editorial hand, whether they come from `assets/diagrams/*.html`, `scripts/diagram_render_svg.py`, or the homepage mini SVGs.
+
+| Element | Canonical stroke |
+|---|---|
+| Arrow body | Open path / line, `stroke-linecap="round"`, no filled arrow body |
+| Arrowhead | Manual two-stroke chevron path at the endpoint; never SVG `<marker>` |
+| Standard node | `#FBF7F3` fill, 1px warm stroke, 6px radius for boxes |
+| Focal node | `#F7E6E1` fill, `#B83D2E` stroke, 1-2 focal elements per diagram |
+| Group / layer | Soft dashed outline, label in mono uppercase, behind nodes |
+| Legend | Outside or below the drawing area, compact strip, no floating legend over content |
+| Numbering | Mono uppercase labels for steps / layers, serif for names |
+| Gridlines | Warm hairlines only; dashed reference lines stay low contrast |
+| Data labels | Tabular, near-black or brand only for the focal series |
+
+**Arrow rule**: use manual chevrons for every arrow, including axis arrows and legend samples. WeasyPrint ignores `orient="auto"` on markers, so `<marker>` and `marker-end` are banned in Folio diagram templates.
+
+**Caption rule**: diagram captions are upright serif text. No `font-style: italic`; emphasis comes from wording and focal color alignment.
+
+---
+
 ## 1. Selection
 
 | Showing… | Use | Template |

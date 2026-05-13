@@ -15,6 +15,19 @@ One-page quick reference. Scan before filling a template or tweaking a detail. F
 9. Depth via ring / whisper shadow, no hard drop shadows
 10. No italic in templates or demos
 
+## Document personalities
+
+| Template | Personality | Rule of thumb |
+| -------- | ----------- | ------------- |
+| One-Pager | Executive decision brief | Tight, metrics-first, action-oriented |
+| Letter | Formal correspondence | Wide margins, paragraph-first, ceremonial spacing |
+| Portfolio | Artist / maker portfolio | Image-first, bold whitespace, fewer words |
+| Long Doc | Small book | Chapter openers, footnotes / sidenotes, serious captions |
+| Equity Report | Financial research brief | Sharp tables, tabular numbers, reduced radius |
+| Slides | Talk stage | 16:9 impact, one idea per slide, large type |
+| Resume | Dense professional record | Quantified proof, strict two-page rhythm |
+| Changelog | Release narrative | Version-led, compact, aligned bilingual notes |
+
 ## Sources and Materials
 
 

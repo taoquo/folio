@@ -61,8 +61,8 @@
   body {
     color: var(--near-black);
     font-family: var(--serif);
-    font-size: 10pt;
-    line-height: 1.5;
+    font-size: 9.8pt;
+    line-height: 1.45;
   }
 
   strong { font-weight: 500; }
@@ -73,10 +73,9 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 14pt;
-    border-left: 2.5pt solid var(--brand);
-    border-radius: 1.5pt;
-    padding-left: 8pt;
+    margin-bottom: 12pt;
+    padding-bottom: 8pt;
+    border-bottom: 1pt solid var(--near-black);
   }
   .ticker-block { flex: 1; }
   .ticker-eyebrow {
@@ -133,11 +132,11 @@
   /* METRICS */
   .metrics {
     display: flex;
-    gap: 16pt;
-    margin-bottom: 16pt;
+    gap: 10pt;
+    margin-bottom: 14pt;
     padding: 6pt 0;
-    border-top: 0.3pt dotted var(--border);
-    border-bottom: 0.3pt dotted var(--border);
+    border-top: 0.5pt solid var(--border);
+    border-bottom: 0.5pt solid var(--border);
   }
   .metric {
     flex: 1;
@@ -217,12 +216,13 @@
     font-family: var(--sans);
     font-weight: 500;
     color: var(--dark-warm);
-    padding: 5pt 8pt;
-    border-bottom: 1pt solid var(--border);
+    padding: 4pt 6pt;
+    border-top: 0.8pt solid var(--near-black);
+    border-bottom: 0.5pt solid var(--border);
     background: transparent;
   }
   table td, .folio-table td {
-    padding: 4pt 8pt;
+    padding: 3pt 6pt;
     border-bottom: 0.3pt solid var(--border-soft);
     vertical-align: top;
   }
@@ -241,10 +241,11 @@
 
   /* CALLOUT */
   .callout {
-    background: var(--ivory);
-    border-left: 2pt solid var(--brand);
-    padding: 8pt 12pt;
-    border-radius: 3pt;
+    background: transparent;
+    border-top: 0.8pt solid var(--brand);
+    border-bottom: 0.3pt dotted var(--border);
+    padding: 6pt 0;
+    border-radius: 0;
     margin: 10pt 0;
     line-height: 1.5;
     break-inside: avoid;
@@ -257,7 +258,36 @@
     font-size: 9pt;
     color: var(--stone);
     margin-top: 4pt;
-    text-align: center;
+    text-align: left;
+  }
+
+  .research-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 14pt;
+    align-items: start;
+  }
+
+  .data-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8pt;
+    margin: 8pt 0;
+    padding: 5pt 0;
+    border-top: 0.5pt solid var(--border);
+    border-bottom: 0.3pt dotted var(--border);
+  }
+  .data-strip .label {
+    font-size: 8pt;
+    color: var(--stone);
+    letter-spacing: 0.5pt;
+    text-transform: uppercase;
+  }
+  .data-strip .value {
+    font-size: 13pt;
+    color: var(--near-black);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
   }
 
   /* RISK MATRIX */
@@ -268,9 +298,10 @@
     margin: 8pt 0;
   }
   .risk-item {
-    padding: 6pt 10pt;
-    background: var(--ivory);
-    border-radius: 3pt;
+    padding: 5pt 0;
+    background: transparent;
+    border-top: 0.3pt solid var(--border);
+    border-radius: 0;
     break-inside: avoid;
   }
   .risk-label {
@@ -297,10 +328,10 @@
 
   /* ANALYST SUMMARY */
   .analyst-box {
-    background: var(--ivory);
-    border-left: 1.4pt solid var(--brand);
-    border-radius: 4pt;
-    padding: 10pt 14pt;
+    background: transparent;
+    border-top: 1pt solid var(--near-black);
+    border-radius: 0;
+    padding: 8pt 0 0 0;
     margin: 12pt 0;
     break-inside: avoid;
   }
@@ -378,7 +409,14 @@
 
 <!-- INVESTMENT THESIS -->
 <h2>Investment Thesis</h2>
-<p>{{Two or three sentences laying out the core thesis. Use <span class="hl">key figures</span> to support the argument. This paragraph is the soul of the report.}}</p>
+<div class="research-grid">
+  <p>{{Two or three sentences laying out the core thesis. Use <span class="hl">key figures</span> to support the argument. This paragraph is the soul of the report.}}</p>
+  <div class="data-strip">
+    <div><div class="label">Rating</div><div class="value">{{RATING}}</div></div>
+    <div><div class="label">Target</div><div class="value">{{TARGET}}</div></div>
+    <div><div class="label">Horizon</div><div class="value">{{HORIZON}}</div></div>
+  </div>
+</div>
 
 <div class="callout">
   {{One-line verdict: buy / hold / watch, and the single strongest reason.}}

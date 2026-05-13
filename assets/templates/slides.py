@@ -116,21 +116,17 @@ def add_diagram_png(slide, path, left, top, width, height):
 # ═══════════════════════════════════════════════════════════
 
 def cover_slide(prs, title, subtitle, author, date):
-    """封面：大标题 + 副标题 + 作者/日期"""
+    """封面：舞台式大标题 + 副标题 + 作者/日期"""
     s = blank_slide(prs)
-    # 大标题（serif 44pt 居中）
     add_text(s, title,
-             Inches(1), Inches(2.5), Inches(11.33), Inches(1.5),
-             font=SERIF, size=44, color=NEAR_BLACK,
+             Inches(0.9), Inches(1.65), Inches(11.53), Inches(2.25),
+             font=SERIF, size=68, color=NEAR_BLACK,
              align=PP_ALIGN.CENTER)
-    # 品牌色短线
-    add_line(s, Inches(6.17), Inches(4.2), Inches(1), weight_pt=1.5)
-    # 副标题
+    add_line(s, Inches(5.92), Inches(4.25), Inches(1.5), weight_pt=2)
     add_text(s, subtitle,
-             Inches(1), Inches(4.5), Inches(11.33), Inches(0.8),
-             font=SANS, size=18, color=OLIVE,
+             Inches(1.4), Inches(4.62), Inches(10.53), Inches(0.8),
+             font=SANS, size=20, color=OLIVE,
              align=PP_ALIGN.CENTER)
-    # 作者 + 日期
     add_text(s, f"{author}　·　{date}",
              Inches(1), Inches(6.5), Inches(11.33), Inches(0.4),
              font=SANS, size=13, color=STONE,
@@ -142,9 +138,9 @@ def toc_slide(prs, items):
     """目录页：01 章节名 列表"""
     s = blank_slide(prs)
     add_text(s, "目录",
-             Inches(1.2), Inches(0.8), Inches(10), Inches(0.8),
-             font=SERIF, size=32, color=NEAR_BLACK)
-    add_line(s, Inches(1.2), Inches(1.8), Inches(11), weight_pt=1)
+             Inches(1.0), Inches(0.7), Inches(10), Inches(0.9),
+             font=SERIF, size=42, color=NEAR_BLACK)
+    add_line(s, Inches(1.0), Inches(1.85), Inches(11.3), weight_pt=1)
 
     for i, item in enumerate(items):
         y = Inches(2.4 + i * 0.9)
@@ -163,16 +159,16 @@ def chapter_slide(prs, number, title):
     s = blank_slide(prs, bg_color=BRAND)
     add_text(s, f"0{number}",
              Inches(0.8), Inches(0.5), Inches(2), Inches(0.8),
-             font=SERIF, size=26, color=WHITE)
+             font=SERIF, size=32, color=WHITE)
     add_text(s, title,
-             Inches(1), Inches(3), Inches(11.33), Inches(1.5),
-             font=SERIF, size=56, color=WHITE,
+             Inches(0.9), Inches(2.55), Inches(11.53), Inches(2.0),
+             font=SERIF, size=76, color=WHITE,
              align=PP_ALIGN.CENTER)
     return s
 
 
 def content_slide(prs, eyebrow, title, body, page_num=None):
-    """内容页：小标题 + 大标题 + 正文"""
+    """内容页：一页一个观点，正文只作舞台说明"""
     s = blank_slide(prs)
     # eyebrow
     add_text(s, eyebrow,
@@ -180,12 +176,11 @@ def content_slide(prs, eyebrow, title, body, page_num=None):
              font=SANS, size=12, color=STONE)
     # title
     add_text(s, title,
-             Inches(1.2), Inches(1.2), Inches(11.33), Inches(1.2),
-             font=SERIF, size=32, color=NEAR_BLACK)
-    # body
+             Inches(1.0), Inches(1.15), Inches(11.6), Inches(1.8),
+             font=SERIF, size=48, color=NEAR_BLACK)
     add_text(s, body,
-             Inches(1.2), Inches(3), Inches(11), Inches(3.5),
-             font=SANS, size=18, color=DARK_WARM)
+             Inches(1.05), Inches(3.25), Inches(10.9), Inches(2.4),
+             font=SANS, size=24, color=DARK_WARM)
     # page number
     if page_num is not None:
         add_text(s, f" - {page_num:02d}",
@@ -202,10 +197,10 @@ def metrics_slide(prs, title, metrics):
     s = blank_slide(prs)
     # 标题
     add_text(s, title,
-             Inches(1.2), Inches(0.8), Inches(11), Inches(1),
-             font=SERIF, size=28, color=NEAR_BLACK,
+             Inches(1.0), Inches(0.7), Inches(11.33), Inches(1.2),
+             font=SERIF, size=44, color=NEAR_BLACK,
              align=PP_ALIGN.CENTER)
-    add_line(s, Inches(6.17), Inches(2), Inches(1))
+    add_line(s, Inches(5.92), Inches(2.08), Inches(1.5), weight_pt=1.5)
 
     # 数据卡
     n = len(metrics)
@@ -218,8 +213,8 @@ def metrics_slide(prs, title, metrics):
         x = start + (card_w + gap) * i
         # 大数字
         add_text(s, value,
-                 x, Inches(3), card_w, Inches(1.5),
-                 font=SERIF, size=52, color=BRAND,
+                 x, Inches(2.85), card_w, Inches(1.7),
+                 font=SERIF, size=68, color=BRAND,
                  align=PP_ALIGN.CENTER)
         # 标签
         add_text(s, label,
@@ -233,8 +228,8 @@ def quote_slide(prs, quote, source):
     """引用页：极简，居中引文"""
     s = blank_slide(prs)
     add_text(s, f"\u201c{quote}\u201d",
-             Inches(1.5), Inches(2.8), Inches(10.33), Inches(2.5),
-             font=SERIF, size=28, color=NEAR_BLACK,
+             Inches(1.2), Inches(2.4), Inches(10.93), Inches(2.6),
+             font=SERIF, size=40, color=NEAR_BLACK,
              align=PP_ALIGN.CENTER,
              vanchor=MSO_ANCHOR.MIDDLE)
     add_text(s, f" - {source}",
@@ -327,8 +322,8 @@ def ending_slide(prs, message, contact):
     """结束页"""
     s = blank_slide(prs)
     add_text(s, message,
-             Inches(1), Inches(3), Inches(11.33), Inches(1.2),
-             font=SERIF, size=40, color=NEAR_BLACK,
+             Inches(1), Inches(2.8), Inches(11.33), Inches(1.4),
+             font=SERIF, size=56, color=NEAR_BLACK,
              align=PP_ALIGN.CENTER)
     add_line(s, Inches(6.17), Inches(4.5), Inches(1), weight_pt=1.5)
     add_text(s, contact,

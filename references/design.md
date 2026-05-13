@@ -23,6 +23,25 @@ This system is a fusion of Anthropic's visual language and real Chinese / Englis
 
 ---
 
+## 0. Document Personalities
+
+Folio is one design system, not one layout. Every template keeps the same paper, single accent, serif hierarchy, and warm-neutral discipline; the difference is how the page behaves.
+
+| Template | Personality | Layout behavior | Use | Avoid |
+|---|---|---|---|---|
+| One-Pager | Executive decision brief | Tight header, strong metric strip, short decision-oriented sections, no decorative cards | Recommendation, launch brief, proposal summary | Long narrative, multiple diagrams, soft marketing copy |
+| Letter | Formal correspondence | Larger margins, ceremonial spacing, quiet subject block, paragraph-first rhythm | Formal note, memo, recommendation, statement | Dashboard components, metric rows, heavy callouts |
+| Portfolio | Artist / maker portfolio | Bold whitespace, image-first project pages, fewer text blocks, large numerals as pacing | Selected works, case studies, visual artifacts | Dense three-column explanations, too many metrics |
+| Long Doc | Small book | Chapter openers, running heads, footnotes / sidenotes, figure captions with editorial voice | White paper, review, technical report | Executive-slide compression, card-heavy sections |
+| Equity Report | Financial research brief | Coldest allowed within warm palette: sharp rules, tabular figures, compact charts, reduced radius | Stock memo, valuation note, earnings brief | Soft containers, playful labels, multicolor finance semantics |
+| Slides | Talk stage | 16:9 stage scale, one idea per slide, oversized title / numbers, sparse body copy | Keynote, internal presentation, pitch narrative | Document paragraphs, cramped appendix pages |
+| Resume | Dense professional record | Two-page strict grid, quantified bullets, no diagrams | Career proof | Visual experiments |
+| Changelog | Release narrative | Version-led blocks, compact change lists, summary note | Release notes | Marketing hero pages |
+
+**Rule**: personality may change density, spacing, component shape, and page rhythm. It must not change the system's core identity: no second accent, no cool gray, no synthetic bold, no italic, no heavy shadow.
+
+---
+
 ## 1. Color
 
 **Single accent, warm neutrals only, zero cool tones** - this is the core.

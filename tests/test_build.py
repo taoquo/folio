@@ -158,6 +158,22 @@ class BuildScriptTests(TestCase):
             build.page_count_issue("slides", 3, 4, 10),
         )
 
+    def test_pdf_font_matching_accepts_subset_and_hyphenated_names(self) -> None:
+        self.assertTrue(build._font_name_contains("MHZCTQ+LXGW-WenKai-Medium", {"LXGWWenKai"}))
+        self.assertTrue(build._font_name_contains("GULCQG+LXGW WenKai", {"LXGWWenKai"}))
+        self.assertTrue(build._font_name_contains("ABCDEE+SourceHanSerifSC-Regular", {"Source Han"}))
+
+    def test_font_source_check_ignores_non_font_svg_fragment_urls(self) -> None:
+        with TemporaryDirectory() as tmp:
+            html = Path(tmp) / "diagram.html"
+            html.write_text(
+                '<svg><rect fill="url(#dots)"/></svg>'
+                '<style>@font-face { font-family: X; src: url("font.woff2"); }</style>',
+                encoding="utf-8",
+            )
+
+            self.assertEqual(["font.woff2"], build._check_font_sources(html))
+
     def test_build_single_accepts_diagram_artifact_target(self) -> None:
         with mock.patch.object(build, "build_diagram_artifact", return_value=True) as artifact_mock:
             with mock.patch.dict(build.DIAGRAM_ARTIFACT_TARGETS, {"artifact-architecture-demo": {}}, clear=True):
@@ -258,8 +274,9 @@ class BuildScriptTests(TestCase):
             demos_dir = tmp_path / "demos"
 
             def fake_export_png(_svg_path: Path, out_path: Path) -> None:
+                from PIL import Image
                 out_path.parent.mkdir(parents=True, exist_ok=True)
-                out_path.write_bytes(b"png")
+                Image.new("RGB", (16, 9), "#B83D2E").save(out_path)
 
             def fake_export_pdf(_svg_path: Path, out_path: Path, _title: str) -> None:
                 out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -291,12 +308,32 @@ class BuildScriptTests(TestCase):
                                                 ok = build.build_diagram_artifact("artifact-demo")
 
             self.assertTrue(ok)
-            self.assertEqual(b"png", (demos_dir / "demo-workflow-engine.png").read_bytes())
             self.assertEqual(b"pdf", (demos_dir / "demo-workflow-engine.pdf").read_bytes())
+            from PIL import Image
+            with Image.open(demos_dir / "demo-workflow-engine.png") as image:
+                self.assertEqual((1241, 1754), image.size)
             self.assertTrue((demos_dir / "demo-workflow-engine.html").exists())
             demo_html = (demos_dir / "demo-workflow-engine.html").read_text(encoding="utf-8")
             self.assertIn("../diagrams/generated/png/workflow-engine-demo.png", demo_html)
             self.assertIn("Workflow Engine", demo_html)
+
+    def test_write_showcase_png_uses_a4_preview_dimensions(self) -> None:
+        try:
+            from PIL import Image
+        except ImportError:
+            self.skipTest("Pillow is not installed")
+
+        with TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            source = tmp_path / "source.png"
+            target = tmp_path / "target.png"
+            Image.new("RGB", (1920, 1080), "#B83D2E").save(source)
+
+            build._write_showcase_png(source, target)
+
+            with Image.open(target) as image:
+                self.assertEqual((1241, 1754), image.size)
+                self.assertEqual((246, 240, 234), image.getpixel((0, 0)))
 
     def test_build_diagram_artifact_supports_text_source(self) -> None:
         fake_spec = SimpleNamespace(title="From Text")

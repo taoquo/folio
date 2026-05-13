@@ -18,7 +18,7 @@
 
   @page {
     size: A4;
-    margin: 25mm 25mm 25mm 25mm;
+    margin: 26mm 25mm 24mm 25mm;
     background: #F6F0EA;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -42,21 +42,21 @@
   html, body { background: var(--parchment); }
 
   @media screen {
-    body { max-width: 210mm; margin: 0 auto; padding: 25mm; }
+    body { max-width: 210mm; margin: 0 auto; padding: 26mm 25mm 24mm 25mm; }
   }
 
   body {
     color: var(--near-black);
     font-family: var(--serif);
-    font-size: 11.5pt;
-    line-height: 1.55;
+    font-size: 11pt;
+    line-height: 1.5;
   }
 
   .letterhead {
     text-align: right;
-    margin-bottom: 30pt;
+    margin-bottom: 26pt;
     font-size: 10pt;
-    line-height: 1.55;
+    line-height: 1.5;
     color: var(--olive);
   }
   .letterhead .sender-name {
@@ -71,13 +71,13 @@
     text-align: right;
     font-size: 10.5pt;
     color: var(--olive);
-    margin-bottom: 24pt;
+    margin-bottom: 16pt;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
 
   .recipient {
-    margin-bottom: 24pt;
+    margin-bottom: 20pt;
     line-height: 1.5;
   }
   .recipient .to {
@@ -100,10 +100,10 @@
   }
 
   .subject {
-    margin-bottom: 24pt;
-    border-left: 2.5pt solid var(--brand);
-    border-radius: 1.5pt;
-    padding-left: 8pt;
+    margin-bottom: 20pt;
+    padding: 7pt 0;
+    border-top: 0.5pt solid var(--border);
+    border-bottom: 0.5pt solid var(--border);
   }
   .subject .label {
     font-family: var(--sans);
@@ -123,15 +123,15 @@
   }
 
   .salutation {
-    margin-bottom: 18pt;
+    margin-bottom: 14pt;
     font-size: 12pt;
     color: var(--near-black);
   }
 
   .body-content p {
-    margin-bottom: 12pt;
+    margin-bottom: 10pt;
     text-align: left;
-    line-height: 1.55;
+    line-height: 1.5;
   }
   .body-content p:first-child { text-indent: 0; }
   .body-content p.indent { text-indent: 1.5em; }
@@ -142,11 +142,11 @@
   }
 
   .closing {
-    margin-top: 28pt;
-    line-height: 1.55;
+    margin-top: 24pt;
+    line-height: 1.5;
   }
   .closing .regards {
-    margin-bottom: 30pt;
+    margin-bottom: 24pt;
     color: var(--near-black);
   }
   .closing .signature {
@@ -163,13 +163,13 @@
   }
 
   .attachments {
-    margin-top: 36pt;
+    margin-top: 22pt;
     padding-top: 10pt;
     border-top: 0.5pt dotted var(--border);
     font-family: var(--sans);
     font-size: 9.5pt;
     color: var(--stone);
-    line-height: 1.55;
+    line-height: 1.5;
   }
   .attachments .label {
     color: var(--brand);

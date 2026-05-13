@@ -196,6 +196,22 @@
     margin-bottom: 6pt;
   }
 
+  .chapter-opener {
+    padding: 18pt 0 12pt 0;
+    margin-bottom: 8pt;
+    border-top: 0.8pt solid var(--near-black);
+    break-inside: avoid;
+  }
+  .chapter-opener h1 {
+    border-left: none;
+    padding-left: 0;
+    margin-bottom: 8pt;
+  }
+  .chapter-opener .lead {
+    max-width: none;
+    margin-bottom: 0;
+  }
+
   /* PARAGRAPHS */
   p { margin: 0 0 10pt 0; line-height: 1.55; color: var(--near-black); }
 
@@ -204,6 +220,27 @@
     line-height: 1.55;
     color: var(--dark-warm);
     margin-bottom: 14pt;
+  }
+
+  .sidenote {
+    float: right;
+    width: 38mm;
+    margin: 2pt 0 8pt 14pt;
+    padding-top: 5pt;
+    border-top: 0.5pt solid var(--border);
+    color: var(--stone);
+    font-size: 8.8pt;
+    line-height: 1.42;
+    break-inside: avoid;
+  }
+
+  .footnote {
+    margin-top: 8pt;
+    padding-top: 5pt;
+    border-top: 0.3pt dotted var(--border);
+    color: var(--stone);
+    font-size: 8.8pt;
+    line-height: 1.42;
   }
 
   .hl { color: var(--brand); font-weight: 500; }
@@ -354,7 +391,9 @@
     font-size: 9pt;
     color: var(--stone);
     margin-top: 6pt;
-    text-align: center;
+    text-align: left;
+    padding-top: 4pt;
+    border-top: 0.3pt dotted var(--border);
   }
 
   /* CHAPTER BREAK */
@@ -389,12 +428,13 @@
 
 <!-- Chapter 01 -->
 <section class="chapter">
-  <div class="chapter-num">01 · Executive Summary</div>
-  <h1>Executive Summary</h1>
-
-  <p class="lead">
-    {{Two or three sentences opening the whole thesis. Use <span class="hl">brand-color emphasis</span> to grab attention on the sharpest claim. A reader of only this paragraph should understand what the document argues.}}
-  </p>
+  <div class="chapter-opener">
+    <div class="chapter-num">01 · Executive Summary</div>
+    <h1>Executive Summary</h1>
+    <p class="lead">
+      {{Two or three sentences opening the whole thesis. Use <span class="hl">brand-color emphasis</span> to grab attention on the sharpest claim. A reader of only this paragraph should understand what the document argues.}}
+    </p>
+  </div>
 
   <h2>Key Takeaways</h2>
   <ul>
@@ -411,14 +451,16 @@
 
 <!-- Chapter 02 -->
 <section class="chapter">
-  <div class="chapter-num">02 · Background</div>
-  <h1>Background &amp; Problem Statement</h1>
-
-  <p class="lead">
-    {{Chapter intro - what this chapter is solving, why it matters. One or two sentences.}}
-  </p>
+  <div class="chapter-opener">
+    <div class="chapter-num">02 · Background</div>
+    <h1>Background &amp; Problem Statement</h1>
+    <p class="lead">
+      {{Chapter intro - what this chapter is solving, why it matters. One or two sentences.}}
+    </p>
+  </div>
 
   <h2>Current State</h2>
+  <aside class="sidenote">{{Sidenote: define a key term, sample boundary, or constraint the reader should keep in mind.}}</aside>
   <p>{{Three to five lines describing the status quo. Use <span class="hl">specific figures</span> rather than adjectives.}}</p>
 
   <h2>The Core Problem</h2>
@@ -447,10 +489,11 @@
 
 <!-- Chapter 03 -->
 <section class="chapter">
-  <div class="chapter-num">03 · Methodology</div>
-  <h1>Methodology &amp; Findings</h1>
-
-  <p class="lead">{{Chapter intro.}}</p>
+  <div class="chapter-opener">
+    <div class="chapter-num">03 · Methodology</div>
+    <h1>Methodology &amp; Findings</h1>
+    <p class="lead">{{Chapter intro.}}</p>
+  </div>
 
   <h2>Approach</h2>
   <p>{{Describe the methodology. Code or formula examples welcome:}}</p>
@@ -470,6 +513,7 @@
     {{A quoted passage - user interview, expert perspective, or cited source.}}
     <span class="cite"> - {{SOURCE / PERSON}}, {{DATE}}</span>
   </blockquote>
+  <p class="footnote">1. {{Footnote: data definition, citation detail, or methodological limitation.}}</p>
 </section>
 
 <!-- Chapter 04 -->

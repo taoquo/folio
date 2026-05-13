@@ -467,6 +467,50 @@ def _showcase_demo_html(showcase: dict[str, str], generated_png_name: str) -> st
 </html>"""
 
 
+def _write_showcase_png(source_png: Path, target_png: Path) -> None:
+    try:
+        from PIL import Image, ImageOps
+    except ImportError as exc:
+        raise RuntimeError("Pillow is required to build A4 showcase PNGs") from exc
+
+    canvas_size = (1241, 1754)
+    parchment = (246, 240, 234)
+    ivory = (251, 247, 243)
+    border = (233, 222, 212)
+    pad_x = 88
+    pad_top = 130
+    frame_pad = 34
+    frame_w = canvas_size[0] - pad_x * 2
+
+    with Image.open(source_png) as image:
+        image = image.convert("RGB")
+        inner_w = frame_w - frame_pad * 2
+        inner_h = int(inner_w * image.height / image.width)
+        resized = ImageOps.contain(image, (inner_w, inner_h))
+
+        frame_h = resized.height + frame_pad * 2
+        frame_x = pad_x
+        frame_y = pad_top
+        image_x = frame_x + frame_pad + (inner_w - resized.width) // 2
+        image_y = frame_y + frame_pad
+
+        canvas = Image.new("RGB", canvas_size, parchment)
+        frame = Image.new("RGB", (frame_w, frame_h), ivory)
+        canvas.paste(frame, (frame_x, frame_y))
+
+        # Draw a single warm hairline without relying on platform fonts.
+        for x in range(frame_x, frame_x + frame_w):
+            canvas.putpixel((x, frame_y), border)
+            canvas.putpixel((x, frame_y + frame_h - 1), border)
+        for y in range(frame_y, frame_y + frame_h):
+            canvas.putpixel((frame_x, y), border)
+            canvas.putpixel((frame_x + frame_w - 1, y), border)
+
+        canvas.paste(resized, (image_x, image_y))
+        target_png.parent.mkdir(parents=True, exist_ok=True)
+        canvas.save(target_png)
+
+
 def _sync_diagram_showcase(config: dict[str, Any], png_path: Path, pdf_path: Path) -> None:
     showcase = config.get("showcase")
     if not showcase:
@@ -478,7 +522,7 @@ def _sync_diagram_showcase(config: dict[str, Any], png_path: Path, pdf_path: Pat
     demo_pdf = DEMOS / f"{basename}.pdf"
     demo_html = DEMOS / f"{basename}.html"
 
-    demo_png.write_bytes(png_path.read_bytes())
+    _write_showcase_png(png_path, demo_png)
     demo_pdf.write_bytes(pdf_path.read_bytes())
     demo_html.write_text(_showcase_demo_html(showcase, config["png"]), encoding="utf-8")
 
@@ -710,6 +754,16 @@ CN_PRIMARY_FONTS = {"LXGWWenKai"}
 EN_PRIMARY_FONTS = {"Charter"}
 
 
+def _font_name_contains(font_name: str, expected: set[str]) -> bool:
+    """Match embedded PDF font names after subsetting and separator changes."""
+    subsetless = font_name.split("+", 1)[-1]
+    normalized = re.sub(r"[^a-z0-9]+", "", subsetless.lower())
+    return any(
+        re.sub(r"[^a-z0-9]+", "", item.lower()) in normalized
+        for item in expected
+    )
+
+
 def _pdf_font_names(pdf_path: Path) -> set[str]:
     def _resolve_pdf_obj(obj):
         if obj is None:
@@ -747,12 +801,13 @@ def _check_font_sources(html_path: Path) -> list[str]:
     """Return list of local @font-face src files that are missing on disk."""
     text = html_path.read_text(encoding="utf-8", errors="replace")
     missing: list[str] = []
-    for url in re.findall(r"""url\(["']?([^"')]+)["']?\)""", text):
-        if url.startswith(("http://", "https://", "data:")):
-            continue
-        resolved = (html_path.parent / url).resolve()
-        if not resolved.exists():
-            missing.append(url)
+    for block in re.findall(r"@font-face\s*\{[^}]*\}", text, flags=re.IGNORECASE | re.DOTALL):
+        for url in re.findall(r"""url\(["']?([^"')]+)["']?\)""", block):
+            if url.startswith(("http://", "https://", "data:")):
+                continue
+            resolved = (html_path.parent / url).resolve()
+            if not resolved.exists():
+                missing.append(url)
     return missing
 
 
@@ -795,8 +850,8 @@ def verify_target(name: str, source: str, min_pages: int, max_pages: int, src_di
     # font check
     embedded = _pdf_font_names(out)
     fallback_present = any(
-        kw in font for font in embedded
-        for kw in ("Georgia", "Palatino", "LXGWWenKai", "LXGW WenKai", "SourceHan", "Noto", "Charter", "Songti")
+        _font_name_contains(font, {"Georgia", "Palatino", "LXGWWenKai", "LXGW WenKai", "SourceHan", "Noto", "Charter", "Songti"})
+        for font in embedded
     )
 
     # Diagram templates are language-neutral and often rely on fallback stacks,
@@ -809,7 +864,7 @@ def verify_target(name: str, source: str, min_pages: int, max_pages: int, src_di
 
     is_en = name.endswith("-en")
     expected = EN_PRIMARY_FONTS if is_en else CN_PRIMARY_FONTS
-    if not any(exp in font_name for exp in expected for font_name in embedded):
+    if not any(_font_name_contains(font_name, expected) for font_name in embedded):
         primary = next(iter(expected))
         if not fallback_present:
             issues.append(f"no recognizable font embedded in {out.name}")
@@ -978,6 +1033,9 @@ BORDER_VAR_USE = re.compile(r"border(?:-\w+)?\s*:\s*[^;]*var\s*\(\s*--([\w-]+)",
 LINE_HEIGHT_LOOSE = re.compile(r"line-height\s*:\s*1\.[6-9]\d*", re.IGNORECASE)
 UNICODE_ARROW = re.compile(r"→")  # U+2192; should not appear in EN template body
 HEX_ANY = re.compile(r"#[0-9a-fA-F]{3,6}\b")
+SVG_MARKER = re.compile(r"<marker\b|marker-(?:start|mid|end)\s*=", re.IGNORECASE)
+SVG_MARKER_ORIENT = re.compile(r"orient\s*=\s*['\"]auto", re.IGNORECASE)
+ITALIC_STYLE = re.compile(r"font-style\s*[:=]\s*['\"]?italic", re.IGNORECASE)
 # Thin closed border: border shorthand (not single-side) with sub-1pt width — pitfall #2
 THIN_CLOSED_BORDER = re.compile(
     r"border(?!-(?:left|right|top|bottom))\s*:\s*[^;]*0\.\d+pt",
@@ -1050,6 +1108,18 @@ def scan_file(path: Path) -> list[Finding]:
             if h in COOL_GRAY_BLOCKLIST:
                 findings.append(Finding(path, i, "cool-gray",
                                         f"{h} is a cool / neutral gray, use warm undertone"))
+
+        if path.parent == DIAGRAMS and SVG_MARKER.search(raw):
+            findings.append(Finding(path, i, "svg-marker-arrow",
+                                    "SVG marker arrows are not reliable in WeasyPrint; draw manual chevrons"))
+
+        if path.parent == DIAGRAMS and SVG_MARKER_ORIENT.search(raw):
+            findings.append(Finding(path, i, "svg-marker-orient-auto",
+                                    "orient=\"auto\" is ignored by WeasyPrint; draw manual chevrons"))
+
+        if ITALIC_STYLE.search(raw):
+            findings.append(Finding(path, i, "font-style-italic",
+                                    "italic is forbidden in Folio templates and demos"))
 
     # Pass 3: thin-border-radius block scan (pitfall #2 double-ring).
     # For each thin closed border line, scan backward to the block open and

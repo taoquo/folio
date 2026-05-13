@@ -63,7 +63,7 @@
   .cover {
     width: 100%;
     height: 297mm;
-    padding: 25mm 20mm;
+    padding: 28mm 22mm;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -80,7 +80,7 @@
   .cover-center {
     display: flex;
     flex-direction: column;
-    gap: 14pt;
+    gap: 18pt;
   }
   .cover-name {
     font-family: var(--serif);
@@ -95,7 +95,7 @@
     font-size: 18pt;
     color: var(--olive);
     line-height: 1.4;
-    max-width: 80%;
+    max-width: 72%;
   }
   .cover-line {
     width: 80pt;
@@ -167,7 +167,7 @@
   .project {
     break-before: page;
     break-after: page;
-    padding: 8mm 0;
+    padding: 6mm 0;
   }
   .project-header {
     display: flex;
@@ -243,10 +243,10 @@
   /* Hero image */
   .project-hero {
     width: 100%;
-    height: 110mm;
+    height: 128mm;
     background: var(--ivory);
-    border-radius: 6pt;
-    margin-bottom: 14pt;
+    border-radius: 2pt;
+    margin-bottom: 16pt;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -259,8 +259,8 @@
   /* 3-column body */
   .project-body {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 16pt;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 24pt;
   }
   .project-block h3 {
     font-family: var(--serif);
@@ -276,6 +276,16 @@
     color: var(--dark-warm);
   }
   .project-block .hl { color: var(--brand); font-weight: 500; }
+
+  .project-statement {
+    font-size: 13pt;
+    line-height: 1.45;
+    color: var(--near-black);
+  }
+  .project-notes {
+    display: grid;
+    gap: 8pt;
+  }
 
   /* Results */
   .project-results {
@@ -309,7 +319,7 @@
     margin-bottom: 14pt;
   }
   .project-visuals-2col .project-hero {
-    height: 80mm;
+    height: 92mm;
     margin-bottom: 0;
   }
 
@@ -519,16 +529,18 @@
 
   <div class="project-body">
     <div class="project-block">
-      <h3>Context</h3>
-      <p>{{Why this project? What problem does it solve? Who is the user?}}</p>
+      <h3>Statement</h3>
+      <p class="project-statement">{{A short project thesis: why this work exists, what it notices, and what it makes visible.}}</p>
     </div>
-    <div class="project-block">
-      <h3>Approach</h3>
-      <p>{{How it was done - key decisions, design rationale, technical approach.}}</p>
-    </div>
-    <div class="project-block">
-      <h3>Outcome</h3>
-      <p>{{Results - <span class="hl">figures</span>, feedback, impact.}}</p>
+    <div class="project-notes">
+      <div class="project-block">
+        <h3>Material</h3>
+        <p>{{Medium, system, technology, or site condition.}}</p>
+      </div>
+      <div class="project-block">
+        <h3>Outcome</h3>
+        <p>{{Results - <span class="hl">figures</span>, feedback, impact.}}</p>
+      </div>
     </div>
   </div>
 
@@ -572,16 +584,18 @@
 
   <div class="project-body">
     <div class="project-block">
-      <h3>Context</h3>
-      <p>{{Context.}}</p>
+      <h3>Statement</h3>
+      <p class="project-statement">{{Project thesis.}}</p>
     </div>
-    <div class="project-block">
-      <h3>Approach</h3>
-      <p>{{Approach.}}</p>
-    </div>
-    <div class="project-block">
-      <h3>Outcome</h3>
-      <p>{{Outcome.}}</p>
+    <div class="project-notes">
+      <div class="project-block">
+        <h3>Material</h3>
+        <p>{{Medium / technology / site condition.}}</p>
+      </div>
+      <div class="project-block">
+        <h3>Outcome</h3>
+        <p>{{Outcome.}}</p>
+      </div>
     </div>
   </div>
 </section>

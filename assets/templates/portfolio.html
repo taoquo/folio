@@ -84,7 +84,7 @@
   .cover {
     width: 100%;
     height: 297mm;
-    padding: 25mm 20mm;
+    padding: 28mm 22mm;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -100,7 +100,7 @@
   .cover-center {
     display: flex;
     flex-direction: column;
-    gap: 14pt;
+    gap: 18pt;
   }
   .cover-name {
     font-family: var(--serif);
@@ -115,7 +115,7 @@
     font-size: 18pt;
     color: var(--olive);
     line-height: 1.4;
-    max-width: 80%;
+    max-width: 72%;
   }
   .cover-line {
     width: 80pt;
@@ -186,7 +186,7 @@
   .project {
     break-before: page;
     break-after: page;
-    padding: 8mm 0;
+    padding: 6mm 0;
   }
   .project-header {
     display: flex;
@@ -258,10 +258,10 @@
   /* Image / Visual */
   .project-hero {
     width: 100%;
-    height: 110mm;
+    height: 128mm;
     background: var(--ivory);
-    border-radius: 6pt;
-    margin-bottom: 14pt;
+    border-radius: 2pt;
+    margin-bottom: 16pt;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -278,8 +278,8 @@
   /* 3 段式 */
   .project-body {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 16pt;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 24pt;
   }
   .project-block h3 {
     font-family: var(--serif);
@@ -297,6 +297,16 @@
   .project-block .hl {
     color: var(--brand);
     font-weight: 500;
+  }
+
+  .project-statement {
+    font-size: 13pt;
+    line-height: 1.45;
+    color: var(--near-black);
+  }
+  .project-notes {
+    display: grid;
+    gap: 8pt;
   }
 
   /* Results metrics row */
@@ -333,7 +343,7 @@
     margin-bottom: 14pt;
   }
   .project-visuals-2col .project-hero {
-    height: 80mm;
+    height: 92mm;
     margin-bottom: 0;
   }
 
@@ -536,19 +546,20 @@
     [项目主图占位 · 替换为 &lt;img src="xxx.png"&gt;]
   </div>
 
-  <!-- 三段式正文 -->
   <div class="project-body">
     <div class="project-block">
-      <h3>Context</h3>
-      <p>{{为什么做这个项目？要解决什么问题？谁是用户？}}</p>
+      <h3>Statement</h3>
+      <p class="project-statement">{{用一段较少文字说明作品的核心命题：它为什么存在、看见了什么、让什么变得可感知。}}</p>
     </div>
-    <div class="project-block">
-      <h3>Approach</h3>
-      <p>{{怎么做的？关键决策、设计考量、技术方案。}}</p>
-    </div>
-    <div class="project-block">
-      <h3>Outcome</h3>
-      <p>{{结果是什么？<span class="hl">数据</span>、反馈、影响。}}</p>
+    <div class="project-notes">
+      <div class="project-block">
+        <h3>Material</h3>
+        <p>{{媒介、系统、技术或现场条件。}}</p>
+      </div>
+      <div class="project-block">
+        <h3>Outcome</h3>
+        <p>{{结果是什么？<span class="hl">数据</span>、反馈、影响。}}</p>
+      </div>
     </div>
   </div>
 
@@ -594,16 +605,18 @@
 
   <div class="project-body">
     <div class="project-block">
-      <h3>Context</h3>
-      <p>{{背景}}</p>
+      <h3>Statement</h3>
+      <p class="project-statement">{{项目命题。}}</p>
     </div>
-    <div class="project-block">
-      <h3>Approach</h3>
-      <p>{{方法}}</p>
-    </div>
-    <div class="project-block">
-      <h3>Outcome</h3>
-      <p>{{结果}}</p>
+    <div class="project-notes">
+      <div class="project-block">
+        <h3>Material</h3>
+        <p>{{媒介 / 技术 / 现场条件。}}</p>
+      </div>
+      <div class="project-block">
+        <h3>Outcome</h3>
+        <p>{{结果。}}</p>
+      </div>
     </div>
   </div>
 </section>

@@ -77,10 +77,9 @@
 
   /* ========== HEADER ========== */
   .header {
-    border-left: 2.5pt solid var(--brand);
-    border-radius: 1.5pt;
-    padding-left: 8pt;
-    margin-bottom: 14pt;
+    border-top: 1.2pt solid var(--brand);
+    padding-top: 7pt;
+    margin-bottom: 12pt;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
@@ -122,10 +121,11 @@
      背景透明、无边框，用 typography 本身承担层次，不加容器。 */
   .metrics {
     display: flex;
-    gap: 14pt;
-    margin-bottom: 18pt;
-    padding: 4pt 0 6pt 0;
-    border-bottom: 0.3pt dotted var(--border);
+    gap: 12pt;
+    margin-bottom: 14pt;
+    padding: 6pt 0;
+    border-top: 0.5pt solid var(--border);
+    border-bottom: 0.5pt solid var(--border);
   }
   .metric {
     flex: 1;
@@ -177,7 +177,36 @@
     font-size: 12pt;
     line-height: 1.5;
     color: var(--dark-warm);
-    margin-bottom: 14pt;
+    margin-bottom: 10pt;
+  }
+
+  .decision-strip {
+    display: grid;
+    grid-template-columns: 34pt 1fr 72pt;
+    gap: 10pt;
+    align-items: baseline;
+    padding: 7pt 0;
+    margin: 0 0 14pt 0;
+    border-top: 0.8pt solid var(--near-black);
+    border-bottom: 0.3pt dotted var(--border);
+    break-inside: avoid;
+  }
+  .decision-label {
+    font-size: 8.5pt;
+    color: var(--stone);
+    letter-spacing: 0.7pt;
+    text-transform: uppercase;
+  }
+  .decision-text {
+    font-size: 11pt;
+    color: var(--near-black);
+    line-height: 1.42;
+  }
+  .decision-owner {
+    font-size: 9pt;
+    color: var(--olive);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
   }
 
   .hl { color: var(--brand); font-weight: 500; }
@@ -352,6 +381,12 @@
 <p class="lead">
   {{一段 40-60 字的核心论点导语。用「<span class="hl">关键词</span>」高亮重点。这段定调整个文档。}}
 </p>
+
+<div class="decision-strip">
+  <div class="decision-label">Decision</div>
+  <div class="decision-text">{{建议采取的单一动作：批准 / 暂缓 / 追加资源 / 进入下一阶段。}}</div>
+  <div class="decision-owner">{{负责人 / 截止日}}</div>
+</div>
 
 <!-- ========== 核心内容（两栏） ========== -->
 <div class="two-col">

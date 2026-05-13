@@ -111,13 +111,13 @@ def add_diagram_png(slide, path, left, top, width, height):
 def cover_slide(prs, title, subtitle, author, date):
     s = blank_slide(prs)
     add_text(s, title,
-             Inches(1), Inches(2.5), Inches(11.33), Inches(1.5),
-             font=SERIF, size=48, color=NEAR_BLACK,
+             Inches(0.9), Inches(1.65), Inches(11.53), Inches(2.25),
+             font=SERIF, size=72, color=NEAR_BLACK,
              align=PP_ALIGN.CENTER)
-    add_line(s, Inches(6.17), Inches(4.3), Inches(1), weight_pt=1.5)
+    add_line(s, Inches(5.92), Inches(4.25), Inches(1.5), weight_pt=2)
     add_text(s, subtitle,
-             Inches(1), Inches(4.6), Inches(11.33), Inches(0.8),
-             font=SANS, size=18, color=OLIVE,
+             Inches(1.4), Inches(4.62), Inches(10.53), Inches(0.8),
+             font=SANS, size=20, color=OLIVE,
              align=PP_ALIGN.CENTER)
     add_text(s, f"{author} · {date}",
              Inches(1), Inches(6.5), Inches(11.33), Inches(0.4),
@@ -129,9 +129,9 @@ def cover_slide(prs, title, subtitle, author, date):
 def toc_slide(prs, items):
     s = blank_slide(prs)
     add_text(s, "Contents",
-             Inches(1.2), Inches(0.8), Inches(10), Inches(0.8),
-             font=SERIF, size=34, color=NEAR_BLACK)
-    add_line(s, Inches(1.2), Inches(1.8), Inches(11), weight_pt=1)
+             Inches(1.0), Inches(0.7), Inches(10), Inches(0.9),
+             font=SERIF, size=44, color=NEAR_BLACK)
+    add_line(s, Inches(1.0), Inches(1.85), Inches(11.3), weight_pt=1)
 
     for i, item in enumerate(items):
         y = Inches(2.4 + i * 0.9)
@@ -149,10 +149,10 @@ def chapter_slide(prs, number, title):
     s = blank_slide(prs, bg_color=BRAND)
     add_text(s, f"0{number}",
              Inches(0.8), Inches(0.5), Inches(2), Inches(0.8),
-             font=SERIF, size=28, color=WHITE)
+             font=SERIF, size=34, color=WHITE)
     add_text(s, title,
-             Inches(1), Inches(3), Inches(11.33), Inches(1.5),
-             font=SERIF, size=60, color=WHITE,
+             Inches(0.9), Inches(2.55), Inches(11.53), Inches(2.0),
+             font=SERIF, size=80, color=WHITE,
              align=PP_ALIGN.CENTER)
     return s
 
@@ -163,11 +163,11 @@ def content_slide(prs, eyebrow, title, body, page_num=None):
              Inches(1.2), Inches(0.6), Inches(10), Inches(0.4),
              font=SANS, size=11, color=STONE)
     add_text(s, title,
-             Inches(1.2), Inches(1.2), Inches(11.33), Inches(1.2),
-             font=SERIF, size=34, color=NEAR_BLACK)
+             Inches(1.0), Inches(1.15), Inches(11.6), Inches(1.8),
+             font=SERIF, size=52, color=NEAR_BLACK)
     add_text(s, body,
-             Inches(1.2), Inches(3), Inches(11), Inches(3.5),
-             font=SANS, size=18, color=DARK_WARM)
+             Inches(1.05), Inches(3.25), Inches(10.9), Inches(2.4),
+             font=SANS, size=24, color=DARK_WARM)
     if page_num is not None:
         add_text(s, f" - {page_num:02d}",
                  Inches(11.5), Inches(6.9), Inches(1.5), Inches(0.3),
@@ -180,10 +180,10 @@ def metrics_slide(prs, title, metrics):
     """metrics: [(value, label), ...]"""
     s = blank_slide(prs)
     add_text(s, title,
-             Inches(1.2), Inches(0.8), Inches(11), Inches(1),
-             font=SERIF, size=30, color=NEAR_BLACK,
+             Inches(1.0), Inches(0.7), Inches(11.33), Inches(1.2),
+             font=SERIF, size=46, color=NEAR_BLACK,
              align=PP_ALIGN.CENTER)
-    add_line(s, Inches(6.17), Inches(2), Inches(1))
+    add_line(s, Inches(5.92), Inches(2.08), Inches(1.5), weight_pt=1.5)
 
     n = len(metrics)
     card_w = Inches(2.8)
@@ -194,8 +194,8 @@ def metrics_slide(prs, title, metrics):
     for i, (value, label) in enumerate(metrics):
         x = start + (card_w + gap) * i
         add_text(s, value,
-                 x, Inches(3), card_w, Inches(1.5),
-                 font=SERIF, size=56, color=BRAND,
+                 x, Inches(2.85), card_w, Inches(1.7),
+                 font=SERIF, size=72, color=BRAND,
                  align=PP_ALIGN.CENTER)
         add_text(s, label,
                  x, Inches(4.8), card_w, Inches(0.6),
@@ -207,8 +207,8 @@ def metrics_slide(prs, title, metrics):
 def quote_slide(prs, quote, source):
     s = blank_slide(prs)
     add_text(s, f"\u201c{quote}\u201d",
-             Inches(1.5), Inches(2.8), Inches(10.33), Inches(2.5),
-             font=SERIF, size=30, color=NEAR_BLACK,
+             Inches(1.2), Inches(2.4), Inches(10.93), Inches(2.6),
+             font=SERIF, size=42, color=NEAR_BLACK,
              align=PP_ALIGN.CENTER,
              vanchor=MSO_ANCHOR.MIDDLE)
     add_text(s, f" - {source}",
@@ -289,8 +289,8 @@ def pipeline_slide(prs, eyebrow, title, steps, page_num=None):
 def ending_slide(prs, message, contact):
     s = blank_slide(prs)
     add_text(s, message,
-             Inches(1), Inches(3), Inches(11.33), Inches(1.2),
-             font=SERIF, size=44, color=NEAR_BLACK,
+             Inches(1), Inches(2.8), Inches(11.33), Inches(1.4),
+             font=SERIF, size=60, color=NEAR_BLACK,
              align=PP_ALIGN.CENTER)
     add_line(s, Inches(6.17), Inches(4.5), Inches(1), weight_pt=1.5)
     add_text(s, contact,

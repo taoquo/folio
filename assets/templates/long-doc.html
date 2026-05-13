@@ -214,6 +214,22 @@
     margin-bottom: 6pt;
   }
 
+  .chapter-opener {
+    padding: 18pt 0 12pt 0;
+    margin-bottom: 8pt;
+    border-top: 0.8pt solid var(--near-black);
+    break-inside: avoid;
+  }
+  .chapter-opener h1 {
+    border-left: none;
+    padding-left: 0;
+    margin-bottom: 8pt;
+  }
+  .chapter-opener .lead {
+    max-width: none;
+    margin-bottom: 0;
+  }
+
   /* ========== PARAGRAPHS ========== */
   p {
     margin: 0 0 10pt 0;
@@ -226,6 +242,27 @@
     line-height: 1.55;
     color: var(--dark-warm);
     margin-bottom: 14pt;
+  }
+
+  .sidenote {
+    float: right;
+    width: 38mm;
+    margin: 2pt 0 8pt 14pt;
+    padding-top: 5pt;
+    border-top: 0.5pt solid var(--border);
+    color: var(--stone);
+    font-size: 8.8pt;
+    line-height: 1.42;
+    break-inside: avoid;
+  }
+
+  .footnote {
+    margin-top: 8pt;
+    padding-top: 5pt;
+    border-top: 0.3pt dotted var(--border);
+    color: var(--stone);
+    font-size: 8.8pt;
+    line-height: 1.42;
   }
 
   .hl { color: var(--brand); font-weight: 500; }
@@ -386,7 +423,9 @@
     font-size: 9pt;
     color: var(--stone);
     margin-top: 6pt;
-    text-align: center;
+    text-align: left;
+    padding-top: 4pt;
+    border-top: 0.3pt dotted var(--border);
   }
 
   /* ========== EXECUTIVE SUMMARY ========== */
@@ -455,13 +494,14 @@
 
 <!-- ═════════════ Chapter 01：执行摘要 ═════════════ -->
 <section class="chapter">
-  <div class="chapter-num">01 · Executive Summary</div>
-  <h1>执行摘要</h1>
-
-  <p class="lead">
-    {{一段 2-3 句话的大论点开场。用 <span class="hl">关键词高亮</span> 抓住读者注意力。
-    让读者读这段就能理解整份文档想表达什么。}}
-  </p>
+  <div class="chapter-opener">
+    <div class="chapter-num">01 · Executive Summary</div>
+    <h1>执行摘要</h1>
+    <p class="lead">
+      {{一段 2-3 句话的大论点开场。用 <span class="hl">关键词高亮</span> 抓住读者注意力。
+      让读者读这段就能理解整份文档想表达什么。}}
+    </p>
+  </div>
 
   <h2>核心 Takeaways</h2>
   <ul>
@@ -478,14 +518,16 @@
 
 <!-- ═════════════ Chapter 02：背景 ═════════════ -->
 <section class="chapter">
-  <div class="chapter-num">02 · Background</div>
-  <h1>背景与问题定义</h1>
-
-  <p class="lead">
-    {{章节导语：这一章要解决什么问题，为什么重要。1-2 句。}}
-  </p>
+  <div class="chapter-opener">
+    <div class="chapter-num">02 · Background</div>
+    <h1>背景与问题定义</h1>
+    <p class="lead">
+      {{章节导语：这一章要解决什么问题，为什么重要。1-2 句。}}
+    </p>
+  </div>
 
   <h2>当前现状</h2>
+  <aside class="sidenote">{{边注：定义本章关键词、样本范围或读者需要记住的限定条件。}}</aside>
   <p>{{3-5 行段落，铺陈当前状况。用 <span class="hl">具体数据</span> 而不是形容词。}}</p>
 
   <h2>核心问题</h2>
@@ -524,10 +566,11 @@
 
 <!-- ═════════════ Chapter 03：方法 ═════════════ -->
 <section class="chapter">
-  <div class="chapter-num">03 · Methodology</div>
-  <h1>方法与发现</h1>
-
-  <p class="lead">{{章节导语}}</p>
+  <div class="chapter-opener">
+    <div class="chapter-num">03 · Methodology</div>
+    <h1>方法与发现</h1>
+    <p class="lead">{{章节导语}}</p>
+  </div>
 
   <h2>研究方法</h2>
   <p>{{描述方法论。可以用代码 / 公式示例：}}</p>
@@ -548,6 +591,7 @@ def analyze(data):
     {{一段引用，可以是用户访谈、专家观点、文献引用}}
     <span class="cite"> - {{来源 / 人物}}，{{日期}}</span>
   </blockquote>
+  <p class="footnote">1. {{脚注：补充数据口径、引用出处或方法限制。}}</p>
 </section>
 
 <!-- ═════════════ Chapter 04：结论 ═════════════ -->

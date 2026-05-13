@@ -58,10 +58,9 @@
   .serif { font-family: var(--serif); }
 
   .header {
-    border-left: 2.5pt solid var(--brand);
-    border-radius: 1.5pt;
-    padding-left: 8pt;
-    margin-bottom: 14pt;
+    border-top: 1.2pt solid var(--brand);
+    padding-top: 7pt;
+    margin-bottom: 12pt;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
@@ -102,10 +101,11 @@
   /* METRICS - horizontal baseline, no containers (matches resume aesthetic). */
   .metrics {
     display: flex;
-    gap: 16pt;
-    margin-bottom: 18pt;
-    padding: 4pt 0 6pt 0;
-    border-bottom: 0.3pt dotted var(--border);
+    gap: 12pt;
+    margin-bottom: 14pt;
+    padding: 6pt 0;
+    border-top: 0.5pt solid var(--border);
+    border-bottom: 0.5pt solid var(--border);
   }
   .metric {
     flex: 1;
@@ -156,7 +156,36 @@
     font-size: 12.5pt;
     line-height: 1.5;
     color: var(--dark-warm);
-    margin-bottom: 14pt;
+    margin-bottom: 10pt;
+  }
+
+  .decision-strip {
+    display: grid;
+    grid-template-columns: 44pt 1fr 78pt;
+    gap: 10pt;
+    align-items: baseline;
+    padding: 7pt 0;
+    margin: 0 0 14pt 0;
+    border-top: 0.8pt solid var(--near-black);
+    border-bottom: 0.3pt dotted var(--border);
+    break-inside: avoid;
+  }
+  .decision-label {
+    font-size: 8.5pt;
+    color: var(--stone);
+    letter-spacing: 0.7pt;
+    text-transform: uppercase;
+  }
+  .decision-text {
+    font-size: 11pt;
+    color: var(--near-black);
+    line-height: 1.42;
+  }
+  .decision-owner {
+    font-size: 9pt;
+    color: var(--olive);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
   }
 
   .hl { color: var(--brand); font-weight: 500; }
@@ -322,6 +351,12 @@
 <p class="lead">
   {{~30-40 words. The one paragraph that sets the whole document's tone. Use <span class="hl">brand-color emphasis</span> on the sharpest claim or number. Everything below is in service of this.}}
 </p>
+
+<div class="decision-strip">
+  <div class="decision-label">Decision</div>
+  <div class="decision-text">{{The single recommended action: approve, pause, fund, or move to the next phase.}}</div>
+  <div class="decision-owner">{{Owner / due date}}</div>
+</div>
 
 <div class="two-col">
   <section>

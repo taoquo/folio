@@ -98,7 +98,7 @@ def render_architecture_svg(spec: ArchitectureDiagramSpec) -> str:
         stroke = BRAND if is_focus else _node_stroke(node.kind)
         kind_fill = BRAND if is_focus else STONE
         node_fragments.append(
-            f'<rect x="{box.x}" y="{box.y}" width="{box.w}" height="{box.h}" rx="6" fill="{fill}" stroke="{stroke}" stroke-width="1" />'
+            f'<rect x="{box.x}" y="{box.y}" width="{box.w}" height="{box.h}" rx="5" fill="{fill}" stroke="{stroke}" stroke-width="1" />'
         )
         node_fragments.append(
             f'<text x="{box.x + 18}" y="{box.y + 18}" fill="{kind_fill}" font-size="7" '
@@ -107,7 +107,7 @@ def render_architecture_svg(spec: ArchitectureDiagramSpec) -> str:
         )
         node_fragments.append(
             f'<text x="{box.x + box.w // 2}" y="{box.y + 38}" fill="{NEAR_BLACK}" font-size="12" '
-            'font-family="Charter, Georgia, serif" font-weight="600" text-anchor="middle">'
+            'font-family="Charter, Georgia, serif" font-weight="500" text-anchor="middle">'
             f"{escape(node.label)}</text>"
         )
         if node.sublabel:
@@ -197,7 +197,7 @@ def render_uml_class_svg(spec: UmlClassDiagramSpec) -> str:
         body_h = 62 + 18 * len(item.attributes) + 18 * len(item.methods)
         stroke = BRAND if item.id == spec.focus else NEAR_BLACK
         fragments.append(
-            f'<rect x="{x}" y="{y}" width="220" height="{body_h}" rx="6" fill="{IVORY}" stroke="{stroke}" stroke-width="1" />'
+            f'<rect x="{x}" y="{y}" width="220" height="{body_h}" rx="5" fill="{IVORY}" stroke="{stroke}" stroke-width="1" />'
         )
         fragments.append(
             f'<line x1="{x}" y1="{y + 34}" x2="{x + 220}" y2="{y + 34}" stroke="{BORDER}" stroke-width="1" />'
@@ -208,7 +208,7 @@ def render_uml_class_svg(spec: UmlClassDiagramSpec) -> str:
         )
         fragments.append(
             f'<text x="{x + 110}" y="{y + 22}" fill="{NEAR_BLACK}" font-size="13" '
-            'font-family="Charter, Georgia, serif" font-weight="600" text-anchor="middle">'
+            'font-family="Charter, Georgia, serif" font-weight="500" text-anchor="middle">'
             f"{escape(item.name)}</text>"
         )
         attr_y = y + 52
@@ -692,15 +692,16 @@ def _architecture_legend_fragments(spec: ArchitectureDiagramSpec) -> list[str]:
     if metrics is None:
         return []
     fragments = [
-        f'<rect class="arch-legend" x="{metrics["x"]}" y="{metrics["y"]}" width="{metrics["width"]}" height="{metrics["height"]}" rx="8" fill="{IVORY}" stroke="{BORDER}" stroke-width="1" />',
+        f'<rect class="arch-legend" x="{metrics["x"]}" y="{metrics["y"]}" width="{metrics["width"]}" height="{metrics["height"]}" rx="4" fill="{PARCHMENT}" stroke="{BORDER}" stroke-width="1" />',
         f'<text x="{metrics["x"] + 14}" y="{metrics["y"] + 16}" fill="{STONE}" font-size="8" font-family="\'JetBrains Mono\', monospace" letter-spacing="0.12em">LEGEND</text>',
     ]
     for item in metrics["items"]:
         sample_color = _legend_flow_color(item["flow"])
         row_y = item["y"]
         fragments.append(
-            f'<line x1="{item["x"]}" y1="{row_y}" x2="{item["x"] + 20}" y2="{row_y}" stroke="{sample_color}" stroke-width="1.6" />'
+            f'<line x1="{item["x"]}" y1="{row_y}" x2="{item["x"] + 20}" y2="{row_y}" stroke="{sample_color}" stroke-width="1.4" stroke-linecap="round" />'
         )
+        fragments.append(_chevron_for_segment((item["x"], row_y), (item["x"] + 20, row_y), sample_color, stroke_width=1.4))
         fragments.append(
             f'<text x="{item["text_x"]}" y="{row_y + 3}" fill="{NEAR_BLACK}" font-size="9" '
             'font-family="\'JetBrains Mono\', monospace">'
