@@ -31,6 +31,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from diagram_geometry import validate_diagram_html
+from diagram_layout import elk_available
 from diagram_models import load_diagram_spec_file
 from diagram_render_svg import render_diagram_svg
 from diagram_semantic_planning import plan_architecture_from_text
@@ -254,6 +256,34 @@ def set_pdf_metadata(pdf_path: Path, author: str | None = None) -> None:
         writer.write(f)
 
 
+def _fallback_weasy_html():
+    fallback = ROOT / ".venv-weasy" / "bin" / "python"
+    if not fallback.exists():
+        return None
+
+    class FallbackHTML:
+        def __init__(self, source: str, base_url: str | None = None):
+            self.source = source
+            self.base_url = base_url or str(Path(source).parent)
+
+        def write_pdf(self, target: str) -> None:
+            script = (
+                "from weasyprint import HTML\n"
+                "import sys\n"
+                "HTML(sys.argv[1], base_url=sys.argv[3]).write_pdf(sys.argv[2])\n"
+            )
+            result = subprocess.run(
+                [str(fallback), "-c", script, self.source, target, self.base_url],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            if result.returncode != 0:
+                raise RuntimeError(result.stderr.strip() or "weasyprint fallback failed")
+
+    return FallbackHTML
+
+
 def _load_pdf_build_deps() -> tuple[Any | None, Any | None, str | None]:
     global _PDF_BUILD_DEPS
     if _PDF_BUILD_DEPS is not None:
@@ -265,7 +295,16 @@ def _load_pdf_build_deps() -> tuple[Any | None, Any | None, str | None]:
         _PDF_BUILD_DEPS = (None, None, "missing deps: pip install weasyprint pypdf --break-system-packages")
         return _PDF_BUILD_DEPS
     except OSError as exc:
-        _PDF_BUILD_DEPS = (None, None, _format_dependency_error(str(exc)))
+        fallback_html = _fallback_weasy_html()
+        if fallback_html is None:
+            _PDF_BUILD_DEPS = (None, None, _format_dependency_error(str(exc)))
+            return _PDF_BUILD_DEPS
+        try:
+            from pypdf import PdfReader
+        except ImportError:
+            _PDF_BUILD_DEPS = (None, None, "missing deps: pip install pypdf --break-system-packages")
+            return _PDF_BUILD_DEPS
+        _PDF_BUILD_DEPS = (fallback_html, PdfReader, None)
         return _PDF_BUILD_DEPS
     _PDF_BUILD_DEPS = (HTML, PdfReader, None)
     return _PDF_BUILD_DEPS
@@ -629,6 +668,20 @@ def run_doctor() -> int:
         "macOS: brew install poppler; Debian/Ubuntu: sudo apt-get install -y poppler-utils",
     )
     checks.append(("pdffonts", ok, msg))
+    ok, msg = _doctor_command(
+        "Node.js",
+        "node",
+        "Install Node.js to enable ELK diagram layout.",
+    )
+    checks.append(("Node.js", ok, msg))
+    if elk_available():
+        checks.append(("ELK diagram layout", True, None))
+    else:
+        checks.append((
+            "ELK diagram layout",
+            False,
+            "ERROR: ELK diagram layout: missing node or scripts/vendor/elk.bundled.js.",
+        ))
 
     required_fonts = [
         ROOT / "assets" / "fonts" / "LXGWWenKai-Regular.ttf",
@@ -858,6 +911,7 @@ def verify_target(name: str, source: str, min_pages: int, max_pages: int, src_di
     # so only enforce that at least one recognizable serif/sans fallback exists.
     is_diagram = src_dir == DIAGRAMS
     if is_diagram:
+        issues.extend(validate_diagram_html(src))
         if not fallback_present:
             issues.append(f"no recognizable font embedded in {out.name}")
         return issues
@@ -1164,6 +1218,11 @@ def check_all(verbose: bool) -> int:
     findings: list[Finding] = []
     for p in sorted(targets):
         file_findings = scan_file(p)
+        if p.parent == DIAGRAMS:
+            file_findings.extend(
+                Finding(p, 1, "diagram-geometry", issue)
+                for issue in validate_diagram_html(p)
+            )
         findings.extend(file_findings)
         if verbose:
             print(f"scanned {p.relative_to(ROOT)}: {len(file_findings)} finding(s)")

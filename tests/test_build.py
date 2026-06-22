@@ -75,8 +75,13 @@ class BuildScriptTests(TestCase):
                 raise OSError("cannot load library 'libgobject-2.0-0'")
             return original_import(name, globals, locals, fromlist, level)
 
-        with mock.patch("builtins.__import__", side_effect=failing_import):
+        build._PDF_BUILD_DEPS = None
+        with (
+            mock.patch("builtins.__import__", side_effect=failing_import),
+            mock.patch.object(build, "_fallback_weasy_html", return_value=None),
+        ):
             issues = build.verify_target("one-pager", "one-pager.html", 1, 1, build.TEMPLATES)
+        build._PDF_BUILD_DEPS = None
 
         self.assertEqual(1, len(issues))
         self.assertIn("dependency load failed: cannot load library 'libgobject-2.0-0'", issues[0])
