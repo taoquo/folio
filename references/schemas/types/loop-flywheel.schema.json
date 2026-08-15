@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/types/loop-flywheel.schema.json",
+  "title": "Folio Loop Flywheel Authoring Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kind",
+    "title",
+    "stages"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "3.0"
+    },
+    "kind": {
+      "const": "loop-flywheel"
+    },
+    "title": {
+      "$ref": "#/$defs/non-empty-string"
+    },
+    "hub": {
+      "$ref": "#/$defs/non-empty-string"
+    },
+    "stages": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 6,
+      "items": {
+        "$ref": "#/$defs/stage"
+      }
+    },
+    "focus": {
+      "$ref": "#/$defs/non-empty-string"
+    },
+    "width": {
+      "type": "integer",
+      "minimum": 320
+    },
+    "height": {
+      "type": "integer",
+      "minimum": 240
+    },
+    "language": {
+      "$ref": "#/$defs/non-empty-string"
+    }
+  },
+  "$defs": {
+    "non-empty-string": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/non-empty-string"
+        },
+        "label": {
+          "$ref": "#/$defs/non-empty-string"
+        },
+        "detail": {
+          "$ref": "#/$defs/non-empty-string"
+        },
+        "emphasis": {
+          "enum": [
+            "focal",
+            "normal"
+          ]
+        }
+      }
+    }
+  }
+}

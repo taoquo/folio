@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/types/scatter.schema.json",
+  "title": "Folio Scatter Authoring Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kind",
+    "title",
+    "x_axis",
+    "y_axis",
+    "points"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "3.0"
+    },
+    "kind": {
+      "const": "scatter"
+    },
+    "title": {
+      "$ref": "#/$defs/non-empty-string"
+    },
+    "x_axis": {
+      "$ref": "#/$defs/axis"
+    },
+    "y_axis": {
+      "$ref": "#/$defs/axis"
+    },
+    "points": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 14,
+      "items": {
+        "$ref": "#/$defs/point"
+      }
+    },
+    "focus": {
+      "$ref": "#/$defs/non-empty-string"
+    },
+    "unit": {
+      "type": "string",
+      "maxLength": 12
+    },
+    "locale": {
+      "enum": [
+        "en-US",
+        "en-GB",
+        "zh-CN",
+        "zh-TW"
+      ]
+    },
+    "source": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "value_format": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "precision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "compact": {
+          "type": "boolean"
+        },
+        "grouping": {
+          "type": "boolean"
+        },
+        "unit_position": {
+          "enum": [
+            "auto",
+            "prefix",
+            "suffix"
+          ]
+        }
+      }
+    },
+    "width": {
+      "const": 960
+    },
+    "height": {
+      "const": 540
+    },
+    "language": {
+      "$ref": "#/$defs/non-empty-string"
+    }
+  },
+  "$defs": {
+    "non-empty-string": {
+      "type": "string",
+      "minLength": 1
+    },
+    "axis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label"
+      ],
+      "properties": {
+        "label": {
+          "$ref": "#/$defs/non-empty-string"
+        },
+        "unit": {
+          "type": "string",
+          "maxLength": 12
+        },
+        "include_zero": {
+          "type": "boolean"
+        }
+      }
+    },
+    "point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label",
+        "x",
+        "y"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/non-empty-string"
+        },
+        "label": {
+          "$ref": "#/$defs/non-empty-string"
+        },
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "emphasis": {
+          "enum": [
+            "focal",
+            "normal"
+          ]
+        }
+      }
+    }
+  }
+}

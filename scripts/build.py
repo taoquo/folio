@@ -34,7 +34,7 @@ from typing import Any
 from diagram_geometry import validate_diagram_html
 from diagram_layout import elk_available
 from diagram_models import load_diagram_spec_file
-from diagram_render_svg import render_diagram_svg
+from diagram_render_svg import render_diagram_svg, render_flowchart_svg
 from diagram_semantic_planning import plan_architecture_from_text
 from shared import (
     COOL_GRAY_BLOCKLIST,
@@ -82,6 +82,12 @@ PPTX_TARGETS: dict[str, PageSpec] = {
     "slides":    PageSpec("slides.py", 4, 10),
     "slides-en": PageSpec("slides-en.py", 4, 10),
 }
+HOST_INTEGRATION_TARGETS = (
+    "host-a4-long-doc",
+    "host-letter-document",
+    "host-a4-chinese",
+    "host-slide-16x9",
+)
 
 # Diagram HTMLs live in a separate directory and have no page-count contract.
 DIAGRAM_TARGETS: dict[str, str] = {
@@ -144,7 +150,7 @@ DIAGRAM_ARTIFACT_TARGETS: dict[str, dict[str, str]] = {
         },
     },
     "artifact-uml-class-demo": {
-        "spec": "references/fixtures/uml-class-demo.json",
+        "drawing": "references/fixtures/v4/uml-class.json",
         "svg": "uml-class-demo.svg",
         "png": "uml-class-demo.png",
         "pdf": "uml-class-demo.pdf",
@@ -156,9 +162,23 @@ DIAGRAM_ARTIFACT_TARGETS: dict[str, dict[str, str]] = {
             "caption": "A standalone UML class artifact covering session ownership, runnable step interfaces, tool-call execution, retrieval memory, and enum-backed lifecycle state.",
         },
     },
+    "artifact-flowchart-v2-demo": {
+        "flowchart": "references/fixtures/flowchart/branching.json",
+        "svg": "flowchart-v2-demo.svg",
+        "png": "flowchart-v2-demo.png",
+        "pdf": "flowchart-v2-demo.pdf",
+        "showcase": {
+            "basename": "demo-flowchart-v2",
+            "eyebrow": "Drawing DSL V2",
+            "heading": "Drawing Review Flow",
+            "alt": "Flowchart for deterministic drawing review",
+            "caption": "A typed Flowchart artifact with decisions, branch labels, orthogonal routing, accessible SVG metadata, and deterministic validation.",
+        },
+    },
 }
 
 _PDF_BUILD_DEPS: tuple[Any | None, Any | None, str | None] | None = None
+_HOST_INTEGRATION_RESULTS: dict[str, dict[str, Any]] | None = None
 
 
 def _dependency_fix_hint() -> str:
@@ -262,22 +282,37 @@ def _fallback_weasy_html():
         return None
 
     class FallbackHTML:
-        def __init__(self, source: str, base_url: str | None = None):
+        def __init__(self, source: str | None = None, base_url: str | None = None, string: str | None = None):
             self.source = source
-            self.base_url = base_url or str(Path(source).parent)
+            self.string = string
+            self.base_url = base_url or (str(Path(source).parent) if source else str(ROOT))
 
         def write_pdf(self, target: str) -> None:
-            script = (
-                "from weasyprint import HTML\n"
-                "import sys\n"
-                "HTML(sys.argv[1], base_url=sys.argv[3]).write_pdf(sys.argv[2])\n"
-            )
-            result = subprocess.run(
-                [str(fallback), "-c", script, self.source, target, self.base_url],
-                capture_output=True,
-                text=True,
-                check=False,
-            )
+            if self.string is not None:
+                script = (
+                    "from weasyprint import HTML\n"
+                    "import sys\n"
+                    "HTML(string=sys.stdin.read(), base_url=sys.argv[2]).write_pdf(sys.argv[1])\n"
+                )
+                result = subprocess.run(
+                    [str(fallback), "-c", script, target, self.base_url],
+                    input=self.string,
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+            else:
+                script = (
+                    "from weasyprint import HTML\n"
+                    "import sys\n"
+                    "HTML(sys.argv[1], base_url=sys.argv[3]).write_pdf(sys.argv[2])\n"
+                )
+                result = subprocess.run(
+                    [str(fallback), "-c", script, self.source, target, self.base_url],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
             if result.returncode != 0:
                 raise RuntimeError(result.stderr.strip() or "weasyprint fallback failed")
 
@@ -340,7 +375,13 @@ def build_html(name: str, source: str, min_pages: int, max_pages: int,
     # weasyprint resolves @font-face relative to CWD. Run from the source dir
     # so fonts placed next to the HTML are found.
     try:
-        HTML(str(src), base_url=str(src.parent)).write_pdf(str(out))
+        if src_dir == DIAGRAMS:
+            from drawing.output import apply_html_output_profile
+
+            source_html = apply_html_output_profile(src.read_text(encoding="utf-8"), "page-preview")
+            HTML(string=source_html, base_url=str(src.parent)).write_pdf(str(out))
+        else:
+            HTML(str(src), base_url=str(src.parent)).write_pdf(str(out))
     except Exception as exc:
         print(f"ERROR: {name}: render failed ({exc})")
         return False
@@ -389,6 +430,54 @@ def build_slides(name: str = "slides") -> bool:
     return False
 
 
+def _host_integration_sources() -> dict[str, dict[str, Any]]:
+    global _HOST_INTEGRATION_RESULTS
+    if _HOST_INTEGRATION_RESULTS is None:
+        from drawing_host_integration import build_host_integration_sources
+
+        _HOST_INTEGRATION_RESULTS = build_host_integration_sources(EXAMPLES / "drawing-hosts")
+    return _HOST_INTEGRATION_RESULTS
+
+
+def build_host_integration(name: str) -> bool:
+    if name not in HOST_INTEGRATION_TARGETS:
+        print(f"ERROR: {name}: unknown drawing host integration target")
+        return False
+    try:
+        product = _host_integration_sources()[name]
+        source = Path(product["path"])
+        if product["kind"] == "pptx":
+            target = EXAMPLES / f"{name}.pptx"
+            target.write_bytes(source.read_bytes())
+            count = _pptx_slide_count(target)
+            if count != int(product["slides"]):
+                raise ValueError(f"slide count {count} does not match {product['slides']}")
+            print(f"OK: {name}: {count} slides")
+            return True
+
+        HTML, PdfReader, dep_error = _load_pdf_build_deps()
+        if dep_error:
+            raise RuntimeError(dep_error)
+        target = EXAMPLES / f"{name}.pdf"
+        HTML(str(source), base_url=str(source.parent)).write_pdf(str(target))
+        reader = PdfReader(str(target))
+        minimum, maximum = product["pages"]
+        issue = page_count_issue(name, len(reader.pages), minimum, maximum)
+        if issue:
+            raise ValueError(issue)
+        expected = (612.0, 792.0) if product["host"] == "letter-portrait" else (595.28, 841.89)
+        for page in reader.pages:
+            actual = (float(page.mediabox.width), float(page.mediabox.height))
+            if any(abs(left - right) > 1 for left, right in zip(actual, expected)):
+                raise ValueError(f"page size {actual} does not match {expected}")
+        set_pdf_metadata(target, infer_author())
+        print(f"OK: {name}: {len(reader.pages)} pages")
+        return True
+    except Exception as exc:
+        print(f"ERROR: {name}: host integration failed ({exc})")
+        return False
+
+
 def build_diagram_artifact(name: str) -> bool:
     config = DIAGRAM_ARTIFACT_TARGETS.get(name)
     if config is None:
@@ -396,12 +485,25 @@ def build_diagram_artifact(name: str) -> bool:
         return False
 
     try:
-        if "text" in config:
+        if "drawing" in config:
+            from drawing.compiler import DEFAULT_COMPILER_REGISTRY
+            from renderers.svg import render_svg
+
+            payload = json.loads((ROOT / config["drawing"]).read_text(encoding="utf-8"))
+            result = DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
+            svg = render_svg(result.scene, result.profile)
+            spec = type("DrawingArtifact", (), {"title": result.plan.title})()
+        elif "flowchart" in config:
+            payload = json.loads((ROOT / config["flowchart"]).read_text(encoding="utf-8"))
+            svg = render_flowchart_svg(payload)
+            spec = type("FlowchartArtifact", (), {"title": payload["title"]})()
+        elif "text" in config:
             text = (ROOT / config["text"]).read_text(encoding="utf-8")
             spec = plan_architecture_from_text(text, config["title"])
+            svg = render_diagram_svg(spec)
         else:
             spec = load_diagram_spec_file(ROOT / config["spec"])
-        svg = render_diagram_svg(spec)
+            svg = render_diagram_svg(spec)
 
         GENERATED_DIAGRAM_SVG.mkdir(parents=True, exist_ok=True)
         GENERATED_DIAGRAM_PNG.mkdir(parents=True, exist_ok=True)
@@ -580,6 +682,9 @@ def build_all() -> int:
     for name in PPTX_TARGETS:
         if not build_slides(name):
             failures += 1
+    for name in HOST_INTEGRATION_TARGETS:
+        if not build_host_integration(name):
+            failures += 1
     return failures
 
 
@@ -598,7 +703,9 @@ def build_single(name: str) -> int:
         return 0 if build_diagram_artifact(name) else 1
     if name in PPTX_TARGETS:
         return 0 if build_slides(name) else 1
-    known = list(HTML_TARGETS) + list(DIAGRAM_TARGETS) + list(DIAGRAM_ARTIFACT_TARGETS) + list(PPTX_TARGETS)
+    if name in HOST_INTEGRATION_TARGETS:
+        return 0 if build_host_integration(name) else 1
+    known = list(HTML_TARGETS) + list(DIAGRAM_TARGETS) + list(DIAGRAM_ARTIFACT_TARGETS) + list(PPTX_TARGETS) + list(HOST_INTEGRATION_TARGETS)
     print(f"ERROR: unknown target: {name}. Known: {', '.join(known)}")
     return 2
 
@@ -646,10 +753,29 @@ def _doctor_command(label: str, command: str, install_hint: str) -> tuple[bool, 
     return False, f"ERROR: {label}: '{command}' not found. {install_hint}"
 
 
+def _doctor_weasyprint() -> tuple[bool, str | None]:
+    ok, native_message = _doctor_import("WeasyPrint", "weasyprint")
+    if ok:
+        return True, None
+
+    fallback = ROOT / ".venv-weasy" / "bin" / "python"
+    if not fallback.exists():
+        return False, native_message
+    result = subprocess.run(
+        [str(fallback), "-c", "from weasyprint import HTML"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode == 0:
+        return True, None
+    return False, native_message
+
+
 def run_doctor() -> int:
     checks: list[tuple[str, bool, str | None]] = []
 
-    ok, msg = _doctor_import("WeasyPrint", "weasyprint")
+    ok, msg = _doctor_weasyprint()
     checks.append(("WeasyPrint", ok, msg))
     ok, msg = _doctor_import("pypdf", "pypdf")
     checks.append(("pypdf", ok, msg))
@@ -663,11 +789,11 @@ def run_doctor() -> int:
     )
     checks.append(("rsvg-convert", ok, msg))
     ok, msg = _doctor_command(
-        "pdffonts",
-        "pdffonts",
+        "pdftoppm",
+        "pdftoppm",
         "macOS: brew install poppler; Debian/Ubuntu: sudo apt-get install -y poppler-utils",
     )
-    checks.append(("pdffonts", ok, msg))
+    checks.append(("pdftoppm", ok, msg))
     ok, msg = _doctor_command(
         "Node.js",
         "node",
@@ -885,7 +1011,13 @@ def verify_target(name: str, source: str, min_pages: int, max_pages: int, src_di
         print(f"  [FONT MISS] {name}: {mf} not found — render will fall back to Source Han Serif SC → Noto Serif CJK SC → Songti SC → Georgia")
 
     try:
-        HTML(str(src), base_url=str(src.parent)).write_pdf(str(out))
+        if src_dir == DIAGRAMS:
+            from drawing.output import apply_html_output_profile
+
+            source_html = apply_html_output_profile(src.read_text(encoding="utf-8"), "page-preview")
+            HTML(string=source_html, base_url=str(src.parent)).write_pdf(str(out))
+        else:
+            HTML(str(src), base_url=str(src.parent)).write_pdf(str(out))
     except Exception as exc:
         issues.append(f"render failed: {exc}")
         return issues
@@ -965,6 +1097,8 @@ def verify_all(target: str | None = None) -> int:
             targets_to_run[target] = ("artifact", "", 1, 1, ROOT)
         elif target in PPTX_TARGETS:
             targets_to_run[target] = None
+        elif target in HOST_INTEGRATION_TARGETS:
+            targets_to_run[target] = ("host", "", 1, 1, ROOT)
         else:
             print(f"ERROR: unknown target: {target}")
             return 2
@@ -977,6 +1111,8 @@ def verify_all(target: str | None = None) -> int:
             targets_to_run[name] = ("artifact", "", 1, 1, ROOT)
         for name in PPTX_TARGETS:
             targets_to_run[name] = None
+        for name in HOST_INTEGRATION_TARGETS:
+            targets_to_run[name] = ("host", "", 1, 1, ROOT)
 
     failures = 0
     rows: list[tuple[str, str]] = []
@@ -987,6 +1123,8 @@ def verify_all(target: str | None = None) -> int:
             target_kind, source, min_pages, max_pages, src_dir = config
             if target_kind == "artifact":
                 issues = [] if build_diagram_artifact(name) else ["artifact build failed"]
+            elif target_kind == "host":
+                issues = [] if build_host_integration(name) else ["host integration build failed"]
             else:
                 issues = verify_target(name, source, min_pages, max_pages, src_dir)
         if issues:

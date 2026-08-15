@@ -1,0 +1,25 @@
+{
+  "schema_version": "3.0",
+  "kind": "tree",
+  "title": "Drawing Grammar Hierarchy",
+  "focus_root": "structural",
+  "nodes": [
+    {"id": "core", "label": "Drawing Core"},
+    {"id": "structural", "label": "Structural"},
+    {"id": "data-viz", "label": "Data Viz"},
+    {"id": "state", "label": "State"},
+    {"id": "swimlane", "label": "Swimlane"},
+    {"id": "tree", "label": "Tree"},
+    {"id": "scale", "label": "Scale"},
+    {"id": "series", "label": "Series"}
+  ],
+  "relations": [
+    {"id": "core-structural", "parent": "core", "child": "structural"},
+    {"id": "core-data", "parent": "core", "child": "data-viz"},
+    {"id": "structural-state", "parent": "structural", "child": "state"},
+    {"id": "structural-swimlane", "parent": "structural", "child": "swimlane"},
+    {"id": "structural-tree", "parent": "structural", "child": "tree"},
+    {"id": "data-scale", "parent": "data-viz", "child": "scale"},
+    {"id": "data-series", "parent": "data-viz", "child": "series"}
+  ]
+}

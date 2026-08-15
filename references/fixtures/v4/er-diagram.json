@@ -1,0 +1,26 @@
+{
+  "schema_version": "3.0",
+  "kind": "er-diagram",
+  "title": "Document Publishing Data",
+  "focus_entity": "document",
+  "entities": [
+    {"id": "author", "name": "Author", "fields": [
+      {"id": "id", "name": "id", "type": "uuid", "primary_key": true},
+      {"id": "name", "name": "name", "type": "text"}
+    ]},
+    {"id": "document", "name": "Document", "fields": [
+      {"id": "id", "name": "id", "type": "uuid", "primary_key": true},
+      {"id": "author_id", "name": "author_id", "type": "uuid", "foreign_key": true},
+      {"id": "title", "name": "title", "type": "text"}
+    ]},
+    {"id": "artifact", "name": "Artifact", "fields": [
+      {"id": "id", "name": "id", "type": "uuid", "primary_key": true},
+      {"id": "document_id", "name": "document_id", "type": "uuid", "foreign_key": true},
+      {"id": "uri", "name": "uri", "type": "text"}
+    ]}
+  ],
+  "relationships": [
+    {"id": "authors", "source": "author", "target": "document", "label": "authors", "source_cardinality": "one", "target_cardinality": "many"},
+    {"id": "publishes", "source": "document", "target": "artifact", "label": "publishes", "source_cardinality": "one", "target_cardinality": "one-or-many"}
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/tabular-chart-import.schema.json",
+  "title": "Folio Local Tabular Chart Import",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "title", "input", "mapping"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "kind": {"enum": ["bar-chart", "line-chart", "candlestick", "waterfall"]},
+    "title": {"type": "string", "pattern": ".*\\S.*"},
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "format", "encoding", "delimiter", "header", "missing", "locale", "coercion"],
+      "properties": {
+        "path": {"type": "string", "pattern": ".*\\S.*"},
+        "format": {"enum": ["csv", "tsv"]},
+        "encoding": {"enum": ["utf-8", "utf-8-sig"]},
+        "delimiter": {"type": "string", "minLength": 1, "maxLength": 1},
+        "header": {"type": "boolean"},
+        "locale": {"enum": ["en-US", "en-GB", "zh-CN", "zh-TW"]},
+        "missing": {
+          "type": "object", "additionalProperties": false,
+          "required": ["tokens", "policy"],
+          "properties": {
+            "tokens": {"type": "array", "maxItems": 16, "uniqueItems": true, "items": {"type": "string"}},
+            "policy": {"enum": ["error", "null"]}
+          }
+        },
+        "coercion": {
+          "type": "object", "additionalProperties": false,
+          "required": ["number", "date", "decimal", "thousands"],
+          "properties": {
+            "number": {"const": "strict-decimal"},
+            "date": {"const": "iso-8601"},
+            "decimal": {"enum": [".", ","]},
+            "thousands": {"enum": [null, ".", ","]}
+          }
+        }
+      }
+    },
+    "mapping": {"type": "object"},
+    "chart": {"type": "object"}
+  }
+}

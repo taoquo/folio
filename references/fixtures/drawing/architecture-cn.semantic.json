@@ -1,0 +1,140 @@
+{
+  "title": "智能体运行时",
+  "nodes": [
+    {
+      "id": "client",
+      "label": "用户请求",
+      "role": "entry",
+      "description": null,
+      "importance": "normal",
+      "state_owner": false,
+      "lifecycle_phase": null,
+      "domain": "surface",
+      "metadata": "HTTP · 事件"
+    },
+    {
+      "id": "planner",
+      "label": "任务规划器",
+      "role": "orchestrator",
+      "description": null,
+      "importance": "normal",
+      "state_owner": false,
+      "lifecycle_phase": null,
+      "domain": "runtime",
+      "metadata": "计划 · 协调"
+    },
+    {
+      "id": "runtime",
+      "label": "模型运行时",
+      "role": "executor",
+      "description": null,
+      "importance": "normal",
+      "state_owner": false,
+      "lifecycle_phase": null,
+      "domain": "runtime",
+      "metadata": "GPU Worker"
+    },
+    {
+      "id": "tools",
+      "label": "工具执行器",
+      "role": "tool-runtime",
+      "description": null,
+      "importance": "normal",
+      "state_owner": false,
+      "lifecycle_phase": null,
+      "domain": "runtime",
+      "metadata": "WebGL Renderer"
+    },
+    {
+      "id": "memory",
+      "label": "记忆存储",
+      "role": "storage",
+      "description": null,
+      "importance": "normal",
+      "state_owner": true,
+      "lifecycle_phase": null,
+      "domain": "data",
+      "metadata": "检索状态"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:0:client->planner",
+      "source": "client",
+      "target": "planner",
+      "relation": "control",
+      "interaction": null,
+      "importance": "primary",
+      "phase": null,
+      "label": "请求"
+    },
+    {
+      "id": "edge:1:planner->runtime",
+      "source": "planner",
+      "target": "runtime",
+      "relation": "control",
+      "interaction": null,
+      "importance": "primary",
+      "phase": null,
+      "label": "计划"
+    },
+    {
+      "id": "edge:2:runtime->tools",
+      "source": "runtime",
+      "target": "tools",
+      "relation": "control",
+      "interaction": null,
+      "importance": "primary",
+      "phase": null,
+      "label": "调用"
+    },
+    {
+      "id": "edge:3:runtime->memory",
+      "source": "runtime",
+      "target": "memory",
+      "relation": "read",
+      "interaction": null,
+      "importance": "secondary",
+      "phase": null,
+      "label": "检索"
+    }
+  ],
+  "groups": [
+    {
+      "id": "runtime-core",
+      "label": "运行核心",
+      "members": [
+        "planner",
+        "runtime",
+        "tools"
+      ],
+      "role": "subsystem",
+      "domain": "runtime"
+    }
+  ],
+  "focus_candidates": [
+    "runtime"
+  ],
+  "focus_path": [
+    "client",
+    "planner",
+    "runtime",
+    "tools"
+  ],
+  "narrative": "模型运行时连接规划、工具与记忆。",
+  "width": 960,
+  "height": 540,
+  "subtitle": null,
+  "caption": null,
+  "layer_order": [
+    "surface",
+    "runtime",
+    "data"
+  ],
+  "layer_labels": {
+    "surface": "接入层",
+    "runtime": "运行层",
+    "data": "状态层"
+  },
+  "composition_hint": "horizontal-layers"
+}

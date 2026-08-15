@@ -26,3 +26,6 @@ assets/examples/
 docs/
 .font-libs/
 dist/
+
+# Local render scratch space for showcase review
+/build/

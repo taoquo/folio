@@ -1,0 +1,81 @@
+{
+  "schema_version": "3.0",
+  "kind": "bar-chart",
+  "title": "Revenue Mix by Quarter",
+  "unit": "M",
+  "locale": "en-US",
+  "source": "Orbital finance close, FY2026 Q1-Q4",
+  "mode": "grouped",
+  "categories": [
+    "Q1",
+    "Q2",
+    "Q3",
+    "Q4"
+  ],
+  "series": [
+    {
+      "id": "subscription",
+      "label": "Subscription",
+      "values": [
+        18.4,
+        21.2,
+        24.9,
+        29.6
+      ]
+    },
+    {
+      "id": "services",
+      "label": "Services",
+      "values": [
+        6.1,
+        6.8,
+        7.2,
+        7.9
+      ]
+    },
+    {
+      "id": "churn",
+      "label": "Churn credits",
+      "values": [
+        -1.4,
+        -1.1,
+        -0.9,
+        -0.6
+      ]
+    }
+  ],
+  "focus_series": "subscription",
+  "order": "input",
+  "reference_lines": [
+    {
+      "id": "plan",
+      "label": "Plan",
+      "value": 26
+    },
+    {
+      "id": "stretch",
+      "label": "Stretch goal",
+      "value": 28.5
+    }
+  ],
+  "annotations": [
+    {
+      "id": "inflection",
+      "text": "Self-serve tier lands",
+      "series": "subscription",
+      "category": "Q3"
+    },
+    {
+      "id": "churn-fix",
+      "text": "Churn credits nearly retired",
+      "series": "churn",
+      "category": "Q4"
+    }
+  ],
+  "value_format": {
+    "precision": 1,
+    "compact": false,
+    "grouping": true,
+    "unit_position": "prefix"
+  }
+}

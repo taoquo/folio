@@ -1,0 +1,25 @@
+{
+  "schema_version": "3.0",
+  "kind": "swimlane",
+  "title": "图表编译请求流",
+  "language": "zh-CN",
+  "focus_lane": "编译器",
+  "lanes": [
+    {"id": "客户端", "label": "客户端"},
+    {"id": "编译器", "label": "Compiler 编译器"},
+    {"id": "存储", "label": "存储服务"}
+  ],
+  "steps": [
+    {"id": "请求", "type": "terminal", "lane": "客户端", "label": "提交 JSON"},
+    {"id": "编译", "type": "action", "lane": "编译器", "label": "编译 Plan"},
+    {"id": "读取", "type": "data", "lane": "存储", "label": "读取 Assets"},
+    {"id": "校验", "type": "action", "lane": "编译器", "label": "校验 Scene"},
+    {"id": "响应", "type": "terminal", "lane": "客户端", "label": "返回 SVG"}
+  ],
+  "flows": [
+    {"id": "提交", "source": "请求", "target": "编译", "channel": "request"},
+    {"id": "读资源", "source": "编译", "target": "读取", "channel": "request"},
+    {"id": "资源", "source": "读取", "target": "校验", "channel": "response"},
+    {"id": "结果", "source": "校验", "target": "响应", "channel": "response"}
+  ]
+}

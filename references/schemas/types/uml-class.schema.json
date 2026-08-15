@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/types/uml-class.schema.json",
+  "title": "Folio UML Class Diagram Authoring Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "title", "types", "relationships"],
+  "properties": {
+    "schema_version": {"const": "3.0"},
+    "kind": {"const": "uml-class"},
+    "title": {"$ref": "#/$defs/text"},
+    "layout": {"const": "class-grid"},
+    "types": {"type": "array", "minItems": 1, "maxItems": 8, "items": {"$ref": "#/$defs/type"}},
+    "relationships": {"type": "array", "maxItems": 12, "items": {"$ref": "#/$defs/relationship"}},
+    "focus": {"type": ["string", "null"]},
+    "width": {"const": 960},
+    "height": {"const": 640},
+    "language": {"$ref": "#/$defs/text"}
+  },
+  "$defs": {
+    "text": {"type": "string", "pattern": ".*\\S.*", "maxLength": 64},
+    "short-text": {"type": "string", "pattern": ".*\\S.*", "maxLength": 40},
+    "member": {"type": "string", "pattern": ".*\\S.*", "maxLength": 56},
+    "type": {
+      "type": "object", "additionalProperties": false, "required": ["id", "kind", "name"],
+      "properties": {
+        "id": {"type": "string", "pattern": ".*\\S.*", "maxLength": 40},
+        "kind": {"enum": ["class", "interface", "enum"]},
+        "name": {"type": "string", "pattern": ".*\\S.*", "maxLength": 40},
+        "attributes": {"type": "array", "maxItems": 6, "items": {"$ref": "#/$defs/member"}},
+        "methods": {"type": "array", "maxItems": 5, "items": {"$ref": "#/$defs/member"}}
+      }
+    },
+    "relationship": {
+      "type": "object", "additionalProperties": false, "required": ["id", "source", "target", "kind"],
+      "properties": {
+        "id": {"type": "string", "pattern": ".*\\S.*", "maxLength": 40},
+        "source": {"$ref": "#/$defs/text"},
+        "target": {"$ref": "#/$defs/text"},
+        "kind": {"enum": ["inheritance", "association", "aggregation", "composition"]},
+        "label": {"$ref": "#/$defs/short-text"},
+        "source_multiplicity": {"$ref": "#/$defs/short-text"},
+        "target_multiplicity": {"$ref": "#/$defs/short-text"}
+      }
+    }
+  }
+}

@@ -22,12 +22,13 @@ def validate_diagram_html(path: Path) -> list[str]:
     html = path.read_text(encoding="utf-8")
     if "marker-end" in html or "<marker" in html:
         issues.append("SVG marker arrows are not allowed; use manual chevrons")
-    svg_match = re.search(r"<svg\b[\s\S]*?</svg>", html)
+    svg_match = re.search(r"<svg\s+[^>]*>[\s\S]*?</svg>", html)
     if not svg_match:
         return issues
     try:
         svg = ElementTree.fromstring(svg_match.group(0))
     except ElementTree.ParseError as exc:
+        issues.append(f"{path.name}: malformed SVG: {exc}")
         return issues
 
     width, height = _svg_size(svg)

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/types/venn.schema.json",
+  "title": "Folio Venn Authoring Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "title", "sets", "intersections"],
+  "properties": {
+    "schema_version": {"const": "3.0"}, "kind": {"const": "venn"},
+    "title": {"$ref": "#/$defs/non-empty-string"},
+    "sets": {"type": "array", "minItems": 2, "maxItems": 3, "items": {"$ref": "#/$defs/set"}},
+    "intersections": {"type": "array", "items": {"$ref": "#/$defs/intersection"}},
+    "focus": {"type": "array", "maxItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/non-empty-string"}},
+    "width": {"type": "integer", "minimum": 320}, "height": {"type": "integer", "minimum": 240},
+    "language": {"$ref": "#/$defs/non-empty-string"}
+  },
+  "$defs": {
+    "non-empty-string": {"type": "string", "minLength": 1},
+    "string-list": {"type": "array", "items": {"$ref": "#/$defs/non-empty-string"}},
+    "set": {
+      "type": "object", "additionalProperties": false, "required": ["id", "label", "exclusive"],
+      "properties": {
+        "id": {"$ref": "#/$defs/non-empty-string"}, "label": {"$ref": "#/$defs/non-empty-string"},
+        "exclusive": {"$ref": "#/$defs/string-list"}
+      }
+    },
+    "intersection": {
+      "type": "object", "additionalProperties": false, "required": ["id", "sets", "items"],
+      "properties": {
+        "id": {"$ref": "#/$defs/non-empty-string"},
+        "sets": {"type": "array", "minItems": 2, "maxItems": 3, "uniqueItems": true, "items": {"$ref": "#/$defs/non-empty-string"}},
+        "items": {"$ref": "#/$defs/string-list"}
+      }
+    }
+  }
+}

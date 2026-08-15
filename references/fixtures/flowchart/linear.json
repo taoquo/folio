@@ -1,0 +1,17 @@
+{
+  "schema_version": "2.0",
+  "kind": "flowchart",
+  "title": "Publish Document",
+  "axis": "left-right",
+  "nodes": [
+    {"id": "start", "type": "terminal", "label": "Draft ready"},
+    {"id": "check", "type": "step", "label": "Validate content"},
+    {"id": "render", "type": "step", "label": "Render artifact"},
+    {"id": "end", "type": "terminal", "label": "Published"}
+  ],
+  "edges": [
+    {"source": "start", "target": "check"},
+    {"source": "check", "target": "render"},
+    {"source": "render", "target": "end"}
+  ]
+}

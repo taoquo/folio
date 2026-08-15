@@ -116,7 +116,7 @@ class DiagramRendererTests(TestCase):
         self.assertIn('class="arch-edge arch-edge--primary"', svg)
         self.assertRegex(svg, r'd="M \d+ \d+(?: L \d+ \d+){2,}"')
 
-    def test_render_architecture_svg_suppresses_edge_labels_to_avoid_collisions(self) -> None:
+    def test_render_architecture_svg_places_edge_labels_clear_of_nodes(self) -> None:
         spec = models.load_diagram_spec(
             {
                 "kind": "architecture",
@@ -138,10 +138,22 @@ class DiagramRendererTests(TestCase):
 
         svg = renderer.render_diagram_svg(spec)
 
-        self.assertNotIn('class="arch-edge-label', svg)
         self.assertNotIn('class="arch-edge-label-bg', svg)
         self.assertIn('class="arch-edge arch-edge--primary', svg)
         self.assertIn('class="arch-edge arch-edge--secondary', svg)
+        _semantic, _drawing, layout, _scene = renderer.compile_architecture(spec)
+        labelled = [edge for edge in layout.edges if edge.label_box]
+        self.assertTrue(labelled)
+        for edge in labelled:
+            for node_id, box in layout.boxes.items():
+                label = edge.label_box
+                clear = (
+                    label.x + label.w <= box.x
+                    or box.x + box.w <= label.x
+                    or label.y + label.h <= box.y
+                    or box.y + box.h <= label.y
+                )
+                self.assertTrue(clear, f"{edge.source}->{edge.target} label overlaps {node_id}")
 
     def test_render_architecture_svg_draws_groups_and_legend(self) -> None:
         spec = models.load_diagram_spec(
@@ -235,11 +247,13 @@ class DiagramRendererTests(TestCase):
             }
         )
 
-        metrics = renderer._architecture_legend_metrics(spec)
+        _semantic, _drawing, _layout, scene = renderer.compile_architecture(spec)
+        legend = scene.legend
 
-        self.assertGreater(metrics["width"], metrics["height"] * 4)
-        self.assertEqual(metrics["x"] + metrics["width"] // 2, spec.width // 2)
-        item_rows = {item["y"] for item in metrics["items"]}
+        self.assertIsNotNone(legend)
+        self.assertGreater(legend.box.w, legend.box.h * 4)
+        self.assertEqual(legend.box.x + legend.box.w // 2, spec.width // 2)
+        item_rows = {item.line[0][1] for item in legend.items}
         self.assertEqual(len(item_rows), 1)
 
     def test_render_uml_class_svg_contains_compartments(self) -> None:
@@ -390,5 +404,5 @@ class DiagramRendererTests(TestCase):
 
         svg = renderer.render_diagram_svg(spec)
 
-        self.assertRegex(svg, r'<text x="\d+" y="\d+" fill="#85776F" font-size="9"[^>]*>retrieves</text>')
+        self.assertRegex(svg, r'<text x="\d+" y="\d+" fill="#74665F" font-size="9"[^>]*>retrieves</text>')
         self.assertIn(">retrieves</text>", svg)

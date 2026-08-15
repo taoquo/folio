@@ -1,0 +1,15 @@
+{
+  "schema_version": "3.0",
+  "kind": "waterfall",
+  "title": "V5 Validation Delta",
+  "unit": " checks",
+  "start": 42,
+  "contributions": [
+    {"id": "schema", "label": "Schema", "value": 18},
+    {"id": "geometry", "label": "Geometry", "value": 14},
+    {"id": "a11y", "label": "Accessibility", "value": 12},
+    {"id": "dedupe", "label": "Deduplication", "value": -4},
+    {"id": "profiles", "label": "Profiles", "value": 16}
+  ],
+  "end": 98
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": "3.0",
+  "kind": "loop-flywheel",
+  "title": "Untitled Flywheel",
+  "stages": [
+    {
+      "id": "first",
+      "label": "First"
+    },
+    {
+      "id": "second",
+      "label": "Second"
+    },
+    {
+      "id": "third",
+      "label": "Third"
+    }
+  ]
+}

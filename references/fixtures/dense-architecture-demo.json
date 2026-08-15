@@ -1,0 +1,33 @@
+{
+  "kind": "architecture",
+  "title": "Dense Boundary",
+  "layout": "horizontal-layers",
+  "focus": "n5",
+  "focus_path": ["n1", "n4", "n5", "n8"],
+  "layers": [
+    {"id": "surface", "label": "Surface", "order": 1},
+    {"id": "runtime", "label": "Runtime", "order": 2},
+    {"id": "data", "label": "Data", "order": 3}
+  ],
+  "nodes": [
+    {"id": "n1", "kind": "external", "label": "Ingress", "layer": "surface"},
+    {"id": "n2", "kind": "external", "label": "Console", "layer": "surface"},
+    {"id": "n3", "kind": "cloud", "label": "Webhook", "layer": "surface"},
+    {"id": "n4", "kind": "service", "label": "Router", "layer": "runtime"},
+    {"id": "n5", "kind": "service", "label": "Orchestrator", "layer": "runtime"},
+    {"id": "n6", "kind": "service", "label": "Worker", "layer": "runtime"},
+    {"id": "n7", "kind": "store", "label": "Cache", "layer": "data"},
+    {"id": "n8", "kind": "store", "label": "Database", "layer": "data"},
+    {"id": "n9", "kind": "cloud", "label": "Telemetry", "layer": "data"}
+  ],
+  "edges": [
+    {"source": "n1", "target": "n4", "kind": "primary", "label": "request"},
+    {"source": "n2", "target": "n4", "kind": "secondary", "label": "command"},
+    {"source": "n3", "target": "n5", "kind": "secondary", "label": "event"},
+    {"source": "n4", "target": "n5", "kind": "primary", "label": "route"},
+    {"source": "n5", "target": "n6", "kind": "primary", "label": "dispatch"},
+    {"source": "n6", "target": "n7", "kind": "secondary", "label": "read"},
+    {"source": "n5", "target": "n8", "kind": "primary", "label": "write"},
+    {"source": "n6", "target": "n9", "kind": "async", "label": "observe"}
+  ]
+}

@@ -1,19 +1,14 @@
 # Diagrams
 
-folio's drawing capability. **14 diagram types** covering structural, process, and data chart scenarios. All wear folio's skin (parchment + cinnabar-coral + warm grays). No second design system.
+folio's drawing capability. **22 diagram types** covering structural, process, notation, and data chart scenarios. All wear folio's skin (parchment + cinnabar-coral + warm grays). No second design system.
 
-Most built-in diagrams are **self-contained HTML + inline SVG**. No Mermaid, no JS, no build step. Browse them as standalone pages, or copy the `<svg>...</svg>` block into a long-doc `<figure>` to embed.
-
-Two standalone diagram artifacts also have a generator-backed path:
-
-- architecture diagrams
-- UML class diagrams
+All twenty-two official diagram types are generator-backed. Structured semantic JSON compiles through type-owned grammars into shared scene primitives and exports as SVG, PNG, or PDF. The self-contained HTML + inline SVG files and legacy UML loader remain parity references and manual escape hatches.
 
 Artifact flow:
 
 - `JSON spec -> SVG -> PNG -> PDF`
 
-The generated `SVG` is the source reused by documents and slides.
+The generated `SVG` is the source reused by documents. Slides use a traced PNG derived from the same resolved scene.
 
 ---
 
@@ -57,6 +52,9 @@ All diagrams should look drawn by the same editorial hand, whether they come fro
 | Set intersections (feature overlap, audience comparison, capability map) | **Venn** | `assets/diagrams/venn.html` |
 | OHLC price action (stock price, trading days, up/down candles) | **Candlestick** | `assets/diagrams/candlestick.html` |
 | Revenue bridge, valuation decomposition, cash flow breakdown | **Waterfall** | `assets/diagrams/waterfall.html` |
+| Ordered interactions among actors, systems, and stores | **Sequence** | `references/fixtures/v4/sequence.json` |
+| Types, members, inheritance, association, aggregation, composition | **UML Class** | `references/fixtures/v4/uml-class.json` |
+| Database entities, fields, keys, and cardinality | **ER Diagram** | `references/fixtures/v4/er-diagram.json` |
 
 Not on the list:
 - **Compare two things**: use a table. A three-column table beats any diagram of a binary contrast.
@@ -87,28 +85,36 @@ If "no", don't draw. Diagrams add signal to hierarchy, direction, and magnitude.
 
 ### Standalone preview
 
-Open `assets/diagrams/architecture.html` (or `flowchart.html`, `quadrant.html`) directly. Each file is a complete HTML page with title, SVG, and caption.
+Use the structured fixtures in `references/fixtures/` and `references/fixtures/v3/`, then run `scripts/folio.py render-drawing`. Generated catalog outputs live under `assets/diagrams/generated/catalog/`.
 
-For generator-backed standalone artifacts, use the generated outputs under `assets/diagrams/generated/` instead of the handwritten template previews.
+Open `assets/diagrams/architecture.html` or another type template only for parity review or a deliberate manual escape hatch.
 
-### Embed in a folio document
+### Embed in a Folio document or slide
 
-Extract **only the `<svg>...</svg>` block** from the template (leave the frame / h1 / eyebrow behind). Drop it into a long-doc `<figure>`:
+Use an explicit host slot; do not copy SVG out of a template. HTML slots use this shape:
 
 ```html
-<figure>
-  <svg viewBox="0 0 960 460" xmlns="http://www.w3.org/2000/svg">
-    <!-- svg content copied from architecture.html -->
-  </svg>
-  <figcaption>Figure 1. {{Short editorial caption in serif.}}</figcaption>
+<figure data-folio-diagram-slot="system-flow">
+  <p>Diagram slot</p>
 </figure>
 ```
 
-`long-doc.html` already styles `figure` and `figcaption`. No extra CSS required.
+Then compile, embed, and verify:
+
+```bash
+python3 scripts/folio.py embed-drawing references/fixtures/v3/swimlane.json \
+  --host-contract a4-portrait --host-file report.html --output-host report-filled.html \
+  --slot system-flow --caption "Ownership handoffs concentrate in the compiler lane."
+python3 scripts/folio.py verify-drawing-host report-filled.html
+```
+
+For slides, name the target shape `folio-diagram-slot:<id>` in the PPTX and use host contract `slide-16x9` with `--slide-index`. Folio contain-fits the image without distortion, writes alt text and a caption, records source and artifact digests in slide notes, and adds an exact data table to notes for charts. See `drawing-dsl-authoring.md` for the full workflow.
 
 ### Editing nodes / text
 
-Edit the `<text>` and `<rect>` values directly. Rules:
+Direct `<text>` and `<rect>` editing is a manual escape hatch for files under `assets/diagrams/`. Rules:
+
+The rules in this subsection apply to **hand-authored SVG templates** under `assets/diagrams/`. Generator-backed architecture diagrams use the executable grammar in `scripts/drawing/grammar/architecture.py`; see `references/drawing-dsl.md` and `references/drawing-architecture.md`. Do not copy hand-authored size tiers into the generator.
 
 - **All coordinates, widths, and gaps must be divisible by 4.** This is the anti-AI-slop floor. Break it once and the diagram starts looking "close enough".
 - Node widths: 128 / 144 / 160 (three tiers, don't add more). Small diagrams (viewBox width < 360) may compress to 2 tiers, but still keep it 2 - don't tailor each node.
@@ -234,7 +240,7 @@ Scan for these when drawing or reviewing:
 
 ## 7. Data charts (bar / line / donut)
 
-Five data-driven chart types for investment reports, financial comparisons, and market-share breakdowns. Like the first three diagram types, all are self-contained HTML + inline SVG, embeddable in any folio document.
+Five data-driven chart types support investment reports, financial comparisons, and market-share breakdowns. Their structured V3 inputs own values, units, locale, source notes, category/time domains, and missing-value policy; authored coordinates are not accepted.
 
 ### Color palette (derived from folio warm palette)
 
@@ -261,52 +267,40 @@ Five data-driven chart types for investment reports, financial comparisons, and 
 
 ### Editing data
 
-Each file has `<!-- DATA START -->` / `<!-- DATA END -->` comments. Only change SVG elements between those markers (`<rect>` coordinates, `<polyline>` points, `<path>` arcs, `<text>` values). Leave surrounding structure and styles untouched.
+Edit semantic JSON rather than SVG coordinates. Use these fixture shapes as starting points:
 
-**Coordinate rules (same as the first three diagram types)**:
-- All coordinates divisible by 4
-- Bar chart corner radius `rx=2` (distinct from node radius 6-10)
-- Line chart: `<polyline>` points format `"x1,y1 x2,y2 ..."`, data points marked with `<circle>`
-- Donut chart: `<path>` arcs use `A R R 0 large-arc sweep_flag x y`; `large-arc=1` only when segment > 180°
+- Bar: `categories`, `series[].values`, `mode`, optional `order`, `reference_lines`, `annotations`, `unit`, `locale`, `source`
+- Line: unique `categories`, `series[].values`, `x_scale`, `missing_policy`, optional `reference_lines` and semantic `annotations`
+- Donut: positive `segments`, optional `percent_total` and `tolerance`
+- Candlestick: ascending ISO periods with `open`, `high`, `low`, `close`, plus optional period/field annotations
+- Waterfall: `start`, signed delta contributions, verified subtotal steps, optional checked `end` and `tolerance`
 
-**Bar / line chart Y-axis formula** (default scale: max=140, chart-height=280, scale=2):
-```
-bar_height = value × 2
-bar_top_y  = 320 - bar_height   (baseline y = 320)
-dot_y      = 320 - value × 2
-```
+For local CSV/TSV sources, use `scripts/folio.py import-chart-data` with the explicit config contract in `references/schemas/tabular-chart-import.schema.json`. Remote resources, formula-like cells, implicit separators, ambiguous dates/numbers, and unbounded files are rejected. `value_format` changes only displayed precision, grouping, compact notation, and unit placement; serialized and accessible values remain exact.
 
-**Donut arc coordinates** (cx=300 cy=200 R=136 r=76, clockwise from top at -90°):
-```
-angle_start = -90 + sum_of_previous_percentages × 3.6
-angle_end   = angle_start + this_percentage × 3.6
-outer_x = 300 + 136 × cos(angle_deg × π/180)
-outer_y = 200 + 136 × sin(angle_deg × π/180)
-inner_x = 300 + 76  × cos(angle_deg × π/180)
-inner_y = 200 + 76  × sin(angle_deg × π/180)
-```
+For existing Mermaid or draw.io diagrams, use `scripts/folio.py import-diagram`. It converts flowchart, sequence, state-machine, ER, and UML class sources into typed payloads and writes a fidelity ledger (`references/schemas/diagram-import-ledger.schema.json`) that lists preserved, downgraded, and dropped features. Coordinates are always dropped because Folio recomputes deterministic layout. See `references/drawing-dsl-authoring.md` section 4b.
 
-**Candlestick Y-axis formula** (default: price range 100-160, chart-height=280, scale=4.67):
-```
-candle_y = 320 - (price - 100) * 4.67
-Up candle: fill=#B83D2E (close > open), body from open_y to close_y
-Down candle: fill=#85776F (close < open), body from close_y to open_y
-Wick: 1.2px stroke from high_y to low_y, centered on candle
-```
+The compiler calculates scales, ticks, baseline, positive/negative stacks, reference lines, bounded callouts, arcs, temporal spacing, candle bodies, connector levels, subtotals, and stable mark ids. Invalid numbers, totals, dates, targets, budgets, or ordering stop before export.
 
-**Waterfall formula** (default: max=200, chart-height=280, scale=1.4):
-```
-bar_y = 320 - value * 1.4
-Floating bars: top = running_total_y, height = abs(delta) * 1.4
-Positive: fill=#B83D2E · Negative: fill=#85776F · Total: fill=#4B3E39
-Connector: dashed 0.8px #B9ACA3 between adjacent bar edges
-```
+### Notation limits
+
+| Diagram | Primary budget | Required identity |
+|---|---|---|
+| Sequence | 2-6 participants, 1-12 messages | Every participant and message has a stable id |
+| UML Class | 1-8 types, 0-12 relationships | Every type and relationship has a stable id |
+| ER Diagram | 2-8 entities, 1-8 fields each, 1-12 relationships | Every entity, field, and relationship has a stable id |
+
+Sequence rejects self-messages in V4.3. UML and ER reject parallel directed relationships instead of silently collapsing routes. Authors provide no coordinates. Sankey is intentionally excluded; see `references/decisions/0007-sankey-is-not-a-v4-3-grammar.md`.
 
 ---
 
 ## 8. Build / preview
 
 ```bash
+python3 scripts/folio.py draw-plan references/fixtures/architecture-demo.json --explain-drawing
+python3 scripts/folio.py check-drawing references/fixtures/architecture-demo.json
+python3 scripts/folio.py render-drawing references/fixtures/v3/bar-chart.json --format svg --profile embed --output /tmp/bar.svg
+python3 scripts/folio.py render-drawing references/fixtures/v3/bar-chart.json --format png --theme dark --output /tmp/bar-dark.png
+python3 scripts/folio.py diagram-catalog --skip-dsl-build
 python3 scripts/build.py diagram-architecture
 python3 scripts/build.py diagram-flowchart
 python3 scripts/build.py diagram-quadrant
@@ -326,7 +320,7 @@ python3 scripts/build.py diagram-waterfall
 python3 scripts/build.py
 ```
 
-Or just open `assets/diagrams/*.html` in a browser.
+For parity review only, open `assets/diagrams/*.html` in a browser.
 
 ---
 

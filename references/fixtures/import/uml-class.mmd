@@ -1,0 +1,21 @@
+classDiagram
+    class DrawingSource {
+        <<interface>>
+        +compile(): Result
+    }
+    class Compiler {
+        +registry: Registry
+        +compile(input): Result
+    }
+    class CompilationResult {
+        +scene: Scene
+        +diagnostics: Diagnostic[]
+    }
+    class Status {
+        <<enumeration>>
+        OK
+        ERROR
+    }
+    Compiler --|> DrawingSource
+    Compiler *-- CompilationResult : creates
+    CompilationResult --> Status : reports

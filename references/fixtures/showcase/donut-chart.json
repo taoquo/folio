@@ -1,0 +1,44 @@
+{
+  "schema_version": "3.0",
+  "kind": "donut-chart",
+  "title": "Where Build Time Goes",
+  "unit": "%",
+  "locale": "en-US",
+  "source": "Sampled from 41,200 production builds",
+  "percent_total": true,
+  "tolerance": 0.5,
+  "segments": [
+    {
+      "id": "typeset",
+      "label": "Typesetting",
+      "value": 46
+    },
+    {
+      "id": "fonts",
+      "label": "Font shaping",
+      "value": 21
+    },
+    {
+      "id": "validate",
+      "label": "Quality gates",
+      "value": 18
+    },
+    {
+      "id": "raster",
+      "label": "Rasterization",
+      "value": 10
+    },
+    {
+      "id": "upload",
+      "label": "Upload",
+      "value": 5
+    }
+  ],
+  "focus_segment": "typeset",
+  "value_format": {
+    "precision": 0,
+    "compact": false,
+    "grouping": false,
+    "unit_position": "suffix"
+  }
+}

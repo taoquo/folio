@@ -1,0 +1,139 @@
+{
+  "title": "Workflow Engine",
+  "nodes": [
+    {
+      "id": "gateway",
+      "label": "API Gateway",
+      "role": "entry",
+      "description": null,
+      "importance": "secondary",
+      "state_owner": false,
+      "lifecycle_phase": "runtime",
+      "domain": "surface",
+      "metadata": "request ingress"
+    },
+    {
+      "id": "orchestrator",
+      "label": "Workflow Orchestrator",
+      "role": "orchestrator",
+      "description": null,
+      "importance": "primary",
+      "state_owner": false,
+      "lifecycle_phase": "runtime",
+      "domain": "runtime",
+      "metadata": "step coordination"
+    },
+    {
+      "id": "workers",
+      "label": "Worker Pool",
+      "role": "executor",
+      "description": null,
+      "importance": "secondary",
+      "state_owner": false,
+      "lifecycle_phase": "runtime",
+      "domain": "runtime",
+      "metadata": "step execution"
+    },
+    {
+      "id": "state-store",
+      "label": "State Store",
+      "role": "storage",
+      "description": null,
+      "importance": "secondary",
+      "state_owner": true,
+      "lifecycle_phase": "runtime",
+      "domain": "data",
+      "metadata": "workflow state"
+    },
+    {
+      "id": "event-bus",
+      "label": "Event Bus",
+      "role": "event-bus",
+      "description": null,
+      "importance": "background",
+      "state_owner": true,
+      "lifecycle_phase": "background",
+      "domain": "data",
+      "metadata": "retries \u00b7 continuations"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:0:gateway->orchestrator",
+      "source": "gateway",
+      "target": "orchestrator",
+      "relation": "control",
+      "interaction": "routes",
+      "importance": "primary",
+      "phase": "runtime",
+      "label": "start"
+    },
+    {
+      "id": "edge:1:orchestrator->workers",
+      "source": "orchestrator",
+      "target": "workers",
+      "relation": "control",
+      "interaction": "schedules",
+      "importance": "primary",
+      "phase": "runtime",
+      "label": "steps"
+    },
+    {
+      "id": "edge:2:orchestrator->state-store",
+      "source": "orchestrator",
+      "target": "state-store",
+      "relation": "write",
+      "interaction": "writes",
+      "importance": "secondary",
+      "phase": "runtime",
+      "label": "state"
+    },
+    {
+      "id": "edge:3:orchestrator->event-bus",
+      "source": "orchestrator",
+      "target": "event-bus",
+      "relation": "event",
+      "interaction": "publishes",
+      "importance": "background",
+      "phase": "background",
+      "label": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "workflow-core",
+      "label": "Workflow Core",
+      "members": [
+        "gateway",
+        "orchestrator",
+        "workers"
+      ],
+      "role": "subsystem",
+      "domain": null
+    }
+  ],
+  "focus_candidates": [
+    "orchestrator"
+  ],
+  "focus_path": [
+    "gateway",
+    "orchestrator",
+    "workers"
+  ],
+  "narrative": "Orchestrator coordinates long-running workflow state and worker execution.",
+  "width": 960,
+  "height": 540,
+  "subtitle": null,
+  "caption": null,
+  "layer_order": [
+    "surface",
+    "runtime",
+    "data"
+  ],
+  "layer_labels": {
+    "surface": "Surface Layer",
+    "runtime": "Runtime Layer",
+    "data": "Data Layer"
+  },
+  "composition_hint": "horizontal-layers"
+}

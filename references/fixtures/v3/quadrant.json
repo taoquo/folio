@@ -1,0 +1,20 @@
+{
+  "schema_version": "3.0",
+  "kind": "quadrant",
+  "title": "Grammar Reuse × Reader Value",
+  "preferred_region": "top-right",
+  "axes": {
+    "x": {"label": "Grammar reuse", "low": "low reuse", "high": "high reuse"},
+    "y": {"label": "Reader value", "low": "low value", "high": "high value"}
+  },
+  "items": [
+    {"id": "venn", "label": "Venn", "x": 0.18, "y": 0.72},
+    {"id": "state", "label": "State machine", "x": 0.72, "y": 0.84, "emphasis": "focal"},
+    {"id": "timeline", "label": "Timeline", "x": 0.42, "y": 0.62},
+    {"id": "quadrant", "label": "Quadrant", "x": 0.64, "y": 0.55},
+    {"id": "waterfall", "label": "Waterfall", "x": 0.82, "y": 0.34},
+    {"id": "donut", "label": "Donut", "x": 0.32, "y": 0.28},
+    {"id": "candle", "label": "Candlestick", "x": 0.52, "y": 0.18},
+    {"id": "uml", "label": "Legacy UML", "x": 0.12, "y": 0.12}
+  ]
+}

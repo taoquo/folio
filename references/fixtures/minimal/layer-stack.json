@@ -1,0 +1,14 @@
+{
+  "schema_version": "3.0",
+  "kind": "layer-stack",
+  "title": "Untitled Layer Stack",
+  "layers": [
+    {"id": "top", "label": "Top", "responsibility": "Top responsibility"},
+    {"id": "middle", "label": "Middle", "responsibility": "Middle responsibility"},
+    {"id": "bottom", "label": "Bottom", "responsibility": "Bottom responsibility"}
+  ],
+  "flows": [
+    {"id": "top-middle", "source": "top", "target": "middle", "channel": "request"},
+    {"id": "middle-bottom", "source": "middle", "target": "bottom", "channel": "request"}
+  ]
+}

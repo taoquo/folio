@@ -1,0 +1,17 @@
+{
+  "schema_version": "3.0",
+  "kind": "sequence",
+  "title": "Document Build Request",
+  "focus_participant": "compiler",
+  "participants": [
+    {"id": "author", "label": "Author", "kind": "actor"},
+    {"id": "compiler", "label": "Compiler", "kind": "system"},
+    {"id": "store", "label": "Artifact Store", "kind": "store"}
+  ],
+  "messages": [
+    {"id": "submit", "source": "author", "target": "compiler", "label": "Submit source", "kind": "sync"},
+    {"id": "persist", "source": "compiler", "target": "store", "label": "Write artifact", "kind": "async"},
+    {"id": "stored", "source": "store", "target": "compiler", "label": "Artifact URI", "kind": "return"},
+    {"id": "complete", "source": "compiler", "target": "author", "label": "Build complete", "kind": "return"}
+  ]
+}

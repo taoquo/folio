@@ -1,0 +1,49 @@
+{
+  "schema_version": "3.0",
+  "kind": "org-chart",
+  "title": "Design Systems Org",
+  "units": [
+    {
+      "id": "head",
+      "label": "Design Systems",
+      "role": "director"
+    },
+    {
+      "id": "brand",
+      "label": "Brand",
+      "role": "lead",
+      "parent": "head"
+    },
+    {
+      "id": "product",
+      "label": "Product Surfaces",
+      "role": "lead",
+      "parent": "head",
+      "emphasis": "focal"
+    },
+    {
+      "id": "typo",
+      "label": "Typography",
+      "role": "ic",
+      "parent": "brand"
+    },
+    {
+      "id": "color",
+      "label": "Color",
+      "role": "ic",
+      "parent": "brand"
+    },
+    {
+      "id": "web",
+      "label": "Web",
+      "role": "ic",
+      "parent": "product"
+    },
+    {
+      "id": "docs",
+      "label": "Docs",
+      "role": "ic",
+      "parent": "product"
+    }
+  ]
+}

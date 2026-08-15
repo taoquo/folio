@@ -1,0 +1,10 @@
+{
+  "schema_version": "3.0",
+  "kind": "architecture",
+  "title": "Untitled Architecture",
+  "layout": "horizontal-layers",
+  "nodes": [
+    {"id": "component", "kind": "service", "label": "Component"}
+  ],
+  "edges": []
+}

@@ -16,7 +16,27 @@ MISSING_MANIFEST="$(mktemp)"
 EXTRA_MANIFEST="$(mktemp)"
 trap 'rm -f "$MANIFEST" "$FILTERED_MANIFEST" "$ZIP_MANIFEST" "$MISSING_MANIFEST" "$EXTRA_MANIFEST"' EXIT
 
-git ls-files > "$MANIFEST"
+{
+  git ls-files
+  for source in \
+    assets/diagrams/generated/catalog/png \
+    scripts/drawing \
+    scripts/renderers \
+    scripts/diagram_catalog.py \
+    scripts/drawing_host_integration.py \
+    references/decisions \
+    references/schemas \
+    references/fixtures \
+    tests; do
+    if [ -d "$source" ]; then
+      find "$source" -type f
+    elif [ -f "$source" ]; then
+      printf '%s\n' "$source"
+    fi
+  done
+  find references -maxdepth 1 -type f -name 'drawing-*.md'
+  find . -maxdepth 1 -type f -name 'RELEASE_NOTES_*.md' -print | sed 's#^\./##'
+} | LC_ALL=C sort -u > "$MANIFEST"
 awk '
   /^\.font-libs\// { next }
   /^assets\/fonts\/LXGWWenKai-(Regular|Medium)\.ttf$/ { next }
@@ -61,7 +81,7 @@ if zipinfo -1 "$OUT" | grep -qE '^\.font-libs/'; then
 fi
 
 MAX_BYTES=$((5 * 1024 * 1024))
-SIZE_BYTES="$(stat -f%z "$OUT")"
+SIZE_BYTES="$(wc -c < "$OUT" | tr -d '[:space:]')"
 if [ "$SIZE_BYTES" -ge "$MAX_BYTES" ]; then
   echo "ERROR: $OUT exceeds 5MB (${SIZE_BYTES} bytes)" >&2
   exit 1

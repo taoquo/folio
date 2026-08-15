@@ -1,0 +1,30 @@
+{
+  "schema_version": "3.0",
+  "kind": "gantt",
+  "title": "Untitled Gantt",
+  "periods": [
+    "P1",
+    "P2",
+    "P3"
+  ],
+  "tasks": [
+    {
+      "id": "a",
+      "label": "First task",
+      "start": 0,
+      "span": 1
+    },
+    {
+      "id": "b",
+      "label": "Second task",
+      "start": 1,
+      "span": 1
+    },
+    {
+      "id": "c",
+      "label": "Third task",
+      "start": 2,
+      "span": 1
+    }
+  ]
+}

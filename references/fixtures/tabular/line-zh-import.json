@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "kind": "line-chart",
+  "title": "验证通过率",
+  "input": {
+    "path": "line-zh.tsv",
+    "format": "tsv",
+    "encoding": "utf-8",
+    "delimiter": "\t",
+    "header": true,
+    "missing": {"tokens": ["", "NA"], "policy": "null"},
+    "locale": "zh-CN",
+    "coercion": {"number": "strict-decimal", "date": "iso-8601", "decimal": ".", "thousands": null}
+  },
+  "mapping": {
+    "category": "阶段",
+    "series": [{"id": "rate", "label": "通过率", "column": "通过率"}]
+  },
+  "chart": {"unit": "%", "missing_policy": "gap", "language": "zh-CN"}
+}

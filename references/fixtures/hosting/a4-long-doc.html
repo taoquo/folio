@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hosted Drawing Integration</title>
+<style>
+  @page { size: A4; margin: 20mm 22mm 22mm 22mm; background: #F6F0EA; }
+  * { box-sizing: border-box; }
+  body { margin: 0; color: #191514; background: #F6F0EA; font-family: Charter, Georgia, serif; font-size: 10pt; }
+  h1, h2 { font-weight: 500; }
+  h1 { margin: 0 0 8mm; font-size: 26pt; }
+  h2 { margin: 0 0 4mm; font-size: 18pt; }
+  p { line-height: 1.5; }
+  figure { margin: 8mm 0 0; break-inside: avoid; }
+  figcaption { margin-top: 2.1mm; color: #85776F; font-size: 9pt; }
+  .page-break { break-before: page; }
+</style>
+</head>
+<body>
+  <h1>Hosted Drawing Integration</h1>
+  <p>The structural view and the data view are compiled from typed fixtures and verified through the same host contract.</p>
+  <figure data-folio-diagram-slot="structure"><p>Structural diagram slot</p></figure>
+  <div class="page-break"></div>
+  <h2>Measured result</h2>
+  <figure data-folio-diagram-slot="data"><p>Data chart slot</p></figure>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "schema_version": "2.0",
+  "kind": "flowchart",
+  "title": "Drawing Review",
+  "focus": "review",
+  "nodes": [
+    {"id": "start", "type": "terminal", "label": "Drawing compiled"},
+    {"id": "review", "type": "decision", "label": "Validation passes?"},
+    {"id": "publish", "type": "step", "label": "Publish artifacts"},
+    {"id": "repair", "type": "subprocess", "label": "Repair drawing plan"},
+    {"id": "end", "type": "terminal", "label": "Review complete"}
+  ],
+  "edges": [
+    {"source": "start", "target": "review"},
+    {"source": "review", "target": "publish", "kind": "conditional-flow", "label": "yes"},
+    {"source": "review", "target": "repair", "kind": "conditional-flow", "label": "no"},
+    {"source": "publish", "target": "end"},
+    {"source": "repair", "target": "end", "kind": "exception-flow", "label": "resolved"}
+  ]
+}

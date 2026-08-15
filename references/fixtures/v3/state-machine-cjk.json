@@ -1,0 +1,20 @@
+{
+  "schema_version": "3.0",
+  "kind": "state-machine",
+  "title": "绘图任务生命周期",
+  "language": "zh-CN",
+  "focus": "执行中",
+  "states": [
+    {"id": "开始", "type": "initial"},
+    {"id": "待处理", "type": "state", "label": "待处理"},
+    {"id": "执行中", "type": "state", "label": "执行中", "description": "编译并校验"},
+    {"id": "已完成", "type": "state", "label": "已完成"},
+    {"id": "结束", "type": "final"}
+  ],
+  "transitions": [
+    {"id": "进入", "source": "开始", "target": "待处理"},
+    {"id": "提交", "source": "待处理", "target": "执行中", "event": "提交"},
+    {"id": "完成", "source": "执行中", "target": "已完成", "event": "完成"},
+    {"id": "退出", "source": "已完成", "target": "结束"}
+  ]
+}

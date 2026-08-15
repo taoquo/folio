@@ -1,0 +1,86 @@
+{
+  "schema_version": "3.0",
+  "kind": "candlestick",
+  "title": "Reliability Score, Release Week",
+  "unit": "",
+  "locale": "en-US",
+  "source": "Composite of latency, error rate, and gate pass rate",
+  "periods": [
+    {
+      "id": "d1",
+      "date": "2026-08-03",
+      "open": 78,
+      "high": 84,
+      "low": 76,
+      "close": 83
+    },
+    {
+      "id": "d2",
+      "date": "2026-08-04",
+      "open": 83,
+      "high": 88,
+      "low": 81,
+      "close": 86
+    },
+    {
+      "id": "d3",
+      "date": "2026-08-05",
+      "open": 86,
+      "high": 87,
+      "low": 74,
+      "close": 76
+    },
+    {
+      "id": "d4",
+      "date": "2026-08-06",
+      "open": 76,
+      "high": 85,
+      "low": 75,
+      "close": 84
+    },
+    {
+      "id": "d5",
+      "date": "2026-08-07",
+      "open": 84,
+      "high": 92,
+      "low": 83,
+      "close": 91
+    },
+    {
+      "id": "d6",
+      "date": "2026-08-08",
+      "open": 91,
+      "high": 95,
+      "low": 89,
+      "close": 94
+    },
+    {
+      "id": "d7",
+      "date": "2026-08-09",
+      "open": 94,
+      "high": 97,
+      "low": 93,
+      "close": 96
+    }
+  ],
+  "annotations": [
+    {
+      "id": "incident",
+      "text": "Font cache eviction incident",
+      "period": "d3",
+      "field": "low"
+    },
+    {
+      "id": "recovery",
+      "text": "Warm pool restored headroom",
+      "period": "d5",
+      "field": "close"
+    }
+  ],
+  "value_format": {
+    "precision": 0,
+    "compact": false,
+    "grouping": false,
+    "unit_position": "suffix"
+  }
+}

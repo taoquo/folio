@@ -1,0 +1,19 @@
+{
+  "schema_version": "3.0",
+  "kind": "pyramid",
+  "title": "Untitled Pyramid",
+  "levels": [
+    {
+      "id": "base",
+      "label": "Base"
+    },
+    {
+      "id": "middle",
+      "label": "Middle"
+    },
+    {
+      "id": "peak",
+      "label": "Peak"
+    }
+  ]
+}

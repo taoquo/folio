@@ -1,0 +1,10 @@
+{
+  "schema_version": "3.0",
+  "kind": "timeline",
+  "title": "Untitled Timeline",
+  "events": [
+    {"id": "first", "date": "2026-01-01", "label": "First"},
+    {"id": "second", "date": "2026-01-02", "label": "Second"},
+    {"id": "third", "date": "2026-01-03", "label": "Third"}
+  ]
+}

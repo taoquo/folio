@@ -1,0 +1,225 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/drawing-payload-v3.schema.json",
+  "title": "Folio Drawing DSL V3 Type Payloads",
+  "description": "Published top-level contract for the twenty V3 grammar payloads. Runtime compilers enforce notation and numerical invariants.",
+  "oneOf": [
+    {"$ref": "#/$defs/state-machine"},
+    {"$ref": "#/$defs/swimlane"},
+    {"$ref": "#/$defs/tree"},
+    {"$ref": "#/$defs/layer-stack"},
+    {"$ref": "#/$defs/timeline"},
+    {"$ref": "#/$defs/quadrant"},
+    {"$ref": "#/$defs/venn"},
+    {"$ref": "#/$defs/pyramid"},
+    {"$ref": "#/$defs/org-chart"},
+    {"$ref": "#/$defs/loop-flywheel"},
+    {"$ref": "#/$defs/bar-chart"},
+    {"$ref": "#/$defs/line-chart"},
+    {"$ref": "#/$defs/donut-chart"},
+    {"$ref": "#/$defs/candlestick"},
+    {"$ref": "#/$defs/waterfall"},
+    {"$ref": "#/$defs/scatter"},
+    {"$ref": "#/$defs/gantt"},
+    {"$ref": "#/$defs/sequence"},
+    {"$ref": "#/$defs/uml-class"},
+    {"$ref": "#/$defs/er-diagram"}
+  ],
+  "$defs": {
+    "title": {"type": "string", "minLength": 1},
+    "dimension": {"type": "integer", "minimum": 240},
+    "object-array": {"type": "array", "items": {"type": "object"}},
+    "value-format": {"type": "object", "additionalProperties": false, "properties": {"precision": {"type": "integer", "minimum": 0, "maximum": 4}, "compact": {"type": "boolean"}, "grouping": {"type": "boolean"}, "unit_position": {"enum": ["auto", "prefix", "suffix"]}}},
+    "state-machine": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "states", "transitions"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "state-machine"}, "title": {"$ref": "#/$defs/title"},
+        "states": {"$ref": "#/$defs/object-array"}, "transitions": {"$ref": "#/$defs/object-array"},
+        "persistent": {"type": "boolean"}, "submachine": {"type": "boolean"}, "axis": {"enum": ["left-right", "top-down"]},
+        "focus": {"type": ["string", "null"]}, "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+      }
+    },
+    "swimlane": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "lanes", "steps", "flows"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "swimlane"}, "title": {"$ref": "#/$defs/title"},
+        "lanes": {"$ref": "#/$defs/object-array"}, "steps": {"$ref": "#/$defs/object-array"}, "flows": {"$ref": "#/$defs/object-array"},
+        "axis": {"enum": ["left-right", "top-down"]}, "parallel_starts": {"type": "boolean"}, "focus_lane": {"type": ["string", "null"]},
+        "focus_path": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}, "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+      }
+    },
+    "tree": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "nodes", "relations"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "tree"}, "title": {"$ref": "#/$defs/title"},
+        "nodes": {"$ref": "#/$defs/object-array"}, "relations": {"$ref": "#/$defs/object-array"}, "focus_root": {"type": ["string", "null"]},
+        "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+      }
+    },
+    "layer-stack": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "layers", "flows"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "layer-stack"}, "title": {"$ref": "#/$defs/title"},
+        "layers": {"$ref": "#/$defs/object-array"}, "flows": {"$ref": "#/$defs/object-array"},
+        "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+      }
+    },
+    "timeline": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "events"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "timeline"}, "title": {"$ref": "#/$defs/title"},
+        "events": {"$ref": "#/$defs/object-array"}, "scale": {"enum": ["temporal", "ordinal"]}, "focus": {"type": ["string", "null"]},
+        "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+      }
+    },
+    "quadrant": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "axes", "items"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "quadrant"}, "title": {"$ref": "#/$defs/title"},
+        "axes": {"type": "object"}, "items": {"$ref": "#/$defs/object-array"},
+        "preferred_region": {"enum": ["top-left", "top-right", "bottom-left", "bottom-right", null]},
+        "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+      }
+    },
+    "venn": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "sets", "intersections"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "venn"}, "title": {"$ref": "#/$defs/title"},
+        "sets": {"$ref": "#/$defs/object-array"}, "intersections": {"$ref": "#/$defs/object-array"},
+        "focus": {"type": "array", "items": {"type": "string"}, "maxItems": 1, "uniqueItems": true},
+        "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+      }
+    },
+    "bar-chart": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "categories", "series"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "bar-chart"}, "title": {"$ref": "#/$defs/title"},
+        "categories": {"type": "array", "minItems": 1, "maxItems": 8, "items": {"type": "string"}}, "series": {"$ref": "#/$defs/object-array"},
+        "focus_series": {"type": ["string", "null"]}, "mode": {"enum": ["grouped", "stacked"]}, "order": {"oneOf": [{"enum": ["input", "value"]}, {"type": "array", "items": {"type": "string"}, "uniqueItems": true}]}, "reference_lines": {"$ref": "#/$defs/object-array"}, "annotations": {"$ref": "#/$defs/object-array"}, "value_format": {"$ref": "#/$defs/value-format"}, "unit": {"type": ["string", "null"]}, "locale": {"type": "string"}, "source": {"type": ["string", "null"]},
+        "width": {"const": 960}, "height": {"const": 540}, "language": {"type": "string"}
+      }
+    },
+    "line-chart": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "categories", "series"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "line-chart"}, "title": {"$ref": "#/$defs/title"},
+        "categories": {"type": "array", "minItems": 2, "maxItems": 12, "uniqueItems": true, "items": {"type": "string"}}, "series": {"$ref": "#/$defs/object-array"},
+        "focus_series": {"type": ["string", "null"]}, "missing_policy": {"enum": ["gap", "zero", "carry-forward", "error"]}, "x_scale": {"enum": ["ordinal", "time"]}, "reference_lines": {"$ref": "#/$defs/object-array"}, "annotations": {"$ref": "#/$defs/object-array"},
+        "unit": {"type": ["string", "null"]}, "locale": {"type": "string"}, "source": {"type": ["string", "null"]}, "value_format": {"$ref": "#/$defs/value-format"}, "width": {"const": 960}, "height": {"const": 540}, "language": {"type": "string"}
+      }
+    },
+    "donut-chart": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "segments"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "donut-chart"}, "title": {"$ref": "#/$defs/title"},
+        "segments": {"$ref": "#/$defs/object-array"}, "focus_segment": {"type": ["string", "null"]}, "percent_total": {"type": "boolean"}, "tolerance": {"type": "number", "minimum": 0},
+        "unit": {"type": ["string", "null"]}, "locale": {"type": "string"}, "source": {"type": ["string", "null"]}, "value_format": {"$ref": "#/$defs/value-format"}, "width": {"const": 960}, "height": {"const": 540}, "language": {"type": "string"}
+      }
+    },
+    "candlestick": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "periods"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "candlestick"}, "title": {"$ref": "#/$defs/title"},
+        "periods": {"$ref": "#/$defs/object-array"}, "annotations": {"$ref": "#/$defs/object-array"}, "unit": {"type": ["string", "null"]}, "locale": {"type": "string"}, "source": {"type": ["string", "null"]}, "value_format": {"$ref": "#/$defs/value-format"},
+        "width": {"const": 960}, "height": {"const": 540}, "language": {"type": "string"}
+      }
+    },
+    "waterfall": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "start", "contributions"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "waterfall"}, "title": {"$ref": "#/$defs/title"},
+        "start": {"type": "number"}, "contributions": {"$ref": "#/$defs/object-array"}, "end": {"type": "number"}, "tolerance": {"type": "number", "minimum": 0},
+        "unit": {"type": ["string", "null"]}, "locale": {"type": "string"}, "source": {"type": ["string", "null"]}, "value_format": {"$ref": "#/$defs/value-format"}, "width": {"const": 960}, "height": {"const": 540}, "language": {"type": "string"}
+      }
+    },
+    "sequence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "participants", "messages"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "sequence"}, "title": {"$ref": "#/$defs/title"},
+        "participants": {"$ref": "#/$defs/object-array"}, "messages": {"$ref": "#/$defs/object-array"},
+        "focus_participant": {"type": ["string", "null"]}, "width": {"const": 960}, "height": {"const": 540}, "language": {"type": "string"}
+      }
+    },
+    "uml-class": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "types", "relationships"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "uml-class"}, "title": {"$ref": "#/$defs/title"},
+        "layout": {"const": "class-grid"}, "types": {"$ref": "#/$defs/object-array"}, "relationships": {"$ref": "#/$defs/object-array"},
+        "focus": {"type": ["string", "null"]}, "width": {"const": 960}, "height": {"const": 640}, "language": {"type": "string"}
+      }
+    },
+    "er-diagram": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "entities", "relationships"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "er-diagram"}, "title": {"$ref": "#/$defs/title"},
+        "entities": {"$ref": "#/$defs/object-array"}, "relationships": {"$ref": "#/$defs/object-array"},
+        "focus_entity": {"type": ["string", "null"]}, "width": {"const": 960}, "height": {"const": 640}, "language": {"type": "string"}
+      }
+    },
+    "pyramid": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "levels"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "pyramid"}, "title": {"$ref": "#/$defs/title"},
+        "levels": {"$ref": "#/$defs/object-array"}, "orientation": {"enum": ["up", "down"]},
+        "focus": {"type": ["string", "null"]}, "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+      }
+    },
+    "org-chart": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "units"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "org-chart"}, "title": {"$ref": "#/$defs/title"},
+        "units": {"$ref": "#/$defs/object-array"},
+        "focus": {"type": ["string", "null"]}, "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+      }
+    },
+    "loop-flywheel": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "stages"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "loop-flywheel"}, "title": {"$ref": "#/$defs/title"},
+        "stages": {"$ref": "#/$defs/object-array"}, "hub": {"type": ["string", "null"]},
+        "focus": {"type": ["string", "null"]}, "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+      }
+    },
+    "scatter": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "x_axis", "y_axis", "points"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "scatter"}, "title": {"$ref": "#/$defs/title"},
+        "x_axis": {"type": "object"}, "y_axis": {"type": "object"}, "points": {"$ref": "#/$defs/object-array"},
+        "focus": {"type": ["string", "null"]}, "unit": {"type": ["string", "null"]}, "locale": {"type": "string"},
+        "source": {"type": ["string", "null"]}, "value_format": {"$ref": "#/$defs/value-format"},
+        "width": {"const": 960}, "height": {"const": 540}, "language": {"type": "string"}
+      }
+    },
+    "gantt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "periods", "tasks"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "gantt"}, "title": {"$ref": "#/$defs/title"},
+        "periods": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "tasks": {"$ref": "#/$defs/object-array"}, "milestones": {"$ref": "#/$defs/object-array"},
+        "focus": {"type": ["string", "null"]}, "unit": {"type": ["string", "null"]}, "locale": {"type": "string"},
+        "source": {"type": ["string", "null"]}, "value_format": {"$ref": "#/$defs/value-format"},
+        "width": {"const": 960}, "height": {"const": 540}, "language": {"type": "string"}
+      }
+    }
+  }
+}

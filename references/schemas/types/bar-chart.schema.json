@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/types/bar-chart.schema.json",
+  "title": "Folio Bar Chart Authoring Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "title", "categories", "series"],
+  "properties": {
+    "schema_version": {"const": "3.0"},
+    "kind": {"const": "bar-chart"},
+    "title": {"$ref": "#/$defs/non-empty-string"},
+    "unit": {"type": ["string", "null"], "maxLength": 12},
+    "locale": {"enum": ["en-US", "en-GB", "zh-CN", "zh-TW", null]},
+    "source": {"type": ["string", "null"], "maxLength": 256},
+    "value_format": {"$ref": "#/$defs/value-format"},
+    "categories": {
+      "type": "array", "minItems": 1, "maxItems": 8, "uniqueItems": true,
+      "items": {"$ref": "#/$defs/non-empty-string"}
+    },
+    "series": {"type": "array", "minItems": 1, "maxItems": 3, "items": {"$ref": "#/$defs/series"}},
+    "focus_series": {"type": ["string", "null"]},
+    "mode": {"enum": ["grouped", "stacked"]},
+    "reference_lines": {"type": "array", "maxItems": 3, "items": {"$ref": "#/$defs/reference-line"}},
+    "annotations": {"type": "array", "maxItems": 3, "items": {"$ref": "#/$defs/annotation"}},
+    "order": {
+      "oneOf": [
+        {"enum": ["input", "value"]},
+        {"type": "array", "minItems": 1, "maxItems": 8, "uniqueItems": true, "items": {"$ref": "#/$defs/non-empty-string"}}
+      ]
+    },
+    "width": {"const": 960},
+    "height": {"const": 540},
+    "language": {"$ref": "#/$defs/non-empty-string"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"order": {"const": "value"}}, "required": ["order"]},
+      "then": {"properties": {"series": {"maxItems": 1}}}
+    }
+  ],
+  "$defs": {
+    "non-empty-string": {"type": "string", "pattern": ".*\\S.*", "maxLength": 64},
+    "value-format": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "precision": {"type": "integer", "minimum": 0, "maximum": 4},
+        "compact": {"type": "boolean"},
+        "grouping": {"type": "boolean"},
+        "unit_position": {"enum": ["auto", "prefix", "suffix"]}
+      }
+    },
+    "series": {
+      "type": "object", "additionalProperties": false, "required": ["id", "label", "values"],
+      "properties": {
+        "id": {"$ref": "#/$defs/non-empty-string"},
+        "label": {"$ref": "#/$defs/non-empty-string"},
+        "values": {"type": "array", "minItems": 1, "maxItems": 8, "items": {"type": "number"}}
+      }
+    },
+    "reference-line": {
+      "type": "object", "additionalProperties": false, "required": ["id", "label", "value"],
+      "properties": {
+        "id": {"$ref": "#/$defs/non-empty-string"},
+        "label": {"type": "string", "pattern": ".*\\S.*", "maxLength": 24},
+        "value": {"type": "number"}
+      }
+    },
+    "annotation": {
+      "type": "object", "additionalProperties": false, "required": ["id", "text", "series", "category"],
+      "properties": {
+        "id": {"$ref": "#/$defs/non-empty-string"},
+        "text": {"type": "string", "pattern": ".*\\S.*", "maxLength": 48},
+        "series": {"$ref": "#/$defs/non-empty-string"},
+        "category": {"$ref": "#/$defs/non-empty-string"}
+      }
+    }
+  }
+}

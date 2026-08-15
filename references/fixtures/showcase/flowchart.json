@@ -1,0 +1,67 @@
+{
+  "schema_version": "2.0",
+  "kind": "flowchart",
+  "title": "Artifact Release Decision",
+  "focus": "gates",
+  "axis": "top-down",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "terminal",
+      "label": "Build finished"
+    },
+    {
+      "id": "gates",
+      "type": "decision",
+      "label": "All visual gates pass?"
+    },
+    {
+      "id": "sign",
+      "type": "step",
+      "label": "Sign and publish"
+    },
+    {
+      "id": "repair",
+      "type": "subprocess",
+      "label": "Auto-repair layout"
+    },
+    {
+      "id": "end",
+      "type": "terminal",
+      "label": "Release closed"
+    },
+    {
+      "id": "held",
+      "type": "terminal",
+      "label": "Held for review"
+    }
+  ],
+  "edges": [
+    {
+      "source": "start",
+      "target": "gates"
+    },
+    {
+      "source": "gates",
+      "target": "sign",
+      "kind": "conditional-flow",
+      "label": "yes"
+    },
+    {
+      "source": "gates",
+      "target": "repair",
+      "kind": "conditional-flow",
+      "label": "no"
+    },
+    {
+      "source": "sign",
+      "target": "end"
+    },
+    {
+      "source": "repair",
+      "target": "held",
+      "kind": "exception-flow",
+      "label": "needs eyes"
+    }
+  ]
+}

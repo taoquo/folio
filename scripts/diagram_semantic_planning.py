@@ -1,10 +1,14 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any, Optional
 import re
 
-from diagram_models import load_diagram_spec
+from drawing.adapters import drawing_to_legacy
+from drawing.layout.constraints import compile_layout_constraints
+from drawing.models import DrawingPlan, LegendItemPlan, LegendPlan
+from drawing.planner import plan_drawing
+from drawing.semantics.models import SemanticDiagram, SemanticEdge, SemanticGroup, SemanticNode
 
 
 @dataclass(frozen=True)
@@ -510,21 +514,87 @@ def extract_architecture_semantics(text: str) -> dict[str, Any]:
 
 
 def plan_architecture_from_text(text: str, title: str) -> Any:
+    semantic = plan_semantic_architecture(text, title)
+    drawing = plan_drawing(semantic)
+    raw = extract_architecture_semantics(text)
+    legacy_nodes = {node["id"]: node for node in raw["nodes"]}
+    legacy_archetypes = {"service": "component", "store": "datastore", "external": "external", "cloud": "cloud"}
+    channel_by_relation = {"control": "primary-flow", "event": "async-flow", "async": "async-flow"}
+    drawing = replace(
+        drawing,
+        nodes=tuple(
+            replace(
+                node,
+                archetype=legacy_archetypes[legacy_nodes[node.id]["kind"]],
+                content=replace(node.content, eyebrow=legacy_nodes[node.id]["kind"]),
+            )
+            for node in drawing.nodes
+        ),
+        legend=(
+            LegendPlan(
+                "LEGEND",
+                tuple(
+                    LegendItemPlan(channel_by_relation.get(item["flow"], "secondary-flow"), item["label"])
+                    for item in raw["legend"]
+                ),
+            )
+            if raw["legend"]
+            else None
+        ),
+    )
+    constraints = compile_layout_constraints(drawing)
+    return drawing_to_legacy(drawing, constraints, semantic)
+
+
+def plan_semantic_architecture(text: str, title: str) -> SemanticDiagram:
     semantics = extract_architecture_semantics(text)
-    payload = {
-        "kind": "architecture",
-        "title": title,
-        "layout": _choose_layout(semantics),
-        "focus": semantics["focus_node"],
-        "focus_path": semantics["focus_path"],
-        "focus_reason": semantics["focus_reason"],
-        "layers": semantics["layers"],
-        "groups": semantics["groups"],
-        "nodes": semantics["nodes"],
-        "edges": semantics["edges"],
-        "legend": semantics["legend"],
-    }
-    return load_diagram_spec(payload)
+    nodes = tuple(
+        SemanticNode(
+            id=node["id"],
+            label=node["label"],
+            role=node.get("role") or node["kind"],
+            description=node.get("description"),
+            importance=node.get("importance", "normal"),
+            state_owner=bool(node.get("state_owner")),
+            lifecycle_phase=node.get("lifecycle_phase"),
+            domain=node.get("layer"),
+            metadata=node.get("sublabel"),
+        )
+        for node in semantics["nodes"]
+    )
+    edges = tuple(
+        SemanticEdge(
+            id=f"edge:{index}:{edge['source']}->{edge['target']}",
+            source=edge["source"],
+            target=edge["target"],
+            relation=edge.get("flow") or edge.get("kind", "secondary"),
+            interaction=edge.get("interaction"),
+            importance=edge.get("priority") or edge.get("kind", "normal"),
+            phase=edge.get("phase"),
+            label=edge.get("label"),
+        )
+        for index, edge in enumerate(semantics["edges"])
+    )
+    groups = tuple(
+        SemanticGroup(group["id"], group["label"], tuple(group.get("members", ())), group.get("kind"), group.get("layer"))
+        for group in semantics["groups"]
+    )
+    return SemanticDiagram(
+        title=title,
+        nodes=nodes,
+        edges=edges,
+        groups=groups,
+        focus_candidates=(semantics["focus_node"],) if semantics.get("focus_node") else (),
+        focus_path=tuple(semantics.get("focus_path", ())),
+        narrative=semantics.get("focus_reason"),
+        layer_order=tuple(layer["id"] for layer in semantics["layers"]),
+        layer_labels={layer["id"]: layer["label"] for layer in semantics["layers"]},
+        composition_hint=_choose_layout(semantics),
+    )
+
+
+def plan_architecture_drawing(text: str, title: str) -> DrawingPlan:
+    return plan_drawing(plan_semantic_architecture(text, title))
 
 
 def collect_edge_evidence(text: str, node_ids: set[str]) -> dict[tuple[str, str], dict[str, Any]]:

@@ -1,0 +1,872 @@
+{
+  "schema_version": "1.0",
+  "catalog_schema_version": "3.0",
+  "approval_state": "approved",
+  "approval_reason": "V5 layout fill pass for timeline venn donut notation grids",
+  "visual_policy": {
+    "method": "exact-rgba-no-resize",
+    "max_changed_channel_ratio": 0.01,
+    "bounds_tolerance_px": 2
+  },
+  "coverage": {
+    "catalog_types": 22,
+    "drawing_dsl": 22,
+    "drawing_dsl_v2": 0,
+    "drawing_dsl_v3": 0,
+    "html_template_baseline": 0
+  },
+  "contact_sheets": [
+    {
+      "path": "assets/demos/drawing-dsl-v5-all-types.png",
+      "sha256": "91f31b6bb7ea6b922eafa505cccf8e0c3061e7469bea937ab7dd1df476fdc9e4"
+    },
+    {
+      "path": "assets/demos/drawing-dsl-v5-supported-types.png",
+      "sha256": "cd6fe24da5abd687f520dee36f0a9f7b17c023960ae6f25efe51c8d76d4036e3"
+    }
+  ],
+  "diagrams": [
+    {
+      "kind": "architecture",
+      "profile": "page-preview",
+      "registry_key": "architecture@3",
+      "png": "assets/diagrams/generated/catalog/png/architecture.png",
+      "semantic_ids": [
+        "input",
+        "scene",
+        "scheduler",
+        "world",
+        "systems",
+        "components",
+        "resources"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        104,
+        102,
+        1169,
+        719
+      ],
+      "digests": {
+        "png": "4643aad9023c02bbed93268162970daf590638a6b8d99490bface44333c37322",
+        "input": "1781e1e5e60fed9bd0f7fcc16559b0a95e3b59ff25cb50d38898e4354661bd4e",
+        "svg": "2b050c5d4436dc6f478e3fe7f7aa0dd86aef1101512195022a415ab076b1e5e6",
+        "pdf": "708050fad6cbae55d57d435a278e3090e927b67eb23f1bb9e9095ac4bf6b4819"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "flowchart",
+      "profile": "page-preview",
+      "registry_key": "flowchart@2",
+      "png": "assets/diagrams/generated/catalog/png/flowchart.png",
+      "semantic_ids": [
+        "start",
+        "review",
+        "publish",
+        "repair",
+        "end"
+      ],
+      "dimensions": {
+        "source": [
+          512,
+          608
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        132,
+        131,
+        1108,
+        1467
+      ],
+      "digests": {
+        "png": "92468ab5e96b41681d4d2c066c131f770b0215a41a13d6080abf9f83e1663e89",
+        "input": "716dc64d01f794aeebddd3e178a56c574e8758246e38766997fe85930390ac30",
+        "svg": "a8b933832806f3ea7c0da265cf84627a1be1c25dda00085a0dfb117564ec7b09",
+        "pdf": "5cc24d94a78531b45f8e01cacb155d99746ae11397042309d023897d770144a4"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "quadrant",
+      "profile": "page-preview",
+      "registry_key": "quadrant@3",
+      "png": "assets/diagrams/generated/catalog/png/quadrant.png",
+      "semantic_ids": [
+        "venn",
+        "state",
+        "timeline",
+        "quadrant",
+        "waterfall",
+        "donut",
+        "candle",
+        "uml"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        111,
+        104,
+        1134,
+        828
+      ],
+      "digests": {
+        "png": "d4d3ceb5de5a0049a18a4bba558300e4ece5350d27da9b3a0495629c076621b7",
+        "input": "08ae32fee0750b70799c173766c10baaf8d6f6577b18127b4b8362eb14558c49",
+        "svg": "308fa5fd66adb92ddf74bcf5360c76f8e0d1ffdda140d7d92f0d1438efa4ea81",
+        "pdf": "6d48df2f5aa667f0926a5c516f1f4680720e4e5efb5c54a8768403ecb641257f"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "bar-chart",
+      "profile": "page-preview",
+      "registry_key": "bar-chart@3",
+      "png": "assets/diagrams/generated/catalog/png/bar-chart.png",
+      "semantic_ids": [
+        "bar:covered:47cfe5eb8a",
+        "bar:covered:8b336cdf52",
+        "bar:covered:bc5d84bed7",
+        "bar:covered:25c039d858",
+        "bar:covered:79df3742da",
+        "bar:legacy:47cfe5eb8a",
+        "bar:legacy:8b336cdf52",
+        "bar:legacy:bc5d84bed7",
+        "bar:legacy:25c039d858",
+        "bar:legacy:79df3742da"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        102,
+        97,
+        1130,
+        600
+      ],
+      "digests": {
+        "png": "d61c34be5622b086fd46822ecb6b26607f2d6868cd64ad5eaf96c70eb502a4cf",
+        "input": "b8f4e8b2921c336cb6c315724bbeeb3ebc118796631b1a1df160994a93d980a8",
+        "svg": "9f4c3f23cdfc0edae6bb2b005eee071c6affb30a01a4ce01d760b429de080f3a",
+        "pdf": "126c82ad1e3492bec5867c534adbf178a098a4175d2c7a0962dd6ef2797df801"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "line-chart",
+      "profile": "page-preview",
+      "registry_key": "line-chart@3",
+      "png": "assets/diagrams/generated/catalog/png/line-chart.png",
+      "semantic_ids": [
+        "point:valid:5ab0409778",
+        "point:valid:8b336cdf52",
+        "point:valid:bc5d84bed7",
+        "point:valid:25c039d858",
+        "point:valid:79df3742da",
+        "point:invalid:5ab0409778",
+        "point:invalid:8b336cdf52",
+        "point:invalid:bc5d84bed7",
+        "point:invalid:25c039d858",
+        "point:invalid:79df3742da"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        101,
+        97,
+        1116,
+        611
+      ],
+      "digests": {
+        "png": "1ef4231c7154de4d615286d407fde64d0fac5bd36cad922cf0a847e06cda6bd5",
+        "input": "eaf755963f9771e6b886ba93ee7e1433f0dc98a8bde9e25bf07aed3807db598e",
+        "svg": "89b058e0688b50df61429b8c0a7155b918eb7b8a002ddeaeca2d49ed1f2a9901",
+        "pdf": "01f61ff76927703a4aefba5236680c01a2d6ac3710636a139613f47e56c51b45"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "donut-chart",
+      "profile": "page-preview",
+      "registry_key": "donut-chart@3",
+      "png": "assets/diagrams/generated/catalog/png/donut-chart.png",
+      "semantic_ids": [
+        "segment:structural",
+        "segment:positional",
+        "segment:notation",
+        "segment:data-viz"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        108,
+        104,
+        1098,
+        811
+      ],
+      "digests": {
+        "png": "993e8ddf233d526a6004d30e0a37171a091cfc5ec2d15c2489fb39a294329eed",
+        "input": "a33ab2cb1ac6b7c92698316907e4fcb22f9d9b6702f38a4d5ab35d8976502b9c",
+        "svg": "817862f9be8a7f41a1cbcc87b80ddc64dae0ab42afb1ed3e3a6e058e80074a6b",
+        "pdf": "214db4a625b5883965dc64f1a0baeb0d0d927e583915e2f4c642e0c314b795e9"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "state-machine",
+      "profile": "page-preview",
+      "registry_key": "state-machine@3",
+      "png": "assets/diagrams/generated/catalog/png/state-machine.png",
+      "semantic_ids": [
+        "initial",
+        "idle",
+        "active",
+        "processing",
+        "done",
+        "final"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          288
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        99,
+        97,
+        1141,
+        341
+      ],
+      "digests": {
+        "png": "7d4a28b5308899062352da683d1ba7201e7ee31ae6d469095ee5fbd9504fd40c",
+        "input": "6ccb3ef7d231e6df6bca9e5142f9cf5805a7daf2c0007a2b9ecd006bc30d1553",
+        "svg": "7a4c7b764fe3bed0f9ef5c9b098756659b961eadd7b95c1cfbd02f5cb4597750",
+        "pdf": "5646a9a12a62f7221e119af711ec79447fb50c5599fde4e752e53d9ae5e09a81"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "timeline",
+      "profile": "page-preview",
+      "registry_key": "timeline@3",
+      "png": "assets/diagrams/generated/catalog/png/timeline.png",
+      "semantic_ids": [
+        "audit",
+        "gate-s",
+        "v3",
+        "v4",
+        "v43",
+        "v5",
+        "release"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        101,
+        97,
+        1133,
+        541
+      ],
+      "digests": {
+        "png": "b48333c306c97e0d3276a2dce3ac877d7a5c6a02760bf504a68334786f6303e8",
+        "input": "9f1281022dc468dd817017df2a04beddff4a5eb02ed8f5f2c598f733d1879cfc",
+        "svg": "3d6db109590c2379f64ba27f4e21c97ce87c6f8498a7bbb9f47bb561d6d2d62d",
+        "pdf": "bc2bfc035e0eda796862bc824feb52d07b8c0e86b91e6b74a5d43b96f7db2095"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "swimlane",
+      "profile": "page-preview",
+      "registry_key": "swimlane@3",
+      "png": "assets/diagrams/generated/catalog/png/swimlane.png",
+      "semantic_ids": [
+        "request",
+        "compile",
+        "load",
+        "validate",
+        "response"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        99,
+        97,
+        1141,
+        675
+      ],
+      "digests": {
+        "png": "015e2e6638d622822c3ed243070a706d8a737b6c185d9d0d1fa5e20fe153e209",
+        "input": "cf6892927660612aceb0a04354d5844c1d0649d9f54785b87de97602577edf64",
+        "svg": "40e4eb8a6fbcc71e19783b05b73685ad4a239895676f0335adb196cf328f80c9",
+        "pdf": "60f86a5b02d30a44c229c1a9fa88680abd184e189647639eab0374a06ab778d3"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "tree",
+      "profile": "page-preview",
+      "registry_key": "tree@3",
+      "png": "assets/diagrams/generated/catalog/png/tree.png",
+      "semantic_ids": [
+        "core",
+        "structural",
+        "data-viz",
+        "state",
+        "swimlane",
+        "tree",
+        "scale",
+        "series"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        100,
+        97,
+        1141,
+        601
+      ],
+      "digests": {
+        "png": "21e6474a9f7c86c01fecd25f1e31ee253adad1ab5dee876453b179934bcf8509",
+        "input": "df6834ed82e761de45cf08a59ac2fd59bb620d3469dd89d5a72680f35cc6495a",
+        "svg": "6e157ceb3fe69ae184a23cc329058b57d5974e8c14ec8d4f2554a4da96ad37af",
+        "pdf": "2f1657a6d235a90d1dcf9869b57299b37e974956fb4a18751681b267833778d3"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "layer-stack",
+      "profile": "page-preview",
+      "registry_key": "layer-stack@3",
+      "png": "assets/diagrams/generated/catalog/png/layer-stack.png",
+      "semantic_ids": [
+        "presentation",
+        "semantic",
+        "planning",
+        "layout",
+        "rendering"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        104,
+        102,
+        1136,
+        724
+      ],
+      "digests": {
+        "png": "d88f8db9ba0fa83a29c759475e5eb3c1e7993e3f0c0bd18ca2502802e73ed188",
+        "input": "e485665477cd2030d5c701f0bbab824d70af424e3b22f24e53d53d1236332fc2",
+        "svg": "45d4e0667ed3b0a84c642eec87a4ee96fece15440b229643b8658983844b2daa",
+        "pdf": "b8203baff7e4fccd47be5ab7153ad37585b0652677d2f2a047ce7887d472956f"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "venn",
+      "profile": "page-preview",
+      "registry_key": "venn@3",
+      "png": "assets/diagrams/generated/catalog/png/venn.png",
+      "semantic_ids": [
+        "set:core",
+        "set:grammar",
+        "intersection:shared"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        105,
+        103,
+        1135,
+        836
+      ],
+      "digests": {
+        "png": "5fefe5728ff9b474cbf28209becf74ec221f367a24310db68f346541f783354d",
+        "input": "bbe24eeafcff57301896533d8c13844e2eb33ed13380de75073b134ae215d6b1",
+        "svg": "ba45c4e01b715797acfa5d960f5a2fb1509a51e3ead2fb4dd2b33b3dcd14ed5a",
+        "pdf": "9d1400bd60d38f3fe313106bd92cbf5b740a17c84383f859856d58179ddce478"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "pyramid",
+      "profile": "page-preview",
+      "registry_key": "pyramid@3",
+      "png": "assets/diagrams/generated/catalog/png/pyramid.png",
+      "semantic_ids": [
+        "aware",
+        "trial",
+        "habit",
+        "advocate"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        101,
+        99,
+        1097,
+        691
+      ],
+      "digests": {
+        "png": "bb4e8e94da28124f95dcd78f99a2c41391e23fedeff035a24b1505b686b96bae",
+        "input": "69adc98e9855e49d5439ad7d91da2757ec1f9b8bdd29d31e3f884ffd264aa89f",
+        "svg": "d7721040f3450fa3bae523a92d7696f6a563d28839e3fafb1e22e518fc430db3",
+        "pdf": "0e454473d9f7374fd1eb3e4104d693f085b757110fe78868b6a74ee8df24d041"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "org-chart",
+      "profile": "page-preview",
+      "registry_key": "org-chart@3",
+      "png": "assets/diagrams/generated/catalog/png/org-chart.png",
+      "semantic_ids": [
+        "head",
+        "brand",
+        "product",
+        "typo",
+        "color",
+        "web",
+        "docs"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        100,
+        98,
+        1140,
+        611
+      ],
+      "digests": {
+        "png": "1204b4fd7e0f7c16a98578dfee34881691822d5e39d1cf20dfaf7e18a80b9ff1",
+        "input": "6e50bddcf05e719c59d571a8090659c0139e40776620c2fa4b0744d9b05bda4f",
+        "svg": "995ee557afbe1b348eec1d43269b633fbd372db13a390dd504467d13afddf4e4",
+        "pdf": "55b7dda7c13d8e4912fc1f25bebafdfd932baac9c3ed0075481df2b4325da8b1"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "loop-flywheel",
+      "profile": "page-preview",
+      "registry_key": "loop-flywheel@3",
+      "png": "assets/diagrams/generated/catalog/png/loop-flywheel.png",
+      "semantic_ids": [
+        "publish",
+        "cite",
+        "feedback",
+        "refine"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        104,
+        102,
+        1080,
+        810
+      ],
+      "digests": {
+        "png": "ba9a1f573e989213e5f7a87a6af56ce839cca960b61d3c58c35a149e1679b921",
+        "input": "8390f9f0ae5eb0db1e498983dfbf0576bded33c1eca9278c791769f543ad0306",
+        "svg": "7540c937390ffb9a7182bc7f34a1d5cd40fdf00c61e94fbebbefe8b1ed8e2020",
+        "pdf": "a4d27ddffb8c57ef102cdbe81015dafb02063c7b42f2d15fe41ca60179a1366f"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "candlestick",
+      "profile": "page-preview",
+      "registry_key": "candlestick@3",
+      "png": "assets/diagrams/generated/catalog/png/candlestick.png",
+      "semantic_ids": [
+        "candle:d1",
+        "candle:d2",
+        "candle:d3",
+        "candle:d4",
+        "candle:d5",
+        "candle:d6",
+        "candle:d7"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        105,
+        101,
+        1135,
+        675
+      ],
+      "digests": {
+        "png": "327153e50f131758f77949c8f138014638628544d29a453542d3aedc87c1be85",
+        "input": "c64f5470f87e592ba4c2134ec35c150fb17d71e3857421810d42ee7f20deb2cb",
+        "svg": "f01f1e7a75266b8e03e3aa9fe8e9e368790d4c5e99ba056c4aad40026e5adbee",
+        "pdf": "3986f502d741b01c02b686370752bdea349ddee6ba608ee5ab7bf208870fa024"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "waterfall",
+      "profile": "page-preview",
+      "registry_key": "waterfall@3",
+      "png": "assets/diagrams/generated/catalog/png/waterfall.png",
+      "semantic_ids": [
+        "waterfall:start",
+        "waterfall:schema",
+        "waterfall:geometry",
+        "waterfall:a11y",
+        "waterfall:dedupe",
+        "waterfall:profiles",
+        "waterfall:end"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        106,
+        99,
+        1138,
+        660
+      ],
+      "digests": {
+        "png": "c23124e945f085418fbed7d2ef3de56ab6288d0c38d9659f7f8deb5ff030f670",
+        "input": "c9bb7dc6e9c0fde400db24fa0038e5548ae723297110f22b51f12c856265c699",
+        "svg": "35f523d6c86a29c40eee7e25e8e1ed43619c1b866ddce6bac12235313ea31474",
+        "pdf": "e454cf044b24666231e1365b4905d1581e3a0aa49e724a9e17edc9373531cc80"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "scatter",
+      "profile": "page-preview",
+      "registry_key": "scatter@3",
+      "png": "assets/diagrams/generated/catalog/png/scatter.png",
+      "semantic_ids": [
+        "point:scatter:c51e455b41",
+        "point:scatter:38edf99fd4",
+        "point:scatter:fd2c8f1dc0",
+        "point:scatter:2fcef4b99c",
+        "point:scatter:305238273b",
+        "point:scatter:ff582559c3"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        108,
+        103,
+        1135,
+        832
+      ],
+      "digests": {
+        "png": "ba600006889221cfc50c7a47eb66a5098bede461701d6415bf909a2798aaf97b",
+        "input": "710b880ef2b0cc6d129367a9b2ed16acc9100d76a14362d169446dd95effee35",
+        "svg": "74a90e7c8fe615225f4e9fed577c0dde6be7b0e83d2bd626c93c77c52abdb787",
+        "pdf": "8660f6d547684883c03d31997fe573649010557cf27afc578153a0afc3d74351"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "gantt",
+      "profile": "page-preview",
+      "registry_key": "gantt@3",
+      "png": "assets/diagrams/generated/catalog/png/gantt.png",
+      "semantic_ids": [
+        "audit",
+        "router",
+        "types",
+        "import",
+        "knobs",
+        "ship"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        98,
+        96,
+        1158,
+        663
+      ],
+      "digests": {
+        "png": "335901b42a442c682a095e2324c69fab6c120c7c020f2b524fd59d819e707886",
+        "input": "7c02e652342dfd497b4bb17829e03e28682efd014dbe30cf5966b36aa910f371",
+        "svg": "3da4eca8782440e4390ea3edfd06f18d7f3aafdd045294f9f59cc3a998ecb667",
+        "pdf": "066ec550fcf5a7d91d060e2145564d5a5e19d4880700af5c4dcc8ab1c88dd211"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "sequence",
+      "profile": "page-preview",
+      "registry_key": "sequence@3",
+      "png": "assets/diagrams/generated/catalog/png/sequence.png",
+      "semantic_ids": [
+        "participant:author",
+        "participant:compiler",
+        "participant:store",
+        "message:submit",
+        "message:persist",
+        "message:stored",
+        "message:complete"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        98,
+        96,
+        1142,
+        507
+      ],
+      "digests": {
+        "png": "b980d2b7603fcb640614ac75bcd1b60749da3b6603cf6ecf2eebc33539dda32a",
+        "input": "2272355bef0e001578ea9e1e61c91aaf70963ec8a7b07957f902f0a7777db81c",
+        "svg": "cceba8fbfcf8210afbd805d75f0f2b24a1a6790d8578c6b712dfc0c46418c17b",
+        "pdf": "f9a231402c60131e4c40e92e0a6a520ec4221702d7c198d8849f320b58d9a075"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "uml-class",
+      "profile": "page-preview",
+      "registry_key": "uml-class@3",
+      "png": "assets/diagrams/generated/catalog/png/uml-class.png",
+      "semantic_ids": [
+        "type:source",
+        "type:compiler",
+        "type:result",
+        "type:status",
+        "relationship:implements",
+        "relationship:creates",
+        "relationship:reports"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          640
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        99,
+        98,
+        1141,
+        686
+      ],
+      "digests": {
+        "png": "6d923a9e1fc9d79f69c76a2877787dca7b4cb7be93ced8849fd2a2710e72623c",
+        "input": "d72321f3a09ac556aa4ecc86b518bb2313f007f4d3d4da5178c406d005aedceb",
+        "svg": "16f654890fb0a9b5ad6c8c90e62a1fabd2b6bb1e06f70ad649617c028db16dba",
+        "pdf": "010eb4620cc4d2a9290a3226be4c2dd217322399404b5ffc5b5e572a196be471"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    },
+    {
+      "kind": "er-diagram",
+      "profile": "page-preview",
+      "registry_key": "er-diagram@3",
+      "png": "assets/diagrams/generated/catalog/png/er-diagram.png",
+      "semantic_ids": [
+        "entity:author",
+        "entity:document",
+        "entity:artifact",
+        "relationship:authors",
+        "relationship:publishes"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          640
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        99,
+        98,
+        1141,
+        705
+      ],
+      "digests": {
+        "png": "96fc1e5b2f672f926822b715786a49773bf23002d705d42678bb36fa7bdea519",
+        "input": "a34e03b91012df934dcdde1fb58b365bf8d1ac49bdf3cef822882666047449d2",
+        "svg": "3fcf3969266460b8c4e505a46d62885ceb0ee6b8b0aeafc89749aa6af5fa20a7",
+        "pdf": "7f07c7f27ca2962b383d834d9e78db201cfceb6611497171c8424ab2f298ce21"
+      },
+      "approval_state": "approved",
+      "approval_reason": "V5 layout fill pass for timeline venn donut notation grids"
+    }
+  ]
+}

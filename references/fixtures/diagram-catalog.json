@@ -1,0 +1,28 @@
+{
+  "schema_version": "3.0",
+  "title": "Folio Drawing DSL V5 · Complete Diagram Catalog",
+  "diagrams": [
+    {"kind": "architecture", "label": "Architecture", "mode": "drawing-dsl", "source": "references/fixtures/architecture-demo.json"},
+    {"kind": "flowchart", "label": "Flowchart", "mode": "drawing-dsl", "source": "references/fixtures/flowchart/branching.json"},
+    {"kind": "quadrant", "label": "Quadrant", "mode": "drawing-dsl", "source": "references/fixtures/v3/quadrant.json"},
+    {"kind": "bar-chart", "label": "Bar Chart", "mode": "drawing-dsl", "source": "references/fixtures/v3/bar-chart.json"},
+    {"kind": "line-chart", "label": "Line Chart", "mode": "drawing-dsl", "source": "references/fixtures/v3/line-chart.json"},
+    {"kind": "donut-chart", "label": "Donut Chart", "mode": "drawing-dsl", "source": "references/fixtures/v3/donut-chart.json"},
+    {"kind": "state-machine", "label": "State Machine", "mode": "drawing-dsl", "source": "references/fixtures/v3/state-machine.json"},
+    {"kind": "timeline", "label": "Timeline", "mode": "drawing-dsl", "source": "references/fixtures/v3/timeline.json"},
+    {"kind": "swimlane", "label": "Swimlane", "mode": "drawing-dsl", "source": "references/fixtures/v3/swimlane.json"},
+    {"kind": "tree", "label": "Tree", "mode": "drawing-dsl", "source": "references/fixtures/v3/tree.json"},
+    {"kind": "layer-stack", "label": "Layer Stack", "mode": "drawing-dsl", "source": "references/fixtures/v3/layer-stack.json"},
+    {"kind": "venn", "label": "Venn", "mode": "drawing-dsl", "source": "references/fixtures/v3/venn.json"},
+    {"kind": "pyramid", "label": "Pyramid", "mode": "drawing-dsl", "source": "references/fixtures/v5/pyramid.json"},
+    {"kind": "org-chart", "label": "Org Chart", "mode": "drawing-dsl", "source": "references/fixtures/v5/org-chart.json"},
+    {"kind": "loop-flywheel", "label": "Loop Flywheel", "mode": "drawing-dsl", "source": "references/fixtures/v5/loop-flywheel.json"},
+    {"kind": "candlestick", "label": "Candlestick", "mode": "drawing-dsl", "source": "references/fixtures/v3/candlestick.json"},
+    {"kind": "waterfall", "label": "Waterfall", "mode": "drawing-dsl", "source": "references/fixtures/v3/waterfall.json"},
+    {"kind": "scatter", "label": "Scatter", "mode": "drawing-dsl", "source": "references/fixtures/v5/scatter.json"},
+    {"kind": "gantt", "label": "Gantt", "mode": "drawing-dsl", "source": "references/fixtures/v5/gantt.json"},
+    {"kind": "sequence", "label": "Sequence", "mode": "drawing-dsl", "source": "references/fixtures/v4/sequence.json"},
+    {"kind": "uml-class", "label": "UML Class", "mode": "drawing-dsl", "source": "references/fixtures/v4/uml-class.json"},
+    {"kind": "er-diagram", "label": "ER Diagram", "mode": "drawing-dsl", "source": "references/fixtures/v4/er-diagram.json"}
+  ]
+}

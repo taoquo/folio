@@ -1,0 +1,13 @@
+{
+  "schema_version": "3.0",
+  "kind": "venn",
+  "title": "Drawing Core and Type Grammar Intersection",
+  "focus": ["core"],
+  "sets": [
+    {"id": "core", "label": "Drawing Core", "exclusive": ["theme", "scene"]},
+    {"id": "grammar", "label": "Type Grammar", "exclusive": ["semantics", "notation"]}
+  ],
+  "intersections": [
+    {"id": "shared", "sets": ["core", "grammar"], "items": ["typography", "validation"]}
+  ]
+}

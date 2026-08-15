@@ -1,0 +1,15 @@
+{
+  "schema_version": "3.0",
+  "kind": "quadrant",
+  "title": "Untitled Quadrant",
+  "axes": {
+    "x": {"label": "X axis", "low": "Low", "high": "High"},
+    "y": {"label": "Y axis", "low": "Low", "high": "High"}
+  },
+  "items": [
+    {"id": "top-left", "label": "Top Left", "x": 0.2, "y": 0.8},
+    {"id": "top-right", "label": "Top Right", "x": 0.8, "y": 0.8},
+    {"id": "bottom-left", "label": "Bottom Left", "x": 0.2, "y": 0.2},
+    {"id": "bottom-right", "label": "Bottom Right", "x": 0.8, "y": 0.2}
+  ]
+}

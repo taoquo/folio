@@ -1,0 +1,19 @@
+{
+  "schema_version": "2.0",
+  "kind": "flowchart",
+  "title": "Retry Workflow",
+  "nodes": [
+    {"id": "start", "type": "terminal", "label": "Request received"},
+    {"id": "run", "type": "step", "label": "Execute task"},
+    {"id": "ok", "type": "decision", "label": "Task succeeded?"},
+    {"id": "retry", "type": "step", "label": "Apply retry policy"},
+    {"id": "end", "type": "terminal", "label": "Return result"}
+  ],
+  "edges": [
+    {"source": "start", "target": "run"},
+    {"source": "run", "target": "ok"},
+    {"source": "ok", "target": "end", "kind": "conditional-flow", "label": "yes"},
+    {"source": "ok", "target": "retry", "kind": "conditional-flow", "label": "no"},
+    {"source": "retry", "target": "run", "kind": "exception-flow", "label": "retry"}
+  ]
+}

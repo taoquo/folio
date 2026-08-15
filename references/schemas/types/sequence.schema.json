@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/types/sequence.schema.json",
+  "title": "Folio Sequence Diagram Authoring Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "title", "participants", "messages"],
+  "properties": {
+    "schema_version": {"const": "3.0"},
+    "kind": {"const": "sequence"},
+    "title": {"$ref": "#/$defs/text"},
+    "participants": {"type": "array", "minItems": 2, "maxItems": 6, "items": {"$ref": "#/$defs/participant"}},
+    "messages": {"type": "array", "minItems": 1, "maxItems": 12, "items": {"$ref": "#/$defs/message"}},
+    "focus_participant": {"type": ["string", "null"]},
+    "width": {"const": 960},
+    "height": {"const": 540},
+    "language": {"$ref": "#/$defs/text"}
+  },
+  "$defs": {
+    "text": {"type": "string", "pattern": ".*\\S.*", "maxLength": 64},
+    "participant": {
+      "type": "object", "additionalProperties": false, "required": ["id", "label", "kind"],
+      "properties": {
+        "id": {"type": "string", "pattern": ".*\\S.*", "maxLength": 40},
+        "label": {"type": "string", "pattern": ".*\\S.*", "maxLength": 40},
+        "kind": {"enum": ["actor", "system", "store"]}
+      }
+    },
+    "message": {
+      "type": "object", "additionalProperties": false, "required": ["id", "source", "target", "label", "kind"],
+      "properties": {
+        "id": {"type": "string", "pattern": ".*\\S.*", "maxLength": 48},
+        "source": {"$ref": "#/$defs/text"},
+        "target": {"$ref": "#/$defs/text"},
+        "label": {"type": "string", "pattern": ".*\\S.*", "maxLength": 48},
+        "kind": {"enum": ["sync", "async", "return"]}
+      }
+    }
+  }
+}

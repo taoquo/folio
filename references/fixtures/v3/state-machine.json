@@ -1,0 +1,22 @@
+{
+  "schema_version": "3.0",
+  "kind": "state-machine",
+  "title": "Drawing Grammar Migration Lifecycle",
+  "focus": "active",
+  "states": [
+    {"id": "initial", "type": "initial"},
+    {"id": "idle", "type": "state", "label": "Idle", "description": "waiting"},
+    {"id": "active", "type": "state", "label": "Active", "description": "editing"},
+    {"id": "processing", "type": "state", "label": "Processing", "description": "running"},
+    {"id": "done", "type": "state", "label": "Done", "description": "resolved"},
+    {"id": "final", "type": "final"}
+  ],
+  "transitions": [
+    {"id": "enter", "source": "initial", "target": "idle"},
+    {"id": "trigger", "source": "idle", "target": "active", "event": "trigger", "channel": "focal"},
+    {"id": "submit", "source": "active", "target": "processing", "event": "submit"},
+    {"id": "complete", "source": "processing", "target": "done", "event": "complete"},
+    {"id": "exit", "source": "done", "target": "final"},
+    {"id": "reset", "source": "processing", "target": "idle", "event": "reset", "channel": "reset"}
+  ]
+}

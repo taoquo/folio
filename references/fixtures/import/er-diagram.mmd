@@ -1,0 +1,17 @@
+erDiagram
+    author {
+        uuid id PK
+        text name
+    }
+    document {
+        uuid id PK
+        uuid author_id FK
+        text title
+    }
+    artifact {
+        uuid id PK
+        uuid document_id FK
+        text uri
+    }
+    author ||--o{ document : authors
+    document ||--|{ artifact : publishes

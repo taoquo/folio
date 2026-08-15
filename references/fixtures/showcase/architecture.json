@@ -1,0 +1,159 @@
+{
+  "schema_version": "3.0",
+  "kind": "architecture",
+  "title": "Orbital Publishing Platform",
+  "subtitle": "How a draft becomes a signed, distributed artifact",
+  "layout": "horizontal-layers",
+  "focus": "render-farm",
+  "focus_reason": "The render farm is the only stateful bottleneck under peak load",
+  "focus_path": [
+    "gateway",
+    "render-farm",
+    "validator",
+    "artifact-store"
+  ],
+  "layers": [
+    {
+      "id": "edge",
+      "label": "Edge",
+      "purpose": "Author-facing entry points",
+      "row_policy": "pipeline"
+    },
+    {
+      "id": "core",
+      "label": "Core Services",
+      "purpose": "Typesetting and validation",
+      "row_policy": "pipeline"
+    },
+    {
+      "id": "state",
+      "label": "State",
+      "purpose": "Durable artifacts and metadata",
+      "row_policy": "centered"
+    }
+  ],
+  "groups": [
+    {
+      "id": "pipeline",
+      "label": "Render Pipeline",
+      "kind": "boundary",
+      "layer": "core",
+      "members": [
+        "gateway",
+        "render-farm",
+        "validator"
+      ],
+      "layout_policy": "pipeline",
+      "summary": "Deterministic build path"
+    }
+  ],
+  "legend": [
+    {
+      "flow": "primary",
+      "label": "Build path",
+      "reason": "Latency budget applies"
+    },
+    {
+      "flow": "secondary",
+      "label": "Author and CI intake"
+    },
+    {
+      "flow": "async",
+      "label": "Deferred delivery"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "editor",
+      "kind": "external",
+      "label": "Draft Editor",
+      "layer": "edge",
+      "sublabel": "web - CLI",
+      "importance": "primary"
+    },
+    {
+      "id": "webhook",
+      "kind": "external",
+      "label": "CI Webhook",
+      "layer": "edge",
+      "sublabel": "git push events",
+      "importance": "secondary"
+    },
+    {
+      "id": "gateway",
+      "kind": "service",
+      "label": "Build Gateway",
+      "layer": "core",
+      "sublabel": "auth - quota - queue",
+      "group": "pipeline",
+      "lifecycle_phase": "runtime"
+    },
+    {
+      "id": "render-farm",
+      "kind": "service",
+      "label": "Render Farm",
+      "layer": "core",
+      "sublabel": "WeasyPrint workers",
+      "group": "pipeline",
+      "importance": "primary",
+      "state_owner": true
+    },
+    {
+      "id": "validator",
+      "kind": "service",
+      "label": "Quality Validator",
+      "layer": "core",
+      "sublabel": "12 visual gates",
+      "group": "pipeline"
+    },
+    {
+      "id": "artifact-store",
+      "kind": "store",
+      "label": "Artifact Store",
+      "layer": "state",
+      "sublabel": "PDF - SVG - PNG"
+    },
+    {
+      "id": "cdn",
+      "kind": "cloud",
+      "label": "Delivery CDN",
+      "layer": "state",
+      "sublabel": "signed URLs"
+    }
+  ],
+  "edges": [
+    {
+      "source": "editor",
+      "target": "gateway",
+      "kind": "secondary",
+      "label": "submit"
+    },
+    {
+      "source": "webhook",
+      "target": "gateway",
+      "kind": "secondary"
+    },
+    {
+      "source": "gateway",
+      "target": "render-farm",
+      "kind": "primary",
+      "label": "dispatch"
+    },
+    {
+      "source": "render-farm",
+      "target": "validator",
+      "kind": "primary"
+    },
+    {
+      "source": "validator",
+      "target": "artifact-store",
+      "kind": "primary",
+      "label": "persist"
+    },
+    {
+      "source": "artifact-store",
+      "target": "cdn",
+      "kind": "async"
+    }
+  ]
+}

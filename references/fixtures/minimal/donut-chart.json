@@ -1,0 +1,9 @@
+{
+  "schema_version": "3.0",
+  "kind": "donut-chart",
+  "title": "Untitled Donut Chart",
+  "segments": [
+    {"id": "segment-a", "label": "Segment A", "value": 1},
+    {"id": "segment-b", "label": "Segment B", "value": 1}
+  ]
+}

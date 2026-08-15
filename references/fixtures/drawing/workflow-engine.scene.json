@@ -1,0 +1,866 @@
+{
+  "width": 960,
+  "height": 540,
+  "background": "#F6F0EA",
+  "title": {
+    "text": "Workflow Engine",
+    "x": 480,
+    "y": 40,
+    "fill": "#191514",
+    "size": 24.0,
+    "family": "Charter, Georgia, serif",
+    "anchor": "middle",
+    "tracking": 0.0,
+    "weight": null,
+    "klass": null
+  },
+  "regions": [
+    {
+      "id": "surface",
+      "treatment": "layer-band",
+      "label": {
+        "text": "SURFACE LAYER",
+        "x": 32,
+        "y": 128,
+        "fill": "#74665F",
+        "size": 11.0,
+        "family": "'JetBrains Mono', monospace",
+        "anchor": "start",
+        "tracking": 0.08,
+        "weight": null,
+        "klass": null
+      },
+      "box": null,
+      "style": {
+        "fill": "none",
+        "stroke": "#E9DED4",
+        "stroke_width": 1,
+        "dash": [],
+        "radius": 0,
+        "fill_opacity": null
+      },
+      "separator": [
+        [
+          120,
+          206
+        ],
+        [
+          904,
+          206
+        ]
+      ]
+    },
+    {
+      "id": "runtime",
+      "treatment": "layer-band",
+      "label": {
+        "text": "RUNTIME LAYER",
+        "x": 32,
+        "y": 284,
+        "fill": "#74665F",
+        "size": 11.0,
+        "family": "'JetBrains Mono', monospace",
+        "anchor": "start",
+        "tracking": 0.08,
+        "weight": null,
+        "klass": null
+      },
+      "box": null,
+      "style": {
+        "fill": "none",
+        "stroke": "#E9DED4",
+        "stroke_width": 1,
+        "dash": [],
+        "radius": 0,
+        "fill_opacity": null
+      },
+      "separator": [
+        [
+          120,
+          362
+        ],
+        [
+          904,
+          362
+        ]
+      ]
+    },
+    {
+      "id": "data",
+      "treatment": "layer-band",
+      "label": {
+        "text": "DATA LAYER",
+        "x": 32,
+        "y": 440,
+        "fill": "#74665F",
+        "size": 11.0,
+        "family": "'JetBrains Mono', monospace",
+        "anchor": "start",
+        "tracking": 0.08,
+        "weight": null,
+        "klass": null
+      },
+      "box": null,
+      "style": {
+        "fill": "none",
+        "stroke": "#E9DED4",
+        "stroke_width": 1,
+        "dash": [],
+        "radius": 0,
+        "fill_opacity": null
+      },
+      "separator": null
+    },
+    {
+      "id": "workflow-core",
+      "treatment": "soft-boundary",
+      "label": {
+        "text": "WORKFLOW CORE",
+        "x": 276,
+        "y": 84,
+        "fill": "#74665F",
+        "size": 8.0,
+        "family": "'JetBrains Mono', monospace",
+        "anchor": "start",
+        "tracking": 0.12,
+        "weight": null,
+        "klass": null
+      },
+      "box": {
+        "x": 260,
+        "y": 68,
+        "w": 440,
+        "h": 272
+      },
+      "style": {
+        "fill": "#FBF7F3",
+        "stroke": "#E9DED4",
+        "stroke_width": 1,
+        "dash": [
+          5,
+          4
+        ],
+        "radius": 10,
+        "fill_opacity": 0.28
+      },
+      "separator": null
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:0:gateway->orchestrator",
+      "source": "gateway",
+      "target": "orchestrator",
+      "points": [
+        [
+          480,
+          164
+        ],
+        [
+          480,
+          192
+        ],
+        [
+          368,
+          192
+        ],
+        [
+          368,
+          248
+        ]
+      ],
+      "style": {
+        "fill": "none",
+        "stroke": "#191514",
+        "stroke_width": 1.8,
+        "dash": [],
+        "radius": 0,
+        "fill_opacity": null
+      },
+      "arrow": {
+        "points": [
+          [
+            364,
+            240
+          ],
+          [
+            368,
+            248
+          ],
+          [
+            372,
+            240
+          ]
+        ]
+      },
+      "klass": "arch-edge arch-edge--primary arch-edge--focus",
+      "label": {
+        "text": "START",
+        "x": 424,
+        "y": 180,
+        "fill": "#74665F",
+        "size": 8.0,
+        "family": "'JetBrains Mono', monospace",
+        "anchor": "middle",
+        "tracking": 0.0,
+        "weight": null,
+        "klass": "arch-edge-label"
+      },
+      "label_box": {
+        "x": 408,
+        "y": 168,
+        "w": 32,
+        "h": 16
+      },
+      "corner_radius": 8,
+      "bridges": []
+    },
+    {
+      "id": "edge:1:orchestrator->workers",
+      "source": "orchestrator",
+      "target": "workers",
+      "points": [
+        [
+          456,
+          284
+        ],
+        [
+          504,
+          284
+        ]
+      ],
+      "style": {
+        "fill": "none",
+        "stroke": "#191514",
+        "stroke_width": 1.8,
+        "dash": [],
+        "radius": 0,
+        "fill_opacity": null
+      },
+      "arrow": {
+        "points": [
+          [
+            496,
+            280
+          ],
+          [
+            504,
+            284
+          ],
+          [
+            496,
+            288
+          ]
+        ]
+      },
+      "klass": "arch-edge arch-edge--primary arch-edge--focus",
+      "label": {
+        "text": "STEPS",
+        "x": 480,
+        "y": 272,
+        "fill": "#74665F",
+        "size": 8.0,
+        "family": "'JetBrains Mono', monospace",
+        "anchor": "middle",
+        "tracking": 0.0,
+        "weight": null,
+        "klass": "arch-edge-label"
+      },
+      "label_box": {
+        "x": 464,
+        "y": 260,
+        "w": 32,
+        "h": 16
+      },
+      "corner_radius": 8,
+      "bridges": []
+    },
+    {
+      "id": "edge:2:orchestrator->state-store",
+      "source": "orchestrator",
+      "target": "state-store",
+      "points": [
+        [
+          316,
+          320
+        ],
+        [
+          316,
+          360
+        ],
+        [
+          368,
+          360
+        ],
+        [
+          368,
+          404
+        ]
+      ],
+      "style": {
+        "fill": "none",
+        "stroke": "#5A4A43",
+        "stroke_width": 1.2,
+        "dash": [],
+        "radius": 0,
+        "fill_opacity": null
+      },
+      "arrow": {
+        "points": [
+          [
+            364,
+            396
+          ],
+          [
+            368,
+            404
+          ],
+          [
+            372,
+            396
+          ]
+        ]
+      },
+      "klass": "arch-edge arch-edge--secondary",
+      "label": {
+        "text": "STATE",
+        "x": 344,
+        "y": 348,
+        "fill": "#74665F",
+        "size": 8.0,
+        "family": "'JetBrains Mono', monospace",
+        "anchor": "middle",
+        "tracking": 0.0,
+        "weight": null,
+        "klass": "arch-edge-label"
+      },
+      "label_box": {
+        "x": 328,
+        "y": 336,
+        "w": 32,
+        "h": 16
+      },
+      "corner_radius": 8,
+      "bridges": []
+    },
+    {
+      "id": "edge:3:orchestrator->event-bus",
+      "source": "orchestrator",
+      "target": "event-bus",
+      "points": [
+        [
+          420,
+          320
+        ],
+        [
+          420,
+          376
+        ],
+        [
+          592,
+          376
+        ],
+        [
+          592,
+          404
+        ]
+      ],
+      "style": {
+        "fill": "none",
+        "stroke": "#74665F",
+        "stroke_width": 1.0,
+        "dash": [
+          5,
+          4
+        ],
+        "radius": 0,
+        "fill_opacity": null
+      },
+      "arrow": {
+        "points": [
+          [
+            588,
+            396
+          ],
+          [
+            592,
+            404
+          ],
+          [
+            596,
+            396
+          ]
+        ]
+      },
+      "klass": "arch-edge arch-edge--async",
+      "label": null,
+      "label_box": null,
+      "corner_radius": 8,
+      "bridges": []
+    }
+  ],
+  "nodes": [
+    {
+      "id": "gateway",
+      "box": {
+        "x": 392,
+        "y": 92,
+        "w": 176,
+        "h": 72
+      },
+      "style": {
+        "fill": "#FBF7F3",
+        "stroke": "#74665F",
+        "stroke_width": 1,
+        "dash": [],
+        "radius": 5,
+        "fill_opacity": null
+      },
+      "text_runs": [
+        {
+          "text": "EXTERNAL",
+          "x": 412,
+          "y": 112,
+          "fill": "#74665F",
+          "size": 7.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "start",
+          "tracking": 0.15,
+          "weight": null,
+          "klass": null
+        },
+        {
+          "text": "API Gateway",
+          "x": 480,
+          "y": 132,
+          "fill": "#191514",
+          "size": 12.0,
+          "family": "Charter, Georgia, serif",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": "500",
+          "klass": null
+        },
+        {
+          "text": "request ingress",
+          "x": 480,
+          "y": 148,
+          "fill": "#5A4A43",
+          "size": 9.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": null,
+          "klass": null
+        }
+      ],
+      "pictogram": {
+        "id": "pictogram:gateway",
+        "paths": [
+          "M 538 110 h 12",
+          "M 546 106 l 4 4 l -4 4"
+        ],
+        "stroke": "#74665F"
+      },
+      "shape": "rect"
+    },
+    {
+      "id": "orchestrator",
+      "box": {
+        "x": 280,
+        "y": 248,
+        "w": 176,
+        "h": 72
+      },
+      "style": {
+        "fill": "#F7E6E1",
+        "stroke": "#B83D2E",
+        "stroke_width": 1,
+        "dash": [],
+        "radius": 5,
+        "fill_opacity": null
+      },
+      "text_runs": [
+        {
+          "text": "SERVICE",
+          "x": 300,
+          "y": 268,
+          "fill": "#B83D2E",
+          "size": 7.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "start",
+          "tracking": 0.15,
+          "weight": null,
+          "klass": null
+        },
+        {
+          "text": "Workflow Orchestrator",
+          "x": 368,
+          "y": 288,
+          "fill": "#191514",
+          "size": 12.0,
+          "family": "Charter, Georgia, serif",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": "500",
+          "klass": null
+        },
+        {
+          "text": "step coordination",
+          "x": 368,
+          "y": 304,
+          "fill": "#5A4A43",
+          "size": 9.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": null,
+          "klass": null
+        }
+      ],
+      "pictogram": null,
+      "shape": "rect"
+    },
+    {
+      "id": "workers",
+      "box": {
+        "x": 504,
+        "y": 248,
+        "w": 176,
+        "h": 72
+      },
+      "style": {
+        "fill": "#FBF7F3",
+        "stroke": "#191514",
+        "stroke_width": 1,
+        "dash": [],
+        "radius": 5,
+        "fill_opacity": null
+      },
+      "text_runs": [
+        {
+          "text": "SERVICE",
+          "x": 524,
+          "y": 268,
+          "fill": "#74665F",
+          "size": 7.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "start",
+          "tracking": 0.15,
+          "weight": null,
+          "klass": null
+        },
+        {
+          "text": "Worker Pool",
+          "x": 592,
+          "y": 288,
+          "fill": "#191514",
+          "size": 12.0,
+          "family": "Charter, Georgia, serif",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": "500",
+          "klass": null
+        },
+        {
+          "text": "step execution",
+          "x": 592,
+          "y": 304,
+          "fill": "#5A4A43",
+          "size": 9.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": null,
+          "klass": null
+        }
+      ],
+      "pictogram": null,
+      "shape": "rect"
+    },
+    {
+      "id": "state-store",
+      "box": {
+        "x": 280,
+        "y": 404,
+        "w": 176,
+        "h": 72
+      },
+      "style": {
+        "fill": "#FBF7F3",
+        "stroke": "#5A4A43",
+        "stroke_width": 1,
+        "dash": [],
+        "radius": 5,
+        "fill_opacity": null
+      },
+      "text_runs": [
+        {
+          "text": "STORE",
+          "x": 300,
+          "y": 424,
+          "fill": "#74665F",
+          "size": 7.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "start",
+          "tracking": 0.15,
+          "weight": null,
+          "klass": null
+        },
+        {
+          "text": "State Store",
+          "x": 368,
+          "y": 444,
+          "fill": "#191514",
+          "size": 12.0,
+          "family": "Charter, Georgia, serif",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": "500",
+          "klass": null
+        },
+        {
+          "text": "workflow state",
+          "x": 368,
+          "y": 460,
+          "fill": "#5A4A43",
+          "size": 9.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": null,
+          "klass": null
+        }
+      ],
+      "pictogram": {
+        "id": "pictogram:state-store",
+        "paths": [
+          "M 426 418 h 12 v 12 h -12 z",
+          "M 428 422 h 8"
+        ],
+        "stroke": "#5A4A43"
+      },
+      "shape": "rect"
+    },
+    {
+      "id": "event-bus",
+      "box": {
+        "x": 504,
+        "y": 404,
+        "w": 176,
+        "h": 72
+      },
+      "style": {
+        "fill": "#FBF7F3",
+        "stroke": "#E9DED4",
+        "stroke_width": 1,
+        "dash": [],
+        "radius": 5,
+        "fill_opacity": null
+      },
+      "text_runs": [
+        {
+          "text": "CLOUD",
+          "x": 524,
+          "y": 424,
+          "fill": "#74665F",
+          "size": 7.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "start",
+          "tracking": 0.15,
+          "weight": null,
+          "klass": null
+        },
+        {
+          "text": "Event Bus",
+          "x": 592,
+          "y": 444,
+          "fill": "#191514",
+          "size": 12.0,
+          "family": "Charter, Georgia, serif",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": "500",
+          "klass": null
+        }
+      ],
+      "pictogram": {
+        "id": "pictogram:event-bus",
+        "paths": [
+          "M 650 420 h 12",
+          "M 650 424 h 12",
+          "M 650 428 h 12"
+        ],
+        "stroke": "#E9DED4"
+      },
+      "shape": "rect"
+    }
+  ],
+  "annotations": [],
+  "legend": {
+    "box": {
+      "x": 296,
+      "y": 480,
+      "w": 368,
+      "h": 44
+    },
+    "style": {
+      "fill": "#F6F0EA",
+      "stroke": "#E9DED4",
+      "stroke_width": 1,
+      "dash": [],
+      "radius": 4,
+      "fill_opacity": null
+    },
+    "title": {
+      "text": "LEGEND",
+      "x": 312,
+      "y": 496,
+      "fill": "#74665F",
+      "size": 8.0,
+      "family": "'JetBrains Mono', monospace",
+      "anchor": "start",
+      "tracking": 0.12,
+      "weight": null,
+      "klass": null
+    },
+    "items": [
+      {
+        "label": {
+          "text": "Control",
+          "x": 412,
+          "y": 508,
+          "fill": "#191514",
+          "size": 9.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "start",
+          "tracking": 0.0,
+          "weight": null,
+          "klass": null
+        },
+        "line": [
+          [
+            384,
+            504
+          ],
+          [
+            404,
+            504
+          ]
+        ],
+        "arrow": {
+          "points": [
+            [
+              396,
+              500
+            ],
+            [
+              404,
+              504
+            ],
+            [
+              396,
+              508
+            ]
+          ]
+        },
+        "stroke": "#5A4A43"
+      },
+      {
+        "label": {
+          "text": "Write",
+          "x": 516,
+          "y": 508,
+          "fill": "#191514",
+          "size": 9.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "start",
+          "tracking": 0.0,
+          "weight": null,
+          "klass": null
+        },
+        "line": [
+          [
+            488,
+            504
+          ],
+          [
+            508,
+            504
+          ]
+        ],
+        "arrow": {
+          "points": [
+            [
+              500,
+              500
+            ],
+            [
+              508,
+              504
+            ],
+            [
+              500,
+              508
+            ]
+          ]
+        },
+        "stroke": "#5A4A43"
+      },
+      {
+        "label": {
+          "text": "Event",
+          "x": 608,
+          "y": 508,
+          "fill": "#191514",
+          "size": 9.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "start",
+          "tracking": 0.0,
+          "weight": null,
+          "klass": null
+        },
+        "line": [
+          [
+            580,
+            504
+          ],
+          [
+            600,
+            504
+          ]
+        ],
+        "arrow": {
+          "points": [
+            [
+              592,
+              500
+            ],
+            [
+              600,
+              504
+            ],
+            [
+              592,
+              508
+            ]
+          ]
+        },
+        "stroke": "#5A4A43"
+      }
+    ]
+  },
+  "warnings": [
+    "event-bus: node metadata dropped to preserve minimum text size"
+  ],
+  "description": "Workflow Engine",
+  "language": "en",
+  "reading_order": [
+    "gateway",
+    "orchestrator",
+    "workers",
+    "state-store",
+    "event-bus"
+  ],
+  "primitives": []
+}

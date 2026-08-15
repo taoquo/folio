@@ -1,0 +1,12 @@
+{
+  "schema_version": "3.0",
+  "kind": "er-diagram",
+  "title": "Untitled ER Diagram",
+  "entities": [
+    {"id": "parent", "name": "Parent", "fields": [{"id": "id", "name": "id", "type": "uuid", "primary_key": true}]},
+    {"id": "child", "name": "Child", "fields": [{"id": "id", "name": "id", "type": "uuid", "primary_key": true}]}
+  ],
+  "relationships": [
+    {"id": "owns", "source": "parent", "target": "child", "label": "owns", "source_cardinality": "one", "target_cardinality": "many"}
+  ]
+}

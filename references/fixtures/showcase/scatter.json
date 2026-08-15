@@ -1,0 +1,75 @@
+{
+  "schema_version": "3.0",
+  "kind": "scatter",
+  "title": "Feature Cost versus Retention Lift",
+  "source": "Product analytics, trailing two quarters",
+  "locale": "en-US",
+  "x_axis": {
+    "label": "Engineering cost",
+    "unit": "wks",
+    "include_zero": true
+  },
+  "y_axis": {
+    "label": "Retention lift",
+    "unit": "pp",
+    "include_zero": true
+  },
+  "points": [
+    {
+      "id": "templates",
+      "label": "Templates",
+      "x": 3,
+      "y": 6.4
+    },
+    {
+      "id": "diagrams",
+      "label": "Diagram DSL",
+      "x": 11,
+      "y": 9.1,
+      "emphasis": "focal"
+    },
+    {
+      "id": "comments",
+      "label": "Comments",
+      "x": 5,
+      "y": 4.2
+    },
+    {
+      "id": "offline",
+      "label": "Offline mode",
+      "x": 16,
+      "y": 3.8
+    },
+    {
+      "id": "themes",
+      "label": "Theme packs",
+      "x": 4,
+      "y": 2.1
+    },
+    {
+      "id": "api",
+      "label": "Public API",
+      "x": 9,
+      "y": 7.3
+    },
+    {
+      "id": "mobile",
+      "label": "Mobile viewer",
+      "x": 14,
+      "y": 1.6
+    },
+    {
+      "id": "imports",
+      "label": "Mermaid import",
+      "x": 6,
+      "y": 5.5
+    }
+  ],
+  "focus": "diagrams",
+  "value_format": {
+    "precision": 1,
+    "compact": false,
+    "grouping": false,
+    "unit_position": "suffix"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "schema_version": "3.0",
+  "kind": "scatter",
+  "title": "Effort versus adoption",
+  "source": "Folio design telemetry, 2026",
+  "x_axis": {
+    "label": "Build effort (weeks)",
+    "include_zero": true
+  },
+  "y_axis": {
+    "label": "Adoption rate",
+    "unit": "%",
+    "include_zero": true
+  },
+  "points": [
+    {
+      "id": "tokens",
+      "label": "Tokens",
+      "x": 2,
+      "y": 78
+    },
+    {
+      "id": "charts",
+      "label": "Charts",
+      "x": 6,
+      "y": 64,
+      "emphasis": "focal"
+    },
+    {
+      "id": "slides",
+      "label": "Slides",
+      "x": 9,
+      "y": 41
+    },
+    {
+      "id": "imports",
+      "label": "Imports",
+      "x": 12,
+      "y": 27
+    },
+    {
+      "id": "motion",
+      "label": "Motion",
+      "x": 15,
+      "y": 18
+    },
+    {
+      "id": "themes",
+      "label": "Themes",
+      "x": 4,
+      "y": 52
+    }
+  ]
+}

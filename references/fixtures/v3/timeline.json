@@ -1,0 +1,16 @@
+{
+  "schema_version": "3.0",
+  "kind": "timeline",
+  "title": "Drawing DSL Milestones",
+  "scale": "temporal",
+  "focus": "v5",
+  "events": [
+    {"id": "audit", "date": "2026-08-01", "label": "Audit"},
+    {"id": "gate-s", "date": "2026-08-05", "label": "Gate S"},
+    {"id": "v3", "date": "2026-08-08", "label": "V3 Core"},
+    {"id": "v4", "date": "2026-08-13", "label": "V4 Notation"},
+    {"id": "v43", "date": "2026-08-18", "label": "V4.3 Hosting"},
+    {"id": "v5", "date": "2026-08-24", "label": "V5 Semantics"},
+    {"id": "release", "date": "2026-08-28", "label": "Release Gate"}
+  ]
+}

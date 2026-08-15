@@ -1,0 +1,12 @@
+{
+  "schema_version": "3.0",
+  "kind": "line-chart",
+  "title": "验证通过率趋势",
+  "language": "zh-CN",
+  "unit": "%",
+  "categories": ["第一阶段", "第二阶段", "第三阶段"],
+  "series": [
+    {"id": "pass-rate", "label": "通过率", "values": [82, 91, 100]}
+  ],
+  "focus_series": "pass-rate"
+}

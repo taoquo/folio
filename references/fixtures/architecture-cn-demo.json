@@ -1,0 +1,33 @@
+{
+  "kind": "architecture",
+  "title": "智能体运行时",
+  "layout": "horizontal-layers",
+  "focus": "runtime",
+  "focus_path": ["client", "planner", "runtime", "tools"],
+  "focus_reason": "模型运行时连接规划、工具与记忆。",
+  "layers": [
+    {"id": "surface", "label": "接入层", "order": 1},
+    {"id": "runtime", "label": "运行层", "order": 2},
+    {"id": "data", "label": "状态层", "order": 3}
+  ],
+  "groups": [
+    {"id": "runtime-core", "label": "运行核心", "kind": "subsystem", "layer": "runtime", "members": ["planner", "runtime", "tools"]}
+  ],
+  "nodes": [
+    {"id": "client", "kind": "external", "label": "用户请求", "sublabel": "HTTP · 事件", "role": "entry", "layer": "surface"},
+    {"id": "planner", "kind": "service", "label": "任务规划器", "sublabel": "计划 · 协调", "role": "orchestrator", "layer": "runtime"},
+    {"id": "runtime", "kind": "service", "label": "模型运行时", "sublabel": "GPU Worker", "role": "executor", "layer": "runtime"},
+    {"id": "tools", "kind": "service", "label": "工具执行器", "sublabel": "WebGL Renderer", "role": "tool-runtime", "layer": "runtime"},
+    {"id": "memory", "kind": "store", "label": "记忆存储", "sublabel": "检索状态", "role": "storage", "layer": "data", "state_owner": true}
+  ],
+  "edges": [
+    {"source": "client", "target": "planner", "kind": "primary", "flow": "control", "label": "请求"},
+    {"source": "planner", "target": "runtime", "kind": "primary", "flow": "control", "label": "计划"},
+    {"source": "runtime", "target": "tools", "kind": "primary", "flow": "control", "label": "调用"},
+    {"source": "runtime", "target": "memory", "kind": "secondary", "flow": "read", "label": "检索"}
+  ],
+  "legend": [
+    {"flow": "control", "label": "控制流"},
+    {"flow": "read", "label": "读取"}
+  ]
+}

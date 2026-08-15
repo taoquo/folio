@@ -17,6 +17,11 @@ from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
 from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+from drawing.hosting import add_fitted_picture
 
 # ═══════════════════════════════════════════════════════════
 # Design system constants
@@ -99,9 +104,12 @@ def add_card(slide, left, top, width, height,
     return card
 
 
-def add_diagram_png(slide, path, left, top, width, height):
-    """Place a generated diagram PNG derived from the single-source SVG."""
-    return slide.shapes.add_picture(str(path), left, top, width=width, height=height)
+def add_diagram_png(slide, path, left, top, width, height, alt_text="Folio diagram", title="Folio diagram"):
+    """Place a generated diagram without distorting its aspect ratio."""
+    return add_fitted_picture(
+        slide, path, left, top, width, height,
+        alt_text=alt_text, title=title,
+    )
 
 
 # ═══════════════════════════════════════════════════════════

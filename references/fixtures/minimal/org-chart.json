@@ -1,0 +1,21 @@
+{
+  "schema_version": "3.0",
+  "kind": "org-chart",
+  "title": "Untitled Org Chart",
+  "units": [
+    {
+      "id": "root",
+      "label": "Root"
+    },
+    {
+      "id": "left",
+      "label": "Left",
+      "parent": "root"
+    },
+    {
+      "id": "right",
+      "label": "Right",
+      "parent": "root"
+    }
+  ]
+}

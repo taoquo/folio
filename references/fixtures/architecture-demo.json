@@ -1,4 +1,5 @@
 {
+  "schema_version": "3.0",
   "kind": "architecture",
   "title": "ECS Game Engine Runtime",
   "layout": "horizontal-layers",

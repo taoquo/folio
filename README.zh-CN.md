@@ -20,7 +20,7 @@
 
 ## 先看效果，再看说明
 
-Folio 是一套面向 AI 时代的文档设计系统：覆盖 8 种文档类型、14 种内联 SVG 图表类型、2 种可独立导出的图形 artifact，中英文两条生成路径，并提供面向阅读页面和产品工作台的 Web 设计指导，专门服务于 agent 驱动的交付物。
+Folio 是一套面向 AI 时代的文档设计系统：覆盖 8 种文档类型、22 种由 Drawing DSL 驱动的图表类型、中英文两条生成路径，并提供面向阅读页面和产品工作台的 Web 设计指导，专门服务于 agent 驱动的交付物。
 
 它追求的不是视觉花样，而是稳定、清晰、专业、可重复的输出结果。
 
@@ -31,7 +31,7 @@ Folio 不把文档视为中性的输出，而把它看作思想获得公共形�
 第一次打开仓库，最值得先感受到的是：
 
 - 同一套设计语言如何覆盖 8 种文档类型
-- 架构图和 UML 类图如何作为独立 artifact 输出 `SVG + PNG + PDF`
+- 22 种结构化图表如何输出 `SVG + PNG + PDF`
 - 中文和英文输出如何共享一致的排版气质
 - Web 设计指导如何覆盖阅读页面和产品工作台，而不把 Folio 变成前端框架
 - 成品默认落到 PDF / PPTX，而不是停留在 HTML 示意图
@@ -116,6 +116,11 @@ Folio 不把文档视为中性的输出，而把它看作思想获得公共形�
       <b>Agent Session Model</b><br>
       UML 领域模型案例：覆盖接口、枚举生命周期、组合、聚合，以及检索记忆关联。
     </td>
+    <td width="33.33%" valign="top">
+      <a href="assets/demos/demo-flowchart-v2.pdf"><img src="assets/demos/demo-flowchart-v2.png" alt="Drawing Review Flow 流程图预览"></a><br>
+      <b>Drawing Review Flow</b><br>
+      Drawing DSL V3 案例：覆盖类型化决策、分支标签、正交路由和可访问 SVG 元数据。
+    </td>
   </tr>
 </table>
 
@@ -124,7 +129,7 @@ Folio 不把文档视为中性的输出，而把它看作思想获得公共形�
 1. 从原始内容、草稿、笔记、来源链接，或一句像 `帮我做一份一页纸` 这样的请求开始。
 2. Folio 先判断合适的文档类型和语言路径，再把内容蒸馏成模板可承接的结构。
 3. 最终输出稳定的 PDF 或 PPTX，保留 Folio 的暖纸底、serif 层级和克制朱红焦点。
-4. 如果请求的是独立架构图或 UML 类图，也可以直接落成可复用的 `SVG + PNG + PDF` artifact。
+4. 如果请求的是 22 种官方图表之一，也可以直接落成可复用的 `SVG + PNG + PDF` artifact。
 
 ## 快速开始
 

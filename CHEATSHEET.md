@@ -246,7 +246,7 @@ Combine freely: `<table class="folio-table financial striped">`.
 
 ## Diagram components
 
-Fourteen built-in diagram types. Extract the `<svg>` block and embed in a `<figure>` in the active document or deck:
+Twenty-two built-in diagram types. Start from semantic JSON, compile it, and embed it through an explicit Folio host slot:
 
 
 | Type          | File                                 | Use                                             |
@@ -265,13 +265,25 @@ Fourteen built-in diagram types. Extract the `<svg>` block and embed in a `<figu
 | Venn          | `assets/diagrams/venn.html`          | Set intersections and overlaps                  |
 | Candlestick   | `assets/diagrams/candlestick.html`   | OHLC price history (up to 30 days)              |
 | Waterfall     | `assets/diagrams/waterfall.html`     | Revenue bridge / decomposition                  |
+| Sequence      | `references/fixtures/v4/sequence.json` | Ordered participant interactions              |
+| UML Class     | `references/fixtures/v4/uml-class.json` | Types, members, and relationships             |
+| ER Diagram    | `references/fixtures/v4/er-diagram.json` | Entities, fields, keys, and cardinality       |
+| Pyramid       | `references/fixtures/v5/pyramid.json` | Converging levels, funnel or hierarchy stages |
+| Org Chart     | `references/fixtures/v5/org-chart.json` | Reporting lines and unit headcount          |
+| Loop Flywheel | `references/fixtures/v5/loop-flywheel.json` | Self-reinforcing cycle stages           |
+| Scatter       | `references/fixtures/v5/scatter.json` | Correlation between two numeric measures      |
+| Gantt         | `references/fixtures/v5/gantt.json` | Task schedule across periods with milestones    |
 
 
-Usage: extract the `<svg>` block from the HTML file and paste into the template's `<figure>` container.
+Usage: run `scripts/folio.py render-drawing` for standalone artifacts or `embed-drawing` plus `verify-drawing-host` for documents and slides. HTML diagram files are parity references, not the production authoring path.
+
+Render flags: `--theme folio|dark|terminal` · `--size compact|standard|wide` (1280 / 1920 / 2560px) · `--detail essential|standard|full` · `--audience executive|general|practitioner` · `--variant plain|sketchy|motion`. All five are output-layer flags, never payload fields. `page-preview` ignores `--size`; `motion` degrades to `plain` in PNG and PDF.
+
+Not sure which type? Route first: `scripts/folio.py route-diagram --content "..." [--goal compare|convince|explain|track]`. It maps intent to one of eight patterns (architecture, comparison, data, flow, hierarchy, relationship, state, time), returns one kind plus a trace, and flags cases better written as prose. Use `--pattern` / `--kind` to override.
 
 **Data chart colors**: primary series `#B83D2E` · secondary `#5A4A43` → `#85776F` → `#B9ACA3` → `#D7CBC2` → `#F7E6E1`.
 
-**Editing data**: only modify elements between `<!-- DATA START -->` / `<!-- DATA END -->`, leave CSS untouched. All coordinates must be divisible by 4.
+**Editing data**: edit semantic JSON only. Do not author coordinates, colors, paths, or typography.
 
 ## Web guidance
 

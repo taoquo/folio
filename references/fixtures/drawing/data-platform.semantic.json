@@ -1,0 +1,150 @@
+{
+  "title": "Data Platform",
+  "nodes": [
+    {
+      "id": "processor",
+      "label": "Stream Processor",
+      "role": "executor",
+      "description": null,
+      "importance": "primary",
+      "state_owner": false,
+      "lifecycle_phase": "runtime",
+      "domain": "runtime",
+      "metadata": "transform stage"
+    },
+    {
+      "id": "kafka",
+      "label": "Kafka Bus",
+      "role": "event-bus",
+      "description": null,
+      "importance": "primary",
+      "state_owner": true,
+      "lifecycle_phase": "runtime",
+      "domain": "data",
+      "metadata": "event stream"
+    },
+    {
+      "id": "warehouse",
+      "label": "Warehouse",
+      "role": "storage",
+      "description": null,
+      "importance": "secondary",
+      "state_owner": true,
+      "lifecycle_phase": "runtime",
+      "domain": "data",
+      "metadata": "analytics state"
+    },
+    {
+      "id": "serving-api",
+      "label": "Serving API",
+      "role": "entry",
+      "description": null,
+      "importance": "secondary",
+      "state_owner": false,
+      "lifecycle_phase": "runtime",
+      "domain": "surface",
+      "metadata": "query access"
+    },
+    {
+      "id": "dashboards",
+      "label": "Dashboards",
+      "role": "entry",
+      "description": null,
+      "importance": "background",
+      "state_owner": false,
+      "lifecycle_phase": "runtime",
+      "domain": "surface",
+      "metadata": "analyst queries"
+    },
+    {
+      "id": "observability",
+      "label": "Observability",
+      "role": "event-bus",
+      "description": null,
+      "importance": "background",
+      "state_owner": true,
+      "lifecycle_phase": "background",
+      "domain": "data",
+      "metadata": "logs \u00b7 traces"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:0:kafka->processor",
+      "source": "kafka",
+      "target": "processor",
+      "relation": "stream",
+      "interaction": "feeds",
+      "importance": "primary",
+      "phase": "runtime",
+      "label": "stream"
+    },
+    {
+      "id": "edge:1:processor->warehouse",
+      "source": "processor",
+      "target": "warehouse",
+      "relation": "write",
+      "interaction": "writes",
+      "importance": "primary",
+      "phase": "runtime",
+      "label": "load"
+    },
+    {
+      "id": "edge:2:dashboards->serving-api",
+      "source": "dashboards",
+      "target": "serving-api",
+      "relation": "read",
+      "interaction": "queries",
+      "importance": "background",
+      "phase": "runtime",
+      "label": "query"
+    },
+    {
+      "id": "edge:3:serving-api->warehouse",
+      "source": "serving-api",
+      "target": "warehouse",
+      "relation": "read",
+      "interaction": "reads",
+      "importance": "secondary",
+      "phase": "runtime",
+      "label": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "data-pipeline",
+      "label": "Data Pipeline",
+      "members": [
+        "kafka",
+        "processor",
+        "warehouse"
+      ],
+      "role": "subsystem",
+      "domain": null
+    }
+  ],
+  "focus_candidates": [
+    "processor"
+  ],
+  "focus_path": [
+    "kafka",
+    "processor",
+    "warehouse"
+  ],
+  "narrative": "Processor is the transformation hinge between ingest and warehouse state.",
+  "width": 960,
+  "height": 540,
+  "subtitle": null,
+  "caption": null,
+  "layer_order": [
+    "surface",
+    "runtime",
+    "data"
+  ],
+  "layer_labels": {
+    "surface": "Surface Layer",
+    "runtime": "Runtime Layer",
+    "data": "Data Layer"
+  },
+  "composition_hint": "horizontal-layers"
+}

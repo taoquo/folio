@@ -1,0 +1,88 @@
+{
+  "schema_version": "3.0",
+  "kind": "gantt",
+  "title": "Q4 Platform Hardening Plan",
+  "source": "Engineering roadmap, committed scope only",
+  "locale": "en-US",
+  "periods": [
+    "W1",
+    "W2",
+    "W3",
+    "W4",
+    "W5",
+    "W6",
+    "W7",
+    "W8",
+    "W9",
+    "W10"
+  ],
+  "tasks": [
+    {
+      "id": "audit",
+      "label": "Latency audit",
+      "start": 0,
+      "span": 2,
+      "track": "reliability"
+    },
+    {
+      "id": "warmpool",
+      "label": "Warm worker pool",
+      "start": 1,
+      "span": 3,
+      "track": "reliability",
+      "emphasis": "focal"
+    },
+    {
+      "id": "fontcache",
+      "label": "Font cache rewrite",
+      "start": 3,
+      "span": 2,
+      "track": "reliability"
+    },
+    {
+      "id": "gates",
+      "label": "Gate expansion",
+      "start": 4,
+      "span": 3,
+      "track": "quality"
+    },
+    {
+      "id": "baseline",
+      "label": "Visual baselines",
+      "start": 6,
+      "span": 2,
+      "track": "quality"
+    },
+    {
+      "id": "docs",
+      "label": "Runbook refresh",
+      "start": 7,
+      "span": 2,
+      "track": "enablement"
+    },
+    {
+      "id": "ga",
+      "label": "GA cutover",
+      "start": 9,
+      "span": 1,
+      "track": "release"
+    }
+  ],
+  "milestones": [
+    {
+      "id": "m1",
+      "label": "SLA under 25s",
+      "at": 4
+    },
+    {
+      "id": "m2",
+      "label": "Gates frozen",
+      "at": 7
+    },
+    {
+      "id": "m3",
+      "label": "GA",
+      "at": 10
+    }
+  ]
+}

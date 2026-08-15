@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/route-request.schema.json",
+  "title": "Folio Diagram Routing Request",
+  "description": "Semantic brief consumed by drawing.semantics.route. Semantics only: no geometry, no styling.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "content": {"type": "string", "description": "Author brief used for keyword scoring."},
+    "audience": {"enum": ["executive", "general", "practitioner"], "default": "general"},
+    "goal": {"enum": ["compare", "convince", "explain", "track"], "default": "explain"},
+    "pattern_hint": {
+      "description": "Explicit semantic pattern override.",
+      "oneOf": [
+        {"type": "null"},
+        {"enum": ["architecture", "comparison", "data", "flow", "hierarchy", "relationship", "state", "time"]}
+      ]
+    },
+    "kind_hint": {
+      "description": "Explicit diagram kind override; must belong to a registered pattern.",
+      "oneOf": [{"type": "null"}, {"type": "string", "minLength": 1}]
+    },
+    "shape": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Coarse description of the material. Every field is optional.",
+      "properties": {
+        "node_count": {"type": "integer", "minimum": 0},
+        "edge_count": {"type": "integer", "minimum": 0},
+        "series_count": {"type": "integer", "minimum": 0},
+        "category_count": {"type": "integer", "minimum": 0},
+        "depth": {"type": "integer", "minimum": 0},
+        "has_time_axis": {"type": "boolean"},
+        "has_cycle": {"type": "boolean"},
+        "has_actors": {"type": "boolean"},
+        "numeric": {"type": "boolean"}
+      }
+    }
+  }
+}

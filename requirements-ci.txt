@@ -1,0 +1,5 @@
+Pillow==11.3.0
+jsonschema==4.23.0
+pypdf==6.10.2
+python-pptx==1.0.2
+weasyprint==68.1

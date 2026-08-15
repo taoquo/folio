@@ -1,0 +1,18 @@
+{
+  "schema_version": "3.0",
+  "kind": "layer-stack",
+  "title": "Folio Drawing Compiler Layers",
+  "layers": [
+    {"id": "presentation", "label": "Presentation", "responsibility": "Profiles and artifact framing"},
+    {"id": "semantic", "label": "Semantic Intent", "responsibility": "Meaning, focus, and evidence", "emphasis": "focal"},
+    {"id": "planning", "label": "Planning", "responsibility": "Type grammar and reduction"},
+    {"id": "layout", "label": "Layout", "responsibility": "Deterministic geometry"},
+    {"id": "rendering", "label": "Rendering", "responsibility": "Scene serialization and export"}
+  ],
+  "flows": [
+    {"id": "p-s", "source": "presentation", "target": "semantic", "channel": "request"},
+    {"id": "s-p", "source": "semantic", "target": "planning", "channel": "request"},
+    {"id": "p-l", "source": "planning", "target": "layout", "channel": "request"},
+    {"id": "l-r", "source": "layout", "target": "rendering", "channel": "request"}
+  ]
+}

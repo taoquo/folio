@@ -1,0 +1,35 @@
+{
+  "schema_version": "3.0",
+  "kind": "pyramid",
+  "title": "Enterprise Adoption Ladder",
+  "orientation": "down",
+  "focus": "standard",
+  "levels": [
+    {
+      "id": "aware",
+      "label": "Evaluating",
+      "detail": "412 organisations opened a trial workspace"
+    },
+    {
+      "id": "pilot",
+      "label": "Piloting",
+      "detail": "138 shipped a first internal document"
+    },
+    {
+      "id": "team",
+      "label": "Team-wide",
+      "detail": "64 rolled out to an entire function"
+    },
+    {
+      "id": "standard",
+      "label": "Company standard",
+      "detail": "21 mandate Folio for external reports",
+      "emphasis": "focal"
+    },
+    {
+      "id": "advocate",
+      "label": "Contributing back",
+      "detail": "7 upstream template and gate fixes"
+    }
+  ]
+}

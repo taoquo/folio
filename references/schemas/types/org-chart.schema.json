@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/types/org-chart.schema.json",
+  "title": "Folio Org Chart Authoring Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kind",
+    "title",
+    "units"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "3.0"
+    },
+    "kind": {
+      "const": "org-chart"
+    },
+    "title": {
+      "$ref": "#/$defs/non-empty-string"
+    },
+    "units": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 16,
+      "items": {
+        "$ref": "#/$defs/unit"
+      }
+    },
+    "focus": {
+      "$ref": "#/$defs/non-empty-string"
+    },
+    "width": {
+      "type": "integer",
+      "minimum": 320
+    },
+    "height": {
+      "type": "integer",
+      "minimum": 240
+    },
+    "language": {
+      "$ref": "#/$defs/non-empty-string"
+    }
+  },
+  "$defs": {
+    "non-empty-string": {
+      "type": "string",
+      "minLength": 1
+    },
+    "unit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/non-empty-string"
+        },
+        "label": {
+          "$ref": "#/$defs/non-empty-string"
+        },
+        "role": {
+          "$ref": "#/$defs/non-empty-string"
+        },
+        "parent": {
+          "$ref": "#/$defs/non-empty-string"
+        },
+        "emphasis": {
+          "enum": [
+            "focal",
+            "normal"
+          ]
+        }
+      }
+    }
+  }
+}

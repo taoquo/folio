@@ -1,0 +1,35 @@
+{
+  "schema_version": "2.0",
+  "kind": "flowchart",
+  "title": "Deployment Gate",
+  "nodes": [
+    {"id": "n1", "type": "terminal", "label": "Build ready"},
+    {"id": "n2", "type": "step", "label": "Run tests"},
+    {"id": "n3", "type": "decision", "label": "Tests pass?"},
+    {"id": "n4", "type": "step", "label": "Package release"},
+    {"id": "n5", "type": "step", "label": "Fix failures"},
+    {"id": "n6", "type": "decision", "label": "Approval granted?"},
+    {"id": "n7", "type": "step", "label": "Deploy canary"},
+    {"id": "n8", "type": "step", "label": "Record rejection"},
+    {"id": "n9", "type": "decision", "label": "Canary healthy?"},
+    {"id": "n10", "type": "step", "label": "Promote release"},
+    {"id": "n11", "type": "step", "label": "Rollback"},
+    {"id": "n12", "type": "terminal", "label": "Deployment closed"}
+  ],
+  "edges": [
+    {"source": "n1", "target": "n2"},
+    {"source": "n2", "target": "n3"},
+    {"source": "n3", "target": "n4", "kind": "conditional-flow", "label": "yes"},
+    {"source": "n3", "target": "n5", "kind": "conditional-flow", "label": "no"},
+    {"source": "n4", "target": "n6"},
+    {"source": "n5", "target": "n6"},
+    {"source": "n6", "target": "n7", "kind": "conditional-flow", "label": "yes"},
+    {"source": "n6", "target": "n8", "kind": "conditional-flow", "label": "no"},
+    {"source": "n7", "target": "n9"},
+    {"source": "n8", "target": "n12"},
+    {"source": "n9", "target": "n10", "kind": "conditional-flow", "label": "yes"},
+    {"source": "n9", "target": "n11", "kind": "conditional-flow", "label": "no"},
+    {"source": "n10", "target": "n12"},
+    {"source": "n11", "target": "n12"}
+  ]
+}

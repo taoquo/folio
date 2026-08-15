@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/types/waterfall.schema.json",
+  "title": "Folio Waterfall Authoring Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "title", "start", "contributions"],
+  "properties": {
+    "schema_version": {"const": "3.0"},
+    "kind": {"const": "waterfall"},
+    "title": {"$ref": "#/$defs/non-empty-string"},
+    "unit": {"type": ["string", "null"], "maxLength": 12},
+    "locale": {"enum": ["en-US", "en-GB", "zh-CN", "zh-TW", null]},
+    "source": {"type": ["string", "null"], "maxLength": 256},
+    "value_format": {"$ref": "#/$defs/value-format"},
+    "start": {"type": "number"},
+    "contributions": {"type": "array", "minItems": 1, "maxItems": 8, "items": {"$ref": "#/$defs/contribution"}},
+    "end": {"type": "number"},
+    "tolerance": {"type": "number", "minimum": 0},
+    "width": {"const": 960},
+    "height": {"const": 540},
+    "language": {"$ref": "#/$defs/non-empty-string"}
+  },
+  "$defs": {
+    "non-empty-string": {"type": "string", "pattern": ".*\\S.*", "maxLength": 64},
+    "value-format": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "precision": {"type": "integer", "minimum": 0, "maximum": 4},
+        "compact": {"type": "boolean"},
+        "grouping": {"type": "boolean"},
+        "unit_position": {"enum": ["auto", "prefix", "suffix"]}
+      }
+    },
+    "contribution": {
+      "type": "object", "additionalProperties": false, "required": ["id", "label", "value"],
+      "properties": {
+        "id": {"$ref": "#/$defs/non-empty-string"},
+        "label": {"$ref": "#/$defs/non-empty-string"},
+        "value": {"type": "number"},
+        "kind": {"enum": ["delta", "subtotal"]}
+      }
+    }
+  }
+}

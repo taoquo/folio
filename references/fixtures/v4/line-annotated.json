@@ -1,0 +1,14 @@
+{
+  "schema_version": "3.0",
+  "kind": "line-chart",
+  "title": "Validation Pass Rate",
+  "unit": "%",
+  "locale": "en-US",
+  "categories": ["V4.0", "V4.1", "V4.2", "V4.3"],
+  "series": [{"id": "pass", "label": "Pass rate", "values": [88, 93, 97, 100]}],
+  "focus_series": "pass",
+  "missing_policy": "error",
+  "reference_lines": [{"id": "release", "label": "Release gate", "value": 95}],
+  "annotations": [{"id": "complete", "text": "V4.3 reaches full validation", "series": "pass", "category": "V4.3"}],
+  "value_format": {"precision": 0, "compact": false, "grouping": false, "unit_position": "suffix"}
+}

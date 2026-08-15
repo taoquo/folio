@@ -1,0 +1,226 @@
+{
+  "kind": "architecture",
+  "title": "智能体运行时",
+  "composition": {
+    "pattern": "layered",
+    "axis": "top-down",
+    "density": "restrained",
+    "spine": [
+      "client",
+      "planner",
+      "runtime",
+      "tools"
+    ],
+    "sidecars": {}
+  },
+  "hierarchy": {
+    "focus_node": "runtime",
+    "focus_path": [
+      "client",
+      "planner",
+      "runtime",
+      "tools"
+    ],
+    "background_nodes": []
+  },
+  "regions": [
+    {
+      "id": "surface",
+      "role": "layer",
+      "label": "接入层",
+      "members": [
+        "client"
+      ],
+      "treatment": "layer-band"
+    },
+    {
+      "id": "runtime",
+      "role": "layer",
+      "label": "运行层",
+      "members": [
+        "planner",
+        "runtime",
+        "tools"
+      ],
+      "treatment": "layer-band"
+    },
+    {
+      "id": "data",
+      "role": "layer",
+      "label": "状态层",
+      "members": [
+        "memory"
+      ],
+      "treatment": "layer-band"
+    },
+    {
+      "id": "runtime-core",
+      "role": "subsystem",
+      "label": "运行核心",
+      "members": [
+        "planner",
+        "runtime",
+        "tools"
+      ],
+      "treatment": "soft-boundary"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "client",
+      "archetype": "external",
+      "emphasis": "normal",
+      "region": "surface",
+      "content": {
+        "eyebrow": "external",
+        "title": "用户请求",
+        "metadata": "HTTP · 事件",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": "gateway",
+      "size_tier": "regular"
+    },
+    {
+      "id": "planner",
+      "archetype": "component",
+      "emphasis": "normal",
+      "region": "runtime",
+      "content": {
+        "eyebrow": "service",
+        "title": "任务规划器",
+        "metadata": "计划 · 协调",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": null,
+      "size_tier": "regular"
+    },
+    {
+      "id": "runtime",
+      "archetype": "component",
+      "emphasis": "focal",
+      "region": "runtime",
+      "content": {
+        "eyebrow": "service",
+        "title": "模型运行时",
+        "metadata": "GPU Worker",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": null,
+      "size_tier": "regular"
+    },
+    {
+      "id": "tools",
+      "archetype": "component",
+      "emphasis": "normal",
+      "region": "runtime",
+      "content": {
+        "eyebrow": "service",
+        "title": "工具执行器",
+        "metadata": "WebGL Renderer",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": null,
+      "size_tier": "regular"
+    },
+    {
+      "id": "memory",
+      "archetype": "datastore",
+      "emphasis": "normal",
+      "region": "data",
+      "content": {
+        "eyebrow": "store",
+        "title": "记忆存储",
+        "metadata": "检索状态",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": "storage",
+      "size_tier": "regular"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:0:client->planner",
+      "source": "client",
+      "target": "planner",
+      "channel": "primary-flow",
+      "emphasis": "focal",
+      "label": "请求",
+      "direction": "forward",
+      "route_policy": "auto"
+    },
+    {
+      "id": "edge:1:planner->runtime",
+      "source": "planner",
+      "target": "runtime",
+      "channel": "primary-flow",
+      "emphasis": "focal",
+      "label": "计划",
+      "direction": "forward",
+      "route_policy": "auto"
+    },
+    {
+      "id": "edge:2:runtime->tools",
+      "source": "runtime",
+      "target": "tools",
+      "channel": "primary-flow",
+      "emphasis": "focal",
+      "label": "调用",
+      "direction": "forward",
+      "route_policy": "auto"
+    },
+    {
+      "id": "edge:3:runtime->memory",
+      "source": "runtime",
+      "target": "memory",
+      "channel": "secondary-flow",
+      "emphasis": "normal",
+      "label": null,
+      "direction": "forward",
+      "route_policy": "auto"
+    }
+  ],
+  "annotations": [],
+  "legend": {
+    "title": "LEGEND",
+    "items": [
+      {
+        "channel": "primary-flow",
+        "label": "控制流"
+      },
+      {
+        "channel": "secondary-flow",
+        "label": "读取"
+      }
+    ]
+  },
+  "width": 960,
+  "height": 540,
+  "subtitle": null,
+  "caption": null,
+  "explanation": [
+    "composition: layered; reason: explicit composition hint preserved",
+    "focus: runtime; reason: highest narrative priority candidate",
+    "spine: client -> planner -> runtime -> tools; reason: selected semantic focus path",
+    "background: none; reason: supporting concern outside primary narrative",
+    "nodes: 5; reason: semantic roles mapped to 3 visual archetypes",
+    "edges: 4; reason: relations mapped to primary, secondary, or async channels",
+    "reduction: drop 1 secondary edge labels; reason: edge-label budget is 3"
+  ],
+  "reductions": [
+    {
+      "action": "drop",
+      "targets": [
+        "edge:3:runtime->memory"
+      ],
+      "reason": "edge-label budget is 3",
+      "applied": true
+    }
+  ],
+  "schema_version": "2.0",
+  "language": "zh"
+}

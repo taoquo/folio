@@ -1,0 +1,56 @@
+{
+  "schema_version": "3.0",
+  "kind": "waterfall",
+  "title": "From Signups to Paid Retention",
+  "unit": "K",
+  "locale": "en-US",
+  "source": "Cohort analysis, FY2026 H1",
+  "start": 124,
+  "contributions": [
+    {
+      "id": "verified",
+      "label": "Email verified",
+      "value": -31
+    },
+    {
+      "id": "activated",
+      "label": "First document",
+      "value": -42
+    },
+    {
+      "id": "activated-subtotal",
+      "label": "Activated",
+      "value": 51,
+      "kind": "subtotal"
+    },
+    {
+      "id": "team",
+      "label": "Invited a teammate",
+      "value": -18
+    },
+    {
+      "id": "paid",
+      "label": "Converted to paid",
+      "value": -14
+    },
+    {
+      "id": "winback",
+      "label": "Win-back campaign",
+      "value": 6
+    },
+    {
+      "id": "retained-subtotal",
+      "label": "Retained",
+      "value": 25,
+      "kind": "subtotal"
+    }
+  ],
+  "end": 25,
+  "tolerance": 0.001,
+  "value_format": {
+    "precision": 0,
+    "compact": false,
+    "grouping": true,
+    "unit_position": "suffix"
+  }
+}

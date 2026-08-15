@@ -1,0 +1,82 @@
+{
+  "schema_version": "3.0",
+  "kind": "layer-stack",
+  "title": "Request Path Through the Platform",
+  "layers": [
+    {
+      "id": "edge",
+      "label": "Edge",
+      "responsibility": "TLS termination, quota, and request shaping"
+    },
+    {
+      "id": "orchestration",
+      "label": "Orchestration",
+      "responsibility": "Queueing, retries, and worker placement"
+    },
+    {
+      "id": "render",
+      "label": "Rendering",
+      "responsibility": "Deterministic typesetting and scene emission",
+      "emphasis": "focal"
+    },
+    {
+      "id": "quality",
+      "label": "Quality",
+      "responsibility": "Visual gates, contrast, and geometry checks"
+    },
+    {
+      "id": "persistence",
+      "label": "Persistence",
+      "responsibility": "Artifacts, digests, and audit trail"
+    },
+    {
+      "id": "delivery",
+      "label": "Delivery",
+      "responsibility": "Signed URLs and cache invalidation"
+    }
+  ],
+  "flows": [
+    {
+      "id": "f1",
+      "source": "edge",
+      "target": "orchestration",
+      "channel": "request",
+      "label": "job"
+    },
+    {
+      "id": "f2",
+      "source": "orchestration",
+      "target": "render",
+      "channel": "request",
+      "label": "dispatch"
+    },
+    {
+      "id": "f3",
+      "source": "render",
+      "target": "quality",
+      "channel": "request",
+      "label": "scene"
+    },
+    {
+      "id": "f4",
+      "source": "quality",
+      "target": "persistence",
+      "channel": "request",
+      "label": "verdict"
+    },
+    {
+      "id": "f5",
+      "source": "persistence",
+      "target": "delivery",
+      "channel": "request",
+      "label": "artifact"
+    },
+    {
+      "id": "f6",
+      "source": "delivery",
+      "target": "persistence",
+      "channel": "response",
+      "label": "url"
+    }
+  ]
+}

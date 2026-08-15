@@ -1,0 +1,73 @@
+{
+  "schema_version": "3.0",
+  "kind": "gantt",
+  "title": "Drawing DSL V5 rollout",
+  "source": "Folio delivery plan",
+  "periods": [
+    "W1",
+    "W2",
+    "W3",
+    "W4",
+    "W5",
+    "W6",
+    "W7",
+    "W8"
+  ],
+  "tasks": [
+    {
+      "id": "audit",
+      "label": "Visual audit",
+      "start": 0,
+      "span": 2,
+      "track": "quality"
+    },
+    {
+      "id": "router",
+      "label": "Pattern router",
+      "start": 1,
+      "span": 2,
+      "track": "semantics"
+    },
+    {
+      "id": "types",
+      "label": "New diagram types",
+      "start": 2,
+      "span": 3,
+      "track": "compiler",
+      "emphasis": "focal"
+    },
+    {
+      "id": "import",
+      "label": "Mermaid import",
+      "start": 4,
+      "span": 2,
+      "track": "import"
+    },
+    {
+      "id": "knobs",
+      "label": "Output knobs",
+      "start": 5,
+      "span": 2,
+      "track": "output"
+    },
+    {
+      "id": "ship",
+      "label": "Release packaging",
+      "start": 7,
+      "span": 1,
+      "track": "release"
+    }
+  ],
+  "milestones": [
+    {
+      "id": "m1",
+      "label": "Types frozen",
+      "at": 5
+    },
+    {
+      "id": "m2",
+      "label": "Ship",
+      "at": 8
+    }
+  ]
+}

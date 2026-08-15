@@ -1,0 +1,10 @@
+{
+  "schema_version": "3.0",
+  "kind": "venn",
+  "title": "Untitled Venn",
+  "sets": [
+    {"id": "set-a", "label": "Set A", "exclusive": []},
+    {"id": "set-b", "label": "Set B", "exclusive": []}
+  ],
+  "intersections": []
+}

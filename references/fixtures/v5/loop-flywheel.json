@@ -1,0 +1,29 @@
+{
+  "schema_version": "3.0",
+  "kind": "loop-flywheel",
+  "title": "Documentation Flywheel",
+  "hub": "Compounding trust",
+  "stages": [
+    {
+      "id": "publish",
+      "label": "Publish",
+      "detail": "Ship one well-typeset artefact each week"
+    },
+    {
+      "id": "cite",
+      "label": "Get cited",
+      "detail": "Readers quote the diagram in their own decks"
+    },
+    {
+      "id": "feedback",
+      "label": "Collect feedback",
+      "detail": "Issues arrive with concrete layout evidence",
+      "emphasis": "focal"
+    },
+    {
+      "id": "refine",
+      "label": "Refine grammar",
+      "detail": "Fixes land in the shared DSL, not one document"
+    }
+  ]
+}

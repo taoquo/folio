@@ -1,0 +1,145 @@
+name: Drawing DSL
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: drawing-dsl-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONUNBUFFERED: "1"
+  XDG_CACHE_HOME: /tmp/folio-cache
+
+jobs:
+  fast-gate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install system dependencies
+        run: >-
+          sudo apt-get update && sudo apt-get install -y
+          libcairo2 libgdk-pixbuf-2.0-0 libglib2.0-0
+          libpango-1.0-0 libpangoft2-1.0-0 librsvg2-bin
+          poppler-utils shared-mime-info unzip zip
+      - name: Install Python dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Configure deterministic build identity
+        run: git config user.name "Folio CI"
+      - name: Diagnose dependencies
+        run: python scripts/folio.py doctor
+      - name: Run fast tests
+        run: >-
+          python -m unittest
+          tests.test_diagram_geometry
+          tests.test_diagram_layout
+          tests.test_diagram_models
+          tests.test_diagram_render_svg
+          tests.test_diagram_semantic_planning
+          tests.test_drawing_dsl
+          tests.test_drawing_dsl_v2
+          tests.test_drawing_dataviz_v4
+          tests.test_drawing_notation_v4
+          tests.test_drawing_tabular
+          tests.test_drawing_schema_registry
+          tests.test_drawing_hosting
+          tests.test_drawing_host_integration
+          tests.test_drawing_v3_gate_s
+          tests.test_folio_cli
+      - name: Exercise V4 authoring CLI
+        run: |
+          python scripts/folio.py list-diagram-types --format json > "${RUNNER_TEMP}/diagram-types.json"
+          python scripts/folio.py init-drawing timeline --output "${RUNNER_TEMP}/timeline.json"
+          python scripts/folio.py init-drawing sequence --output "${RUNNER_TEMP}/sequence.json"
+          python scripts/folio.py validate-drawing "${RUNNER_TEMP}/timeline.json" --format json > "${RUNNER_TEMP}/timeline-validation.json"
+          python scripts/folio.py validate-drawing "${RUNNER_TEMP}/sequence.json" --format json > "${RUNNER_TEMP}/sequence-validation.json"
+          python scripts/folio.py import-chart-data references/fixtures/tabular/bar-import.json --output "${RUNNER_TEMP}/bar-imported.json"
+          python scripts/folio.py validate-drawing "${RUNNER_TEMP}/bar-imported.json" --format json > "${RUNNER_TEMP}/bar-imported-validation.json"
+          python scripts/folio.py batch-render-drawings references/fixtures/minimal --output-dir "${RUNNER_TEMP}/minimal-batch" --report-format json --report-output "${RUNNER_TEMP}/minimal-batch-report.json"
+          python scripts/build.py --verify host-a4-long-doc
+          python scripts/build.py --verify host-letter-document
+          python scripts/build.py --verify host-a4-chinese
+          python scripts/build.py --verify host-slide-16x9
+      - name: Check templates and tokens
+        run: python scripts/build.py --check
+      - name: Validate registered catalog
+        run: >-
+          python -c "import sys; sys.path.insert(0, 'scripts');
+          from diagram_catalog import load_catalog;
+          load_catalog(); print('OK: registered catalog')"
+      - name: Verify package contents
+        run: bash scripts/package-skill.sh "${RUNNER_TEMP}/folio-fast.zip"
+
+  release-gate:
+    needs: fast-gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install system dependencies
+        run: >-
+          sudo apt-get update && sudo apt-get install -y
+          libcairo2 libgdk-pixbuf-2.0-0 libglib2.0-0
+          libpango-1.0-0 libpangoft2-1.0-0 librsvg2-bin
+          poppler-utils shared-mime-info unzip zip
+      - name: Install Python dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Configure deterministic build identity
+        run: git config user.name "Folio CI"
+      - name: Run full tests
+        run: python -m unittest discover -s tests
+      - name: Render all V4 minimal fixtures
+        run: >-
+          python scripts/folio.py batch-render-drawings references/fixtures/minimal
+          --output-dir "${RUNNER_TEMP}/minimal-batch"
+          --format svg --profile artifact --report-format json
+          --report-output "${RUNNER_TEMP}/minimal-batch-report.json"
+      - name: Compare approved drawing baseline
+        run: >-
+          python scripts/folio.py diagram-catalog
+          --output-dir "${RUNNER_TEMP}/catalog"
+          --contact-sheet "${RUNNER_TEMP}/drawing-all.png"
+          --supported-sheet "${RUNNER_TEMP}/drawing-supported.png"
+          --baseline references/fixtures/drawing/catalog-baseline-v3.json
+          --baseline-report "${RUNNER_TEMP}/catalog-baseline-report.json"
+      - name: Verify all build targets
+        run: python scripts/build.py --verify
+      - name: Build release package
+        run: bash scripts/package-skill.sh "${RUNNER_TEMP}/folio.zip"
+      - name: Upload release evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drawing-dsl-release-evidence
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/catalog-baseline-report.json
+            ${{ runner.temp }}/drawing-all.png
+            ${{ runner.temp }}/drawing-supported.png
+            ${{ runner.temp }}/minimal-batch-report.json
+            assets/examples/host-a4-long-doc.pdf
+            assets/examples/host-letter-document.pdf
+            assets/examples/host-a4-chinese.pdf
+            assets/examples/host-slide-16x9.pptx
+            ${{ runner.temp }}/folio.zip

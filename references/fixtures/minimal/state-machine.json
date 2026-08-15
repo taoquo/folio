@@ -1,0 +1,12 @@
+{
+  "schema_version": "3.0",
+  "kind": "state-machine",
+  "title": "Untitled State Machine",
+  "states": [
+    {"id": "initial", "type": "initial"},
+    {"id": "final", "type": "final"}
+  ],
+  "transitions": [
+    {"id": "complete", "source": "initial", "target": "final"}
+  ]
+}

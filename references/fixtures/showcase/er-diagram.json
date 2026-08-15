@@ -1,0 +1,177 @@
+{
+  "schema_version": "3.0",
+  "kind": "er-diagram",
+  "title": "Publishing Data Model",
+  "focus_entity": "build",
+  "entities": [
+    {
+      "id": "workspace",
+      "name": "Workspace",
+      "fields": [
+        {
+          "id": "w1",
+          "name": "id",
+          "type": "uuid",
+          "primary_key": true
+        },
+        {
+          "id": "w2",
+          "name": "name",
+          "type": "text"
+        },
+        {
+          "id": "w3",
+          "name": "plan",
+          "type": "enum"
+        }
+      ]
+    },
+    {
+      "id": "document",
+      "name": "Document",
+      "fields": [
+        {
+          "id": "d1",
+          "name": "id",
+          "type": "uuid",
+          "primary_key": true
+        },
+        {
+          "id": "d2",
+          "name": "workspace_id",
+          "type": "uuid",
+          "foreign_key": true
+        },
+        {
+          "id": "d3",
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "id": "d4",
+          "name": "archived_at",
+          "type": "timestamp",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "id": "build",
+      "name": "Build",
+      "fields": [
+        {
+          "id": "b1",
+          "name": "id",
+          "type": "uuid",
+          "primary_key": true
+        },
+        {
+          "id": "b2",
+          "name": "document_id",
+          "type": "uuid",
+          "foreign_key": true
+        },
+        {
+          "id": "b3",
+          "name": "status",
+          "type": "enum"
+        },
+        {
+          "id": "b4",
+          "name": "latency_ms",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "id": "artifact",
+      "name": "Artifact",
+      "fields": [
+        {
+          "id": "a1",
+          "name": "id",
+          "type": "uuid",
+          "primary_key": true
+        },
+        {
+          "id": "a2",
+          "name": "build_id",
+          "type": "uuid",
+          "foreign_key": true
+        },
+        {
+          "id": "a3",
+          "name": "format",
+          "type": "enum"
+        },
+        {
+          "id": "a4",
+          "name": "digest",
+          "type": "char(64)"
+        }
+      ]
+    },
+    {
+      "id": "finding",
+      "name": "Finding",
+      "fields": [
+        {
+          "id": "f1",
+          "name": "id",
+          "type": "uuid",
+          "primary_key": true
+        },
+        {
+          "id": "f2",
+          "name": "build_id",
+          "type": "uuid",
+          "foreign_key": true
+        },
+        {
+          "id": "f3",
+          "name": "code",
+          "type": "text"
+        },
+        {
+          "id": "f4",
+          "name": "severity",
+          "type": "enum"
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel1",
+      "source": "workspace",
+      "target": "document",
+      "label": "has",
+      "source_cardinality": "one",
+      "target_cardinality": "many"
+    },
+    {
+      "id": "rel2",
+      "source": "document",
+      "target": "build",
+      "label": "runs",
+      "source_cardinality": "one",
+      "target_cardinality": "many"
+    },
+    {
+      "id": "rel3",
+      "source": "build",
+      "target": "artifact",
+      "label": "emits",
+      "source_cardinality": "one",
+      "target_cardinality": "one-or-many"
+    },
+    {
+      "id": "rel4",
+      "source": "build",
+      "target": "finding",
+      "label": "logs",
+      "source_cardinality": "one",
+      "target_cardinality": "many"
+    }
+  ]
+}

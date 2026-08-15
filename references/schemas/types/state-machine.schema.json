@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/types/state-machine.schema.json",
+  "title": "Folio State Machine Authoring Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "title", "states", "transitions"],
+  "properties": {
+    "schema_version": {"const": "3.0"},
+    "kind": {"const": "state-machine"},
+    "title": {"$ref": "#/$defs/non-empty-string"},
+    "states": {"type": "array", "minItems": 1, "maxItems": 9, "items": {"$ref": "#/$defs/state"}},
+    "transitions": {"type": "array", "maxItems": 14, "items": {"$ref": "#/$defs/transition"}},
+    "persistent": {"type": "boolean"},
+    "submachine": {"type": "boolean"},
+    "axis": {"enum": ["left-right", "top-down"]},
+    "focus": {"type": ["string", "null"]},
+    "width": {"type": "integer", "minimum": 320},
+    "height": {"type": "integer", "minimum": 240},
+    "language": {"$ref": "#/$defs/non-empty-string"}
+  },
+  "$defs": {
+    "non-empty-string": {"type": "string", "minLength": 1},
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type"],
+      "properties": {
+        "id": {"$ref": "#/$defs/non-empty-string"},
+        "type": {"enum": ["state", "initial", "final", "choice"]},
+        "label": {"type": ["string", "null"]},
+        "description": {"type": ["string", "null"]},
+        "emphasis": {"enum": ["focal", "normal", "background"]}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"type": {"enum": ["state", "choice"]}}, "required": ["type"]},
+          "then": {"required": ["label"], "properties": {"label": {"$ref": "#/$defs/non-empty-string"}}}
+        }
+      ]
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "source", "target"],
+      "properties": {
+        "id": {"$ref": "#/$defs/non-empty-string"},
+        "source": {"$ref": "#/$defs/non-empty-string"},
+        "target": {"$ref": "#/$defs/non-empty-string"},
+        "event": {"type": ["string", "null"]},
+        "guard": {"type": ["string", "null"]},
+        "action": {"type": ["string", "null"]},
+        "channel": {"enum": ["normal", "exceptional", "reset", "focal"]}
+      }
+    }
+  }
+}

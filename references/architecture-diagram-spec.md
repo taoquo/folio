@@ -1,5 +1,9 @@
 # Architecture Diagram Spec
 
+This JSON shape is the compatibility facade for existing callers. Internally, Folio converts it to `SemanticDiagram`, plans a `DrawingPlan`, compiles layout constraints, resolves a `ResolvedScene`, and renders that scene. New visual behavior belongs in the executable Drawing Grammar rather than new pixel-level JSON fields.
+
+See `drawing-dsl.md` and `drawing-architecture.md` for the V1 compiler contract.
+
 Use `kind: "architecture"` with one of:
 
 - `horizontal-layers`

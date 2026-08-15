@@ -1,0 +1,18 @@
+{
+  "schema_version": "3.0",
+  "kind": "uml-class",
+  "title": "Drawing Compilation Model",
+  "layout": "class-grid",
+  "focus": "compiler",
+  "types": [
+    {"id": "source", "kind": "interface", "name": "DrawingSource", "methods": ["compile(): Result"]},
+    {"id": "compiler", "kind": "class", "name": "Compiler", "attributes": ["registry: Registry"], "methods": ["compile(input): Result"]},
+    {"id": "result", "kind": "class", "name": "CompilationResult", "attributes": ["scene: Scene", "diagnostics: Diagnostic[]"]},
+    {"id": "status", "kind": "enum", "name": "Status", "attributes": ["OK", "ERROR"]}
+  ],
+  "relationships": [
+    {"id": "implements", "source": "compiler", "target": "source", "kind": "inheritance"},
+    {"id": "creates", "source": "compiler", "target": "result", "kind": "composition", "label": "creates", "target_multiplicity": "1"},
+    {"id": "reports", "source": "result", "target": "status", "kind": "association", "label": "reports"}
+  ]
+}

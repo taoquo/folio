@@ -1,0 +1,9 @@
+{
+  "schema_version": "3.0",
+  "kind": "line-chart",
+  "title": "Untitled Line Chart",
+  "categories": ["First", "Second"],
+  "series": [
+    {"id": "series", "label": "Series", "values": [1, 2]}
+  ]
+}

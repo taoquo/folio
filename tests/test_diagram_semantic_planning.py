@@ -111,6 +111,22 @@ class DiagramSemanticPlanningTests(TestCase):
         self.assertEqual(["scheduler", "world", "systems"], spec.focus_path)
         self.assertIn("query", [edge.flow for edge in spec.edges])
 
+    def test_plan_semantic_architecture_separates_meaning_from_geometry(self) -> None:
+        semantic = planning.plan_semantic_architecture(ECS_TEXT, "ECS Runtime")
+
+        payload = semantic.to_dict()
+        self.assertEqual("world", semantic.focus_candidates[0])
+        self.assertIn("runtime", semantic.layer_order)
+        self.assertNotIn("x", payload["nodes"][0])
+        self.assertNotIn("width", payload["nodes"][0])
+
+    def test_plan_architecture_drawing_uses_visual_intent_tokens(self) -> None:
+        drawing = planning.plan_architecture_drawing(AGENT_TEXT, "Agent Runtime")
+
+        self.assertIn(drawing.composition.pattern, {"layered", "pipeline", "hub"})
+        self.assertTrue(all(node.archetype in {"component", "datastore", "external", "cloud"} for node in drawing.nodes))
+        self.assertTrue(all(edge.channel in {"primary-flow", "secondary-flow", "async-flow"} for edge in drawing.edges))
+
     def test_plan_architecture_from_non_ecs_text_returns_meaningful_spec(self) -> None:
         spec = planning.plan_architecture_from_text(AGENT_TEXT, "Agent Runtime")
 

@@ -1,0 +1,20 @@
+{
+  "schema_version": "3.0",
+  "kind": "waterfall",
+  "title": "Release Readiness Bridge",
+  "unit": " checks",
+  "locale": "en-US",
+  "start": 40,
+  "contributions": [
+    {"id": "schema", "label": "Schema", "value": 18},
+    {"id": "runtime", "label": "Runtime", "value": 14},
+    {"id": "core-subtotal", "label": "Core subtotal", "value": 72, "kind": "subtotal"},
+    {"id": "accessibility", "label": "Accessibility", "value": 12},
+    {"id": "cleanup", "label": "Cleanup", "value": -4},
+    {"id": "verified-subtotal", "label": "Verified subtotal", "value": 80, "kind": "subtotal"},
+    {"id": "profiles", "label": "Profiles", "value": 16}
+  ],
+  "end": 96,
+  "tolerance": 0.001,
+  "value_format": {"precision": 0, "compact": false, "grouping": false, "unit_position": "suffix"}
+}

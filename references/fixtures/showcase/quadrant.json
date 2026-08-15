@@ -1,0 +1,81 @@
+{
+  "schema_version": "3.0",
+  "kind": "quadrant",
+  "title": "Diagram Types by Effort and Impact",
+  "preferred_region": "top-left",
+  "axes": {
+    "x": {
+      "label": "Authoring effort",
+      "low": "low effort",
+      "high": "high effort"
+    },
+    "y": {
+      "label": "Reader impact",
+      "low": "low impact",
+      "high": "high impact"
+    }
+  },
+  "items": [
+    {
+      "id": "timeline",
+      "label": "Timeline",
+      "x": 0.18,
+      "y": 0.82,
+      "emphasis": "focal"
+    },
+    {
+      "id": "bar",
+      "label": "Bar chart",
+      "x": 0.22,
+      "y": 0.68
+    },
+    {
+      "id": "waterfall",
+      "label": "Waterfall",
+      "x": 0.34,
+      "y": 0.74
+    },
+    {
+      "id": "quadrant",
+      "label": "Quadrant",
+      "x": 0.28,
+      "y": 0.52
+    },
+    {
+      "id": "architecture",
+      "label": "Architecture",
+      "x": 0.78,
+      "y": 0.86
+    },
+    {
+      "id": "sequence",
+      "label": "Sequence",
+      "x": 0.68,
+      "y": 0.58
+    },
+    {
+      "id": "er",
+      "label": "ER diagram",
+      "x": 0.74,
+      "y": 0.34
+    },
+    {
+      "id": "uml",
+      "label": "UML class",
+      "x": 0.86,
+      "y": 0.22
+    },
+    {
+      "id": "venn",
+      "label": "Venn",
+      "x": 0.16,
+      "y": 0.32
+    },
+    {
+      "id": "donut",
+      "label": "Donut",
+      "x": 0.24,
+      "y": 0.24
+    }
+  ]
+}

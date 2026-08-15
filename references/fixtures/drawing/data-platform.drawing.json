@@ -1,0 +1,253 @@
+{
+  "kind": "architecture",
+  "title": "Data Platform",
+  "composition": {
+    "pattern": "layered",
+    "axis": "top-down",
+    "density": "restrained",
+    "spine": [
+      "kafka",
+      "processor",
+      "warehouse"
+    ],
+    "sidecars": {
+      "processor": [
+        "dashboards",
+        "observability"
+      ]
+    }
+  },
+  "hierarchy": {
+    "focus_node": "processor",
+    "focus_path": [
+      "kafka",
+      "processor",
+      "warehouse"
+    ],
+    "background_nodes": [
+      "dashboards",
+      "observability"
+    ]
+  },
+  "regions": [
+    {
+      "id": "surface",
+      "role": "layer",
+      "label": "Surface Layer",
+      "members": [
+        "serving-api",
+        "dashboards"
+      ],
+      "treatment": "layer-band"
+    },
+    {
+      "id": "runtime",
+      "role": "layer",
+      "label": "Runtime Layer",
+      "members": [
+        "processor"
+      ],
+      "treatment": "layer-band"
+    },
+    {
+      "id": "data",
+      "role": "layer",
+      "label": "Data Layer",
+      "members": [
+        "kafka",
+        "warehouse",
+        "observability"
+      ],
+      "treatment": "layer-band"
+    },
+    {
+      "id": "data-pipeline",
+      "role": "subsystem",
+      "label": "Data Pipeline",
+      "members": [
+        "kafka",
+        "processor",
+        "warehouse"
+      ],
+      "treatment": "soft-boundary"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "processor",
+      "archetype": "component",
+      "emphasis": "focal",
+      "region": "runtime",
+      "content": {
+        "eyebrow": "service",
+        "title": "Stream Processor",
+        "metadata": "transform stage",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": null,
+      "size_tier": "regular"
+    },
+    {
+      "id": "kafka",
+      "archetype": "cloud",
+      "emphasis": "normal",
+      "region": "data",
+      "content": {
+        "eyebrow": "cloud",
+        "title": "Kafka Bus",
+        "metadata": "event stream",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": "queue",
+      "size_tier": "regular"
+    },
+    {
+      "id": "warehouse",
+      "archetype": "datastore",
+      "emphasis": "normal",
+      "region": "data",
+      "content": {
+        "eyebrow": "store",
+        "title": "Warehouse",
+        "metadata": "analytics state",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": "storage",
+      "size_tier": "regular"
+    },
+    {
+      "id": "serving-api",
+      "archetype": "component",
+      "emphasis": "normal",
+      "region": "surface",
+      "content": {
+        "eyebrow": "service",
+        "title": "Serving API",
+        "metadata": "query access",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": "gateway",
+      "size_tier": "regular"
+    },
+    {
+      "id": "dashboards",
+      "archetype": "external",
+      "emphasis": "background",
+      "region": "surface",
+      "content": {
+        "eyebrow": "external",
+        "title": "Dashboards",
+        "metadata": "analyst queries",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": "gateway",
+      "size_tier": "regular"
+    },
+    {
+      "id": "observability",
+      "archetype": "cloud",
+      "emphasis": "background",
+      "region": "data",
+      "content": {
+        "eyebrow": "cloud",
+        "title": "Observability",
+        "metadata": "logs \u00b7 traces",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": "queue",
+      "size_tier": "regular"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:0:kafka->processor",
+      "source": "kafka",
+      "target": "processor",
+      "channel": "primary-flow",
+      "emphasis": "focal",
+      "label": "stream",
+      "direction": "forward",
+      "route_policy": "auto"
+    },
+    {
+      "id": "edge:1:processor->warehouse",
+      "source": "processor",
+      "target": "warehouse",
+      "channel": "primary-flow",
+      "emphasis": "focal",
+      "label": "load",
+      "direction": "forward",
+      "route_policy": "auto"
+    },
+    {
+      "id": "edge:2:dashboards->serving-api",
+      "source": "dashboards",
+      "target": "serving-api",
+      "channel": "secondary-flow",
+      "emphasis": "background",
+      "label": "query",
+      "direction": "forward",
+      "route_policy": "auto"
+    },
+    {
+      "id": "edge:3:serving-api->warehouse",
+      "source": "serving-api",
+      "target": "warehouse",
+      "channel": "secondary-flow",
+      "emphasis": "normal",
+      "label": null,
+      "direction": "forward",
+      "route_policy": "auto"
+    }
+  ],
+  "annotations": [],
+  "legend": {
+    "title": "LEGEND",
+    "items": [
+      {
+        "channel": "secondary-flow",
+        "label": "Stream"
+      },
+      {
+        "channel": "secondary-flow",
+        "label": "Write"
+      },
+      {
+        "channel": "secondary-flow",
+        "label": "Read"
+      }
+    ]
+  },
+  "width": 960,
+  "height": 540,
+  "subtitle": null,
+  "caption": null,
+  "explanation": [
+    "composition: layered; reason: explicit composition hint preserved",
+    "focus: processor; reason: highest narrative priority candidate",
+    "spine: kafka -> processor -> warehouse; reason: selected semantic focus path",
+    "background: dashboards, observability; reason: supporting concern outside primary narrative",
+    "nodes: 6; reason: semantic roles mapped to 4 visual archetypes",
+    "edges: 4; reason: relations mapped to primary, secondary, or async channels",
+    "reduction: background 2 supporting nodes; reason: preserve context without competing with focus"
+  ],
+  "reductions": [
+    {
+      "action": "background",
+      "targets": [
+        "dashboards",
+        "observability"
+      ],
+      "reason": "supporting concern outside primary narrative",
+      "applied": true
+    }
+  ],
+  "schema_version": "2.0",
+  "language": "en"
+}

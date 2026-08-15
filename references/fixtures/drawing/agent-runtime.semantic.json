@@ -1,0 +1,161 @@
+{
+  "title": "Agent Runtime",
+  "nodes": [
+    {
+      "id": "gateway",
+      "label": "API Gateway",
+      "role": "entry",
+      "description": null,
+      "importance": "secondary",
+      "state_owner": false,
+      "lifecycle_phase": "runtime",
+      "domain": "surface",
+      "metadata": "request ingress"
+    },
+    {
+      "id": "planner",
+      "label": "Task Planner",
+      "role": "orchestrator",
+      "description": null,
+      "importance": "primary",
+      "state_owner": false,
+      "lifecycle_phase": "runtime",
+      "domain": "runtime",
+      "metadata": "coordination"
+    },
+    {
+      "id": "runtime",
+      "label": "Model Runtime",
+      "role": "orchestrator",
+      "description": null,
+      "importance": "primary",
+      "state_owner": false,
+      "lifecycle_phase": "runtime",
+      "domain": "runtime",
+      "metadata": "execution core"
+    },
+    {
+      "id": "tools",
+      "label": "Tool Runtime",
+      "role": "tool-runtime",
+      "description": null,
+      "importance": "secondary",
+      "state_owner": false,
+      "lifecycle_phase": "runtime",
+      "domain": "runtime",
+      "metadata": "tool execution"
+    },
+    {
+      "id": "memory",
+      "label": "Memory Store",
+      "role": "storage",
+      "description": null,
+      "importance": "secondary",
+      "state_owner": true,
+      "lifecycle_phase": "runtime",
+      "domain": "data",
+      "metadata": "retrieval state"
+    },
+    {
+      "id": "observability",
+      "label": "Observability",
+      "role": "event-bus",
+      "description": null,
+      "importance": "background",
+      "state_owner": true,
+      "lifecycle_phase": "background",
+      "domain": "data",
+      "metadata": "logs \u00b7 traces"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:0:gateway->planner",
+      "source": "gateway",
+      "target": "planner",
+      "relation": "control",
+      "interaction": "routes",
+      "importance": "primary",
+      "phase": "runtime",
+      "label": "route"
+    },
+    {
+      "id": "edge:1:planner->runtime",
+      "source": "planner",
+      "target": "runtime",
+      "relation": "control",
+      "interaction": "coordinates",
+      "importance": "primary",
+      "phase": "runtime",
+      "label": "plan"
+    },
+    {
+      "id": "edge:2:runtime->tools",
+      "source": "runtime",
+      "target": "tools",
+      "relation": "read",
+      "interaction": "invokes",
+      "importance": "secondary",
+      "phase": "runtime",
+      "label": "tool use"
+    },
+    {
+      "id": "edge:3:tools->memory",
+      "source": "tools",
+      "target": "memory",
+      "relation": "read",
+      "interaction": "reads",
+      "importance": "secondary",
+      "phase": "runtime",
+      "label": null
+    },
+    {
+      "id": "edge:4:tools->observability",
+      "source": "tools",
+      "target": "observability",
+      "relation": "write",
+      "interaction": "writes",
+      "importance": "background",
+      "phase": "background",
+      "label": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "control-core",
+      "label": "Control Core",
+      "members": [
+        "gateway",
+        "planner",
+        "runtime",
+        "tools"
+      ],
+      "role": "subsystem",
+      "domain": null
+    }
+  ],
+  "focus_candidates": [
+    "planner"
+  ],
+  "focus_path": [
+    "gateway",
+    "planner",
+    "runtime"
+  ],
+  "narrative": "Planner coordinates request flow and hands execution to the runtime.",
+  "width": 960,
+  "height": 540,
+  "subtitle": null,
+  "caption": null,
+  "layer_order": [
+    "surface",
+    "runtime",
+    "data"
+  ],
+  "layer_labels": {
+    "surface": "Surface Layer",
+    "runtime": "Runtime Layer",
+    "data": "Data Layer"
+  },
+  "composition_hint": "horizontal-layers"
+}

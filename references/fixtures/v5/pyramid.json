@@ -1,0 +1,29 @@
+{
+  "schema_version": "3.0",
+  "kind": "pyramid",
+  "title": "Adoption Funnel",
+  "orientation": "down",
+  "levels": [
+    {
+      "id": "aware",
+      "label": "Awareness",
+      "detail": "12,400 readers reach the landing page"
+    },
+    {
+      "id": "trial",
+      "label": "Trial",
+      "detail": "3,100 install the skill locally"
+    },
+    {
+      "id": "habit",
+      "label": "Habit",
+      "detail": "780 publish weekly documents",
+      "emphasis": "focal"
+    },
+    {
+      "id": "advocate",
+      "label": "Advocacy",
+      "detail": "190 contribute templates back"
+    }
+  ]
+}

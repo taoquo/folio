@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/diagram-import-ledger.schema.json",
+  "title": "Folio Diagram Import Fidelity Ledger",
+  "description": "Published contract for the ledger emitted by folio.py import-diagram. Records what an external Mermaid or draw.io source preserved, downgraded, or dropped.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "source", "dialect", "kind", "fidelity", "preserved", "downgraded", "dropped"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "source": {"type": "string", "minLength": 1, "description": "File name of the imported local source; never a remote URL."},
+    "dialect": {"enum": ["mermaid", "drawio"]},
+    "kind": {"enum": ["flowchart", "sequence", "state-machine", "er-diagram", "uml-class"]},
+    "fidelity": {"type": "number", "minimum": 0, "maximum": 1, "description": "preserved / (preserved + downgraded + dropped), rounded to three decimals."},
+    "preserved": {"$ref": "#/$defs/entries"},
+    "downgraded": {"$ref": "#/$defs/entries"},
+    "dropped": {"$ref": "#/$defs/entries"}
+  },
+  "$defs": {
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["feature", "detail"],
+        "properties": {
+          "feature": {"type": "string", "minLength": 1},
+          "detail": {"type": "string"}
+        }
+      }
+    }
+  }
+}

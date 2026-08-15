@@ -1,0 +1,7 @@
+flowchart TD
+    %% Imported flowchart sample for Folio drawing import tests
+    start([Drawing compiled]) --> review{Validation passes?}
+    review -->|yes| publish[Publish artifacts]
+    review -->|no| repair[[Repair drawing plan]]
+    publish --> done([Review complete])
+    repair -.->|resolved| done

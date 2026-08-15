@@ -1,0 +1,102 @@
+{
+  "schema_version": "3.0",
+  "kind": "swimlane",
+  "title": "Quarterly Report Sign-off",
+  "axis": "left-right",
+  "parallel_starts": false,
+  "focus_lane": "finance",
+  "lanes": [
+    {
+      "id": "analyst",
+      "label": "Analyst"
+    },
+    {
+      "id": "finance",
+      "label": "Finance Controller",
+      "emphasis": "focal"
+    },
+    {
+      "id": "legal",
+      "label": "Legal"
+    },
+    {
+      "id": "platform",
+      "label": "Publishing Platform"
+    }
+  ],
+  "steps": [
+    {
+      "id": "draft",
+      "type": "terminal",
+      "lane": "analyst",
+      "label": "Draft narrative"
+    },
+    {
+      "id": "reconcile",
+      "type": "action",
+      "lane": "finance",
+      "label": "Reconcile figures"
+    },
+    {
+      "id": "check",
+      "type": "decision",
+      "lane": "legal",
+      "label": "Disclosure risk?"
+    },
+    {
+      "id": "approve",
+      "type": "action",
+      "lane": "finance",
+      "label": "Approve numbers"
+    },
+    {
+      "id": "build",
+      "type": "data",
+      "lane": "platform",
+      "label": "Build artifact"
+    },
+    {
+      "id": "share",
+      "type": "terminal",
+      "lane": "analyst",
+      "label": "Share with board"
+    }
+  ],
+  "flows": [
+    {
+      "id": "f1",
+      "source": "draft",
+      "target": "reconcile",
+      "channel": "request",
+      "label": "figures"
+    },
+    {
+      "id": "f2",
+      "source": "reconcile",
+      "target": "check",
+      "channel": "request",
+      "label": "review"
+    },
+    {
+      "id": "f3",
+      "source": "check",
+      "target": "approve",
+      "channel": "response",
+      "label": "cleared"
+    },
+    {
+      "id": "f4",
+      "source": "approve",
+      "target": "build",
+      "channel": "request",
+      "label": "sign-off"
+    },
+    {
+      "id": "f5",
+      "source": "build",
+      "target": "share",
+      "channel": "response",
+      "label": "artifact"
+    }
+  ]
+}

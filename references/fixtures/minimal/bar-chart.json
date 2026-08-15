@@ -1,0 +1,9 @@
+{
+  "schema_version": "3.0",
+  "kind": "bar-chart",
+  "title": "Untitled Bar Chart",
+  "categories": ["Category"],
+  "series": [
+    {"id": "series", "label": "Series", "values": [1]}
+  ]
+}

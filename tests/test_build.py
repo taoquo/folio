@@ -100,7 +100,10 @@ class BuildScriptTests(TestCase):
 
         stdout = io.StringIO()
         stderr = io.StringIO()
-        with mock.patch("builtins.__import__", side_effect=failing_import):
+        with (
+            mock.patch("builtins.__import__", side_effect=failing_import),
+            mock.patch.object(build, "ROOT", Path("/missing-folio-root")),
+        ):
             with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
                 code = build.run_doctor()
 
@@ -112,6 +115,45 @@ class BuildScriptTests(TestCase):
         self.assertIn("apt-get install", text)
         self.assertNotIn("WeasyPrint stdout noise", text)
         self.assertEqual("", stderr.getvalue())
+
+    def test_doctor_accepts_project_weasyprint_fallback(self) -> None:
+        with (
+            mock.patch.object(
+                build,
+                "_doctor_import",
+                return_value=(False, "ERROR: native WeasyPrint unavailable"),
+            ),
+            mock.patch.object(Path, "exists", return_value=True),
+            mock.patch.object(
+                build.subprocess,
+                "run",
+                return_value=SimpleNamespace(returncode=0, stdout="", stderr=""),
+            ) as run_mock,
+        ):
+            ok, message = build._doctor_weasyprint()
+
+        self.assertTrue(ok)
+        self.assertIsNone(message)
+        self.assertIn("from weasyprint import HTML", run_mock.call_args.args[0])
+
+    def test_doctor_checks_page_preview_rasterizer(self) -> None:
+        commands: list[str] = []
+
+        def command_check(_label: str, command: str, _hint: str):
+            commands.append(command)
+            return True, None
+
+        with (
+            mock.patch.object(build, "_doctor_weasyprint", return_value=(True, None)),
+            mock.patch.object(build, "_doctor_import", return_value=(True, None)),
+            mock.patch.object(build, "_doctor_command", side_effect=command_check),
+            mock.patch.object(build, "elk_available", return_value=True),
+            mock.patch.object(Path, "exists", return_value=True),
+        ):
+            self.assertEqual(0, build.run_doctor())
+
+        self.assertIn("pdftoppm", commands)
+        self.assertNotIn("pdffonts", commands)
 
     def test_package_skill_zip_matches_current_functional_sources(self) -> None:
         with TemporaryDirectory() as tmp:
@@ -133,6 +175,54 @@ class BuildScriptTests(TestCase):
             "scripts/diagram_models.py",
             "scripts/diagram_render_svg.py",
             "scripts/diagram_semantic_planning.py",
+            "scripts/diagram_catalog.py",
+            "scripts/drawing/compiler.py",
+            "scripts/drawing/structural.py",
+            "scripts/drawing/positional.py",
+            "scripts/drawing/dataviz.py",
+            "scripts/drawing/hosting.py",
+            "scripts/drawing/tabular.py",
+            "scripts/drawing/importers/__init__.py",
+            "scripts/drawing/importers/mermaid.py",
+            "scripts/drawing/importers/drawio.py",
+            "scripts/drawing/notation.py",
+            "scripts/drawing/output/knobs.py",
+            "scripts/drawing/output/variants.py",
+            "scripts/drawing/theme/__init__.py",
+            "scripts/drawing/theme/folio.py",
+            "scripts/drawing/theme/contrast.py",
+            "scripts/drawing/theme/profiles.py",
+            "scripts/drawing/theme/retheme.py",
+            "scripts/drawing_host_integration.py",
+            "scripts/renderers/svg.py",
+            "references/drawing-dsl.md",
+            "references/drawing-dsl-authoring.md",
+            "references/schemas/drawing-payload-v3.schema.json",
+            "references/schemas/types/architecture.schema.json",
+            "references/schemas/types/waterfall.schema.json",
+            "references/schemas/types/sequence.schema.json",
+            "references/schemas/types/uml-class.schema.json",
+            "references/schemas/types/er-diagram.schema.json",
+            "references/schemas/tabular-chart-import.schema.json",
+            "references/schemas/diagram-import-ledger.schema.json",
+            "references/fixtures/minimal/architecture.json",
+            "references/fixtures/minimal/waterfall.json",
+            "references/fixtures/minimal/sequence.json",
+            "references/fixtures/minimal/uml-class.json",
+            "references/fixtures/minimal/er-diagram.json",
+            "references/fixtures/hosting/a4-long-doc.html",
+            "references/fixtures/hosting/seven-slide-deck.py",
+            "references/fixtures/v3/state-machine.json",
+            "references/fixtures/v3/waterfall.json",
+            "references/fixtures/v4/bar-stacked.json",
+            "references/fixtures/v4/sequence.json",
+            "references/fixtures/v4/uml-class.json",
+            "references/fixtures/v4/er-diagram.json",
+            "references/fixtures/tabular/bar-import.json",
+            "references/fixtures/import/flowchart.mmd",
+            "references/fixtures/import/flowchart.drawio",
+            "references/fixtures/drawing/catalog-baseline-v3.json",
+            "assets/diagrams/generated/catalog/png/architecture.png",
             "references/web-foundation.md",
             "references/web-reading.md",
             "references/web-workspace.md",
@@ -142,6 +232,9 @@ class BuildScriptTests(TestCase):
             "references/fixtures/data-platform-demo.txt",
             "references/fixtures/uml-class-demo.json",
             "tests/test_diagram_export.py",
+            "tests/test_drawing_dsl_v3.py",
+            "tests/test_drawing_notation_v4.py",
+            "RELEASE_NOTES_V4.3.md",
         }
         excluded = {
             "assets/fonts/LXGWWenKai-Regular.ttf",
@@ -196,6 +289,7 @@ class BuildScriptTests(TestCase):
             "demo-workflow-engine",
             "demo-data-platform",
             "demo-uml-class",
+            "demo-flowchart-v2",
         }
         actual_showcases = {
             config["showcase"]["basename"]

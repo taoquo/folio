@@ -1,0 +1,261 @@
+{
+  "kind": "architecture",
+  "title": "Agent Runtime",
+  "composition": {
+    "pattern": "layered",
+    "axis": "top-down",
+    "density": "restrained",
+    "spine": [
+      "gateway",
+      "planner",
+      "runtime"
+    ],
+    "sidecars": {
+      "planner": [
+        "observability"
+      ]
+    }
+  },
+  "hierarchy": {
+    "focus_node": "planner",
+    "focus_path": [
+      "gateway",
+      "planner",
+      "runtime"
+    ],
+    "background_nodes": [
+      "observability"
+    ]
+  },
+  "regions": [
+    {
+      "id": "surface",
+      "role": "layer",
+      "label": "Surface Layer",
+      "members": [
+        "gateway"
+      ],
+      "treatment": "layer-band"
+    },
+    {
+      "id": "runtime",
+      "role": "layer",
+      "label": "Runtime Layer",
+      "members": [
+        "planner",
+        "runtime",
+        "tools"
+      ],
+      "treatment": "layer-band"
+    },
+    {
+      "id": "data",
+      "role": "layer",
+      "label": "Data Layer",
+      "members": [
+        "memory",
+        "observability"
+      ],
+      "treatment": "layer-band"
+    },
+    {
+      "id": "control-core",
+      "role": "subsystem",
+      "label": "Control Core",
+      "members": [
+        "gateway",
+        "planner",
+        "runtime",
+        "tools"
+      ],
+      "treatment": "soft-boundary"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "gateway",
+      "archetype": "external",
+      "emphasis": "normal",
+      "region": "surface",
+      "content": {
+        "eyebrow": "external",
+        "title": "API Gateway",
+        "metadata": "request ingress",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": "gateway",
+      "size_tier": "regular"
+    },
+    {
+      "id": "planner",
+      "archetype": "component",
+      "emphasis": "focal",
+      "region": "runtime",
+      "content": {
+        "eyebrow": "service",
+        "title": "Task Planner",
+        "metadata": "coordination",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": null,
+      "size_tier": "regular"
+    },
+    {
+      "id": "runtime",
+      "archetype": "component",
+      "emphasis": "normal",
+      "region": "runtime",
+      "content": {
+        "eyebrow": "service",
+        "title": "Model Runtime",
+        "metadata": "execution core",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": null,
+      "size_tier": "regular"
+    },
+    {
+      "id": "tools",
+      "archetype": "component",
+      "emphasis": "normal",
+      "region": "runtime",
+      "content": {
+        "eyebrow": "service",
+        "title": "Tool Runtime",
+        "metadata": "tool execution",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": null,
+      "size_tier": "regular"
+    },
+    {
+      "id": "memory",
+      "archetype": "datastore",
+      "emphasis": "normal",
+      "region": "data",
+      "content": {
+        "eyebrow": "store",
+        "title": "Memory Store",
+        "metadata": "retrieval state",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": "storage",
+      "size_tier": "regular"
+    },
+    {
+      "id": "observability",
+      "archetype": "cloud",
+      "emphasis": "background",
+      "region": "data",
+      "content": {
+        "eyebrow": "cloud",
+        "title": "Observability",
+        "metadata": "logs \u00b7 traces",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": "queue",
+      "size_tier": "regular"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:0:gateway->planner",
+      "source": "gateway",
+      "target": "planner",
+      "channel": "primary-flow",
+      "emphasis": "focal",
+      "label": "route",
+      "direction": "forward",
+      "route_policy": "auto"
+    },
+    {
+      "id": "edge:1:planner->runtime",
+      "source": "planner",
+      "target": "runtime",
+      "channel": "primary-flow",
+      "emphasis": "focal",
+      "label": "plan",
+      "direction": "forward",
+      "route_policy": "auto"
+    },
+    {
+      "id": "edge:2:runtime->tools",
+      "source": "runtime",
+      "target": "tools",
+      "channel": "secondary-flow",
+      "emphasis": "normal",
+      "label": "tool use",
+      "direction": "forward",
+      "route_policy": "auto"
+    },
+    {
+      "id": "edge:3:tools->memory",
+      "source": "tools",
+      "target": "memory",
+      "channel": "secondary-flow",
+      "emphasis": "normal",
+      "label": null,
+      "direction": "forward",
+      "route_policy": "auto"
+    },
+    {
+      "id": "edge:4:tools->observability",
+      "source": "tools",
+      "target": "observability",
+      "channel": "async-flow",
+      "emphasis": "background",
+      "label": null,
+      "direction": "forward",
+      "route_policy": "auto"
+    }
+  ],
+  "annotations": [],
+  "legend": {
+    "title": "LEGEND",
+    "items": [
+      {
+        "channel": "secondary-flow",
+        "label": "Control"
+      },
+      {
+        "channel": "secondary-flow",
+        "label": "Read"
+      },
+      {
+        "channel": "secondary-flow",
+        "label": "Write"
+      }
+    ]
+  },
+  "width": 960,
+  "height": 540,
+  "subtitle": null,
+  "caption": null,
+  "explanation": [
+    "composition: layered; reason: explicit composition hint preserved",
+    "focus: planner; reason: highest narrative priority candidate",
+    "spine: gateway -> planner -> runtime; reason: selected semantic focus path",
+    "background: observability; reason: supporting concern outside primary narrative",
+    "nodes: 6; reason: semantic roles mapped to 4 visual archetypes",
+    "edges: 5; reason: relations mapped to primary, secondary, or async channels",
+    "reduction: background 1 supporting nodes; reason: preserve context without competing with focus"
+  ],
+  "reductions": [
+    {
+      "action": "background",
+      "targets": [
+        "observability"
+      ],
+      "reason": "supporting concern outside primary narrative",
+      "applied": true
+    }
+  ],
+  "schema_version": "2.0",
+  "language": "en"
+}

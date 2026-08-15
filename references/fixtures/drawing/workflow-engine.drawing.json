@@ -1,0 +1,234 @@
+{
+  "kind": "architecture",
+  "title": "Workflow Engine",
+  "composition": {
+    "pattern": "layered",
+    "axis": "top-down",
+    "density": "restrained",
+    "spine": [
+      "gateway",
+      "orchestrator",
+      "workers"
+    ],
+    "sidecars": {
+      "orchestrator": [
+        "event-bus"
+      ]
+    }
+  },
+  "hierarchy": {
+    "focus_node": "orchestrator",
+    "focus_path": [
+      "gateway",
+      "orchestrator",
+      "workers"
+    ],
+    "background_nodes": [
+      "event-bus"
+    ]
+  },
+  "regions": [
+    {
+      "id": "surface",
+      "role": "layer",
+      "label": "Surface Layer",
+      "members": [
+        "gateway"
+      ],
+      "treatment": "layer-band"
+    },
+    {
+      "id": "runtime",
+      "role": "layer",
+      "label": "Runtime Layer",
+      "members": [
+        "orchestrator",
+        "workers"
+      ],
+      "treatment": "layer-band"
+    },
+    {
+      "id": "data",
+      "role": "layer",
+      "label": "Data Layer",
+      "members": [
+        "state-store",
+        "event-bus"
+      ],
+      "treatment": "layer-band"
+    },
+    {
+      "id": "workflow-core",
+      "role": "subsystem",
+      "label": "Workflow Core",
+      "members": [
+        "gateway",
+        "orchestrator",
+        "workers"
+      ],
+      "treatment": "soft-boundary"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "gateway",
+      "archetype": "external",
+      "emphasis": "normal",
+      "region": "surface",
+      "content": {
+        "eyebrow": "external",
+        "title": "API Gateway",
+        "metadata": "request ingress",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": "gateway",
+      "size_tier": "regular"
+    },
+    {
+      "id": "orchestrator",
+      "archetype": "component",
+      "emphasis": "focal",
+      "region": "runtime",
+      "content": {
+        "eyebrow": "service",
+        "title": "Workflow Orchestrator",
+        "metadata": "step coordination",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": null,
+      "size_tier": "regular"
+    },
+    {
+      "id": "workers",
+      "archetype": "component",
+      "emphasis": "normal",
+      "region": "runtime",
+      "content": {
+        "eyebrow": "service",
+        "title": "Worker Pool",
+        "metadata": "step execution",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": null,
+      "size_tier": "regular"
+    },
+    {
+      "id": "state-store",
+      "archetype": "datastore",
+      "emphasis": "normal",
+      "region": "data",
+      "content": {
+        "eyebrow": "store",
+        "title": "State Store",
+        "metadata": "workflow state",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": "storage",
+      "size_tier": "regular"
+    },
+    {
+      "id": "event-bus",
+      "archetype": "cloud",
+      "emphasis": "background",
+      "region": "data",
+      "content": {
+        "eyebrow": "cloud",
+        "title": "Event Bus",
+        "metadata": "retries \u00b7 continuations",
+        "description": null,
+        "metadata_required": false
+      },
+      "pictogram": "queue",
+      "size_tier": "regular"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:0:gateway->orchestrator",
+      "source": "gateway",
+      "target": "orchestrator",
+      "channel": "primary-flow",
+      "emphasis": "focal",
+      "label": "start",
+      "direction": "forward",
+      "route_policy": "auto"
+    },
+    {
+      "id": "edge:1:orchestrator->workers",
+      "source": "orchestrator",
+      "target": "workers",
+      "channel": "primary-flow",
+      "emphasis": "focal",
+      "label": "steps",
+      "direction": "forward",
+      "route_policy": "auto"
+    },
+    {
+      "id": "edge:2:orchestrator->state-store",
+      "source": "orchestrator",
+      "target": "state-store",
+      "channel": "secondary-flow",
+      "emphasis": "normal",
+      "label": "state",
+      "direction": "forward",
+      "route_policy": "auto"
+    },
+    {
+      "id": "edge:3:orchestrator->event-bus",
+      "source": "orchestrator",
+      "target": "event-bus",
+      "channel": "async-flow",
+      "emphasis": "background",
+      "label": null,
+      "direction": "forward",
+      "route_policy": "auto"
+    }
+  ],
+  "annotations": [],
+  "legend": {
+    "title": "LEGEND",
+    "items": [
+      {
+        "channel": "secondary-flow",
+        "label": "Control"
+      },
+      {
+        "channel": "secondary-flow",
+        "label": "Write"
+      },
+      {
+        "channel": "secondary-flow",
+        "label": "Event"
+      }
+    ]
+  },
+  "width": 960,
+  "height": 540,
+  "subtitle": null,
+  "caption": null,
+  "explanation": [
+    "composition: layered; reason: explicit composition hint preserved",
+    "focus: orchestrator; reason: highest narrative priority candidate",
+    "spine: gateway -> orchestrator -> workers; reason: selected semantic focus path",
+    "background: event-bus; reason: supporting concern outside primary narrative",
+    "nodes: 5; reason: semantic roles mapped to 4 visual archetypes",
+    "edges: 4; reason: relations mapped to primary, secondary, or async channels",
+    "reduction: background 1 supporting nodes; reason: preserve context without competing with focus"
+  ],
+  "reductions": [
+    {
+      "action": "background",
+      "targets": [
+        "event-bus"
+      ],
+      "reason": "supporting concern outside primary narrative",
+      "applied": true
+    }
+  ],
+  "schema_version": "2.0",
+  "language": "en"
+}

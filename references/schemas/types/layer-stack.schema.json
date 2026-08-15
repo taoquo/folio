@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/types/layer-stack.schema.json",
+  "title": "Folio Layer Stack Authoring Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "title", "layers", "flows"],
+  "properties": {
+    "schema_version": {"const": "3.0"},
+    "kind": {"const": "layer-stack"},
+    "title": {"$ref": "#/$defs/non-empty-string"},
+    "layers": {"type": "array", "minItems": 3, "maxItems": 7, "items": {"$ref": "#/$defs/layer"}},
+    "flows": {"type": "array", "items": {"$ref": "#/$defs/flow"}},
+    "width": {"type": "integer", "minimum": 320},
+    "height": {"type": "integer", "minimum": 240},
+    "language": {"$ref": "#/$defs/non-empty-string"}
+  },
+  "$defs": {
+    "non-empty-string": {"type": "string", "minLength": 1},
+    "layer": {
+      "type": "object", "additionalProperties": false, "required": ["id", "label", "responsibility"],
+      "properties": {
+        "id": {"$ref": "#/$defs/non-empty-string"}, "label": {"$ref": "#/$defs/non-empty-string"},
+        "responsibility": {"$ref": "#/$defs/non-empty-string"},
+        "emphasis": {"enum": ["focal", "normal", "background"]}
+      }
+    },
+    "flow": {
+      "type": "object", "additionalProperties": false, "required": ["id", "source", "target", "channel"],
+      "properties": {
+        "id": {"$ref": "#/$defs/non-empty-string"}, "source": {"$ref": "#/$defs/non-empty-string"},
+        "target": {"$ref": "#/$defs/non-empty-string"}, "channel": {"enum": ["request", "response"]},
+        "label": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

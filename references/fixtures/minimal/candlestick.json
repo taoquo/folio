@@ -1,0 +1,8 @@
+{
+  "schema_version": "3.0",
+  "kind": "candlestick",
+  "title": "Untitled Candlestick",
+  "periods": [
+    {"id": "period", "date": "2026-01-01", "open": 1, "high": 2, "low": 0, "close": 1.5}
+  ]
+}

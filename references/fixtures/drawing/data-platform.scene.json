@@ -1,0 +1,954 @@
+{
+  "width": 960,
+  "height": 540,
+  "background": "#F6F0EA",
+  "title": {
+    "text": "Data Platform",
+    "x": 480,
+    "y": 40,
+    "fill": "#191514",
+    "size": 24.0,
+    "family": "Charter, Georgia, serif",
+    "anchor": "middle",
+    "tracking": 0.0,
+    "weight": null,
+    "klass": null
+  },
+  "regions": [
+    {
+      "id": "surface",
+      "treatment": "layer-band",
+      "label": {
+        "text": "SURFACE LAYER",
+        "x": 32,
+        "y": 128,
+        "fill": "#74665F",
+        "size": 11.0,
+        "family": "'JetBrains Mono', monospace",
+        "anchor": "start",
+        "tracking": 0.08,
+        "weight": null,
+        "klass": null
+      },
+      "box": null,
+      "style": {
+        "fill": "none",
+        "stroke": "#E9DED4",
+        "stroke_width": 1,
+        "dash": [],
+        "radius": 0,
+        "fill_opacity": null
+      },
+      "separator": [
+        [
+          120,
+          206
+        ],
+        [
+          904,
+          206
+        ]
+      ]
+    },
+    {
+      "id": "runtime",
+      "treatment": "layer-band",
+      "label": {
+        "text": "RUNTIME LAYER",
+        "x": 32,
+        "y": 284,
+        "fill": "#74665F",
+        "size": 11.0,
+        "family": "'JetBrains Mono', monospace",
+        "anchor": "start",
+        "tracking": 0.08,
+        "weight": null,
+        "klass": null
+      },
+      "box": null,
+      "style": {
+        "fill": "none",
+        "stroke": "#E9DED4",
+        "stroke_width": 1,
+        "dash": [],
+        "radius": 0,
+        "fill_opacity": null
+      },
+      "separator": [
+        [
+          120,
+          362
+        ],
+        [
+          904,
+          362
+        ]
+      ]
+    },
+    {
+      "id": "data",
+      "treatment": "layer-band",
+      "label": {
+        "text": "DATA LAYER",
+        "x": 32,
+        "y": 440,
+        "fill": "#74665F",
+        "size": 11.0,
+        "family": "'JetBrains Mono', monospace",
+        "anchor": "start",
+        "tracking": 0.08,
+        "weight": null,
+        "klass": null
+      },
+      "box": null,
+      "style": {
+        "fill": "none",
+        "stroke": "#E9DED4",
+        "stroke_width": 1,
+        "dash": [],
+        "radius": 0,
+        "fill_opacity": null
+      },
+      "separator": null
+    },
+    {
+      "id": "data-pipeline",
+      "treatment": "soft-boundary",
+      "label": {
+        "text": "DATA PIPELINE",
+        "x": 164,
+        "y": 240,
+        "fill": "#74665F",
+        "size": 8.0,
+        "family": "'JetBrains Mono', monospace",
+        "anchor": "start",
+        "tracking": 0.12,
+        "weight": null,
+        "klass": null
+      },
+      "box": {
+        "x": 148,
+        "y": 224,
+        "w": 440,
+        "h": 272
+      },
+      "style": {
+        "fill": "#FBF7F3",
+        "stroke": "#E9DED4",
+        "stroke_width": 1,
+        "dash": [
+          5,
+          4
+        ],
+        "radius": 10,
+        "fill_opacity": 0.28
+      },
+      "separator": null
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:0:kafka->processor",
+      "source": "kafka",
+      "target": "processor",
+      "points": [
+        [
+          256,
+          404
+        ],
+        [
+          256,
+          352
+        ],
+        [
+          428,
+          352
+        ],
+        [
+          428,
+          320
+        ]
+      ],
+      "style": {
+        "fill": "none",
+        "stroke": "#191514",
+        "stroke_width": 1.8,
+        "dash": [],
+        "radius": 0,
+        "fill_opacity": null
+      },
+      "arrow": {
+        "points": [
+          [
+            424,
+            328
+          ],
+          [
+            428,
+            320
+          ],
+          [
+            432,
+            328
+          ]
+        ]
+      },
+      "klass": "arch-edge arch-edge--primary arch-edge--focus",
+      "label": {
+        "text": "STREAM",
+        "x": 344,
+        "y": 340,
+        "fill": "#74665F",
+        "size": 8.0,
+        "family": "'JetBrains Mono', monospace",
+        "anchor": "middle",
+        "tracking": 0.0,
+        "weight": null,
+        "klass": "arch-edge-label"
+      },
+      "label_box": {
+        "x": 324,
+        "y": 328,
+        "w": 40,
+        "h": 16
+      },
+      "corner_radius": 8,
+      "bridges": []
+    },
+    {
+      "id": "edge:1:processor->warehouse",
+      "source": "processor",
+      "target": "warehouse",
+      "points": [
+        [
+          532,
+          320
+        ],
+        [
+          532,
+          360
+        ],
+        [
+          428,
+          360
+        ],
+        [
+          428,
+          404
+        ]
+      ],
+      "style": {
+        "fill": "none",
+        "stroke": "#191514",
+        "stroke_width": 1.8,
+        "dash": [],
+        "radius": 0,
+        "fill_opacity": null
+      },
+      "arrow": {
+        "points": [
+          [
+            424,
+            396
+          ],
+          [
+            428,
+            404
+          ],
+          [
+            432,
+            396
+          ]
+        ]
+      },
+      "klass": "arch-edge arch-edge--primary arch-edge--focus",
+      "label": {
+        "text": "LOAD",
+        "x": 480,
+        "y": 348,
+        "fill": "#74665F",
+        "size": 8.0,
+        "family": "'JetBrains Mono', monospace",
+        "anchor": "middle",
+        "tracking": 0.0,
+        "weight": null,
+        "klass": "arch-edge-label"
+      },
+      "label_box": {
+        "x": 464,
+        "y": 336,
+        "w": 32,
+        "h": 16
+      },
+      "corner_radius": 8,
+      "bridges": []
+    },
+    {
+      "id": "edge:2:dashboards->serving-api",
+      "source": "dashboards",
+      "target": "serving-api",
+      "points": [
+        [
+          616,
+          128
+        ],
+        [
+          568,
+          128
+        ]
+      ],
+      "style": {
+        "fill": "none",
+        "stroke": "#74665F",
+        "stroke_width": 1.0,
+        "dash": [],
+        "radius": 0,
+        "fill_opacity": null
+      },
+      "arrow": {
+        "points": [
+          [
+            576,
+            124
+          ],
+          [
+            568,
+            128
+          ],
+          [
+            576,
+            132
+          ]
+        ]
+      },
+      "klass": "arch-edge arch-edge--secondary",
+      "label": {
+        "text": "QUERY",
+        "x": 592,
+        "y": 116,
+        "fill": "#74665F",
+        "size": 8.0,
+        "family": "'JetBrains Mono', monospace",
+        "anchor": "middle",
+        "tracking": 0.0,
+        "weight": null,
+        "klass": "arch-edge-label"
+      },
+      "label_box": {
+        "x": 576,
+        "y": 104,
+        "w": 32,
+        "h": 16
+      },
+      "corner_radius": 8,
+      "bridges": []
+    },
+    {
+      "id": "edge:3:serving-api->warehouse",
+      "source": "serving-api",
+      "target": "warehouse",
+      "points": [
+        [
+          480,
+          164
+        ],
+        [
+          480,
+          176
+        ],
+        [
+          584,
+          176
+        ],
+        [
+          584,
+          392
+        ],
+        [
+          532,
+          392
+        ],
+        [
+          532,
+          404
+        ]
+      ],
+      "style": {
+        "fill": "none",
+        "stroke": "#5A4A43",
+        "stroke_width": 1.2,
+        "dash": [],
+        "radius": 0,
+        "fill_opacity": null
+      },
+      "arrow": {
+        "points": [
+          [
+            528,
+            396
+          ],
+          [
+            532,
+            404
+          ],
+          [
+            536,
+            396
+          ]
+        ]
+      },
+      "klass": "arch-edge arch-edge--secondary",
+      "label": null,
+      "label_box": null,
+      "corner_radius": 8,
+      "bridges": []
+    }
+  ],
+  "nodes": [
+    {
+      "id": "processor",
+      "box": {
+        "x": 392,
+        "y": 248,
+        "w": 176,
+        "h": 72
+      },
+      "style": {
+        "fill": "#F7E6E1",
+        "stroke": "#B83D2E",
+        "stroke_width": 1,
+        "dash": [],
+        "radius": 5,
+        "fill_opacity": null
+      },
+      "text_runs": [
+        {
+          "text": "SERVICE",
+          "x": 412,
+          "y": 268,
+          "fill": "#B83D2E",
+          "size": 7.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "start",
+          "tracking": 0.15,
+          "weight": null,
+          "klass": null
+        },
+        {
+          "text": "Stream Processor",
+          "x": 480,
+          "y": 288,
+          "fill": "#191514",
+          "size": 12.0,
+          "family": "Charter, Georgia, serif",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": "500",
+          "klass": null
+        },
+        {
+          "text": "transform stage",
+          "x": 480,
+          "y": 304,
+          "fill": "#5A4A43",
+          "size": 9.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": null,
+          "klass": null
+        }
+      ],
+      "pictogram": null,
+      "shape": "rect"
+    },
+    {
+      "id": "kafka",
+      "box": {
+        "x": 168,
+        "y": 404,
+        "w": 176,
+        "h": 72
+      },
+      "style": {
+        "fill": "#FBF7F3",
+        "stroke": "#E9DED4",
+        "stroke_width": 1,
+        "dash": [],
+        "radius": 5,
+        "fill_opacity": null
+      },
+      "text_runs": [
+        {
+          "text": "CLOUD",
+          "x": 188,
+          "y": 424,
+          "fill": "#74665F",
+          "size": 7.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "start",
+          "tracking": 0.15,
+          "weight": null,
+          "klass": null
+        },
+        {
+          "text": "Kafka Bus",
+          "x": 256,
+          "y": 444,
+          "fill": "#191514",
+          "size": 12.0,
+          "family": "Charter, Georgia, serif",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": "500",
+          "klass": null
+        },
+        {
+          "text": "event stream",
+          "x": 256,
+          "y": 460,
+          "fill": "#5A4A43",
+          "size": 9.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": null,
+          "klass": null
+        }
+      ],
+      "pictogram": {
+        "id": "pictogram:kafka",
+        "paths": [
+          "M 314 420 h 12",
+          "M 314 424 h 12",
+          "M 314 428 h 12"
+        ],
+        "stroke": "#E9DED4"
+      },
+      "shape": "rect"
+    },
+    {
+      "id": "warehouse",
+      "box": {
+        "x": 392,
+        "y": 404,
+        "w": 176,
+        "h": 72
+      },
+      "style": {
+        "fill": "#FBF7F3",
+        "stroke": "#5A4A43",
+        "stroke_width": 1,
+        "dash": [],
+        "radius": 5,
+        "fill_opacity": null
+      },
+      "text_runs": [
+        {
+          "text": "STORE",
+          "x": 412,
+          "y": 424,
+          "fill": "#74665F",
+          "size": 7.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "start",
+          "tracking": 0.15,
+          "weight": null,
+          "klass": null
+        },
+        {
+          "text": "Warehouse",
+          "x": 480,
+          "y": 444,
+          "fill": "#191514",
+          "size": 12.0,
+          "family": "Charter, Georgia, serif",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": "500",
+          "klass": null
+        },
+        {
+          "text": "analytics state",
+          "x": 480,
+          "y": 460,
+          "fill": "#5A4A43",
+          "size": 9.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": null,
+          "klass": null
+        }
+      ],
+      "pictogram": {
+        "id": "pictogram:warehouse",
+        "paths": [
+          "M 538 418 h 12 v 12 h -12 z",
+          "M 540 422 h 8"
+        ],
+        "stroke": "#5A4A43"
+      },
+      "shape": "rect"
+    },
+    {
+      "id": "serving-api",
+      "box": {
+        "x": 392,
+        "y": 92,
+        "w": 176,
+        "h": 72
+      },
+      "style": {
+        "fill": "#FBF7F3",
+        "stroke": "#191514",
+        "stroke_width": 1,
+        "dash": [],
+        "radius": 5,
+        "fill_opacity": null
+      },
+      "text_runs": [
+        {
+          "text": "SERVICE",
+          "x": 412,
+          "y": 112,
+          "fill": "#74665F",
+          "size": 7.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "start",
+          "tracking": 0.15,
+          "weight": null,
+          "klass": null
+        },
+        {
+          "text": "Serving API",
+          "x": 480,
+          "y": 132,
+          "fill": "#191514",
+          "size": 12.0,
+          "family": "Charter, Georgia, serif",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": "500",
+          "klass": null
+        },
+        {
+          "text": "query access",
+          "x": 480,
+          "y": 148,
+          "fill": "#5A4A43",
+          "size": 9.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": null,
+          "klass": null
+        }
+      ],
+      "pictogram": {
+        "id": "pictogram:serving-api",
+        "paths": [
+          "M 538 110 h 12",
+          "M 546 106 l 4 4 l -4 4"
+        ],
+        "stroke": "#191514"
+      },
+      "shape": "rect"
+    },
+    {
+      "id": "dashboards",
+      "box": {
+        "x": 616,
+        "y": 92,
+        "w": 176,
+        "h": 72
+      },
+      "style": {
+        "fill": "#FBF7F3",
+        "stroke": "#74665F",
+        "stroke_width": 1,
+        "dash": [],
+        "radius": 5,
+        "fill_opacity": null
+      },
+      "text_runs": [
+        {
+          "text": "EXTERNAL",
+          "x": 636,
+          "y": 112,
+          "fill": "#74665F",
+          "size": 7.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "start",
+          "tracking": 0.15,
+          "weight": null,
+          "klass": null
+        },
+        {
+          "text": "Dashboards",
+          "x": 704,
+          "y": 132,
+          "fill": "#191514",
+          "size": 12.0,
+          "family": "Charter, Georgia, serif",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": "500",
+          "klass": null
+        },
+        {
+          "text": "analyst queries",
+          "x": 704,
+          "y": 148,
+          "fill": "#5A4A43",
+          "size": 9.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": null,
+          "klass": null
+        }
+      ],
+      "pictogram": {
+        "id": "pictogram:dashboards",
+        "paths": [
+          "M 762 110 h 12",
+          "M 770 106 l 4 4 l -4 4"
+        ],
+        "stroke": "#74665F"
+      },
+      "shape": "rect"
+    },
+    {
+      "id": "observability",
+      "box": {
+        "x": 616,
+        "y": 404,
+        "w": 176,
+        "h": 72
+      },
+      "style": {
+        "fill": "#FBF7F3",
+        "stroke": "#E9DED4",
+        "stroke_width": 1,
+        "dash": [],
+        "radius": 5,
+        "fill_opacity": null
+      },
+      "text_runs": [
+        {
+          "text": "CLOUD",
+          "x": 636,
+          "y": 424,
+          "fill": "#74665F",
+          "size": 7.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "start",
+          "tracking": 0.15,
+          "weight": null,
+          "klass": null
+        },
+        {
+          "text": "Observability",
+          "x": 704,
+          "y": 444,
+          "fill": "#191514",
+          "size": 12.0,
+          "family": "Charter, Georgia, serif",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": "500",
+          "klass": null
+        },
+        {
+          "text": "logs \u00b7 traces",
+          "x": 704,
+          "y": 460,
+          "fill": "#5A4A43",
+          "size": 9.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "middle",
+          "tracking": 0.0,
+          "weight": null,
+          "klass": null
+        }
+      ],
+      "pictogram": {
+        "id": "pictogram:observability",
+        "paths": [
+          "M 762 420 h 12",
+          "M 762 424 h 12",
+          "M 762 428 h 12"
+        ],
+        "stroke": "#E9DED4"
+      },
+      "shape": "rect"
+    }
+  ],
+  "annotations": [],
+  "legend": {
+    "box": {
+      "x": 300,
+      "y": 480,
+      "w": 360,
+      "h": 44
+    },
+    "style": {
+      "fill": "#F6F0EA",
+      "stroke": "#E9DED4",
+      "stroke_width": 1,
+      "dash": [],
+      "radius": 4,
+      "fill_opacity": null
+    },
+    "title": {
+      "text": "LEGEND",
+      "x": 316,
+      "y": 496,
+      "fill": "#74665F",
+      "size": 8.0,
+      "family": "'JetBrains Mono', monospace",
+      "anchor": "start",
+      "tracking": 0.12,
+      "weight": null,
+      "klass": null
+    },
+    "items": [
+      {
+        "label": {
+          "text": "Stream",
+          "x": 416,
+          "y": 508,
+          "fill": "#191514",
+          "size": 9.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "start",
+          "tracking": 0.0,
+          "weight": null,
+          "klass": null
+        },
+        "line": [
+          [
+            388,
+            504
+          ],
+          [
+            408,
+            504
+          ]
+        ],
+        "arrow": {
+          "points": [
+            [
+              400,
+              500
+            ],
+            [
+              408,
+              504
+            ],
+            [
+              400,
+              508
+            ]
+          ]
+        },
+        "stroke": "#5A4A43"
+      },
+      {
+        "label": {
+          "text": "Write",
+          "x": 512,
+          "y": 508,
+          "fill": "#191514",
+          "size": 9.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "start",
+          "tracking": 0.0,
+          "weight": null,
+          "klass": null
+        },
+        "line": [
+          [
+            484,
+            504
+          ],
+          [
+            504,
+            504
+          ]
+        ],
+        "arrow": {
+          "points": [
+            [
+              496,
+              500
+            ],
+            [
+              504,
+              504
+            ],
+            [
+              496,
+              508
+            ]
+          ]
+        },
+        "stroke": "#5A4A43"
+      },
+      {
+        "label": {
+          "text": "Read",
+          "x": 604,
+          "y": 508,
+          "fill": "#191514",
+          "size": 9.0,
+          "family": "'JetBrains Mono', monospace",
+          "anchor": "start",
+          "tracking": 0.0,
+          "weight": null,
+          "klass": null
+        },
+        "line": [
+          [
+            576,
+            504
+          ],
+          [
+            596,
+            504
+          ]
+        ],
+        "arrow": {
+          "points": [
+            [
+              588,
+              500
+            ],
+            [
+              596,
+              504
+            ],
+            [
+              588,
+              508
+            ]
+          ]
+        },
+        "stroke": "#5A4A43"
+      }
+    ]
+  },
+  "warnings": [],
+  "description": "Data Platform",
+  "language": "en",
+  "reading_order": [
+    "processor",
+    "kafka",
+    "warehouse",
+    "serving-api",
+    "dashboards",
+    "observability"
+  ],
+  "primitives": []
+}

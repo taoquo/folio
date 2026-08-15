@@ -1,0 +1,94 @@
+{
+  "schema_version": "3.0",
+  "kind": "uml-class",
+  "title": "Rendering Domain Model",
+  "layout": "class-grid",
+  "focus": "renderer",
+  "types": [
+    {
+      "id": "renderable",
+      "kind": "interface",
+      "name": "Renderable",
+      "methods": [
+        "render(ctx): Scene",
+        "bounds(): Rect"
+      ]
+    },
+    {
+      "id": "renderer",
+      "kind": "class",
+      "name": "SceneRenderer",
+      "attributes": [
+        "theme: Theme",
+        "profile: Profile"
+      ],
+      "methods": [
+        "render(input): Artifact",
+        "validate(scene): Report"
+      ]
+    },
+    {
+      "id": "artifact",
+      "kind": "class",
+      "name": "Artifact",
+      "attributes": [
+        "uri: string",
+        "digest: string",
+        "pages: int"
+      ]
+    },
+    {
+      "id": "report",
+      "kind": "class",
+      "name": "QualityReport",
+      "attributes": [
+        "findings: Finding[]"
+      ],
+      "methods": [
+        "blocking(): bool"
+      ]
+    },
+    {
+      "id": "severity",
+      "kind": "enum",
+      "name": "Severity",
+      "attributes": [
+        "ERROR",
+        "TASTE",
+        "INFO"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "r1",
+      "source": "renderer",
+      "target": "renderable",
+      "kind": "inheritance"
+    },
+    {
+      "id": "r2",
+      "source": "renderer",
+      "target": "artifact",
+      "kind": "composition",
+      "label": "makes",
+      "target_multiplicity": "1"
+    },
+    {
+      "id": "r3",
+      "source": "renderer",
+      "target": "report",
+      "kind": "aggregation",
+      "label": "holds",
+      "target_multiplicity": "1"
+    },
+    {
+      "id": "r4",
+      "source": "report",
+      "target": "severity",
+      "kind": "association",
+      "label": "tags",
+      "target_multiplicity": "1..*"
+    }
+  ]
+}

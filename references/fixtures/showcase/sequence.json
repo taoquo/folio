@@ -1,0 +1,91 @@
+{
+  "schema_version": "3.0",
+  "kind": "sequence",
+  "title": "Signed Artifact Delivery",
+  "focus_participant": "gateway",
+  "participants": [
+    {
+      "id": "author",
+      "label": "Author",
+      "kind": "actor"
+    },
+    {
+      "id": "gateway",
+      "label": "Build Gateway",
+      "kind": "system"
+    },
+    {
+      "id": "worker",
+      "label": "Render Worker",
+      "kind": "system"
+    },
+    {
+      "id": "store",
+      "label": "Artifact Store",
+      "kind": "store"
+    },
+    {
+      "id": "cdn",
+      "label": "Delivery CDN",
+      "kind": "system"
+    }
+  ],
+  "messages": [
+    {
+      "id": "m1",
+      "source": "author",
+      "target": "gateway",
+      "label": "POST /builds",
+      "kind": "sync"
+    },
+    {
+      "id": "m2",
+      "source": "gateway",
+      "target": "worker",
+      "label": "Dispatch job",
+      "kind": "async"
+    },
+    {
+      "id": "m3",
+      "source": "worker",
+      "target": "store",
+      "label": "Write PDF and SVG",
+      "kind": "sync"
+    },
+    {
+      "id": "m4",
+      "source": "store",
+      "target": "worker",
+      "label": "Content digest",
+      "kind": "return"
+    },
+    {
+      "id": "m5",
+      "source": "worker",
+      "target": "gateway",
+      "label": "Gate verdict",
+      "kind": "async"
+    },
+    {
+      "id": "m6",
+      "source": "gateway",
+      "target": "cdn",
+      "label": "Warm cache",
+      "kind": "async"
+    },
+    {
+      "id": "m7",
+      "source": "cdn",
+      "target": "gateway",
+      "label": "Edge ready",
+      "kind": "return"
+    },
+    {
+      "id": "m8",
+      "source": "gateway",
+      "target": "author",
+      "label": "Signed URL",
+      "kind": "return"
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "schema_version": "3.0",
+  "kind": "org-chart",
+  "title": "Publishing Platform Organisation",
+  "focus": "rendering",
+  "units": [
+    {
+      "id": "vp",
+      "label": "Platform",
+      "role": "VP Engineering"
+    },
+    {
+      "id": "rendering",
+      "label": "Rendering",
+      "role": "Director",
+      "parent": "vp",
+      "emphasis": "focal"
+    },
+    {
+      "id": "reliability",
+      "label": "Reliability",
+      "role": "Director",
+      "parent": "vp"
+    },
+    {
+      "id": "experience",
+      "label": "Experience",
+      "role": "Director",
+      "parent": "vp"
+    },
+    {
+      "id": "typeset",
+      "label": "Typesetting",
+      "role": "Staff Engineer",
+      "parent": "rendering"
+    },
+    {
+      "id": "fonts",
+      "label": "Font Pipeline",
+      "role": "Senior Engineer",
+      "parent": "rendering"
+    },
+    {
+      "id": "gates",
+      "label": "Visual Gates",
+      "role": "Staff Engineer",
+      "parent": "rendering"
+    },
+    {
+      "id": "sre",
+      "label": "SRE",
+      "role": "Senior Engineer",
+      "parent": "reliability"
+    },
+    {
+      "id": "capacity",
+      "label": "Capacity",
+      "role": "Engineer",
+      "parent": "reliability"
+    },
+    {
+      "id": "editor",
+      "label": "Editor",
+      "role": "Senior Engineer",
+      "parent": "experience"
+    },
+    {
+      "id": "api",
+      "label": "Public API",
+      "role": "Engineer",
+      "parent": "experience"
+    }
+  ]
+}

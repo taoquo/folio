@@ -1,0 +1,9 @@
+{
+  "schema_version": "3.0",
+  "kind": "tree",
+  "title": "Untitled Tree",
+  "nodes": [
+    {"id": "root", "label": "Root"}
+  ],
+  "relations": []
+}

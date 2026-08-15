@@ -1,0 +1,46 @@
+{
+  "schema_version": "3.0",
+  "kind": "timeline",
+  "title": "Platform Reliability Program",
+  "scale": "temporal",
+  "focus": "sla",
+  "events": [
+    {
+      "id": "incident",
+      "date": "2026-02-11",
+      "label": "Outage",
+      "description": "Font cache eviction storm",
+      "importance": "background"
+    },
+    {
+      "id": "postmortem",
+      "date": "2026-03-02",
+      "label": "Postmortem",
+      "description": "Nine action items agreed"
+    },
+    {
+      "id": "warmpool",
+      "date": "2026-04-20",
+      "label": "Warm pool",
+      "description": "Cold starts cut by 41 percent"
+    },
+    {
+      "id": "gates",
+      "date": "2026-06-08",
+      "label": "Gate expansion",
+      "description": "Twelve visual checks enforced"
+    },
+    {
+      "id": "sla",
+      "date": "2026-07-15",
+      "label": "SLA met",
+      "description": "p50 build under 25 seconds"
+    },
+    {
+      "id": "ga",
+      "date": "2026-08-24",
+      "label": "GA cutover",
+      "description": "All tenants on the new pipeline"
+    }
+  ]
+}

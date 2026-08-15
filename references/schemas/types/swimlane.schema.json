@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/types/swimlane.schema.json",
+  "title": "Folio Swimlane Authoring Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "title", "lanes", "steps", "flows"],
+  "properties": {
+    "schema_version": {"const": "3.0"},
+    "kind": {"const": "swimlane"},
+    "title": {"$ref": "#/$defs/non-empty-string"},
+    "lanes": {"type": "array", "minItems": 2, "maxItems": 5, "items": {"$ref": "#/$defs/lane"}},
+    "steps": {"type": "array", "minItems": 1, "maxItems": 12, "items": {"$ref": "#/$defs/step"}},
+    "flows": {"type": "array", "items": {"$ref": "#/$defs/flow"}},
+    "axis": {"enum": ["left-right", "top-down"]},
+    "parallel_starts": {"type": "boolean"},
+    "focus_lane": {"type": ["string", "null"]},
+    "focus_path": {"type": "array", "items": {"$ref": "#/$defs/non-empty-string"}, "uniqueItems": true},
+    "width": {"type": "integer", "minimum": 320},
+    "height": {"type": "integer", "minimum": 240},
+    "language": {"$ref": "#/$defs/non-empty-string"}
+  },
+  "$defs": {
+    "non-empty-string": {"type": "string", "minLength": 1},
+    "lane": {
+      "type": "object", "additionalProperties": false, "required": ["id", "label"],
+      "properties": {
+        "id": {"$ref": "#/$defs/non-empty-string"}, "label": {"$ref": "#/$defs/non-empty-string"},
+        "emphasis": {"enum": ["focal", "normal"]}
+      }
+    },
+    "step": {
+      "type": "object", "additionalProperties": false, "required": ["id", "label", "type", "lane"],
+      "properties": {
+        "id": {"$ref": "#/$defs/non-empty-string"}, "label": {"$ref": "#/$defs/non-empty-string"},
+        "type": {"enum": ["action", "decision", "data", "terminal"]},
+        "lane": {"$ref": "#/$defs/non-empty-string"},
+        "emphasis": {"enum": ["focal", "normal", "background"]}
+      }
+    },
+    "flow": {
+      "type": "object", "additionalProperties": false, "required": ["id", "source", "target"],
+      "properties": {
+        "id": {"$ref": "#/$defs/non-empty-string"}, "source": {"$ref": "#/$defs/non-empty-string"},
+        "target": {"$ref": "#/$defs/non-empty-string"},
+        "channel": {"enum": ["sequence", "request", "response", "async"]},
+        "label": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

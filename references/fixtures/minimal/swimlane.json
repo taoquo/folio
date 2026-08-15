@@ -1,0 +1,16 @@
+{
+  "schema_version": "3.0",
+  "kind": "swimlane",
+  "title": "Untitled Swimlane",
+  "lanes": [
+    {"id": "lane-a", "label": "Lane A"},
+    {"id": "lane-b", "label": "Lane B"}
+  ],
+  "steps": [
+    {"id": "start", "label": "Start", "type": "terminal", "lane": "lane-a"},
+    {"id": "finish", "label": "Finish", "type": "terminal", "lane": "lane-b"}
+  ],
+  "flows": [
+    {"id": "handoff", "source": "start", "target": "finish", "channel": "request"}
+  ]
+}

@@ -20,7 +20,7 @@
 
 ## See Folio First
 
-Folio is a document design system for the AI era: eight document types, fourteen inline SVG diagram types, two standalone diagram artifact kinds, bilingual English/Chinese paths, and Web guidance for reading pages and product workspaces built for agent-generated deliverables.
+Folio is a document design system for the AI era: eight document types, twenty-two generator-backed Drawing DSL diagram types, bilingual English/Chinese paths, and Web guidance for reading pages and product workspaces built for agent-generated deliverables.
 
 It optimizes for stable, readable, professional output rather than novelty.
 
@@ -31,7 +31,7 @@ Read the full project text in [references/manifesto.md](references/manifesto.md)
 What matters on first contact:
 
 - eight document types, each with a stable editorial layout
-- standalone architecture and UML class diagram artifacts with `SVG + PNG + PDF` output
+- twenty-two structured diagram grammars with `SVG + PNG + PDF` output
 - bilingual English and Chinese generation paths
 - Web guidance for reading pages and product workspaces without turning Folio into a frontend framework
 - PDF- and PPTX-oriented outputs instead of generic HTML mockups
@@ -116,6 +116,11 @@ What matters on first contact:
       <b>Agent Session Model</b><br>
       UML domain model with interfaces, enum lifecycle state, composition, aggregation, and retrieval-memory associations.
     </td>
+    <td width="33.33%" valign="top">
+      <a href="assets/demos/demo-flowchart-v2.pdf"><img src="assets/demos/demo-flowchart-v2.png" alt="Drawing review flowchart preview"></a><br>
+      <b>Drawing Review Flow</b><br>
+      Drawing DSL V3 case with typed decisions, labelled branches, orthogonal routing, and accessible SVG metadata.
+    </td>
   </tr>
 </table>
 
@@ -124,7 +129,7 @@ What matters on first contact:
 1. Start with raw notes, a draft, source links, or a loose request like `make a one-pager for my startup`.
 2. Folio routes the request to the right document type and language path, then reshapes the content into a template-ready structure.
 3. The output lands as a stable PDF or PPTX with Folio's parchment canvas, serif hierarchy, and restrained cinnabar-coral accent.
-4. For standalone architecture or UML class requests, the output can also land as a reusable `SVG + PNG + PDF` diagram artifact.
+4. For any official diagram type, the output can also land as a reusable `SVG + PNG + PDF` artifact.
 
 ## Quick Start
 

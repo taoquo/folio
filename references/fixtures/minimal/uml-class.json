@@ -1,0 +1,9 @@
+{
+  "schema_version": "3.0",
+  "kind": "uml-class",
+  "title": "Untitled Class Diagram",
+  "types": [
+    {"id": "entity", "kind": "class", "name": "Entity"}
+  ],
+  "relationships": []
+}

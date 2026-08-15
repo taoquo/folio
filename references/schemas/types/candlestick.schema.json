@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/types/candlestick.schema.json",
+  "title": "Folio Candlestick Authoring Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "title", "periods"],
+  "properties": {
+    "schema_version": {"const": "3.0"},
+    "kind": {"const": "candlestick"},
+    "title": {"$ref": "#/$defs/non-empty-string"},
+    "unit": {"type": ["string", "null"], "maxLength": 12},
+    "locale": {"enum": ["en-US", "en-GB", "zh-CN", "zh-TW", null]},
+    "source": {"type": ["string", "null"], "maxLength": 256},
+    "value_format": {"$ref": "#/$defs/value-format"},
+    "periods": {"type": "array", "minItems": 1, "maxItems": 30, "items": {"$ref": "#/$defs/period"}},
+    "annotations": {"type": "array", "maxItems": 3, "items": {"$ref": "#/$defs/annotation"}},
+    "width": {"const": 960},
+    "height": {"const": 540},
+    "language": {"$ref": "#/$defs/non-empty-string"}
+  },
+  "$defs": {
+    "non-empty-string": {"type": "string", "pattern": ".*\\S.*", "maxLength": 64},
+    "value-format": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "precision": {"type": "integer", "minimum": 0, "maximum": 4},
+        "compact": {"type": "boolean"},
+        "grouping": {"type": "boolean"},
+        "unit_position": {"enum": ["auto", "prefix", "suffix"]}
+      }
+    },
+    "period": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "date", "open", "high", "low", "close"],
+      "properties": {
+        "id": {"$ref": "#/$defs/non-empty-string"},
+        "date": {"type": "string", "format": "date"},
+        "open": {"type": "number"},
+        "high": {"type": "number"},
+        "low": {"type": "number"},
+        "close": {"type": "number"}
+      }
+    },
+    "annotation": {
+      "type": "object", "additionalProperties": false, "required": ["id", "text", "period"],
+      "properties": {
+        "id": {"$ref": "#/$defs/non-empty-string"},
+        "text": {"type": "string", "pattern": ".*\\S.*", "maxLength": 48},
+        "period": {"$ref": "#/$defs/non-empty-string"},
+        "field": {"enum": ["open", "high", "low", "close"]}
+      }
+    }
+  }
+}

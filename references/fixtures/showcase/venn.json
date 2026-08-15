@@ -1,0 +1,42 @@
+{
+  "schema_version": "3.0",
+  "kind": "venn",
+  "title": "Where Design and Engineering Overlap",
+  "focus": [
+    "design"
+  ],
+  "sets": [
+    {
+      "id": "design",
+      "label": "Design System",
+      "exclusive": [
+        "Type scale",
+        "Color tokens",
+        "Motion curves"
+      ]
+    },
+    {
+      "id": "engineering",
+      "label": "Rendering Engine",
+      "exclusive": [
+        "Layout solver",
+        "Font shaping",
+        "Export pipeline"
+      ]
+    }
+  ],
+  "intersections": [
+    {
+      "id": "shared",
+      "sets": [
+        "design",
+        "engineering"
+      ],
+      "items": [
+        "Contrast budget",
+        "Grid alignment",
+        "Focus rules"
+      ]
+    }
+  ]
+}

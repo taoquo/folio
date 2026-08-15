@@ -1,0 +1,83 @@
+{
+  "schema_version": "3.0",
+  "kind": "line-chart",
+  "title": "Median Build Latency",
+  "unit": "s",
+  "locale": "en-US",
+  "source": "Render farm traces, weekly p50",
+  "x_scale": "ordinal",
+  "categories": [
+    "W1",
+    "W2",
+    "W3",
+    "W4",
+    "W5",
+    "W6",
+    "W7",
+    "W8"
+  ],
+  "series": [
+    {
+      "id": "cold",
+      "label": "Cold start",
+      "values": [
+        42,
+        39.5,
+        37.8,
+        31.2,
+        24.6,
+        21,
+        19.4,
+        18.1
+      ]
+    },
+    {
+      "id": "warm",
+      "label": "Warm pool",
+      "values": [
+        12.4,
+        11.8,
+        null,
+        9.6,
+        8.1,
+        7.4,
+        6.9,
+        6.5
+      ]
+    }
+  ],
+  "focus_series": "cold",
+  "missing_policy": "carry-forward",
+  "reference_lines": [
+    {
+      "id": "sla",
+      "label": "SLA ceiling",
+      "value": 25
+    },
+    {
+      "id": "target",
+      "label": "FY target",
+      "value": 15
+    }
+  ],
+  "annotations": [
+    {
+      "id": "warmpool",
+      "text": "Warm pool rollout",
+      "series": "cold",
+      "category": "W4"
+    },
+    {
+      "id": "gap",
+      "text": "Telemetry outage carried forward",
+      "series": "warm",
+      "category": "W3"
+    }
+  ],
+  "value_format": {
+    "precision": 1,
+    "compact": false,
+    "grouping": false,
+    "unit_position": "suffix"
+  }
+}

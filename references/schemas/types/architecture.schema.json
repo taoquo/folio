@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/types/architecture.schema.json",
+  "title": "Folio Architecture Semantic Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "title", "layout", "nodes", "edges"],
+  "properties": {
+    "schema_version": {"const": "3.0"},
+    "kind": {"const": "architecture"},
+    "title": {"$ref": "#/$defs/non-empty-string"},
+    "layout": {"enum": ["horizontal-layers", "vertical-stack", "hub-and-spoke"]},
+    "width": {"type": "integer", "minimum": 320},
+    "height": {"type": "integer", "minimum": 240},
+    "language": {"$ref": "#/$defs/non-empty-string"},
+    "subtitle": {"$ref": "#/$defs/nullable-string"},
+    "caption": {"$ref": "#/$defs/nullable-string"},
+    "focus": {"$ref": "#/$defs/nullable-string"},
+    "focus_path": {"type": "array", "items": {"$ref": "#/$defs/non-empty-string"}, "uniqueItems": true},
+    "focus_reason": {"$ref": "#/$defs/nullable-string"},
+    "layers": {"type": "array", "items": {"$ref": "#/$defs/layer"}},
+    "groups": {"type": "array", "items": {"$ref": "#/$defs/group"}},
+    "nodes": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/node"}},
+    "edges": {"type": "array", "items": {"$ref": "#/$defs/edge"}},
+    "legend": {"type": "array", "items": {"oneOf": [{"$ref": "#/$defs/non-empty-string"}, {"$ref": "#/$defs/legend-item"}]}}
+  },
+  "$defs": {
+    "non-empty-string": {"type": "string", "minLength": 1},
+    "nullable-string": {"type": ["string", "null"]},
+    "layer": {
+      "type": "object", "additionalProperties": false, "required": ["id", "label"],
+      "properties": {
+        "id": {"$ref": "#/$defs/non-empty-string"}, "label": {"$ref": "#/$defs/non-empty-string"},
+        "purpose": {"$ref": "#/$defs/nullable-string"}, "order": {"type": ["integer", "null"]},
+        "row_policy": {"enum": ["centered", "pipeline", "attachments-right", null]}
+      }
+    },
+    "group": {
+      "type": "object", "additionalProperties": false, "required": ["id", "label", "kind"],
+      "properties": {
+        "id": {"$ref": "#/$defs/non-empty-string"}, "label": {"$ref": "#/$defs/non-empty-string"},
+        "kind": {"$ref": "#/$defs/non-empty-string"}, "layer": {"$ref": "#/$defs/nullable-string"},
+        "members": {"type": "array", "items": {"$ref": "#/$defs/non-empty-string"}, "uniqueItems": true},
+        "layout_policy": {"enum": ["center-band", "pipeline", "sidecar", "stack", null]},
+        "side_label": {"$ref": "#/$defs/nullable-string"}, "summary": {"$ref": "#/$defs/nullable-string"}
+      }
+    },
+    "node": {
+      "type": "object", "additionalProperties": false, "required": ["id", "kind", "label"],
+      "properties": {
+        "id": {"$ref": "#/$defs/non-empty-string"}, "kind": {"enum": ["external", "service", "store", "cloud"]},
+        "label": {"$ref": "#/$defs/non-empty-string"}, "layer": {"$ref": "#/$defs/nullable-string"},
+        "sublabel": {"$ref": "#/$defs/nullable-string"}, "role": {"$ref": "#/$defs/nullable-string"},
+        "group": {"$ref": "#/$defs/nullable-string"}, "description": {"$ref": "#/$defs/nullable-string"},
+        "importance": {"enum": ["primary", "secondary", "background", null]},
+        "state_owner": {"type": ["boolean", "null"]},
+        "lifecycle_phase": {"enum": ["bootstrap", "runtime", "background", "shutdown", null]}
+      }
+    },
+    "edge": {
+      "type": "object", "additionalProperties": false, "required": ["source", "target", "kind"],
+      "properties": {
+        "source": {"$ref": "#/$defs/non-empty-string"}, "target": {"$ref": "#/$defs/non-empty-string"},
+        "kind": {"enum": ["primary", "secondary", "async"]}, "label": {"$ref": "#/$defs/nullable-string"},
+        "flow": {"$ref": "#/$defs/nullable-string"}, "interaction": {"$ref": "#/$defs/nullable-string"},
+        "priority": {"$ref": "#/$defs/nullable-string"}, "dashed": {"type": "boolean"},
+        "source_port": {"$ref": "#/$defs/nullable-string"}, "target_port": {"$ref": "#/$defs/nullable-string"},
+        "route_hint": {"$ref": "#/$defs/nullable-string"}, "phase": {"$ref": "#/$defs/nullable-string"}
+      }
+    },
+    "legend-item": {
+      "type": "object", "additionalProperties": false, "required": ["flow", "label"],
+      "properties": {
+        "flow": {"$ref": "#/$defs/non-empty-string"}, "label": {"$ref": "#/$defs/non-empty-string"},
+        "reason": {"$ref": "#/$defs/nullable-string"}
+      }
+    }
+  }
+}

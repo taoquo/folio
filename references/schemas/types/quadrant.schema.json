@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/types/quadrant.schema.json",
+  "title": "Folio Quadrant Authoring Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "title", "axes", "items"],
+  "properties": {
+    "schema_version": {"const": "3.0"}, "kind": {"const": "quadrant"},
+    "title": {"$ref": "#/$defs/non-empty-string"},
+    "axes": {
+      "type": "object", "additionalProperties": false, "required": ["x", "y"],
+      "properties": {"x": {"$ref": "#/$defs/axis"}, "y": {"$ref": "#/$defs/axis"}}
+    },
+    "items": {"type": "array", "minItems": 4, "maxItems": 12, "items": {"$ref": "#/$defs/item"}},
+    "preferred_region": {"enum": ["top-left", "top-right", "bottom-left", "bottom-right", null]},
+    "width": {"type": "integer", "minimum": 320}, "height": {"type": "integer", "minimum": 240},
+    "language": {"$ref": "#/$defs/non-empty-string"}
+  },
+  "$defs": {
+    "non-empty-string": {"type": "string", "minLength": 1},
+    "axis": {
+      "type": "object", "additionalProperties": false, "required": ["label", "low", "high"],
+      "properties": {
+        "label": {"$ref": "#/$defs/non-empty-string"}, "low": {"$ref": "#/$defs/non-empty-string"},
+        "high": {"$ref": "#/$defs/non-empty-string"}
+      }
+    },
+    "item": {
+      "type": "object", "additionalProperties": false, "required": ["id", "label", "x", "y"],
+      "properties": {
+        "id": {"$ref": "#/$defs/non-empty-string"}, "label": {"$ref": "#/$defs/non-empty-string"},
+        "x": {"type": "number", "minimum": 0, "maximum": 1},
+        "y": {"type": "number", "minimum": 0, "maximum": 1},
+        "emphasis": {"enum": ["focal", "normal"]}
+      }
+    }
+  }
+}

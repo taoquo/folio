@@ -1,0 +1,105 @@
+{
+  "schema_version": "3.0",
+  "kind": "tree",
+  "title": "Publishing Platform Ownership",
+  "focus_root": "core",
+  "nodes": [
+    {
+      "id": "platform",
+      "label": "Platform",
+      "subtitle": "12 engineers"
+    },
+    {
+      "id": "core",
+      "label": "Core Rendering",
+      "subtitle": "5 engineers"
+    },
+    {
+      "id": "quality",
+      "label": "Quality",
+      "subtitle": "3 engineers"
+    },
+    {
+      "id": "delivery",
+      "label": "Delivery",
+      "subtitle": "4 engineers"
+    },
+    {
+      "id": "typeset",
+      "label": "Typesetting",
+      "subtitle": "WeasyPrint"
+    },
+    {
+      "id": "fonts",
+      "label": "Font Pipeline",
+      "subtitle": "shaping cache"
+    },
+    {
+      "id": "gates",
+      "label": "Visual Gates",
+      "subtitle": "12 checks"
+    },
+    {
+      "id": "baselines",
+      "label": "Baselines",
+      "subtitle": "digest store"
+    },
+    {
+      "id": "cdn",
+      "label": "CDN Edge",
+      "subtitle": "signed URLs"
+    },
+    {
+      "id": "api",
+      "label": "Public API",
+      "subtitle": "rate limited"
+    }
+  ],
+  "relations": [
+    {
+      "id": "r1",
+      "parent": "platform",
+      "child": "core"
+    },
+    {
+      "id": "r2",
+      "parent": "platform",
+      "child": "quality"
+    },
+    {
+      "id": "r3",
+      "parent": "platform",
+      "child": "delivery"
+    },
+    {
+      "id": "r4",
+      "parent": "core",
+      "child": "typeset"
+    },
+    {
+      "id": "r5",
+      "parent": "core",
+      "child": "fonts"
+    },
+    {
+      "id": "r6",
+      "parent": "quality",
+      "child": "gates"
+    },
+    {
+      "id": "r7",
+      "parent": "quality",
+      "child": "baselines"
+    },
+    {
+      "id": "r8",
+      "parent": "delivery",
+      "child": "cdn"
+    },
+    {
+      "id": "r9",
+      "parent": "delivery",
+      "child": "api"
+    }
+  ]
+}

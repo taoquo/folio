@@ -1,0 +1,9 @@
+{
+  "schema_version": "3.0",
+  "kind": "waterfall",
+  "title": "Untitled Waterfall",
+  "start": 0,
+  "contributions": [
+    {"id": "change", "label": "Change", "value": 1}
+  ]
+}

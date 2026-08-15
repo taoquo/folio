@@ -1,0 +1,13 @@
+{
+  "schema_version": "3.0",
+  "kind": "line-chart",
+  "title": "Validation Pass Rate",
+  "unit": "%",
+  "categories": ["Gate S", "V3", "V4", "V4.3", "V5"],
+  "series": [
+    {"id": "valid", "label": "Valid fixtures", "values": [84, 90, 94, 97, 100]},
+    {"id": "invalid", "label": "Invalid fixtures rejected", "values": [78, 88, 93, 98, 100]}
+  ],
+  "focus_series": "valid",
+  "missing_policy": "gap"
+}

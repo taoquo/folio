@@ -9,7 +9,7 @@ description: 'Typeset professional documents: one-pagers, long docs, letters, po
 
 For documents worth keeping. One design language across eight document types: warm parchment canvas, cinnabar-coral accent, serif-led hierarchy, tight editorial rhythm.
 
-Folio delivers professional documents across eight templates and fourteen diagram types.
+Folio delivers professional documents across eight templates and twenty-two diagram types.
 
 ## Step 0 · Load brand profile (if exists)
 
@@ -147,32 +147,52 @@ If a page mixes reading and workspace behavior, separate the reading region from
 
 ### Diagrams (primitives, not a 7th doc type)
 
-When the user asks for a standalone **architecture diagram** or **UML class diagram**, use the diagram artifact pipeline first.
+When the user asks for any of the twenty-two official diagram types, use the diagram artifact pipeline first.
 
 - standalone request -> generate `SVG + PNG + PDF`
-- HTML document request -> generate the diagram `SVG`, then embed it into a `<figure>`
-- slides request -> generate the diagram `SVG`, then place the derived image artifact into the slide
+- HTML document request -> create an explicit `<figure data-folio-diagram-slot="...">`, then use `scripts/folio.py embed-drawing`
+- slides request -> create a named `folio-diagram-slot:<id>` shape, then use `scripts/folio.py embed-drawing`
 
-When the user asks for **a diagram inside** a document or deck and it is not one of the generator-backed standalone artifact kinds, route to `assets/diagrams/` rather than a top-level template. Common hosts: long-doc, portfolio, one-pager, equity-report, and slides.
+When the user asks for **a diagram inside** a document or deck, use the host workflow in `references/drawing-dsl-authoring.md`: select A4, Letter, responsive HTML, or 16:9; provide an insight-led caption; embed through the compiler-backed slot; then run `verify-drawing-host`. Data charts must retain the generated summary and exact accessible table fallback. Common hosts: long-doc, portfolio, one-pager, equity-report, and slides. Keep `assets/diagrams/*.html` as parity references and manual escape hatches, not the default production source.
 
-| User says                                                      | Diagram       | Template                             |
-| -------------------------------------------------------------- | ------------- | ------------------------------------ |
-| "架构图 / architecture / 系统图 / components diagram"          | Architecture  | `assets/diagrams/architecture.html`  |
-| "流程图 / flowchart / 决策流 / branching logic"                | Flowchart     | `assets/diagrams/flowchart.html`     |
-| "象限图 / quadrant / 优先级矩阵 / 2×2 matrix"                  | Quadrant      | `assets/diagrams/quadrant.html`      |
-| "柱状图 / bar chart / 分类对比 / grouped bars"                 | Bar Chart     | `assets/diagrams/bar-chart.html`     |
-| "折线图 / line chart / 趋势 / 股价 / time series"              | Line Chart    | `assets/diagrams/line-chart.html`    |
-| "环形图 / donut / pie / 占比 / 分布结构"                       | Donut Chart   | `assets/diagrams/donut-chart.html`   |
-| "状态机 / state machine / 状态图 / lifecycle"                  | State Machine | `assets/diagrams/state-machine.html` |
-| "时间线 / timeline / 里程碑 / milestones / roadmap"            | Timeline      | `assets/diagrams/timeline.html`      |
-| "泳道图 / swimlane / 跨角色流程 / cross-team flow"             | Swimlane      | `assets/diagrams/swimlane.html`      |
-| "树状图 / tree / hierarchy / 层级 / 组织架构"                  | Tree          | `assets/diagrams/tree.html`          |
-| "分层图 / layer stack / 分层架构 / OSI / stack"                | Layer Stack   | `assets/diagrams/layer-stack.html`   |
-| "维恩图 / venn / 交集 / overlap / 集合关系"                    | Venn          | `assets/diagrams/venn.html`          |
-| "K 线 / candlestick / OHLC / 股价走势 / price history"         | Candlestick   | `assets/diagrams/candlestick.html`   |
-| "瀑布图 / waterfall / 收入桥 / revenue bridge / decomposition" | Waterfall     | `assets/diagrams/waterfall.html`     |
+When chart data is supplied as a local CSV or TSV, create an explicit tabular import config and run `scripts/folio.py import-chart-data` before validation or rendering. Never infer encoding, delimiter, header, numeric separators, date order, missing policy, or column mapping. Reject remote sources and formula-like cells.
 
-Read `references/diagrams.md` before drawing - it has the selection guide, folio token map, and the AI-slop anti-pattern table. For HTML documents, extract the `<svg>` block from the template and drop it into a `<figure>`. For slides, reuse the diagram structure as a slide visual instead of treating the HTML file itself as a deliverable.
+When the user supplies an existing Mermaid or draw.io diagram, run `scripts/folio.py import-diagram <source> [--dialect mermaid|drawio] --output <json> --ledger-output <json>` first, then validate and render the generated JSON. Report the fidelity ledger's downgraded and dropped features to the user instead of silently reshaping their diagram. Never fetch remote diagram sources and never hand-translate a source that exceeds the import budgets; ask the user to split it.
+
+When the diagram type is not stated, route first: run `scripts/folio.py route-diagram --content "..." [--audience executive|general|practitioner] [--goal compare|convince|explain|track]`. The router maps intent to one of eight semantic patterns (`architecture`, `comparison`, `data`, `flow`, `hierarchy`, `relationship`, `state`, `time`) and returns a single kind plus a readable trace. Pass `--pattern` or `--kind` to override, and treat an unroutable result as a signal to write prose instead of drawing. See `references/drawing-dsl.md` for the request schema and diagnostics.
+
+| User says                                                      | Diagram       | V3 kind         |
+| -------------------------------------------------------------- | ------------- | --------------- |
+| "架构图 / architecture / 系统图 / components diagram"          | Architecture  | `architecture`  |
+| "流程图 / flowchart / 决策流 / branching logic"                | Flowchart     | `flowchart`     |
+| "象限图 / quadrant / 优先级矩阵 / 2×2 matrix"                  | Quadrant      | `quadrant`      |
+| "柱状图 / bar chart / 分类对比 / grouped bars"                 | Bar Chart     | `bar-chart`     |
+| "折线图 / line chart / 趋势 / 股价 / time series"              | Line Chart    | `line-chart`    |
+| "环形图 / donut / pie / 占比 / 分布结构"                       | Donut Chart   | `donut-chart`   |
+| "状态机 / state machine / 状态图 / lifecycle"                  | State Machine | `state-machine` |
+| "时间线 / timeline / 里程碑 / milestones / roadmap"            | Timeline      | `timeline`      |
+| "泳道图 / swimlane / 跨角色流程 / cross-team flow"             | Swimlane      | `swimlane`      |
+| "树状图 / tree / hierarchy / 层级 / 组织架构"                  | Tree          | `tree`          |
+| "分层图 / layer stack / 分层架构 / OSI / stack"                | Layer Stack   | `layer-stack`   |
+| "维恩图 / venn / 交集 / overlap / 集合关系"                    | Venn          | `venn`          |
+| "K 线 / candlestick / OHLC / 股价走势 / price history"         | Candlestick   | `candlestick`   |
+| "瀑布图 / waterfall / 收入桥 / revenue bridge / decomposition" | Waterfall     | `waterfall`     |
+| "时序图 / sequence / 调用顺序 / request interaction"           | Sequence      | `sequence`      |
+| "UML 类图 / class diagram / domain model / types"              | UML Class     | `uml-class`     |
+| "ER 图 / entity relationship / 数据模型 / database schema"     | ER Diagram    | `er-diagram`    |
+| "金字塔 / pyramid / 漏斗 / funnel / 分层收敛"                  | Pyramid       | `pyramid`       |
+| "组织架构图 / org chart / 汇报线 / reporting line / headcount" | Org Chart     | `org-chart`     |
+| "飞轮 / flywheel / 增强回路 / virtuous cycle / 自增强循环"      | Loop Flywheel | `loop-flywheel` |
+| "散点图 / scatter / 相关性 / correlation / X 对 Y"             | Scatter       | `scatter`       |
+| "甘特图 / gantt / 排期 / sprint plan / workstream schedule"    | Gantt         | `gantt`         |
+
+Read `references/diagrams.md`, `references/drawing-dsl.md`, and `references/drawing-dsl-authoring.md` before drawing. For HTML documents and slides, use explicit host slots so fit, trace metadata, alt text, captions, and stale checks remain enforceable.
+
+All twenty-two types use type-specific semantic and plan models followed by shared scene primitives and SVG serialization. Also read `references/drawing-architecture.md` for Architecture. Do not add pixel-level intent to semantic planners or visual-semantic branches to the SVG renderer.
+
+**Theme profiles.** Every drawing subcommand accepts `--theme folio|dark|terminal`, defaulting to `folio`. A theme is a full palette swap applied after layout, so geometry, reading order, and accessible data never change. Use `dark` or `terminal` only when the host surface is dark; keep `folio` for print documents. Registering a project palette goes through `drawing.theme.register_theme_profile`, which rejects any palette that fails WCAG contrast. See section 12 of `references/drawing-dsl-authoring.md`.
+
+**Output knobs.** `render-drawing` and `batch-render-drawings` also accept `--size compact|standard|wide` (export width 1280 / 1920 / 2560), `--detail essential|standard|full` (gridline and annotation density), `--audience executive|general|practitioner` (`executive` bumps sub-10pt text by 1pt), and `--variant plain|sketchy|motion` (hand-drawn stroke filter, or a reduced-motion-aware staggered reveal). These are render-layer flags, not payload fields; putting them in a payload fails with `ERROR BC000`. `page-preview` ignores `--size`, and `motion` degrades to `plain` for PNG and PDF. See section 13 of `references/drawing-dsl-authoring.md`.
 
 Before drawing, always ask: **would a well-written paragraph teach the reader less than this diagram?** If no, don't draw.
 
@@ -191,6 +211,9 @@ Before drawing, always ask: **would a well-written paragraph teach the reader le
 | Hierarchical data with depth ≥ 2                                       | Tree           |
 | Process with decision branches                                         | Flowchart      |
 | Cross-team or cross-role process with ≥ 3 actors                       | Swimlane       |
+| Ordered request/response interactions among 2-6 participants           | Sequence       |
+| Software types, members, inheritance, and associations                 | UML Class      |
+| Database entities, keys, fields, and cardinalities                     | ER Diagram     |
 | Set overlaps or shared attributes between 2-3 groups                   | Venn           |
 | Category comparison, single series, no time axis                       | Bar Chart      |
 

@@ -1,0 +1,35 @@
+{
+  "schema_version": "3.0",
+  "kind": "loop-flywheel",
+  "title": "Quality Compounding Loop",
+  "hub": "Fewer regressions each release",
+  "focus": "baseline",
+  "stages": [
+    {
+      "id": "ship",
+      "label": "Ship a change",
+      "detail": "Every merge renders the full diagram catalog"
+    },
+    {
+      "id": "detect",
+      "label": "Detect drift",
+      "detail": "Digest comparison flags any pixel-level change"
+    },
+    {
+      "id": "baseline",
+      "label": "Explain the diff",
+      "detail": "Author states intent or fixes the regression",
+      "emphasis": "focal"
+    },
+    {
+      "id": "encode",
+      "label": "Encode the rule",
+      "detail": "Recurring findings become an automated gate"
+    },
+    {
+      "id": "trust",
+      "label": "Raise the floor",
+      "detail": "New diagrams inherit every past lesson"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+sequenceDiagram
+    actor author as Author
+    participant compiler as Compiler
+    participant store as Artifact Store
+    author->>compiler: Submit source
+    compiler-)store: Write artifact
+    store-->>compiler: Artifact URI
+    compiler-->>author: Build complete

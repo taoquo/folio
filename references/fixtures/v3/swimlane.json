@@ -1,0 +1,25 @@
+{
+  "schema_version": "3.0",
+  "kind": "swimlane",
+  "title": "Diagram Compilation Request Flow",
+  "focus_lane": "compiler",
+  "focus_path": ["compile", "validate"],
+  "lanes": [
+    {"id": "client", "label": "Client"},
+    {"id": "compiler", "label": "Compiler"},
+    {"id": "storage", "label": "Storage"}
+  ],
+  "steps": [
+    {"id": "request", "type": "terminal", "lane": "client", "label": "Submit request"},
+    {"id": "compile", "type": "action", "lane": "compiler", "label": "Compile plan"},
+    {"id": "load", "type": "data", "lane": "storage", "label": "Load assets"},
+    {"id": "validate", "type": "action", "lane": "compiler", "label": "Validate scene"},
+    {"id": "response", "type": "terminal", "lane": "client", "label": "Return artifact"}
+  ],
+  "flows": [
+    {"id": "request-flow", "source": "request", "target": "compile", "channel": "request", "label": "request"},
+    {"id": "asset-read", "source": "compile", "target": "load", "channel": "request", "label": "read"},
+    {"id": "asset-return", "source": "load", "target": "validate", "channel": "response", "label": "assets"},
+    {"id": "result", "source": "validate", "target": "response", "channel": "response", "label": "artifact"}
+  ]
+}

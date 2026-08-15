@@ -1,0 +1,1397 @@
+{
+  "schema_version": "3.0",
+  "versions": {
+    "catalog_fixture": "3.0",
+    "drawing_core": "3.0"
+  },
+  "catalog_fixture": "references/fixtures/diagram-catalog.json",
+  "coverage": {
+    "catalog_types": 22,
+    "drawing_dsl": 22,
+    "drawing_dsl_v2": 0,
+    "drawing_dsl_v3": 0,
+    "html_template_baseline": 0
+  },
+  "contact_sheets": [
+    {
+      "path": "assets/demos/drawing-dsl-v5-all-types.png",
+      "sha256": "a46c0192598b214805aef378e92f0f1b2a245cd7498b96b18ca3b7598830110f"
+    },
+    {
+      "path": "assets/demos/drawing-dsl-v5-supported-types.png",
+      "sha256": "602bc96c30ebccb422d370841fd4664545a8ac00ccb5f5e13ba43fae33165db8"
+    }
+  ],
+  "diagrams": [
+    {
+      "kind": "architecture",
+      "label": "Architecture",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/architecture-demo.json",
+      "png": "assets/diagrams/generated/catalog/png/architecture.png",
+      "svg": "assets/diagrams/generated/catalog/svg/architecture.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/architecture.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "architecture@3",
+      "semantic_ids": [
+        "input",
+        "scene",
+        "scheduler",
+        "world",
+        "systems",
+        "components",
+        "resources"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        104,
+        102,
+        1169,
+        719
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 1065,
+        "content_height": 617,
+        "bounding_box_ratio": 0.301879,
+        "semantic_nodes": 7,
+        "visual_nodes": 7,
+        "edges": 7,
+        "edge_labels": 5,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 6,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "4643aad9023c02bbed93268162970daf590638a6b8d99490bface44333c37322",
+        "input": "1781e1e5e60fed9bd0f7fcc16559b0a95e3b59ff25cb50d38898e4354661bd4e",
+        "svg": "9c8133c3002c45d73ad00cf9c1c8c1b72ebf00ff92be58509a1877f8f3cb49e9",
+        "pdf": "708050fad6cbae55d57d435a278e3090e927b67eb23f1bb9e9095ac4bf6b4819"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "flowchart",
+      "label": "Flowchart",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/flowchart/branching.json",
+      "png": "assets/diagrams/generated/catalog/png/flowchart.png",
+      "svg": "assets/diagrams/generated/catalog/svg/flowchart.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/flowchart.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "flowchart@2",
+      "semantic_ids": [
+        "start",
+        "review",
+        "publish",
+        "repair",
+        "end"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          512,
+          608
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        132,
+        131,
+        1108,
+        1467
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 976,
+        "content_height": 1336,
+        "bounding_box_ratio": 0.599039,
+        "semantic_nodes": 5,
+        "visual_nodes": 5,
+        "edges": 5,
+        "edge_labels": 3,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 8,
+        "spine_bends": 4,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "92468ab5e96b41681d4d2c066c131f770b0215a41a13d6080abf9f83e1663e89",
+        "input": "716dc64d01f794aeebddd3e178a56c574e8758246e38766997fe85930390ac30",
+        "svg": "4b8996e95e16e7866bb743c17c1cd166c1bf3a4682b71a278f82d6440346e6db",
+        "pdf": "5cc24d94a78531b45f8e01cacb155d99746ae11397042309d023897d770144a4"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "quadrant",
+      "label": "Quadrant",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v3/quadrant.json",
+      "png": "assets/diagrams/generated/catalog/png/quadrant.png",
+      "svg": "assets/diagrams/generated/catalog/svg/quadrant.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/quadrant.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "quadrant@3",
+      "semantic_ids": [
+        "venn",
+        "state",
+        "timeline",
+        "quadrant",
+        "waterfall",
+        "donut",
+        "candle",
+        "uml"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        111,
+        104,
+        1134,
+        828
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 1023,
+        "content_height": 724,
+        "bounding_box_ratio": 0.340262,
+        "semantic_nodes": 8,
+        "visual_nodes": 8,
+        "edges": 0,
+        "edge_labels": 0,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 0,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "d4d3ceb5de5a0049a18a4bba558300e4ece5350d27da9b3a0495629c076621b7",
+        "input": "08ae32fee0750b70799c173766c10baaf8d6f6577b18127b4b8362eb14558c49",
+        "svg": "81e46fc752ecf34e97eb09faceccbb153b282ff6d47c16c596037d787f900118",
+        "pdf": "6d48df2f5aa667f0926a5c516f1f4680720e4e5efb5c54a8768403ecb641257f"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "bar-chart",
+      "label": "Bar Chart",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v3/bar-chart.json",
+      "png": "assets/diagrams/generated/catalog/png/bar-chart.png",
+      "svg": "assets/diagrams/generated/catalog/svg/bar-chart.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/bar-chart.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "bar-chart@3",
+      "semantic_ids": [
+        "bar:covered:47cfe5eb8a",
+        "bar:covered:8b336cdf52",
+        "bar:covered:bc5d84bed7",
+        "bar:covered:25c039d858",
+        "bar:covered:79df3742da",
+        "bar:legacy:47cfe5eb8a",
+        "bar:legacy:8b336cdf52",
+        "bar:legacy:bc5d84bed7",
+        "bar:legacy:25c039d858",
+        "bar:legacy:79df3742da"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        102,
+        97,
+        1130,
+        600
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 1028,
+        "content_height": 503,
+        "bounding_box_ratio": 0.237553,
+        "semantic_nodes": 10,
+        "visual_nodes": 10,
+        "edges": 0,
+        "edge_labels": 0,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 0,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "d61c34be5622b086fd46822ecb6b26607f2d6868cd64ad5eaf96c70eb502a4cf",
+        "input": "b8f4e8b2921c336cb6c315724bbeeb3ebc118796631b1a1df160994a93d980a8",
+        "svg": "b429a383137aec8523da949be0a63af940d6b552f14d4244f046ef2d25cb42bd",
+        "pdf": "126c82ad1e3492bec5867c534adbf178a098a4175d2c7a0962dd6ef2797df801"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "line-chart",
+      "label": "Line Chart",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v3/line-chart.json",
+      "png": "assets/diagrams/generated/catalog/png/line-chart.png",
+      "svg": "assets/diagrams/generated/catalog/svg/line-chart.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/line-chart.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "line-chart@3",
+      "semantic_ids": [
+        "point:valid:5ab0409778",
+        "point:valid:8b336cdf52",
+        "point:valid:bc5d84bed7",
+        "point:valid:25c039d858",
+        "point:valid:79df3742da",
+        "point:invalid:5ab0409778",
+        "point:invalid:8b336cdf52",
+        "point:invalid:bc5d84bed7",
+        "point:invalid:25c039d858",
+        "point:invalid:79df3742da"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        101,
+        97,
+        1116,
+        611
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 1015,
+        "content_height": 514,
+        "bounding_box_ratio": 0.239678,
+        "semantic_nodes": 10,
+        "visual_nodes": 10,
+        "edges": 0,
+        "edge_labels": 0,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 0,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "1ef4231c7154de4d615286d407fde64d0fac5bd36cad922cf0a847e06cda6bd5",
+        "input": "eaf755963f9771e6b886ba93ee7e1433f0dc98a8bde9e25bf07aed3807db598e",
+        "svg": "291c5838781b8390fab985d919ee5b66dabae8dca3e73199bb4d4a9d3e7e90f6",
+        "pdf": "01f61ff76927703a4aefba5236680c01a2d6ac3710636a139613f47e56c51b45"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "donut-chart",
+      "label": "Donut Chart",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v3/donut-chart.json",
+      "png": "assets/diagrams/generated/catalog/png/donut-chart.png",
+      "svg": "assets/diagrams/generated/catalog/svg/donut-chart.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/donut-chart.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "donut-chart@3",
+      "semantic_ids": [
+        "segment:structural",
+        "segment:positional",
+        "segment:notation",
+        "segment:data-viz"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        108,
+        104,
+        1098,
+        811
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 990,
+        "content_height": 707,
+        "bounding_box_ratio": 0.321553,
+        "semantic_nodes": 4,
+        "visual_nodes": 4,
+        "edges": 0,
+        "edge_labels": 0,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 0,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "993e8ddf233d526a6004d30e0a37171a091cfc5ec2d15c2489fb39a294329eed",
+        "input": "a33ab2cb1ac6b7c92698316907e4fcb22f9d9b6702f38a4d5ab35d8976502b9c",
+        "svg": "e62d6f897feb99b1cb9ae6292667e7ad2ff339132ff5b05b802b2846c32d83c4",
+        "pdf": "214db4a625b5883965dc64f1a0baeb0d0d927e583915e2f4c642e0c314b795e9"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "state-machine",
+      "label": "State Machine",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v3/state-machine.json",
+      "png": "assets/diagrams/generated/catalog/png/state-machine.png",
+      "svg": "assets/diagrams/generated/catalog/svg/state-machine.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/state-machine.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "state-machine@3",
+      "semantic_ids": [
+        "initial",
+        "idle",
+        "active",
+        "processing",
+        "done",
+        "final"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          288
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        99,
+        97,
+        1141,
+        341
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 1042,
+        "content_height": 244,
+        "bounding_box_ratio": 0.116804,
+        "semantic_nodes": 6,
+        "visual_nodes": 6,
+        "edges": 6,
+        "edge_labels": 4,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 6,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "013d6c1bd234a41eeda0370edca974daaa70771231bfbfb1cb3c5e907bdfc35f",
+        "input": "6ccb3ef7d231e6df6bca9e5142f9cf5805a7daf2c0007a2b9ecd006bc30d1553",
+        "svg": "dc05772a005366c75ecd700b65fbb9c35414f6f37d7e9d0efe8ce4d52221a1d7",
+        "pdf": "a7d2556861b353ae23b8bd3779801d83b0919a5fc4c93e3f8d2a1bf028c20305"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "timeline",
+      "label": "Timeline",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v3/timeline.json",
+      "png": "assets/diagrams/generated/catalog/png/timeline.png",
+      "svg": "assets/diagrams/generated/catalog/svg/timeline.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/timeline.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "timeline@3",
+      "semantic_ids": [
+        "audit",
+        "gate-s",
+        "v3",
+        "v4",
+        "v43",
+        "v5",
+        "release"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        101,
+        97,
+        1133,
+        503
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 1032,
+        "content_height": 406,
+        "bounding_box_ratio": 0.192488,
+        "semantic_nodes": 7,
+        "visual_nodes": 7,
+        "edges": 0,
+        "edge_labels": 0,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 0,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "3be0916374243d81e8809ce7f9f4d329bbebc69763d19dd31daf1ed4ef318ca0",
+        "input": "9f1281022dc468dd817017df2a04beddff4a5eb02ed8f5f2c598f733d1879cfc",
+        "svg": "624e529e6f7809dd1a95e248a8014110f83a62df3f54c8e174e6b37a374ccdf8",
+        "pdf": "a329c3d1890b1824c543db6de3a67d60192db6a88e1e20507ee732238ce3dff4"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "swimlane",
+      "label": "Swimlane",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v3/swimlane.json",
+      "png": "assets/diagrams/generated/catalog/png/swimlane.png",
+      "svg": "assets/diagrams/generated/catalog/svg/swimlane.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/swimlane.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "swimlane@3",
+      "semantic_ids": [
+        "request",
+        "compile",
+        "load",
+        "validate",
+        "response"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        99,
+        97,
+        1141,
+        675
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 1042,
+        "content_height": 578,
+        "bounding_box_ratio": 0.27669,
+        "semantic_nodes": 5,
+        "visual_nodes": 5,
+        "edges": 4,
+        "edge_labels": 4,
+        "focus": 2,
+        "crossings": 0,
+        "bends": 8,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "ee97c6e35f25b710c78021e05d89324a4fb226406a6a97433529d79e9331d8e6",
+        "input": "cf6892927660612aceb0a04354d5844c1d0649d9f54785b87de97602577edf64",
+        "svg": "d063d9a092ec4b51f4dff04272ab5938701f63478c2fcf8a07b1fc1ae61b9c4f",
+        "pdf": "635bb535826c351bd544b5fbcd9433645728242e82f7c4ca537b0cfa2d599409"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "tree",
+      "label": "Tree",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v3/tree.json",
+      "png": "assets/diagrams/generated/catalog/png/tree.png",
+      "svg": "assets/diagrams/generated/catalog/svg/tree.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/tree.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "tree@3",
+      "semantic_ids": [
+        "core",
+        "structural",
+        "data-viz",
+        "state",
+        "swimlane",
+        "tree",
+        "scale",
+        "series"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        100,
+        97,
+        1141,
+        601
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 1041,
+        "content_height": 504,
+        "bounding_box_ratio": 0.241035,
+        "semantic_nodes": 8,
+        "visual_nodes": 8,
+        "edges": 7,
+        "edge_labels": 0,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 14,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "a5f0febcd9bf839f1cb4924e6a1a948bcb86452f53b331ae1ff32b56743c779b",
+        "input": "df6834ed82e761de45cf08a59ac2fd59bb620d3469dd89d5a72680f35cc6495a",
+        "svg": "d2a38874e5e86ff00422919c4db876eadef2d57a9b8267b14f19cd56105cd1dc",
+        "pdf": "6a6960bbb8a52e3edf65f08847525e96451c406b74754877645d6b097970a46d"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "layer-stack",
+      "label": "Layer Stack",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v3/layer-stack.json",
+      "png": "assets/diagrams/generated/catalog/png/layer-stack.png",
+      "svg": "assets/diagrams/generated/catalog/svg/layer-stack.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/layer-stack.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "layer-stack@3",
+      "semantic_ids": [
+        "presentation",
+        "semantic",
+        "planning",
+        "layout",
+        "rendering"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        104,
+        102,
+        1136,
+        724
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 1032,
+        "content_height": 622,
+        "bounding_box_ratio": 0.294896,
+        "semantic_nodes": 5,
+        "visual_nodes": 5,
+        "edges": 4,
+        "edge_labels": 0,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 0,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "d88f8db9ba0fa83a29c759475e5eb3c1e7993e3f0c0bd18ca2502802e73ed188",
+        "input": "e485665477cd2030d5c701f0bbab824d70af424e3b22f24e53d53d1236332fc2",
+        "svg": "98252aa2691df89aec51832e37ee2e9b90befec488a829f9452aed9f571b36e9",
+        "pdf": "b8203baff7e4fccd47be5ab7153ad37585b0652677d2f2a047ce7887d472956f"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "venn",
+      "label": "Venn",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v3/venn.json",
+      "png": "assets/diagrams/generated/catalog/png/venn.png",
+      "svg": "assets/diagrams/generated/catalog/svg/venn.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/venn.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "venn@3",
+      "semantic_ids": [
+        "set:core",
+        "set:grammar",
+        "intersection:shared"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        110,
+        107,
+        1131,
+        809
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 1021,
+        "content_height": 702,
+        "bounding_box_ratio": 0.329277,
+        "semantic_nodes": 2,
+        "visual_nodes": 3,
+        "edges": 0,
+        "edge_labels": 0,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 0,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "474cf90ec14157a224d9fa8add6ade394f11f66b6c0f3e4302d58d2e8ba109c9",
+        "input": "bbe24eeafcff57301896533d8c13844e2eb33ed13380de75073b134ae215d6b1",
+        "svg": "a96406130bf183eee6d180602c145dfc20707ea6c908070fc8c752387604ea7f",
+        "pdf": "54455a0d149c988939ae563011b85d37575e358c64835fbdb96a31ae709bead6"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "pyramid",
+      "label": "Pyramid",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v5/pyramid.json",
+      "png": "assets/diagrams/generated/catalog/png/pyramid.png",
+      "svg": "assets/diagrams/generated/catalog/svg/pyramid.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/pyramid.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "pyramid@3",
+      "semantic_ids": [
+        "aware",
+        "trial",
+        "habit",
+        "advocate"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        101,
+        99,
+        1097,
+        691
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 996,
+        "content_height": 592,
+        "bounding_box_ratio": 0.270882,
+        "semantic_nodes": 4,
+        "visual_nodes": 4,
+        "edges": 0,
+        "edge_labels": 0,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 0,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "bb4e8e94da28124f95dcd78f99a2c41391e23fedeff035a24b1505b686b96bae",
+        "input": "69adc98e9855e49d5439ad7d91da2757ec1f9b8bdd29d31e3f884ffd264aa89f",
+        "svg": "cd6bae1c9b3739721d75a8c5a21badc13433ad266f33d3e67e627d8139950a13",
+        "pdf": "0e454473d9f7374fd1eb3e4104d693f085b757110fe78868b6a74ee8df24d041"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "org-chart",
+      "label": "Org Chart",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v5/org-chart.json",
+      "png": "assets/diagrams/generated/catalog/png/org-chart.png",
+      "svg": "assets/diagrams/generated/catalog/svg/org-chart.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/org-chart.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "org-chart@3",
+      "semantic_ids": [
+        "head",
+        "brand",
+        "product",
+        "typo",
+        "color",
+        "web",
+        "docs"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        100,
+        98,
+        1140,
+        611
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 1040,
+        "content_height": 513,
+        "bounding_box_ratio": 0.245103,
+        "semantic_nodes": 7,
+        "visual_nodes": 7,
+        "edges": 0,
+        "edge_labels": 0,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 0,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "1204b4fd7e0f7c16a98578dfee34881691822d5e39d1cf20dfaf7e18a80b9ff1",
+        "input": "6e50bddcf05e719c59d571a8090659c0139e40776620c2fa4b0744d9b05bda4f",
+        "svg": "14f02c594779b7e5656362b24a1ceb41c155718637430bdfd7d6710f4a003b1f",
+        "pdf": "55b7dda7c13d8e4912fc1f25bebafdfd932baac9c3ed0075481df2b4325da8b1"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "loop-flywheel",
+      "label": "Loop Flywheel",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v5/loop-flywheel.json",
+      "png": "assets/diagrams/generated/catalog/png/loop-flywheel.png",
+      "svg": "assets/diagrams/generated/catalog/svg/loop-flywheel.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/loop-flywheel.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "loop-flywheel@3",
+      "semantic_ids": [
+        "publish",
+        "cite",
+        "feedback",
+        "refine"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        104,
+        102,
+        1080,
+        810
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 976,
+        "content_height": 708,
+        "bounding_box_ratio": 0.317455,
+        "semantic_nodes": 4,
+        "visual_nodes": 4,
+        "edges": 0,
+        "edge_labels": 0,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 0,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "ba9a1f573e989213e5f7a87a6af56ce839cca960b61d3c58c35a149e1679b921",
+        "input": "8390f9f0ae5eb0db1e498983dfbf0576bded33c1eca9278c791769f543ad0306",
+        "svg": "55cbcc8bed3f185081a585c200636d14c62efcaa859fd34e27d0224bb4f0ee94",
+        "pdf": "a4d27ddffb8c57ef102cdbe81015dafb02063c7b42f2d15fe41ca60179a1366f"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "candlestick",
+      "label": "Candlestick",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v3/candlestick.json",
+      "png": "assets/diagrams/generated/catalog/png/candlestick.png",
+      "svg": "assets/diagrams/generated/catalog/svg/candlestick.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/candlestick.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "candlestick@3",
+      "semantic_ids": [
+        "candle:d1",
+        "candle:d2",
+        "candle:d3",
+        "candle:d4",
+        "candle:d5",
+        "candle:d6",
+        "candle:d7"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        105,
+        101,
+        1135,
+        675
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 1030,
+        "content_height": 574,
+        "bounding_box_ratio": 0.271611,
+        "semantic_nodes": 7,
+        "visual_nodes": 7,
+        "edges": 0,
+        "edge_labels": 0,
+        "focus": 0,
+        "crossings": 0,
+        "bends": 0,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "327153e50f131758f77949c8f138014638628544d29a453542d3aedc87c1be85",
+        "input": "c64f5470f87e592ba4c2134ec35c150fb17d71e3857421810d42ee7f20deb2cb",
+        "svg": "99eb685518ef15e612a010bb4fd14785476854b81bd5e1876e909c14ef291736",
+        "pdf": "3986f502d741b01c02b686370752bdea349ddee6ba608ee5ab7bf208870fa024"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "waterfall",
+      "label": "Waterfall",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v3/waterfall.json",
+      "png": "assets/diagrams/generated/catalog/png/waterfall.png",
+      "svg": "assets/diagrams/generated/catalog/svg/waterfall.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/waterfall.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "waterfall@3",
+      "semantic_ids": [
+        "waterfall:start",
+        "waterfall:schema",
+        "waterfall:geometry",
+        "waterfall:a11y",
+        "waterfall:dedupe",
+        "waterfall:profiles",
+        "waterfall:end"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        106,
+        99,
+        1138,
+        660
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 1032,
+        "content_height": 561,
+        "bounding_box_ratio": 0.265975,
+        "semantic_nodes": 7,
+        "visual_nodes": 7,
+        "edges": 0,
+        "edge_labels": 0,
+        "focus": 0,
+        "crossings": 0,
+        "bends": 0,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "c23124e945f085418fbed7d2ef3de56ab6288d0c38d9659f7f8deb5ff030f670",
+        "input": "c9bb7dc6e9c0fde400db24fa0038e5548ae723297110f22b51f12c856265c699",
+        "svg": "bf18b797de3da17648f8cc8a670c1600e25e55e5eb67cba80934bca5b296e7b8",
+        "pdf": "e454cf044b24666231e1365b4905d1581e3a0aa49e724a9e17edc9373531cc80"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "scatter",
+      "label": "Scatter",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v5/scatter.json",
+      "png": "assets/diagrams/generated/catalog/png/scatter.png",
+      "svg": "assets/diagrams/generated/catalog/svg/scatter.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/scatter.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "scatter@3",
+      "semantic_ids": [
+        "point:scatter:c51e455b41",
+        "point:scatter:38edf99fd4",
+        "point:scatter:fd2c8f1dc0",
+        "point:scatter:2fcef4b99c",
+        "point:scatter:305238273b",
+        "point:scatter:ff582559c3"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        108,
+        103,
+        1135,
+        832
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 1027,
+        "content_height": 729,
+        "bounding_box_ratio": 0.343951,
+        "semantic_nodes": 6,
+        "visual_nodes": 6,
+        "edges": 0,
+        "edge_labels": 0,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 0,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "ba600006889221cfc50c7a47eb66a5098bede461701d6415bf909a2798aaf97b",
+        "input": "710b880ef2b0cc6d129367a9b2ed16acc9100d76a14362d169446dd95effee35",
+        "svg": "d2c76f0aacd702ad1722bef77539b2891e5a7d031ac310166c795e498e3b7562",
+        "pdf": "8660f6d547684883c03d31997fe573649010557cf27afc578153a0afc3d74351"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "gantt",
+      "label": "Gantt",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v5/gantt.json",
+      "png": "assets/diagrams/generated/catalog/png/gantt.png",
+      "svg": "assets/diagrams/generated/catalog/svg/gantt.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/gantt.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "gantt@3",
+      "semantic_ids": [
+        "audit",
+        "router",
+        "types",
+        "import",
+        "knobs",
+        "ship"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        99,
+        97,
+        1137,
+        689
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 1038,
+        "content_height": 592,
+        "bounding_box_ratio": 0.282304,
+        "semantic_nodes": 6,
+        "visual_nodes": 6,
+        "edges": 0,
+        "edge_labels": 0,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 0,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "cc503403230edefe730232519b38b5c61655be8dc992b027c11decf1887aa884",
+        "input": "7c02e652342dfd497b4bb17829e03e28682efd014dbe30cf5966b36aa910f371",
+        "svg": "0e617eccb4c2813983fbbd4bc244dd6db76d51616795da04301e9a9998d19776",
+        "pdf": "fcef4df41dc3d68f093dbfa6c93c05ab82cb0eb6b98e06ee4b1355369fd5b04e"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "sequence",
+      "label": "Sequence",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v4/sequence.json",
+      "png": "assets/diagrams/generated/catalog/png/sequence.png",
+      "svg": "assets/diagrams/generated/catalog/svg/sequence.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/sequence.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "sequence@3",
+      "semantic_ids": [
+        "participant:author",
+        "participant:compiler",
+        "participant:store",
+        "message:submit",
+        "message:persist",
+        "message:stored",
+        "message:complete"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        98,
+        96,
+        1142,
+        507
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 1044,
+        "content_height": 411,
+        "bounding_box_ratio": 0.197125,
+        "semantic_nodes": 7,
+        "visual_nodes": 7,
+        "edges": 4,
+        "edge_labels": 4,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 0,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "b980d2b7603fcb640614ac75bcd1b60749da3b6603cf6ecf2eebc33539dda32a",
+        "input": "2272355bef0e001578ea9e1e61c91aaf70963ec8a7b07957f902f0a7777db81c",
+        "svg": "e1c0442c9d9bdbe85bd314a3f899f73cf48e6aae622fa4ef80ef29b19810fe17",
+        "pdf": "f9a231402c60131e4c40e92e0a6a520ec4221702d7c198d8849f320b58d9a075"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "uml-class",
+      "label": "UML Class",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v4/uml-class.json",
+      "png": "assets/diagrams/generated/catalog/png/uml-class.png",
+      "svg": "assets/diagrams/generated/catalog/svg/uml-class.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/uml-class.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "uml-class@3",
+      "semantic_ids": [
+        "type:source",
+        "type:compiler",
+        "type:result",
+        "type:status",
+        "relationship:implements",
+        "relationship:creates",
+        "relationship:reports"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          640
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        99,
+        98,
+        1141,
+        686
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 1042,
+        "content_height": 588,
+        "bounding_box_ratio": 0.281477,
+        "semantic_nodes": 7,
+        "visual_nodes": 7,
+        "edges": 3,
+        "edge_labels": 2,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 4,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "6d923a9e1fc9d79f69c76a2877787dca7b4cb7be93ced8849fd2a2710e72623c",
+        "input": "d72321f3a09ac556aa4ecc86b518bb2313f007f4d3d4da5178c406d005aedceb",
+        "svg": "b5b7a2974f4e7002157071145483fefe237f8a688d0efbeaa86aaeaa650a5c9a",
+        "pdf": "010eb4620cc4d2a9290a3226be4c2dd217322399404b5ffc5b5e572a196be471"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "er-diagram",
+      "label": "ER Diagram",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v4/er-diagram.json",
+      "png": "assets/diagrams/generated/catalog/png/er-diagram.png",
+      "svg": "assets/diagrams/generated/catalog/svg/er-diagram.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/er-diagram.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "er-diagram@3",
+      "semantic_ids": [
+        "entity:author",
+        "entity:document",
+        "entity:artifact",
+        "relationship:authors",
+        "relationship:publishes"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          640
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        99,
+        98,
+        1141,
+        705
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 1042,
+        "content_height": 607,
+        "bounding_box_ratio": 0.290573,
+        "semantic_nodes": 5,
+        "visual_nodes": 5,
+        "edges": 2,
+        "edge_labels": 2,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 3,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "96fc1e5b2f672f926822b715786a49773bf23002d705d42678bb36fa7bdea519",
+        "input": "a34e03b91012df934dcdde1fb58b365bf8d1ac49bdf3cef822882666047449d2",
+        "svg": "e2df0aad1642fc8d3fd0855f943154c50ecd945576fdab8baa9645d7754a7531",
+        "pdf": "7f07c7f27ca2962b383d834d9e78db201cfceb6611497171c8424ab2f298ce21"
+      },
+      "unresolved_placeholders": []
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "kind": "bar-chart",
+  "title": "Compiler Coverage from CSV",
+  "input": {
+    "path": "bar.csv",
+    "format": "csv",
+    "encoding": "utf-8",
+    "delimiter": ",",
+    "header": true,
+    "missing": {"tokens": ["", "NA"], "policy": "error"},
+    "locale": "en-US",
+    "coercion": {"number": "strict-decimal", "date": "iso-8601", "decimal": ".", "thousands": null}
+  },
+  "mapping": {
+    "category": "Release",
+    "series": [
+      {"id": "covered", "label": "Covered", "column": "Covered"},
+      {"id": "legacy", "label": "Legacy", "column": "Legacy"}
+    ]
+  },
+  "chart": {"unit": " types", "mode": "stacked", "focus_series": "covered"}
+}

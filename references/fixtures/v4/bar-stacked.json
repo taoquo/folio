@@ -1,0 +1,18 @@
+{
+  "schema_version": "3.0",
+  "kind": "bar-chart",
+  "title": "Operating Bridge by Quarter",
+  "unit": " M",
+  "locale": "en-US",
+  "mode": "stacked",
+  "categories": ["Q1", "Q2", "Q3"],
+  "series": [
+    {"id": "growth", "label": "Growth", "values": [8, 11, 14]},
+    {"id": "efficiency", "label": "Efficiency", "values": [4, 5, 7]},
+    {"id": "investment", "label": "Investment", "values": [-3, -4, -6]}
+  ],
+  "focus_series": "growth",
+  "reference_lines": [{"id": "target", "label": "Target", "value": 15}],
+  "annotations": [{"id": "q3", "text": "Q3 has the strongest growth", "series": "growth", "category": "Q3"}],
+  "value_format": {"precision": 0, "compact": false, "grouping": true, "unit_position": "suffix"}
+}

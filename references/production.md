@@ -303,10 +303,65 @@ If the output shows `DejaVuSerif` / `Bitstream Vera` - your specified font didn'
 Project script `scripts/build.py` is the productized version of the three-step loop:
 
 ```bash
-python3 scripts/build.py               # all 12 examples
+python3 scripts/build.py               # all registered build targets
 python3 scripts/build.py resume-en     # one target + page count + fonts
 python3 scripts/build.py --check       # scan for CSS rule violations
+python3 scripts/folio.py doctor        # required runtime and raster dependencies
 ```
+
+### Drawing DSL release gate
+
+The repository workflow `.github/workflows/drawing-dsl.yml` has a fast gate and a full release gate. Run the equivalent local checks before changing a drawing baseline or package:
+
+```bash
+python3 -m unittest discover -s tests
+python3 scripts/folio.py diagram-catalog \
+  --baseline references/fixtures/drawing/catalog-baseline-v3.json \
+  --baseline-report /tmp/catalog-baseline-report.json
+python3 scripts/build.py --check
+python3 scripts/build.py --sync
+python3 scripts/build.py --verify
+bash scripts/package-skill.sh
+```
+
+Do not replace the visual baseline merely to clear a failure. First classify the semantic, geometry, typography, or renderer change. An approved replacement requires `--write-baseline` and a concise `--approval-reason`; the baseline records that reason on the program and every diagram entry.
+
+### Drawing theme gate
+
+A theme profile is a palette swap applied after layout, so any theme regression is a color regression, never a geometry regression. Every registered kind must compile clean on every profile:
+
+```bash
+python3 -m unittest tests.test_drawing_theme_v5
+python3 scripts/folio.py check-drawing references/fixtures/v3/donut-chart.json --theme terminal
+python3 scripts/folio.py batch-render-drawings references/fixtures/v5 \
+  --output-dir /tmp/folio-dark --format svg --theme dark
+```
+
+When adding a token to `FolioTheme`, fill it in all three built-in profiles and add its real usage pair to the contrast table in `scripts/drawing/theme/profiles.py`. A token that fails WCAG contrast may only ship as a fill-only ramp step with an adjacent labeled key, and it must never carry text or a stroke wider than one pixel.
+
+### Drawing host integration gate
+
+Document and slide diagrams must use explicit slots and content-addressed artifacts. Manual SVG extraction bypasses source traceability and is not a production path.
+
+```bash
+python3 scripts/folio.py list-drawing-hosts
+python3 scripts/folio.py embed-drawing fixture.json \
+  --host-contract a4-portrait --host-file report.html --output-host report-filled.html \
+  --slot main --caption "The request path concentrates responsibility in the compiler."
+python3 scripts/folio.py verify-drawing-host report-filled.html
+
+# Local tabular data must normalize before compilation.
+python3 scripts/folio.py import-chart-data references/fixtures/tabular/bar-import.json --output /tmp/bar.json
+python3 scripts/folio.py import-diagram references/fixtures/import/flowchart.mmd --output /tmp/flow.json --ledger-output /tmp/flow-ledger.json
+python3 scripts/folio.py validate-drawing /tmp/bar.json
+
+python3 scripts/build.py --verify host-a4-long-doc
+python3 scripts/build.py --verify host-letter-document
+python3 scripts/build.py --verify host-a4-chinese
+python3 scripts/build.py --verify host-slide-16x9
+```
+
+Host verification fails on missing or stale fixtures/artifacts, invalid captions, distorted slide images, missing alt text, out-of-safe-area placement, missing caption association, and data summaries/tables that no longer match the semantic input. Build verification renders A4, Letter, and Chinese PDF fixtures, checks page size/count and raster bounds, and verifies a seven-slide 16:9 deck with both artifact and embed profiles.
 
 ### Layout stabilizer (HTML templates)
 

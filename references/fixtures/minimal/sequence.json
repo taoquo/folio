@@ -1,0 +1,12 @@
+{
+  "schema_version": "3.0",
+  "kind": "sequence",
+  "title": "Untitled Sequence",
+  "participants": [
+    {"id": "client", "label": "Client", "kind": "actor"},
+    {"id": "service", "label": "Service", "kind": "system"}
+  ],
+  "messages": [
+    {"id": "request", "source": "client", "target": "service", "label": "Request", "kind": "sync"}
+  ]
+}

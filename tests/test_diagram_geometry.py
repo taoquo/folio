@@ -44,3 +44,13 @@ class DiagramGeometryTests(TestCase):
             self.assertTrue(geometry.validate_diagram_html(path))
         finally:
             path.unlink(missing_ok=True)
+
+    def test_aud_018_rejects_malformed_svg(self) -> None:
+        handle = tempfile.NamedTemporaryFile("w", suffix=".html", delete=False)
+        path = Path(handle.name)
+        handle.close()
+        path.write_text('<html><svg viewBox="0 0 100 100"><rect></svg></html>', encoding="utf-8")
+        try:
+            self.assertTrue(any("malformed SVG" in item for item in geometry.validate_diagram_html(path)))
+        finally:
+            path.unlink(missing_ok=True)

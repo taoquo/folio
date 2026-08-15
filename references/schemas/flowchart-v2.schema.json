@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/flowchart-v2.schema.json",
+  "title": "Folio Flowchart V2 Authoring Payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "title", "nodes", "edges"],
+  "properties": {
+    "schema_version": {"const": "2.0"},
+    "kind": {"const": "flowchart"},
+    "title": {"type": "string", "minLength": 1},
+    "focus": {"type": ["string", "null"]},
+    "width": {"type": "integer", "minimum": 320},
+    "height": {"type": "integer", "minimum": 240},
+    "language": {"type": "string"},
+    "axis": {"enum": ["top-down", "left-right"]},
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "type": {"enum": ["step", "decision", "terminal", "data", "subprocess"]},
+          "label": {"type": "string", "minLength": 1},
+          "description": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source", "target"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "source": {"type": "string", "minLength": 1},
+          "target": {"type": "string", "minLength": 1},
+          "kind": {"enum": ["sequence-flow", "conditional-flow", "exception-flow"]},
+          "label": {"type": ["string", "null"]}
+        }
+      }
+    }
+  }
+}

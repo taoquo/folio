@@ -50,3 +50,23 @@ class DiagramExportTests(TestCase):
 
         html_loader_mock.assert_called_once()
         instance.write_pdf.assert_called_once()
+
+    def test_aud_014_export_pdf_escapes_title_and_propagates_language(self) -> None:
+        captured = {}
+
+        class HTML:
+            def __init__(self, **kwargs):
+                captured.update(kwargs)
+
+            def write_pdf(self, _path):
+                return None
+
+        with mock.patch.object(exports, "_get_weasyprint_html", return_value=HTML):
+            with TemporaryDirectory() as tmp:
+                svg_path = Path(tmp) / "demo.svg"
+                svg_path.write_text('<svg viewBox="0 0 960 540"/>', encoding="utf-8")
+                exports.export_pdf(svg_path, Path(tmp) / "demo.pdf", '</title><script>x</script>', "zh")
+
+        self.assertNotIn("<script>x</script>", captured["string"])
+        self.assertIn("&lt;/title&gt;", captured["string"])
+        self.assertIn('<html lang="zh">', captured["string"])

@@ -83,6 +83,8 @@ class ArchitectureDiagramSpec:
     layout: str
     width: int = 960
     height: int = 540
+    schema_version: str = "3.0"
+    language: str | None = None
     subtitle: str | None = None
     caption: str | None = None
     focus: str | None = None
@@ -142,10 +144,36 @@ def _require(value: Any, message: str) -> Any:
     return value
 
 
+def _require_object(value: Any, context: str, allowed: set[str]) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ValueError(f"{context} must be an object")
+    unknown = sorted(set(value) - allowed)
+    if unknown:
+        raise ValueError(f"{context} has unknown field(s): {', '.join(unknown)}")
+    return value
+
+
 def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
+    _require_object(payload, "architecture", {
+        "schema_version", "kind", "title", "layout", "width", "height", "language", "subtitle", "caption", "focus",
+        "focus_path", "focus_reason", "layers", "groups", "nodes", "edges", "legend",
+    })
+    if payload.get("schema_version", "3.0") != "3.0":
+        raise ValueError("architecture semantic schema_version must be 3.0")
     layout = _require(payload.get("layout"), "architecture layout is required")
     if layout not in ARCHITECTURE_LAYOUTS:
         raise ValueError(f"unsupported architecture layout: {layout}")
+
+    for name, minimum in (("width", 320), ("height", 240)):
+        value = payload.get(name, 960 if name == "width" else 540)
+        if not isinstance(value, int) or isinstance(value, bool) or value < minimum:
+            raise ValueError(f"architecture {name} must be an integer >= {minimum}")
+    language = payload.get("language")
+    if language is not None and (not isinstance(language, str) or not language.strip()):
+        raise ValueError("architecture language must be a non-empty string")
+    focus_path = payload.get("focus_path", [])
+    if not isinstance(focus_path, list) or any(not isinstance(item, str) or not item.strip() for item in focus_path):
+        raise ValueError("architecture focus_path must be an array of non-empty ids")
 
     layers = [
         LayerSpec(
@@ -155,7 +183,8 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
             order=item.get("order"),
             row_policy=item.get("row_policy"),
         )
-        for item in payload.get("layers", [])
+        for raw_item in payload.get("layers", [])
+        for item in [_require_object(raw_item, "architecture layer", {"id", "label", "purpose", "order", "row_policy"})]
     ]
     for layer in layers:
         if layer.row_policy is not None and layer.row_policy not in ARCHITECTURE_ROW_POLICIES:
@@ -171,13 +200,18 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
             side_label=item.get("side_label"),
             summary=item.get("summary"),
         )
-        for item in payload.get("groups", [])
+        for raw_item in payload.get("groups", [])
+        for item in [_require_object(raw_item, "architecture group", {"id", "label", "kind", "layer", "members", "layout_policy", "side_label", "summary"})]
     ]
     for group in groups:
         if group.layout_policy is not None and group.layout_policy not in ARCHITECTURE_GROUP_LAYOUT_POLICIES:
             raise ValueError(f"unsupported architecture layout_policy: {group.layout_policy}")
     nodes = []
-    for item in payload.get("nodes", []):
+    for raw_item in payload.get("nodes", []):
+        item = _require_object(raw_item, "architecture node", {
+            "id", "kind", "label", "layer", "sublabel", "role", "group", "description",
+            "importance", "state_owner", "lifecycle_phase",
+        })
         kind = item["kind"]
         if kind not in ARCHITECTURE_NODE_KINDS:
             raise ValueError(f"unsupported architecture node kind: {kind}")
@@ -204,7 +238,11 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
         )
 
     edges = []
-    for item in payload.get("edges", []):
+    for raw_item in payload.get("edges", []):
+        item = _require_object(raw_item, "architecture edge", {
+            "source", "target", "kind", "label", "flow", "interaction", "priority", "dashed",
+            "source_port", "target_port", "route_hint", "phase",
+        })
         kind = item["kind"]
         if kind not in ARCHITECTURE_EDGE_KINDS:
             raise ValueError(f"unsupported architecture edge kind: {kind}")
@@ -226,10 +264,12 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
         )
 
     legend = []
-    for item in payload.get("legend", []):
+    for raw_item in payload.get("legend", []):
+        item = raw_item
         if isinstance(item, str):
             legend.append(LegendItemSpec(flow="unspecified", label=item))
         else:
+            item = _require_object(item, "architecture legend item", {"flow", "label", "reason"})
             legend.append(
                 LegendItemSpec(
                     flow=item["flow"],
@@ -244,10 +284,12 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
         layout=layout,
         width=int(payload.get("width", 960)),
         height=int(payload.get("height", 540)),
+        schema_version="3.0",
+        language=language,
         subtitle=payload.get("subtitle"),
         caption=payload.get("caption"),
         focus=payload.get("focus"),
-        focus_path=list(payload.get("focus_path", [])),
+        focus_path=list(focus_path),
         focus_reason=payload.get("focus_reason"),
         layers=layers,
         groups=groups,
