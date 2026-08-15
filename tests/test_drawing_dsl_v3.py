@@ -17,6 +17,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from diagram_catalog import load_catalog
 from diagram_export import export_pdf, export_png
 from drawing.compiler import DEFAULT_COMPILER_REGISTRY
+from drawing.scene import ScenePolyline
 from drawing.validation import DrawingCompilationError
 from renderers.svg import render_svg
 
@@ -330,6 +331,46 @@ class DrawingDslV3Tests(TestCase):
         schema_kinds = {schema["$defs"][name]["properties"]["kind"]["const"] for name in NEW_KINDS}
         self.assertEqual(NEW_KINDS, schema_kinds)
         self.assertTrue(all(schema["$defs"][name]["additionalProperties"] is False for name in NEW_KINDS))
+
+    def test_tree_siblings_share_one_bus(self):
+        payload = self.payloads["tree"]
+        result = DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
+        self.assertEqual((), result.scene.edges)
+        self.assertEqual(len(payload["relations"]), result.metrics.edges)
+        links = {
+            item.id[len("link:"):]: item.points
+            for item in result.scene.primitives
+            if isinstance(item, ScenePolyline) and item.id.startswith("link:")
+        }
+        self.assertEqual({item["child"] for item in payload["relations"]}, set(links))
+        boxes = {node.id: node.box for node in result.scene.nodes}
+        groups = {}
+        for relation in payload["relations"]:
+            groups.setdefault(relation["parent"], []).append(relation["child"])
+        for parent, children in groups.items():
+            with self.subTest(parent=parent):
+                trunks = {links[child][0] for child in children}
+                self.assertEqual(1, len(trunks))
+                trunk_x, trunk_y = trunks.pop()
+                parent_box = boxes[parent]
+                self.assertEqual(parent_box.x + parent_box.w // 2, trunk_x)
+                self.assertEqual(parent_box.y + parent_box.h, trunk_y)
+                bus_levels = {
+                    links[child][1][1] if len(links[child]) >= 3 else links[child][0][1]
+                    for child in children
+                }
+                self.assertEqual(1, len(bus_levels))
+                bus_y = bus_levels.pop()
+                self.assertGreaterEqual(bus_y, trunk_y)
+                for child in children:
+                    points = links[child]
+                    self.assertGreaterEqual(len(points), 2)
+                    drop_x, drop_y = points[-1]
+                    child_box = boxes[child]
+                    self.assertEqual(child_box.y, drop_y)
+                    self.assertLessEqual(child_box.x, drop_x)
+                    self.assertLessEqual(drop_x, child_box.x + child_box.w)
+                    self.assertLessEqual(bus_y, drop_y)
 
     def test_all_types_three_profiles_three_formats_matrix(self):
         artifact_count = 0

@@ -169,7 +169,7 @@ DIAGRAM_ARTIFACT_TARGETS: dict[str, dict[str, str]] = {
         "pdf": "flowchart-v2-demo.pdf",
         "showcase": {
             "basename": "demo-flowchart-v2",
-            "eyebrow": "Drawing DSL V2",
+            "eyebrow": "Drawing DSL",
             "heading": "Drawing Review Flow",
             "alt": "Flowchart for deterministic drawing review",
             "caption": "A typed Flowchart artifact with decisions, branch labels, orthogonal routing, accessible SVG metadata, and deterministic validation.",

@@ -24,6 +24,7 @@ from .notation import compile_er_payload, compile_sequence_payload, compile_uml_
 from .pipeline import compile_architecture, compile_drawing_plan
 from .output import apply_output_knobs, normalize_output_audience, normalize_output_detail, normalize_output_profile
 from .positional import compile_quadrant_payload, compile_timeline_payload, compile_venn_payload
+from .scene import ScenePolyline
 from .theme import DEFAULT_FOLIO_THEME, normalize_theme_profile, resolve_theme, retheme_scene
 from .schematic import (
     compile_loop_flywheel_payload,
@@ -250,15 +251,27 @@ def _flowchart(payload: dict[str, Any]) -> CompilationResult:
     return CompilationResult("flowchart", semantic, plan, layout, scene, diagnostics, metrics)
 
 
+def _primitive_connectors(scene: Any) -> tuple[tuple[tuple[int, int], ...], ...]:
+    """Connector polylines drawn as primitives instead of scene edges."""
+    return tuple(
+        item.points for item in scene.primitives
+        if isinstance(item, ScenePolyline) and item.id.startswith("link:")
+    )
+
+
 def _structural(payload: dict[str, Any], compiler: Callable[[dict[str, Any]], Any]) -> CompilationResult:
     semantic, plan, layout, scene, diagnostics = compiler(payload)
     focus = sum(node.emphasis == "focal" for node in plan.nodes)
+    connectors = _primitive_connectors(scene) if plan.edges and not scene.edges else ()
     metrics = collect_scene_metrics(
         scene,
         semantic_count=len(semantic.nodes),
         visual_count=len(scene.nodes),
         focus_count=focus,
         taste_warning_count=sum(item.level in {"WARNING", "TASTE"} for item in diagnostics),
+        edge_count=len(plan.edges) if connectors else None,
+        edge_label_count=0 if connectors else None,
+        bend_count=sum(max(0, len(points) - 2) for points in connectors) if connectors else None,
     )
     return CompilationResult(plan.kind, semantic, plan, layout, scene, tuple(diagnostics), metrics)
 

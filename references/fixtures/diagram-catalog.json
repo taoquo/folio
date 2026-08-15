@@ -1,6 +1,6 @@
 {
   "schema_version": "3.0",
-  "title": "Folio Drawing DSL V5 · Complete Diagram Catalog",
+  "title": "Folio Drawing DSL · Complete Diagram Catalog",
   "diagrams": [
     {"kind": "architecture", "label": "Architecture", "mode": "drawing-dsl", "source": "references/fixtures/architecture-demo.json"},
     {"kind": "flowchart", "label": "Flowchart", "mode": "drawing-dsl", "source": "references/fixtures/flowchart/branching.json"},

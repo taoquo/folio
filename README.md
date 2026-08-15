@@ -119,10 +119,25 @@ What matters on first contact:
     <td width="33.33%" valign="top">
       <a href="assets/demos/demo-flowchart-v2.pdf"><img src="assets/demos/demo-flowchart-v2.png" alt="Drawing review flowchart preview"></a><br>
       <b>Drawing Review Flow</b><br>
-      Drawing DSL V3 case with typed decisions, labelled branches, orthogonal routing, and accessible SVG metadata.
+      Drawing DSL case with typed decisions, labelled branches, orthogonal routing, and accessible SVG metadata.
     </td>
   </tr>
 </table>
+
+## Complete Diagram Catalog
+
+Every one of the twenty-two types is generator-backed: Architecture, Flowchart, State Machine, Swimlane, Tree, Layer Stack, Timeline, Quadrant, Venn, Pyramid, Org Chart, Loop Flywheel, Bar, Line, Donut, Candlestick, Waterfall, Scatter, Gantt, Sequence, UML Class, and ER Diagram.
+
+<p align="center">
+  <img src="assets/demos/drawing-dsl-supported-types.png" alt="Complete Drawing DSL diagram catalog" width="100%">
+</p>
+
+The contact sheet is rendered, not hand-assembled. Regenerate it and re-check it against the approved visual baseline with:
+
+```bash
+python3 scripts/folio.py diagram-catalog
+python3 scripts/folio.py diagram-catalog --baseline references/fixtures/drawing/catalog-baseline-v3.json
+```
 
 ## From Prompt To Output
 
@@ -241,6 +256,46 @@ Motion thesis must explain meaning, not decoration:
 
 Use only the layers that serve the page job. Hover, active, and focus cannot become the whole motion system.
 
+### Diagram routing
+
+You do not have to pick a diagram type yourself. Describe the communication intent and let Folio route it.
+
+```bash
+python3 scripts/folio.py route-diagram --content "the approval process flow"
+python3 scripts/folio.py route-diagram --content "quarterly revenue by region" --goal compare
+```
+
+Eight semantic patterns cover the space: `architecture`, `comparison`, `data`, `flow`, `hierarchy`, `relationship`, `state`, and `time`. Scoring is deterministic, so the same brief always resolves to the same kind, and every decision returns the winning pattern, a confidence band, the full score table, in-pattern alternatives, and a readable trace.
+
+### Diagram themes and output knobs
+
+Themes and export knobs live at the render layer, never inside a diagram payload. Geometry stays compiler-owned.
+
+| Flag | Values | Effect |
+|---|---|---|
+| `--theme` | `folio` / `dark` / `terminal` | Palette and font profile, contrast-checked |
+| `--size` | `compact` / `standard` / `wide` | Raster export width only |
+| `--detail` | `essential` / `standard` / `full` | Gridline and annotation density |
+| `--audience` | `executive` / `general` / `practitioner` | Type ramp for projector legibility |
+| `--variant` | `plain` / `sketchy` / `motion` | Hand-drawn stroke filter or reduced-motion reveal |
+
+```bash
+python3 scripts/folio.py render-drawing references/fixtures/v3/bar-chart.json \
+  --theme dark --size wide --detail essential --audience executive \
+  --format png --output /tmp/bar.png
+```
+
+### Diagram import
+
+Existing sources can enter the pipeline instead of being retyped.
+
+```bash
+python3 scripts/folio.py import-diagram references/fixtures/import/flowchart.mmd --output /tmp/flow.json
+python3 scripts/folio.py import-chart-data references/fixtures/tabular/bar-import.json --output /tmp/bar.json
+```
+
+Mermaid and draw.io convert into typed diagram JSON with a fidelity ledger that records what was preserved and what was dropped. Local CSV and TSV normalize into typed chart JSON.
+
 ### Output generation
 
 Folio supports two main output paths:
@@ -283,6 +338,9 @@ Use the short guide first, then go deeper only when needed.
 - [references/writing.md](references/writing.md): content strategy and quality bars
 - [references/production.md](references/production.md): build, verification, and troubleshooting
 - [references/diagrams.md](references/diagrams.md): inline SVG diagram rules
+- [references/drawing-dsl.md](references/drawing-dsl.md): Drawing DSL scope, compiler stages, routing, and output layer
+- [references/drawing-dsl-authoring.md](references/drawing-dsl-authoring.md): intent-first diagram authoring workflow
+- [references/drawing-dsl-v6-final-audit.md](references/drawing-dsl-v6-final-audit.md): closing audit, gate evidence, and known limits
 - [references/web-foundation.md](references/web-foundation.md): Web guidance foundation for reading pages and product workspaces
 
 ## Image Prompting

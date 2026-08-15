@@ -1,6 +1,6 @@
 # Folio
 
-Folio is a document design system with warm parchment canvas, cinnabar-coral accent, serif-led hierarchy, and editorial whitespace across eight document templates and fourteen diagram types.
+Folio is a document design system with warm parchment canvas, cinnabar-coral accent, serif-led hierarchy, and editorial whitespace across eight document templates and twenty-two generator-backed diagram types.
 
 ## Structure
 
@@ -11,9 +11,13 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 | `references/design.md` | Design system spec, English-only source | Low |
 | `references/writing.md` | Content strategy + quality bars per document type, English-only source | Low |
 | `references/production.md` | WeasyPrint build and troubleshooting runbook, English-only source | Medium |
+| `references/drawing-dsl.md` | Drawing DSL scope, compiler stages, routing, and output layer | Low |
+| `references/drawing-dsl-v6-final-audit.md` | Closing program audit, gate evidence, and known limits | Low |
 | `assets/templates/` | 8 document templates in 2 base language families | Medium |
 | `assets/demos/` | README showcase demos, regenerate after visual changes | Medium |
+| `assets/diagrams/generated/catalog/` | 22 generated catalog artifacts per format, SVG / PNG / PDF | Medium |
 | `scripts/build.py` | PDF / PPTX build and verification script, plus placeholder / orphan / rhythm checks | Low |
+| `scripts/folio.py` | Drawing DSL CLI, routing, render, import, catalog | Low |
 | `scripts/package-skill.sh` | Codex Desktop ZIP packager, excluding large fonts | Low |
 | `dist/folio.zip` | Codex Desktop ZIP artifact, updated from main | Medium |
 
@@ -44,6 +48,11 @@ Current demos in `assets/demos/`:
 | `demo-tesla.*` | Tesla Q1 2026 equity report (CN) | equity-report |
 | `demo-musk-resume.*` | Elon Musk resume (EN) | resume |
 | `demo-agent-slides.*` | Agent development slides (EN) | slides |
+| `demo-architecture.*` / `demo-workflow-engine.*` / `demo-data-platform.*` | Architecture artifacts | diagram artifact |
+| `demo-uml-class.*` / `demo-flowchart-v2.*` | Notation and flow artifacts | diagram artifact |
+| `drawing-dsl-all-types.png` / `drawing-dsl-supported-types.png` | Rendered 22-type contact sheets | diagram catalog |
+
+Diagram demos and contact sheets are generated, never hand-assembled. Rebuild them with `python3 scripts/build.py <artifact-target>` and `python3 scripts/folio.py diagram-catalog`, then re-check the approved visual baseline with `python3 scripts/folio.py diagram-catalog --baseline references/fixtures/drawing/catalog-baseline-v3.json`.
 
 All demo PNG files use **1241x1754px** (first A4 portrait page at 150dpi).
 

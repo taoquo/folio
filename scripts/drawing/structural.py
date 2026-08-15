@@ -5,7 +5,7 @@ from dataclasses import asdict, dataclass, replace
 from typing import Any
 
 from .layout.models import LayoutBox, LayoutResult
-from .scene import SceneBox, SceneRegion, SceneStyle, SceneText
+from .scene import ResolvedScene, SceneBox, SceneRegion, SceneStyle, SceneText, ScenePolyline
 from .theme.folio import DEFAULT_FOLIO_THEME
 from .v3_common import (
     GraphComposition,
@@ -410,6 +410,66 @@ def _swimlane_description(semantic: SwimlaneSemantic) -> str:
     return f"Swimlane {semantic.title}. Lanes: {', '.join(item['label'] for item in semantic.lanes)}."
 
 
+TREE_BUS_LINK_PREFIX = "link:"
+
+
+def _dedupe_points(points: tuple[tuple[int, int], ...]) -> tuple[tuple[int, int], ...]:
+    kept: list[tuple[int, int]] = []
+    for point in points:
+        if not kept or kept[-1] != point:
+            kept.append(point)
+    return tuple(kept) if len(kept) >= 2 else points[:2]
+
+
+TREE_TRUNK_SNAP = 12
+
+
+def _tree_bus_scene(scene: ResolvedScene, plan: GraphPlan) -> ResolvedScene:
+    """Replace per-edge tree routes with one shared horizontal bus per parent.
+
+    Siblings drop from a single trunk instead of fanning out from offset
+    anchors, which matches the hierarchy convention: parent stub, shared
+    horizontal bus, short vertical drop into each child's top edge.
+    """
+    boxes = {node.id: node.box for node in scene.nodes}
+    theme = DEFAULT_FOLIO_THEME
+    groups: dict[str, list[str]] = defaultdict(list)
+    for edge in plan.edges:
+        if edge.source in boxes and edge.target in boxes:
+            groups[edge.source].append(edge.target)
+    links: list[ScenePolyline] = []
+    arrows: list[ScenePolyline] = []
+    style = SceneStyle(stroke=theme.olive, stroke_width=1)
+    for parent_id in sorted(groups, key=lambda item: (boxes[item].y, boxes[item].x)):
+        child_ids = sorted(groups[parent_id], key=lambda item: boxes[item].x)
+        parent_box = boxes[parent_id]
+        trunk_x = parent_box.x + parent_box.w // 2
+        trunk_y = parent_box.y + parent_box.h
+        bus_y = _grid((trunk_y + min(boxes[item].y for item in child_ids)) / 2)
+        bus_y = max(trunk_y, min(bus_y, scene.height))
+        for child_id in child_ids:
+            box = boxes[child_id]
+            drop_x = box.x + box.w // 2
+            if abs(drop_x - trunk_x) <= TREE_TRUNK_SNAP:
+                # A near-aligned single drop reads as one straight stem, not a jog.
+                drop_x = trunk_x
+            drop_y = box.y
+            points = _dedupe_points((
+                (trunk_x, trunk_y), (trunk_x, bus_y), (drop_x, bus_y), (drop_x, drop_y),
+            ))
+            links.append(ScenePolyline(f"{TREE_BUS_LINK_PREFIX}{child_id}", points, style, klass="tree-edge tree-edge--branch"))
+            wing = max(0, min(4, drop_y - bus_y))
+            if wing:
+                arrows.append(ScenePolyline(
+                    f"arrow:{child_id}",
+                    ((drop_x - wing, drop_y - wing), (drop_x, drop_y), (drop_x + wing, drop_y - wing)),
+                    style, klass="tree-arrow",
+                ))
+    if not links:
+        return scene
+    return replace(scene, edges=(), primitives=(*links, *arrows, *scene.primitives))
+
+
 def compile_tree_payload(payload: dict[str, Any]):
     diagnostics = common_payload_diagnostics(
         payload,
@@ -478,6 +538,7 @@ def compile_tree_payload(payload: dict[str, Any]):
     plan = GraphPlan("tree", payload["title"], GraphComposition("hierarchy", "top-down", tuple(roots)), node_plans, edge_plans, width, height, language)
     layout = layout_layered_graph(plan)
     scene = resolve_graph_scene(plan, layout, description=f"Tree {semantic.title} with root {roots[0]}.")
+    scene = _tree_bus_scene(scene, plan)
     scene_diagnostics = validate_resolved_scene(scene)
     return semantic, plan, layout, scene, tuple([*diagnostics, *scene_diagnostics])
 

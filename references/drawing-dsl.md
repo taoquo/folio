@@ -4,7 +4,7 @@ Folio's Drawing DSL is an executable visual-intent layer for generator-backed di
 
 ## Current scope
 
-V5 covers twenty-two registered types. Architecture, Flowchart, State Machine, Swimlane, Tree, Layer Stack, Timeline, Quadrant, Venn, Pyramid, Org Chart, Loop Flywheel, Bar, Line, Donut, Candlestick, Waterfall, Scatter, Gantt, Sequence, UML Class, and ER Diagram all compile through the shared registry. The hand-authored HTML/SVG files and legacy UML loader remain compatibility references and manual escape hatches.
+The Drawing DSL covers twenty-two registered types. Architecture, Flowchart, State Machine, Swimlane, Tree, Layer Stack, Timeline, Quadrant, Venn, Pyramid, Org Chart, Loop Flywheel, Bar, Line, Donut, Candlestick, Waterfall, Scatter, Gantt, Sequence, UML Class, and ER Diagram all compile through the shared registry. The hand-authored HTML/SVG files and legacy UML loader remain compatibility references and manual escape hatches.
 
 The compiler stages are:
 

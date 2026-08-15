@@ -14,12 +14,12 @@
   },
   "contact_sheets": [
     {
-      "path": "assets/demos/drawing-dsl-v5-all-types.png",
-      "sha256": "a46c0192598b214805aef378e92f0f1b2a245cd7498b96b18ca3b7598830110f"
+      "path": "assets/demos/drawing-dsl-all-types.png",
+      "sha256": "0a0a59c6b52bdc5700481254f37b5846a57b016c28b24dc3aaa7229e2beadc97"
     },
     {
-      "path": "assets/demos/drawing-dsl-v5-supported-types.png",
-      "sha256": "602bc96c30ebccb422d370841fd4664545a8ac00ccb5f5e13ba43fae33165db8"
+      "path": "assets/demos/drawing-dsl-supported-types.png",
+      "sha256": "8e4d5eb1ddcaa1ef3024cea83a0ee96d489717cf036f06eb7dbcb5b52d6dac6e"
     }
   ],
   "diagrams": [
@@ -646,10 +646,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "a5f0febcd9bf839f1cb4924e6a1a948bcb86452f53b331ae1ff32b56743c779b",
+        "png": "0c1872d49ffd857967f6034ad69dcfd91d69c6e446f3b9711d6537ba5a58b9b0",
         "input": "df6834ed82e761de45cf08a59ac2fd59bb620d3469dd89d5a72680f35cc6495a",
-        "svg": "d2a38874e5e86ff00422919c4db876eadef2d57a9b8267b14f19cd56105cd1dc",
-        "pdf": "6a6960bbb8a52e3edf65f08847525e96451c406b74754877645d6b097970a46d"
+        "svg": "9eba7e62b6652f045f784ce563a3ca22aca1e4ef064e190112ec1d0ee3120223",
+        "pdf": "4173546a51b050bb159655ebfa3d58420089c9135d165af97bf2ae31cfc8fd5a"
       },
       "unresolved_placeholders": []
     },

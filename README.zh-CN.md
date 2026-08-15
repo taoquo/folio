@@ -119,10 +119,25 @@ Folio 不把文档视为中性的输出，而把它看作思想获得公共形�
     <td width="33.33%" valign="top">
       <a href="assets/demos/demo-flowchart-v2.pdf"><img src="assets/demos/demo-flowchart-v2.png" alt="Drawing Review Flow 流程图预览"></a><br>
       <b>Drawing Review Flow</b><br>
-      Drawing DSL V3 案例：覆盖类型化决策、分支标签、正交路由和可访问 SVG 元数据。
+      Drawing DSL 案例：覆盖类型化决策、分支标签、正交路由和可访问 SVG 元数据。
     </td>
   </tr>
 </table>
+
+## 完整图表目录
+
+22 种类型全部由生成器驱动：架构图、流程图、状态机、泳道图、树图、分层堆栈、时间线、四象限、韦恩图、金字塔、组织架构、飞轮循环、柱状图、折线图、环形图、K 线图、瀑布图、散点图、甘特图、时序图、UML 类图、ER 图。
+
+<p align="center">
+  <img src="assets/demos/drawing-dsl-supported-types.png" alt="Drawing DSL 完整图表目录" width="100%">
+</p>
+
+这张接触表由程序渲染生成，不是手工拼接。重新生成并与已批准的视觉基线比对：
+
+```bash
+python3 scripts/folio.py diagram-catalog
+python3 scripts/folio.py diagram-catalog --baseline references/fixtures/drawing/catalog-baseline-v3.json
+```
 
 ## 从输入到输出
 
@@ -241,6 +256,46 @@ Motion thesis 必须说明意义，而不是装饰：
 
 只启用服务页面任务的层级。hover、active、focus 不能成为整套动效系统。
 
+### 图表路由
+
+不需要自己先挑图表类型。描述表达意图，让 Folio 来路由。
+
+```bash
+python3 scripts/folio.py route-diagram --content "审批流程"
+python3 scripts/folio.py route-diagram --content "各地区季度营收对比" --goal compare
+```
+
+8 个语义模式覆盖全部场景：`architecture`、`comparison`、`data`、`flow`、`hierarchy`、`relationship`、`state`、`time`。打分是确定性的，同一段描述总会落到同一种类型；每次决策都会返回胜出模式、置信区间、完整分数表、同模式内备选项和可读的推理轨迹。
+
+### 图表主题与输出拨杆
+
+主题和导出拨杆都在渲染层，不进入图表 payload。几何始终由编译器持有。
+
+| 参数 | 取值 | 作用 |
+|---|---|---|
+| `--theme` | `folio` / `dark` / `terminal` | 配色与字体 profile，带对比度校验 |
+| `--size` | `compact` / `standard` / `wide` | 仅影响位图导出宽度 |
+| `--detail` | `essential` / `standard` / `full` | 网格线与标注密度 |
+| `--audience` | `executive` / `general` / `practitioner` | 面向投影可读性的字号阶梯 |
+| `--variant` | `plain` / `sketchy` / `motion` | 手绘描边滤镜或尊重 reduced-motion 的入场动效 |
+
+```bash
+python3 scripts/folio.py render-drawing references/fixtures/v3/bar-chart.json \
+  --theme dark --size wide --detail essential --audience executive \
+  --format png --output /tmp/bar.png
+```
+
+### 图表导入
+
+已有的图表来源可以直接进入管线，不必重新手写。
+
+```bash
+python3 scripts/folio.py import-diagram references/fixtures/import/flowchart.mmd --output /tmp/flow.json
+python3 scripts/folio.py import-chart-data references/fixtures/tabular/bar-import.json --output /tmp/bar.json
+```
+
+Mermaid 和 draw.io 会转换成类型化的图表 JSON，并附一份保真度台账，记录哪些信息被保留、哪些被丢弃。本地 CSV / TSV 会规范化成类型化的图表数据 JSON。
+
 ### 输出生成
 
 Folio 目前支持两条主输出路径：
@@ -283,6 +338,9 @@ Folio 不只是模板集合，还带了一份紧凑的操作参考：[CHEATSHEET
 - [references/writing.md](references/writing.md)：内容策略与质量标准
 - [references/production.md](references/production.md)：构建、验证与排障
 - [references/diagrams.md](references/diagrams.md)：内联 SVG 图表规则
+- [references/drawing-dsl.md](references/drawing-dsl.md)：Drawing DSL 范围、编译阶段、路由与输出层
+- [references/drawing-dsl-authoring.md](references/drawing-dsl-authoring.md)：意图优先的图表创作流程
+- [references/drawing-dsl-v6-final-audit.md](references/drawing-dsl-v6-final-audit.md)：收尾审计、门禁证据与已知限制
 - [references/web-foundation.md](references/web-foundation.md)：阅读页面和产品工作台的 Web 设计指导基础
 
 ## 生图提示词

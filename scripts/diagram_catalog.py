@@ -20,8 +20,8 @@ ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS = ROOT / "scripts"
 FIXTURE = ROOT / "references" / "fixtures" / "diagram-catalog.json"
 DEFAULT_OUTPUT = ROOT / "assets" / "diagrams" / "generated" / "catalog"
-DEFAULT_CONTACT_SHEET = ROOT / "assets" / "demos" / "drawing-dsl-v5-all-types.png"
-DEFAULT_SUPPORTED_SHEET = ROOT / "assets" / "demos" / "drawing-dsl-v5-supported-types.png"
+DEFAULT_CONTACT_SHEET = ROOT / "assets" / "demos" / "drawing-dsl-all-types.png"
+DEFAULT_SUPPORTED_SHEET = ROOT / "assets" / "demos" / "drawing-dsl-supported-types.png"
 PLACEHOLDER_RE = re.compile(r"\{\{([^{}]+)\}\}")
 VISUAL_BASELINE_SCHEMA_VERSION = "1.0"
 
@@ -137,7 +137,7 @@ def render_catalog(
 
     _write_contact_sheet(payload["title"], records, contact_sheet)
     _write_supported_sheet(
-        "Drawing DSL V5 · Generator-backed Types",
+        "Drawing DSL · Generator-backed Types",
         [item for item in records if item["mode"] in {"drawing-dsl", "drawing-dsl-v3"}],
         supported_sheet,
     )
@@ -454,7 +454,7 @@ def _write_contact_sheet(
     draw.text((margin, 28), title, fill="#191514", font=title_font)
     draw.text(
         (margin, 72),
-        "Cinnabar badge = generator-backed Drawing DSL V5",
+        "Cinnabar badge = generator-backed Drawing DSL",
         fill="#5A4A43",
         font=meta_font,
     )
@@ -465,7 +465,7 @@ def _write_contact_sheet(
         y = title_height + margin + row * (card_height + gap)
         draw.rectangle((x, y, x + card_width, y + card_height), fill="#FBF7F3", outline="#E6D9D1", width=2)
         is_dsl = record["mode"] in {"drawing-dsl", "drawing-dsl-v3"}
-        badge = "DSL V5" if is_dsl else "LEGACY"
+        badge = "DSL" if is_dsl else "LEGACY"
         badge_color = "#B83D2E" if is_dsl else "#85776F"
         draw.rounded_rectangle((x + 20, y + 14, x + 126, y + 40), radius=4, fill=badge_color)
         draw.text((x + 28, y + 18), badge, fill="#FBF7F3", font=meta_font)
@@ -508,7 +508,7 @@ def _write_supported_sheet(title: str, records: list[dict[str, Any]], output_pat
         y = title_height + margin + row * (card_height + gap)
         draw.rectangle((x, y, x + card_width, y + card_height), fill="#FBF7F3", outline="#E6D9D1", width=2)
         draw.rounded_rectangle((x + 20, y + 14, x + 126, y + 42), radius=4, fill="#B83D2E")
-        draw.text((x + 28, y + 19), "DSL V5", fill="#FBF7F3", font=meta_font)
+        draw.text((x + 28, y + 19), "DSL", fill="#FBF7F3", font=meta_font)
         draw.text((x + 144, y + 14), record["label"], fill="#191514", font=label_font)
         with Image.open(_record_path(record["png"])) as image:
             rgb = image.convert("RGB")
