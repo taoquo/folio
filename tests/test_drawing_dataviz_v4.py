@@ -29,6 +29,11 @@ def showcase_fixture(kind: str) -> dict:
     return json.loads((ROOT / "references" / "fixtures" / "showcase" / f"{kind}.json").read_text(encoding="utf-8"))
 
 
+def scene_texts(payload: dict) -> list[str]:
+    result = DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
+    return [item.text for item in result.scene.primitives if isinstance(item, SceneText)]
+
+
 class DrawingDataVizV4RegressionTests(TestCase):
     def test_maintained_v42_feature_fixtures_match_detailed_schemas(self) -> None:
         try:
@@ -329,3 +334,35 @@ class DrawingDataVizV4RegressionTests(TestCase):
             invalid[field] = value
             with self.subTest(field=field), self.assertRaises(DrawingCompilationError):
                 DEFAULT_COMPILER_REGISTRY.compile_payload(invalid)
+
+    def test_blank_unit_and_source_render_as_absent(self) -> None:
+        cases = (
+            ("bar-chart", "unit"),
+            ("donut-chart", "unit"),
+            ("line-chart", "unit"),
+            ("waterfall", "unit"),
+            ("candlestick", "unit"),
+            ("gantt", "source"),
+            ("heatmap", "unit"),
+            ("heatmap", "source"),
+            ("scatter", "source"),
+        )
+        for kind, field in cases:
+            for blank in ("", "   "):
+                with self.subTest(kind=kind, field=field, blank=blank):
+                    payload = showcase_fixture(kind)
+                    payload[field] = blank
+                    absent = showcase_fixture(kind)
+                    absent.pop(field, None)
+
+                    self.assertEqual(scene_texts(absent), scene_texts(payload))
+
+    def test_blank_axis_unit_renders_as_absent(self) -> None:
+        for kind, axis in (("scatter", "y_axis"), ("heatmap", "x_axis")):
+            with self.subTest(kind=kind, axis=axis):
+                payload = showcase_fixture(kind)
+                payload[axis]["unit"] = "   "
+                absent = showcase_fixture(kind)
+                absent[axis].pop("unit", None)
+
+                self.assertEqual(scene_texts(absent), scene_texts(payload))

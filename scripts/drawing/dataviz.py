@@ -355,6 +355,14 @@ def _axes(
     return result
 
 
+def _normalize_blank_text(container: dict[str, Any], *fields: str) -> None:
+    """Whitespace-only unit or source text renders as dangling ink, so treat it as absent."""
+    for field in fields:
+        value = container.get(field)
+        if isinstance(value, str) and not value.strip():
+            container[field] = None
+
+
 def _common_chart(
     payload: dict[str, Any],
     *,
@@ -368,6 +376,7 @@ def _common_chart(
         allowed={"schema_version", "kind", "title", "unit", "locale", "source", "value_format", "width", "height", "language", *extra_allowed},
         required=("schema_version", "kind", "title", *required), code=code, band=CHART_CANVAS,
     )
+    _normalize_blank_text(payload, "unit", "source")
     for field in ("unit", "locale", "source"):
         if payload.get(field) is not None and not isinstance(payload[field], str):
             diagnostics.append(DrawingDiagnostic("ERROR", code, f"{field} must be a string or null"))
@@ -1331,6 +1340,7 @@ def compile_scatter_payload(payload: dict[str, Any]):
             continue
         for field in sorted(set(axis) - {"label", "unit", "include_zero"}):
             diagnostics.append(DrawingDiagnostic("ERROR", "SC004", f"{name} has unknown field: {field}"))
+        _normalize_blank_text(axis, "unit")
         if not isinstance(axis.get("label"), str) or not axis.get("label", "").strip():
             diagnostics.append(DrawingDiagnostic("ERROR", "SC004", f"{name}.label must be a non-empty string"))
         if axis.get("unit") is not None and (not isinstance(axis["unit"], str) or len(axis["unit"]) > 12):
@@ -1687,6 +1697,7 @@ def compile_heatmap_payload(payload: dict[str, Any]):
             continue
         for field in sorted(set(axis) - {"label", "unit"}):
             diagnostics.append(DrawingDiagnostic("ERROR", "HM007", f"{name} has unknown field: {field}"))
+        _normalize_blank_text(axis, "unit")
         if not isinstance(axis.get("label"), str) or not axis.get("label", "").strip():
             diagnostics.append(DrawingDiagnostic("ERROR", "HM007", f"{name}.label must be a non-empty string"))
         if axis.get("unit") is not None and (not isinstance(axis["unit"], str) or len(axis["unit"]) > 12):
