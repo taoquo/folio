@@ -545,6 +545,35 @@ class OrphanCheckTests(TestCase):
         self.assertIn("not found", buffer.getvalue())
 
 
+
+class PlaceholderScanTests(TestCase):
+    def test_default_scan_covers_published_artifacts_and_skips_sources(self) -> None:
+        artifacts = build.published_html_artifacts()
+        self.assertTrue(artifacts, "expected at least the homepage artifacts")
+        names = {path.name for path in artifacts}
+        self.assertIn("index.html", names)
+        self.assertIn("index-zh.html", names)
+        parents = {path.parent.name for path in artifacts}
+        self.assertNotIn("templates", parents)
+        self.assertNotIn("diagrams", parents)
+
+    def test_default_scan_reports_no_placeholders_in_the_repository(self) -> None:
+        buffer = io.StringIO()
+        with contextlib.redirect_stdout(buffer):
+            code = build.check_placeholders([])
+        self.assertEqual(0, code, buffer.getvalue())
+
+    def test_scan_flags_an_unfilled_placeholder(self) -> None:
+        with TemporaryDirectory() as raw:
+            tmp = Path(raw)
+            filled = tmp / "doc.html"
+            filled.write_text("<p>{{TITLE}}</p>", encoding="utf-8")
+            buffer = io.StringIO()
+            with contextlib.redirect_stdout(buffer):
+                code = build.check_placeholders([str(filled)])
+        self.assertEqual(1, code)
+        self.assertIn("{{TITLE}}", buffer.getvalue())
+
 class IndexParityTests(TestCase):
     MINI = (
         '<svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg">'

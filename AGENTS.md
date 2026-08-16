@@ -35,6 +35,7 @@ python3 scripts/build.py --check  # scan templates for CSS rule violations
 python3 scripts/build.py --sync   # check CSS token drift across templates
 python3 scripts/build.py --check-index  # check homepage miniature parity across index.html / index-zh.html
 python3 scripts/build.py --verify # verify templates, page counts, fonts, and slides
+python3 scripts/build.py --check-placeholders     # scan every published HTML artifact, as CI does
 python3 scripts/build.py --check-placeholders path/to/filled.html
 python3 scripts/build.py --check-orphans [path/to/doc.pdf]  # scan for orphan trailing lines in built PDFs
 ```

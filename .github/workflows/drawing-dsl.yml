@@ -67,6 +67,8 @@ jobs:
         run: python scripts/build.py --check
       - name: Check token drift across templates
         run: python scripts/build.py --sync
+      - name: Check published HTML for unfilled placeholders
+        run: python scripts/build.py --check-placeholders
       - name: Validate registered catalog
         run: >-
           python -c "import sys; sys.path.insert(0, 'scripts');
@@ -119,6 +121,8 @@ jobs:
         run: python scripts/build.py --verify
       - name: Check orphan text in generated PDFs
         run: python scripts/build.py --check-orphans
+      - name: Check built host documents for unfilled placeholders
+        run: python scripts/build.py --check-placeholders
       - name: Build release package
         run: bash scripts/package-skill.sh "${RUNNER_TEMP}/folio.zip"
       - name: Upload release evidence

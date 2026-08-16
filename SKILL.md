@@ -416,6 +416,7 @@ python3 scripts/build.py --verify           # build all templates + page count +
 python3 scripts/build.py --verify resume-en # single target full verification
 python3 scripts/build.py --verify slides    # single slide deck verification
 python3 scripts/build.py --check-rhythm     # slide rhythm check for slides / slides-en
+python3 scripts/build.py --check-placeholders           # scan every published HTML artifact
 python3 scripts/build.py --check-placeholders path/to/filled.html
 python3 scripts/build.py --check            # CSS rule violations only (fast, no build)
 ```

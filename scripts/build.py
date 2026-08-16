@@ -11,6 +11,7 @@ Usage:
     python3 scripts/build.py --doctor             # check local PDF/PPTX/diagram dependencies
     python3 scripts/build.py --verify             # build all + page count + font checks
     python3 scripts/build.py --verify resume-en   # single target full verification
+    python3 scripts/build.py --check-placeholders           # scan every published HTML artifact
     python3 scripts/build.py --check-placeholders path/to/doc.html
     python3 scripts/build.py --check-orphans      # scan example PDFs for orphan text
     python3 scripts/build.py --check-orphans path/to/doc.pdf
@@ -1135,10 +1136,29 @@ def verify_all(target: str | None = None) -> int:
     return 0 if failures == 0 else 1
 
 
+def published_html_artifacts() -> list[Path]:
+    """Every HTML file that ships filled, so any `{{...}}` left inside is a real defect.
+
+    `assets/templates/` and `assets/diagrams/` are deliberately excluded: those are the
+    authoring sources whose placeholders are the product.
+    """
+    candidates = [
+        ROOT / "index.html",
+        ROOT / "index-zh.html",
+        ROOT / "index-en.html",
+        *sorted(DEMOS.glob("*.html")),
+        *sorted((ROOT / "references" / "fixtures" / "hosting").glob("*.html")),
+        *sorted((EXAMPLES / "drawing-hosts").glob("*.html")),
+    ]
+    return [path for path in candidates if path.is_file()]
+
+
 def check_placeholders(paths: list[str]) -> int:
     if not paths:
-        print("ERROR: provide at least one HTML file to scan")
-        return 2
+        paths = [str(path.relative_to(ROOT)) for path in published_html_artifacts()]
+        if not paths:
+            print("ERROR: no published HTML artifacts found to scan")
+            return 2
 
     failures = 0
     for raw in paths:

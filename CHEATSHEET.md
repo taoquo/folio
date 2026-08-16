@@ -361,7 +361,7 @@ Alternate light/dark rhythm: add `.sd-alt` to any section container.
 4. Font embedding check
 5. PPTX generation for `slides` / `slides-en`
 
-Source templates intentionally keep `{{...}}` fields. Run `python3 scripts/build.py --check-placeholders path/to/filled.html` on completed documents.
+Source templates and diagram sources intentionally keep `{{...}}` fields. Run `python3 scripts/build.py --check-placeholders path/to/filled.html` on a completed document, or with no argument to scan every published artifact the way CI does.
 
 ## Content quality (one rule per type)
 
