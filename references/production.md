@@ -320,6 +320,8 @@ python3 scripts/folio.py diagram-catalog \
   --baseline-report /tmp/catalog-baseline-report.json
 python3 scripts/build.py --check
 python3 scripts/build.py --sync
+python3 scripts/build.py --check-placeholders
+python3 scripts/build.py --check-rhythm
 python3 scripts/build.py --verify
 bash scripts/package-skill.sh
 ```

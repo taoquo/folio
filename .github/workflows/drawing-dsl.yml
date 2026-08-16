@@ -69,6 +69,8 @@ jobs:
         run: python scripts/build.py --sync
       - name: Check published HTML for unfilled placeholders
         run: python scripts/build.py --check-placeholders
+      - name: Check slide deck rhythm
+        run: python scripts/build.py --check-rhythm
       - name: Validate registered catalog
         run: >-
           python -c "import sys; sys.path.insert(0, 'scripts');

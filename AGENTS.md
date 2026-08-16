@@ -38,6 +38,7 @@ python3 scripts/build.py --verify # verify templates, page counts, fonts, and sl
 python3 scripts/build.py --check-placeholders     # scan every published HTML artifact, as CI does
 python3 scripts/build.py --check-placeholders path/to/filled.html
 python3 scripts/build.py --check-orphans [path/to/doc.pdf]  # scan for orphan trailing lines in built PDFs
+python3 scripts/build.py --check-rhythm  # warn on monotonous slide sequences, as CI does
 ```
 
 Lint runs from the shared `pyproject.toml` config, so local and CI results match:
