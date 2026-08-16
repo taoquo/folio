@@ -353,15 +353,15 @@ Folio 也可以作为图片模型或绘图工具的风格 brief。把 `reference
 <table>
   <tr>
     <td width="33.33%" valign="top" align="center">
-      <img src="assets/illustrations/travel-tesla-optimus.png" alt="高山夜行列车旅行图册"><br>
+      <img src="assets/illustrations/travel-tesla-optimus.webp" alt="高山夜行列车旅行图册"><br>
       高山夜行列车旅行图册：站点注释、时刻卡片、暖纸底和手工批注并存
     </td>
     <td width="33.33%" valign="top" align="center">
-      <img src="assets/illustrations/travel-spatialvla.png" alt="海岸周末路线海报"><br>
+      <img src="assets/illustrations/travel-spatialvla.webp" alt="海岸周末路线海报"><br>
       海岸周末路线海报：潮汐时间窗、咖啡停靠点、步行段与换乘点清晰分层
     </td>
     <td width="33.33%" valign="top" align="center">
-      <img src="assets/illustrations/travel-3d-representations.png" alt="沙漠设计酒店旅行手账"><br>
+      <img src="assets/illustrations/travel-3d-representations.webp" alt="沙漠设计酒店旅行手账"><br>
       沙漠设计酒店旅行手账：到达地图、打包提示、物件特写与留白并置
     </td>
   </tr>

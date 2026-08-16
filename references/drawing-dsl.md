@@ -63,6 +63,7 @@ Reduction decisions are serialized with their targets, reason, and whether they 
 - SVG, PNG, and PDF are exercised for every type across all three profiles; the V5 matrix contains 198 artifacts.
 - Catalog manifest 3.0 records profile, source/output dimensions, content bounds, diagnostics, metrics, registry keys, versions, and SHA-256 digests for twenty-two generator-backed entries.
 - Review manifests preserve dimension mismatches instead of resizing them away and record an explicit approval state.
+- Host manifest 1.1 and review manifests both record the resolved `theme` and the render `variant`, and `verify-drawing-host` rejects variant metadata drift.
 - Structural grammars own reachability, ownership, hierarchy, transition, lane, and layer invariants.
 - Positional grammars own temporal order, axis domains, label candidates, and bounded set topology.
 - Data Viz Core owns finite-number checks, missing-value policy, locale/unit formatting, deterministic scales and ticks, stable mark ids, temporal spacing, OHLC validation, and cumulative arithmetic.

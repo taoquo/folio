@@ -33,6 +33,12 @@ def compile_minimal(kind: str):
     return path, DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
 
 
+def compile_minimal_themed(kind: str, theme: str):
+    path = ROOT / "references" / "fixtures" / "minimal" / f"{kind}.json"
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    return path, DEFAULT_COMPILER_REGISTRY.compile_payload(payload, "embed", theme)
+
+
 class DrawingHostingTests(TestCase):
     def test_four_explicit_host_contracts_have_bounded_safe_areas(self) -> None:
         contracts = list_host_contracts()
@@ -205,3 +211,80 @@ class DrawingHostingTests(TestCase):
             self.assertAlmostEqual(4, picture.width / picture.height, delta=0.002)
             self.assertEqual(Inches(4), picture.width)
             self.assertEqual(Inches(1), picture.height)
+
+
+class HostThemeVariantTests(TestCase):
+    HOST = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"></head><body><figure data-folio-diagram-slot="main"></figure></body></html>'
+
+    def test_html_manifest_records_theme_and_variant_and_svg_carries_them(self) -> None:
+        fixture, result = compile_minimal_themed("tree", "dark")
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            source, output = root / "source.html", root / "output.html"
+            source.write_text(self.HOST, encoding="utf-8")
+
+            manifest = embed_html_figure(
+                result, fixture=fixture, host_file=source, output_host=output,
+                artifact_dir=root / "artifacts", contract_key="a4-portrait", slot="main",
+                caption="The bounded root stays legible after the dark theme is applied to the scene.",
+                variant="sketchy",
+            )
+            generated = output.read_text(encoding="utf-8")
+
+            self.assertEqual("1.1", manifest["schema_version"])
+            self.assertEqual("dark", manifest["theme"])
+            self.assertEqual("sketchy", manifest["variant"])
+            self.assertIn('data-folio-theme="dark"', generated)
+            self.assertIn('data-folio-variant="sketchy"', generated)
+            self.assertIn("feDisplacementMap", generated)
+            self.assertEqual([manifest], verify_hosted_html(output))
+
+    def test_html_variant_metadata_drift_is_rejected(self) -> None:
+        fixture, result = compile_minimal("tree")
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            source, output = root / "source.html", root / "output.html"
+            source.write_text(self.HOST, encoding="utf-8")
+            embed_html_figure(
+                result, fixture=fixture, host_file=source, output_host=output,
+                artifact_dir=root / "artifacts", contract_key="a4-portrait", slot="main",
+                caption="The bounded root remains readable while the variant metadata is checked for drift.",
+            )
+            original = output.read_text(encoding="utf-8")
+            drifted = original.replace("&quot;variant&quot;:&quot;plain&quot;", "&quot;variant&quot;:&quot;sketchy&quot;", 1)
+            self.assertNotEqual(original, drifted)
+            output.write_text(drifted, encoding="utf-8")
+
+            with self.assertRaisesRegex(ValueError, "variant metadata is stale"):
+                verify_hosted_html(output)
+
+    def test_unknown_variant_and_motion_pptx_are_rejected(self) -> None:
+        fixture, result = compile_minimal("tree")
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            source, output = root / "source.html", root / "output.html"
+            source.write_text(self.HOST, encoding="utf-8")
+
+            with self.assertRaisesRegex(ValueError, "unknown drawing output variant"):
+                embed_html_figure(
+                    result, fixture=fixture, host_file=source, output_host=output,
+                    artifact_dir=root / "artifacts", contract_key="a4-portrait", slot="main",
+                    caption="The bounded root is never rendered because the requested variant does not exist.",
+                    variant="glow",
+                )
+
+            deck = root / "deck.pptx"
+            prs = Presentation()
+            prs.slide_width, prs.slide_height = Inches(13.333), Inches(7.5)
+            slide = prs.slides.add_slide(prs.slide_layouts[6])
+            slot = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(1), Inches(1), Inches(11), Inches(5.5))
+            slot.name = "folio-diagram-slot:main"
+            prs.save(deck)
+
+            with self.assertRaisesRegex(ValueError, "motion is CSS-driven"):
+                embed_pptx_slot(
+                    result, fixture=fixture, host_file=deck, output_host=root / "out.pptx",
+                    artifact_dir=root / "artifacts", slot="main",
+                    caption="The bounded root is never rasterised because motion cannot survive a static export.",
+                    slide_index=1, profile="embed", variant="motion",
+                )

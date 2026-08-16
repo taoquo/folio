@@ -439,6 +439,7 @@ def _embed_drawing_host(args: argparse.Namespace) -> int:
     contract = host_contract(args.host_contract)
     profile = args.profile or contract.default_profile
     result = _compile_drawing_input(args.fixture, profile=profile, theme=getattr(args, "theme", "folio"))
+    variant = getattr(args, "variant", "plain")
     artifact_dir = args.artifact_dir or str(Path(args.output_host).parent / f"{Path(args.output_host).stem}-diagrams")
     if contract.medium in {"html-print", "html-responsive"}:
         manifest = embed_html_figure(
@@ -451,6 +452,7 @@ def _embed_drawing_host(args: argparse.Namespace) -> int:
             slot=args.slot,
             caption=args.caption,
             profile=profile,
+            variant=variant,
         )
     else:
         try:
@@ -464,6 +466,7 @@ def _embed_drawing_host(args: argparse.Namespace) -> int:
                 caption=args.caption,
                 slide_index=args.slide_index,
                 profile=profile,
+                variant=variant,
             )
         except RuntimeError as exc:
             raise DrawingDependencyError("drawing host export dependency failed") from exc
@@ -617,6 +620,7 @@ def build_parser() -> argparse.ArgumentParser:
     embed.add_argument("--caption", required=True, help="Insight-led caption; must not repeat the title.")
     embed.add_argument("--profile", choices=DRAWING_PROFILES)
     embed.add_argument("--theme", choices=DRAWING_THEMES, default="folio", help="Named theme profile.")
+    embed.add_argument("--variant", choices=DRAWING_VARIANTS, default="plain", help="Render variant; motion is rejected for PPTX hosts.")
     embed.add_argument("--slide-index", type=int, default=1, help="One-based slide index for PPTX hosts.")
     embed.add_argument("--format", choices=("text", "json"), default="text", help="Command result format.")
 
@@ -694,6 +698,7 @@ def build_parser() -> argparse.ArgumentParser:
     review.add_argument("--baseline", help="Optional baseline PNG for perceptual diff.")
     review.add_argument("--profile", choices=DRAWING_PROFILES, default="artifact")
     review.add_argument("--theme", choices=DRAWING_THEMES, default="folio", help="Named theme profile.")
+    review.add_argument("--variant", choices=DRAWING_VARIANTS, default="plain", help="Render variant for the bundle SVG.")
 
     return parser
 
@@ -818,6 +823,8 @@ def _main(argv: list[str]) -> int:
         from drawing.review import write_review_bundle
 
         result = _compile_drawing_input(args.fixture, args.title, args.profile, args.theme)
+        if args.variant == "motion":
+            print("WARNING: motion is CSS-driven; the bundle PNG and PDF degrade to plain")
         write_review_bundle(
             result.semantic,
             result.plan,
@@ -828,6 +835,8 @@ def _main(argv: list[str]) -> int:
             diagnostics=result.diagnostics,
             metrics=result.metrics,
             profile=result.profile,
+            theme=result.theme,
+            variant=args.variant,
             normalized_input=result.normalized_input,
             compilation_metadata=result.metadata,
         )

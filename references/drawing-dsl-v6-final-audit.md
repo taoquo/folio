@@ -134,8 +134,8 @@ Known, bounded, and non-blocking.
   are deliberate stress fixtures and keep their density warnings.
 - `motion` variant cannot be visually verified in a static pipeline; the test asserts CSS presence
   plus byte-identical PNG degradation.
-- `review.py:write_review_bundle`, `hosting.py`, and `drawing_host_integration.py` still embed with
-  the default `folio` theme and `plain` variant.
+- `motion` is rejected outright for PPTX host slots and for the host integration source builder,
+  because a raster export cannot carry a CSS reveal. HTML hosts accept it.
 
 ## 5. Reproduction
 

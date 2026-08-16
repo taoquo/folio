@@ -12,6 +12,7 @@ from tempfile import NamedTemporaryFile, TemporaryDirectory
 from typing import Any
 
 from .compiler import CompilationResult
+from .output import normalize_output_variant
 
 
 MANIFEST_PREFIX = "FOLIO_DIAGRAM_MANIFEST:"
@@ -201,13 +202,16 @@ def _manifest(
     caption: str,
     data: AccessibleData | None,
     placement: dict[str, Any] | None = None,
+    variant: str = "plain",
 ) -> dict[str, Any]:
     return {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "slot": slot,
         "host_contract": contract.key,
         "kind": result.kind,
         "profile": profile,
+        "theme": result.theme,
+        "variant": variant,
         "fixture": _portable_path(fixture, host_output),
         "fixture_sha256": _digest(fixture),
         "artifact": _portable_path(artifact, host_output),
@@ -233,6 +237,7 @@ def embed_html_figure(
     slot: str,
     caption: str,
     profile: str | None = None,
+    variant: str = "plain",
 ) -> dict[str, Any]:
     from renderers.svg import render_svg
 
@@ -242,6 +247,7 @@ def embed_html_figure(
     profile = profile or contract.default_profile
     if profile not in contract.allowed_profiles:
         raise ValueError(f"profile {profile} is not allowed for {contract.key}")
+    variant = normalize_output_variant(variant)
     caption = validate_caption(caption, result.plan.title)
     fixture_path, source_path, output_path = Path(fixture), Path(host_file), Path(output_host)
     if not fixture_path.is_file() or not source_path.is_file():
@@ -258,7 +264,7 @@ def embed_html_figure(
     artifact_root = Path(artifact_dir)
     artifact_root.mkdir(parents=True, exist_ok=True)
     token = _digest(fixture_path)[:10]
-    svg = render_svg(result.scene, profile, namespace=f"host-{slot}-{token}")
+    svg = render_svg(result.scene, profile, namespace=f"host-{slot}-{token}", variant=variant)
     artifact = artifact_root / f"{result.kind}-{slot}-{token}-{_digest_text(svg)[:12]}.svg"
     _atomic_text(artifact, svg)
     data = accessible_data(result)
@@ -268,7 +274,10 @@ def embed_html_figure(
         "safe_area": [contract.safe_left, contract.safe_top, contract.safe_width, contract.safe_height],
         "max_artifact": [contract.safe_width, max_height],
     }
-    manifest = _manifest(result, fixture_path, artifact, output_path, contract, profile, slot, caption, data, placement)
+    manifest = _manifest(
+        result, fixture_path, artifact, output_path, contract, profile, slot, caption, data, placement,
+        variant=variant,
+    )
     figure = _html_figure(result, svg, manifest, caption, data, contract)
     output = source[:matches[0].start()] + figure + source[matches[0].end():]
     output = _ensure_host_styles(output)
@@ -299,6 +308,8 @@ def _html_figure(
         "data-folio-diagram-slot": slot,
         "data-folio-kind": str(manifest["kind"]),
         "data-folio-profile": str(manifest["profile"]),
+        "data-folio-theme": str(manifest["theme"]),
+        "data-folio-variant": str(manifest["variant"]),
         "data-folio-fixture-sha256": str(manifest["fixture_sha256"]),
         "data-folio-artifact-sha256": str(manifest["artifact_sha256"]),
         "role": "group",
@@ -364,6 +375,7 @@ def embed_pptx_slot(
     caption: str,
     slide_index: int,
     profile: str | None = None,
+    variant: str = "plain",
 ) -> dict[str, Any]:
     from diagram_export import export_png
     from pptx import Presentation
@@ -376,6 +388,9 @@ def embed_pptx_slot(
     profile = profile or contract.default_profile
     if profile not in contract.allowed_profiles:
         raise ValueError(f"profile {profile} is not allowed for {contract.key}")
+    variant = normalize_output_variant(variant)
+    if variant == "motion":
+        raise ValueError("motion is CSS-driven and cannot be embedded into a raster PPTX slot")
     caption = validate_caption(caption, result.plan.title)
     fixture_path, source_path, output_path = Path(fixture), Path(host_file), Path(output_host)
     if not fixture_path.is_file() or not source_path.is_file():
@@ -407,7 +422,7 @@ def embed_pptx_slot(
     target_width = int(round(contract.safe_width * int(contract.target_ppi or 144)))
     with TemporaryDirectory(prefix="folio-host-slide-", dir=artifact_root) as temp:
         svg_path = Path(temp) / "drawing.svg"
-        svg_path.write_text(render_svg(result.scene, profile), encoding="utf-8")
+        svg_path.write_text(render_svg(result.scene, profile, variant=variant), encoding="utf-8")
         temporary_artifact = Path(temp) / "drawing.png"
         export_png(svg_path, temporary_artifact, width=target_width, profile=profile, title=result.plan.title, language=result.plan.language)
         artifact = artifact_root / f"{result.kind}-{slot}-{token}-{profile}-{_digest(temporary_artifact)[:12]}.png"
@@ -438,7 +453,10 @@ def embed_pptx_slot(
         "slot": [_emu_to_in(value) for value in (left, top, width, height)],
         "image": [_emu_to_in(value) for value in placement],
     }
-    manifest = _manifest(result, fixture_path, artifact, output_path, contract, profile, slot, caption, data, placement_manifest)
+    manifest = _manifest(
+        result, fixture_path, artifact, output_path, contract, profile, slot, caption, data, placement_manifest,
+        variant=variant,
+    )
     notes = slide.notes_slide.notes_text_frame
     notes_lines = [notes.text.strip()] if notes.text.strip() else []
     notes_lines.append(MANIFEST_PREFIX + json.dumps(manifest, ensure_ascii=False, sort_keys=True, separators=(",", ":")))
@@ -543,6 +561,8 @@ def verify_hosted_html(path: str | Path) -> list[dict[str, Any]]:
             raise ValueError(f"HTML host diagram {manifest['slot']} language metadata is stale")
         if escape(str(manifest["description"])) not in svg_match.group(1):
             raise ValueError(f"HTML host diagram {manifest['slot']} description metadata is stale")
+        if f'data-folio-variant="{escape(str(manifest["variant"]), quote=True)}"' not in svg_match.group(1):
+            raise ValueError(f"HTML host diagram {manifest['slot']} variant metadata is stale")
         data = manifest.get("data")
         if manifest["kind"] in DATA_KINDS:
             if not data or f'id="folio-data-{manifest["slot"]}"' not in source:
@@ -693,7 +713,7 @@ def verify_hosted_pptx(path: str | Path) -> list[dict[str, Any]]:
 
 def _verify_manifest_files(manifest: dict[str, Any], host_file: Path) -> None:
     required = {
-        "schema_version", "slot", "host_contract", "kind", "profile", "fixture",
+        "schema_version", "slot", "host_contract", "kind", "profile", "theme", "variant", "fixture",
         "fixture_sha256", "artifact", "artifact_sha256", "source_dimensions", "caption",
         "description", "language", "registry_key",
     }

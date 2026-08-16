@@ -9,6 +9,8 @@ from typing import Any
 from diagram_export import export_pdf, export_png
 from renderers.svg import render_svg
 
+from .output import normalize_output_variant
+
 
 def write_review_bundle(
     semantic: Any,
@@ -21,9 +23,12 @@ def write_review_bundle(
     diagnostics: Any = (),
     metrics: Any = None,
     profile: str = "artifact",
+    theme: str = "folio",
+    variant: str = "plain",
     normalized_input: Any = None,
     compilation_metadata: Any = None,
 ) -> dict[str, Any]:
+    variant = normalize_output_variant(variant)
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)
     _json(output / "input.json", normalized_input)
@@ -34,7 +39,7 @@ def write_review_bundle(
     svg_path = output / "drawing.svg"
     png_path = output / "drawing.png"
     pdf_path = output / "drawing.pdf"
-    svg_path.write_text(render_svg(scene, profile), encoding="utf-8")
+    svg_path.write_text(render_svg(scene, profile, variant=variant), encoding="utf-8")
     export_png(
         svg_path, png_path, width=1920, profile=profile,
         title=drawing.title, language=getattr(drawing, "language", "en"),
@@ -48,6 +53,8 @@ def write_review_bundle(
         "compilation": compilation_metadata.to_dict() if compilation_metadata is not None else None,
         "kind": drawing.kind,
         "profile": profile,
+        "theme": theme,
+        "variant": variant,
         "dimensions": {"scene": [scene.width, scene.height], "png": list(dimensions)},
         "content_bounds": _content_bounds(scene),
         "layout_selection": layout_selection,

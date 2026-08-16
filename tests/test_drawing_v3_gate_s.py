@@ -226,3 +226,27 @@ class DrawingV3GateSTests(TestCase):
         self.assertEqual("architecture@3", manifest["compilation"]["registry_key"])
         self.assertEqual("not-applicable", manifest["approval_state"])
         self.assertIn("input.json", manifest["digests"])
+
+    def test_aud_021_review_manifest_records_theme_and_variant(self) -> None:
+        from drawing.compiler import DEFAULT_COMPILER_REGISTRY
+
+        result = DEFAULT_COMPILER_REGISTRY.compile_architecture_spec(self.spec, theme="dark")
+
+        def fake_png(_svg: Path, output: Path, width: int = 1920, **_kwargs) -> None:
+            Image.new("RGB", (width, 1080), "#F6F0EA").save(output)
+
+        def fake_pdf(_svg: Path, output: Path, _title: str, _language: str, _profile: str) -> None:
+            output.write_bytes(b"%PDF-1.4\n")
+
+        with TemporaryDirectory() as temp, mock.patch("drawing.review.export_png", side_effect=fake_png), mock.patch("drawing.review.export_pdf", side_effect=fake_pdf):
+            manifest = write_review_bundle(
+                result.semantic, result.plan, result.layout, result.scene, temp,
+                diagnostics=result.diagnostics, metrics=result.metrics, profile=result.profile,
+                theme=result.theme, variant="sketchy",
+                normalized_input=result.normalized_input, compilation_metadata=result.metadata,
+            )
+            svg = (Path(temp) / "drawing.svg").read_text(encoding="utf-8")
+
+        self.assertEqual("dark", manifest["theme"])
+        self.assertEqual("sketchy", manifest["variant"])
+        self.assertIn('data-folio-variant="sketchy"', svg)

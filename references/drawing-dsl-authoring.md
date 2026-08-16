@@ -248,3 +248,16 @@ python3 scripts/folio.py batch-render-drawings references/fixtures/v5 \
 ```
 
 The batch report records `size`, `detail`, `audience`, and `variant` alongside `theme`, so a rendered directory can always be traced back to the exact flag combination that produced it.
+
+### Themes and variants inside hosts
+
+`embed-drawing` and `review-drawing` accept the same `--theme` and `--variant` flags. The host manifest is schema 1.1 and records both, the generated `<figure>` carries `data-folio-theme` and `data-folio-variant`, and `verify-drawing-host` fails when either drifts from the embedded SVG.
+
+```bash
+python3 scripts/folio.py embed-drawing references/fixtures/minimal/tree.json \
+  --host-contract a4-portrait --host-file references/fixtures/hosting/a4-long-doc.html \
+  --output-host /tmp/host.html --slot structure --theme dark --variant sketchy \
+  --caption "The single root keeps the structural hierarchy bounded and immediately scannable."
+```
+
+`motion` is accepted for HTML hosts and rejected for PPTX slots, because a rasterised slide image cannot carry a CSS reveal.

@@ -353,15 +353,15 @@ Example illustration briefs:
 <table>
   <tr>
     <td width="33.33%" valign="top" align="center">
-      <img src="assets/illustrations/travel-tesla-optimus.png" alt="Alpine night-train travel atlas"><br>
+      <img src="assets/illustrations/travel-tesla-optimus.webp" alt="Alpine night-train travel atlas"><br>
       Alpine night-train travel atlas with station callouts, timetable chips, and warm editorial annotations
     </td>
     <td width="33.33%" valign="top" align="center">
-      <img src="assets/illustrations/travel-spatialvla.png" alt="Coastal weekend route poster"><br>
+      <img src="assets/illustrations/travel-spatialvla.webp" alt="Coastal weekend route poster"><br>
       Coastal weekend route poster with tide windows, cafe stops, and hand-marked walking segments
     </td>
     <td width="33.33%" valign="top" align="center">
-      <img src="assets/illustrations/travel-3d-representations.png" alt="Desert design hotel field guide"><br>
+      <img src="assets/illustrations/travel-3d-representations.webp" alt="Desert design hotel field guide"><br>
       Desert design hotel field guide with arrival map, packing cues, and restrained artifact photography framing
     </td>
   </tr>

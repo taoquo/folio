@@ -115,6 +115,8 @@ jobs:
           --baseline-report "${RUNNER_TEMP}/catalog-baseline-report.json"
       - name: Verify all build targets
         run: python scripts/build.py --verify
+      - name: Check orphan text in generated PDFs
+        run: python scripts/build.py --check-orphans
       - name: Build release package
         run: bash scripts/package-skill.sh "${RUNNER_TEMP}/folio.zip"
       - name: Upload release evidence

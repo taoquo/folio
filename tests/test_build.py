@@ -460,3 +460,151 @@ class BuildScriptTests(TestCase):
         self.assertTrue(ok)
         plan_mock.assert_called_once()
         generated_svg.unlink(missing_ok=True)
+
+
+def _line(text: str, x: float = 20.0, y: float = 100.0, size: float = 10.0) -> dict:
+    return {"x": x, "y": y, "size": size, "text": text}
+
+
+class OrphanCheckTests(TestCase):
+    def test_latin_trailing_short_line_is_an_orphan(self) -> None:
+        paragraph = [
+            _line("The structural view and the data view are compiled from typed"),
+            _line("fixtures and verified through the same host", y=88.0),
+            _line("contract.", y=76.0),
+        ]
+        self.assertEqual("contract.", build._orphan_line(paragraph))
+
+    def test_latin_full_trailing_line_is_not_an_orphan(self) -> None:
+        paragraph = [
+            _line("The structural view and the data view are compiled from typed"),
+            _line("fixtures and verified through one shared host contract.", y=88.0),
+        ]
+        self.assertIsNone(build._orphan_line(paragraph))
+
+    def test_short_label_block_is_ignored(self) -> None:
+        paragraph = [_line("Market Cap"), _line("1.2T", y=88.0)]
+        self.assertIsNone(build._orphan_line(paragraph))
+
+    def test_single_line_paragraph_is_ignored(self) -> None:
+        self.assertIsNone(build._orphan_line([_line("Standalone caption line")]))
+
+    def test_unfilled_placeholder_block_is_ignored(self) -> None:
+        paragraph = [
+            _line("{{SUMMARY}} spans several words and would otherwise trip the rule"),
+            _line("here.", y=88.0),
+        ]
+        self.assertIsNone(build._orphan_line(paragraph))
+
+    def test_cjk_trailing_character_is_an_orphan(self) -> None:
+        paragraph = [
+            _line("结构视图与数据视图都由类型化夹具编译而来并通过同一套宿主契约验证"),
+            _line("性。", y=88.0),
+        ]
+        self.assertEqual("性。", build._orphan_line(paragraph))
+
+    def test_cjk_balanced_trailing_line_is_not_an_orphan(self) -> None:
+        paragraph = [
+            _line("结构视图与数据视图都由类型化夹具编译而来并通过同一套宿主契约"),
+            _line("验证每一个嵌入插槽的一致性表现", y=88.0),
+        ]
+        self.assertIsNone(build._orphan_line(paragraph))
+
+    def test_short_cjk_block_is_ignored(self) -> None:
+        paragraph = [_line("市值规模"), _line("万亿", y=88.0)]
+        self.assertIsNone(build._orphan_line(paragraph))
+
+    def test_paragraphs_split_across_columns(self) -> None:
+        lines = [
+            _line("Left column first line", x=20.0, y=200.0),
+            _line("Left column second line", x=20.0, y=188.0),
+            _line("Right column first line", x=300.0, y=200.0),
+            _line("Right column second line", x=300.0, y=188.0),
+        ]
+        paragraphs = build._pdf_paragraphs(lines)
+        self.assertEqual(2, len(paragraphs))
+        self.assertTrue(all(len(paragraph) == 2 for paragraph in paragraphs))
+
+    def test_paragraphs_split_on_large_vertical_gap(self) -> None:
+        lines = [
+            _line("First paragraph line one", y=200.0),
+            _line("First paragraph line two", y=188.0),
+            _line("Second paragraph after a gap", y=100.0),
+        ]
+        paragraphs = build._pdf_paragraphs(lines)
+        self.assertEqual([2, 1], sorted((len(p) for p in paragraphs), reverse=True))
+
+    def test_check_orphans_reports_missing_file(self) -> None:
+        with TemporaryDirectory() as tmp:
+            missing = str(Path(tmp) / "nope.pdf")
+            buffer = io.StringIO()
+            with contextlib.redirect_stdout(buffer):
+                code = build.check_orphans([missing])
+        self.assertEqual(2, code)
+        self.assertIn("not found", buffer.getvalue())
+
+
+class IndexParityTests(TestCase):
+    MINI = (
+        '<svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg">'
+        "<!-- {comment} -->"
+        '<rect x="10" y="10" width="40" height="20" fill="#F6F0EA"/>'
+        '<text x="30" y="24">{label}</text>'
+        "</svg>"
+    )
+
+    def _write_pair(self, tmp: Path, en_body: str, zh_body: str) -> None:
+        (tmp / "index.html").write_text(f"<html><body>{en_body}</body></html>", encoding="utf-8")
+        (tmp / "index-zh.html").write_text(f"<html><body>{zh_body}</body></html>", encoding="utf-8")
+
+    def _run(self, en_body: str, zh_body: str) -> tuple[int, str]:
+        with TemporaryDirectory() as raw:
+            tmp = Path(raw)
+            self._write_pair(tmp, en_body, zh_body)
+            buffer = io.StringIO()
+            with mock.patch.object(build, "ROOT", tmp):
+                with contextlib.redirect_stdout(buffer):
+                    code = build.check_index_parity()
+            return code, buffer.getvalue()
+
+    def test_localized_labels_and_comments_pass(self) -> None:
+        code, output = self._run(
+            self.MINI.format(comment="Node label", label="Primary"),
+            self.MINI.format(comment="节点标签", label="主营"),
+        )
+        self.assertEqual(0, code)
+        self.assertIn("1 homepage miniatures in sync", output)
+
+    def test_geometry_drift_fails(self) -> None:
+        drifted = self.MINI.format(comment="Node label", label="主营").replace('width="40"', 'width="48"')
+        code, output = self._run(self.MINI.format(comment="Node label", label="Primary"), drifted)
+        self.assertEqual(1, code)
+        self.assertIn("geometry drifted", output)
+
+    def test_miniature_count_mismatch_fails(self) -> None:
+        one = self.MINI.format(comment="Node label", label="Primary")
+        code, output = self._run(one + one, one)
+        self.assertEqual(1, code)
+        self.assertIn("miniature count differs", output)
+
+    def test_label_count_mismatch_fails(self) -> None:
+        zh = self.MINI.format(comment="节点标签", label="主营").replace(
+            "</svg>", '<text x="30" y="40"></text></svg>'
+        )
+        en = self.MINI.format(comment="Node label", label="Primary").replace(
+            "</svg>", '<text x="30" y="40">Extra</text></svg>'
+        )
+        code, output = self._run(en, zh)
+        self.assertEqual(0, code)
+        self.assertIn("in sync", output)
+
+    def test_missing_miniatures_fail(self) -> None:
+        code, output = self._run("<p>no diagrams</p>", "<p>没有图表</p>")
+        self.assertEqual(1, code)
+        self.assertIn("no diagram miniatures", output)
+
+    def test_real_homepages_stay_in_sync(self) -> None:
+        buffer = io.StringIO()
+        with contextlib.redirect_stdout(buffer):
+            code = build.check_index_parity()
+        self.assertEqual(0, code, buffer.getvalue())

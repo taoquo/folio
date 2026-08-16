@@ -33,9 +33,10 @@ Do not use graphic emoticons in docs, template comments, or script output. Use `
 python3 scripts/build.py          # build all example PDFs, diagram PDFs, and slide PPTX
 python3 scripts/build.py --check  # scan templates for CSS rule violations
 python3 scripts/build.py --sync   # check CSS token drift across templates
+python3 scripts/build.py --check-index  # check homepage miniature parity across index.html / index-zh.html
 python3 scripts/build.py --verify # verify templates, page counts, fonts, and slides
 python3 scripts/build.py --check-placeholders path/to/filled.html
-python3 scripts/build.py --check-orphans [path/to/doc.pdf]  # scan for orphan text (last line <= 2 words)
+python3 scripts/build.py --check-orphans [path/to/doc.pdf]  # scan for orphan trailing lines in built PDFs
 ```
 
 Lint runs from the shared `pyproject.toml` config, so local and CI results match:
@@ -97,7 +98,7 @@ See `references/production.md` Part 4.
 5. `height: 100vh` is unreliable under `@page`: use explicit mm values.
 6. SVG marker `orient="auto"` does not rotate in WeasyPrint: draw arrowheads manually.
 7. Section body text should not use `max-width`: `.manifesto`, `.section-lede`, and similar text should fill the `.page` container. Exceptions: `.type-sample` and `.footer .colophon`.
-8. Diagram template changes must sync to index showcase SVGs: any visual fix to `assets/diagrams/*.html` must also be applied to the matching mini SVG in `index.html` and `index-zh.html`.
+8. Diagram template changes must sync to index showcase SVGs: any visual fix to `assets/diagrams/*.html` must also be applied to the matching mini SVG in `index.html` and `index-zh.html`. `python3 scripts/build.py --check-index` gates this: miniature geometry must match byte for byte, only `<text>` copy may differ.
 
 ## Release Flow
 

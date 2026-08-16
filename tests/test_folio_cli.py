@@ -386,3 +386,17 @@ class FolioCliTests(TestCase):
         self.assertEqual("page-preview", kwargs["profile"])
         self.assertIsNotNone(kwargs["compilation_metadata"])
         self.assertTrue(kwargs["normalized_input"])
+
+    def test_review_drawing_forwards_theme_and_variant(self) -> None:
+        fixture = ROOT / "references" / "fixtures" / "flowchart" / "linear.json"
+        with TemporaryDirectory() as temp:
+            with mock.patch("drawing.review.write_review_bundle", return_value={}) as writer:
+                code = folio.main([
+                    "folio.py", "review-drawing", str(fixture), "--output-dir", temp,
+                    "--theme", "terminal", "--variant", "sketchy",
+                ])
+
+        self.assertEqual(0, code)
+        kwargs = writer.call_args.kwargs
+        self.assertEqual("terminal", kwargs["theme"])
+        self.assertEqual("sketchy", kwargs["variant"])

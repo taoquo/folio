@@ -7,6 +7,7 @@ Usage:
     python3 scripts/build.py --check              # scan templates for CSS rule violations
     python3 scripts/build.py --check -v           # verbose (show each scanned file)
     python3 scripts/build.py --sync               # check CSS token drift across templates
+    python3 scripts/build.py --check-index        # check homepage miniature parity (EN vs ZH)
     python3 scripts/build.py --doctor             # check local PDF/PPTX/diagram dependencies
     python3 scripts/build.py --verify             # build all + page count + font checks
     python3 scripts/build.py --verify resume-en   # single target full verification
@@ -1166,12 +1167,89 @@ def check_placeholders(paths: list[str]) -> int:
 
 # ------------------------- orphan check -------------------------
 
+CJK_RANGE = re.compile(r"[\u3400-\u9fff\u3040-\u30ff\uac00-\ud7af]")
+PLACEHOLDER_MARK = re.compile(r"\{\{|\}\}")
+
+
+def _pdf_text_lines(page: Any) -> list[dict[str, Any]]:
+    """Collect device-space text lines from one page: x, y, font size, text."""
+    lines: list[dict[str, Any]] = []
+
+    def visitor(text: str, cm: list[float], tm: list[float], font_dict: Any, font_size: float) -> None:
+        stripped = text.strip()
+        if not stripped:
+            return
+        x = tm[4] * cm[0] + tm[5] * cm[2] + cm[4]
+        y = tm[4] * cm[1] + tm[5] * cm[3] + cm[5]
+        scale = abs(cm[3]) or 1.0
+        lines.append(
+            {
+                "x": round(x, 1),
+                "y": round(y, 1),
+                "size": round(abs(font_size) * scale, 2),
+                "text": stripped,
+            }
+        )
+
+    page.extract_text(visitor_text=visitor)
+    return lines
+
+
+def _pdf_paragraphs(lines: list[dict[str, Any]]) -> list[list[dict[str, Any]]]:
+    """Group lines into paragraphs by shared left edge and font size.
+
+    Grouping on the left edge keeps interleaved columns and embedded diagram
+    labels from merging into one false paragraph.
+    """
+    columns: dict[tuple[int, float], list[dict[str, Any]]] = {}
+    for line in lines:
+        key = (round(line["x"] / 2.0), round(line["size"] * 2) / 2)
+        columns.setdefault(key, []).append(line)
+
+    paragraphs: list[list[dict[str, Any]]] = []
+    for column in columns.values():
+        column.sort(key=lambda item: -item["y"])
+        current = [column[0]]
+        for line in column[1:]:
+            gap = current[-1]["y"] - line["y"]
+            if 0 < gap <= current[-1]["size"] * 2.2:
+                current.append(line)
+            else:
+                paragraphs.append(current)
+                current = [line]
+        paragraphs.append(current)
+    return paragraphs
+
+
+def _orphan_line(paragraph: list[dict[str, Any]]) -> str | None:
+    """Return the trailing line when it reads as an orphan, else None."""
+    if len(paragraph) < 2:
+        return None
+    if any(PLACEHOLDER_MARK.search(line["text"]) for line in paragraph):
+        return None  # unfilled template slots are not real orphans
+
+    last = paragraph[-1]["text"]
+    body = [line["text"] for line in paragraph[:-1]]
+
+    if CJK_RANGE.search(last):
+        # CJK has no word spacing; compare character count against the block.
+        widest = max(len(text) for text in body)
+        if widest < 12:
+            return None
+        return last if len(last) <= max(2, int(widest * 0.25)) else None
+
+    widest_words = max(len(text.split()) for text in body)
+    if widest_words < 6:
+        return None  # short labels, list markers, and table cells
+    return last if len(last.split()) <= 2 and len(last) < 15 else None
+
+
 def check_orphans(paths: list[str]) -> int:
-    """Scan PDF for text blocks whose last line has <= 2 words and < 15 chars."""
+    """Scan PDFs for paragraphs whose last line reads as an orphan."""
     try:
-        import fitz  # PyMuPDF
+        from pypdf import PdfReader
     except ImportError:
-        print("ERROR: PyMuPDF required: pip install pymupdf --break-system-packages")
+        print("ERROR: pypdf required: pip install pypdf --break-system-packages")
         return 2
 
     if not paths:
@@ -1183,29 +1261,25 @@ def check_orphans(paths: list[str]) -> int:
             return 2
 
     total = 0
+    missing = 0
     for raw in paths:
         path = Path(raw)
         if not path.exists():
             print(f"ERROR: {raw}: not found")
+            missing += 1
             continue
-        doc = fitz.open(str(path))
         rel = path.relative_to(ROOT) if path.is_relative_to(ROOT) else path
-        for page_num in range(len(doc)):
-            page = doc[page_num]
-            blocks = page.get_text("blocks")
-            for bx0, by0, bx1, by1, text, block_no, block_type in blocks:
-                if block_type != 0:  # text blocks only
+        reader = PdfReader(str(path))
+        for page_num, page in enumerate(reader.pages, start=1):
+            for paragraph in _pdf_paragraphs(_pdf_text_lines(page)):
+                last = _orphan_line(paragraph)
+                if last is None:
                     continue
-                lines = text.strip().splitlines()
-                if len(lines) < 2:
-                    continue
-                last = lines[-1].strip()
-                words = last.split()
-                if len(words) <= 2 and len(last) < 15:
-                    total += 1
-                    print(f"  {rel} p{page_num + 1}: orphan: \"{last}\" ({len(words)} word(s), {len(last)} chars)")
-        doc.close()
+                total += 1
+                print(f"  {rel} p{page_num}: orphan: \"{last}\" ({len(last)} chars)")
 
+    if missing:
+        return 2
     if total == 0:
         print(f"OK: no orphans found across {len(paths)} PDF(s)")
         return 0
@@ -1383,6 +1457,72 @@ def check_all(verbose: bool) -> int:
 
 # ------------------------- rhythm check -------------------------
 
+# Homepage diagram miniatures share one viewBox across index.html / index-zh.html.
+MINI_SVG = re.compile(r'<svg viewBox="0 0 280 160".*?</svg>', re.DOTALL)
+HTML_COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
+SVG_TEXT_BODY = re.compile(r"(<text\b[^>]*>).*?(</text>)", re.DOTALL)
+WHITESPACE_RUN = re.compile(r"\s+")
+
+
+def _mini_svg_geometry(block: str) -> str:
+    """Reduce one miniature to comparable geometry.
+
+    HTML comments and <text> bodies are dropped: comment wording and label
+    copy are localized, every drawn primitive is not.
+    """
+    stripped = HTML_COMMENT.sub("", block)
+    stripped = SVG_TEXT_BODY.sub(r"\1\2", stripped)
+    return WHITESPACE_RUN.sub(" ", stripped).strip()
+
+
+def _mini_svg_labels(block: str) -> int:
+    return len(SVG_TEXT_BODY.findall(HTML_COMMENT.sub("", block)))
+
+
+def check_index_parity(verbose: bool = False) -> int:
+    """Compare homepage diagram miniatures across index.html and index-zh.html.
+
+    Pitfall #8: a visual fix to assets/diagrams/*.html must land in both
+    homepage variants. Geometry has to match byte for byte, label copy may
+    differ because it is translated.
+    """
+    pages = [ROOT / "index.html", ROOT / "index-zh.html"]
+    missing = [page for page in pages if not page.exists()]
+    if missing:
+        for page in missing:
+            print(f"ERROR: {page.name}: not found")
+        return 2
+
+    blocks = [MINI_SVG.findall(page.read_text(encoding="utf-8")) for page in pages]
+    if len(blocks[0]) != len(blocks[1]):
+        print(
+            f"ERROR: miniature count differs: index.html has {len(blocks[0])}, "
+            f"index-zh.html has {len(blocks[1])}"
+        )
+        return 1
+    if not blocks[0]:
+        print("ERROR: no diagram miniatures found in index.html")
+        return 1
+
+    failures = 0
+    for position, (en, zh) in enumerate(zip(blocks[0], blocks[1]), start=1):
+        if _mini_svg_geometry(en) != _mini_svg_geometry(zh):
+            print(f"ERROR: miniature {position}: geometry drifted between index.html and index-zh.html")
+            failures += 1
+            continue
+        if _mini_svg_labels(en) != _mini_svg_labels(zh):
+            print(f"ERROR: miniature {position}: label count differs between index.html and index-zh.html")
+            failures += 1
+            continue
+        if verbose:
+            print(f"OK: miniature {position}: geometry in sync")
+
+    if failures:
+        return 1
+    print(f"OK: {len(blocks[0])} homepage miniatures in sync across index.html and index-zh.html")
+    return 0
+
+
 # Layout functions that count as "divider" slides (break monotony).
 _DIVIDER_FUNCS = {"chapter_slide"}
 # Layout functions that count as "density variation" slides.
@@ -1481,10 +1621,14 @@ def main(argv: list[str]) -> int:
         verbose = "-v" in args[1:] or "--verbose" in args[1:]
         css_result = check_all(verbose)
         sync_result = sync_check(verbose)
-        return max(css_result, sync_result)
+        parity_result = check_index_parity(verbose)
+        return max(css_result, sync_result, parity_result)
     if args[0] == "--sync":
         verbose = "-v" in args[1:] or "--verbose" in args[1:]
         return sync_check(verbose)
+    if args[0] == "--check-index":
+        verbose = "-v" in args[1:] or "--verbose" in args[1:]
+        return check_index_parity(verbose)
     if args[0] == "--doctor":
         return run_doctor()
     if args[0] == "--verify":

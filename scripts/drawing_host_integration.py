@@ -15,12 +15,19 @@ FIXTURES = ROOT / "references" / "fixtures"
 HOST_FIXTURES = FIXTURES / "hosting"
 
 
-def _compile(path: Path, profile: str):
+def _compile(path: Path, profile: str, theme: str = "folio"):
     payload = json.loads(path.read_text(encoding="utf-8"))
-    return DEFAULT_COMPILER_REGISTRY.compile_payload(payload, profile)
+    return DEFAULT_COMPILER_REGISTRY.compile_payload(payload, profile, theme)
 
 
-def build_host_integration_sources(output_dir: str | Path) -> dict[str, dict[str, Any]]:
+def build_host_integration_sources(
+    output_dir: str | Path,
+    *,
+    theme: str = "folio",
+    variant: str = "plain",
+) -> dict[str, dict[str, Any]]:
+    if variant == "motion":
+        raise ValueError("motion is CSS-driven and cannot be used for the PPTX host integration source")
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)
     diagrams = output / "diagrams"
@@ -34,32 +41,36 @@ def build_host_integration_sources(output_dir: str | Path) -> dict[str, dict[str
 
     a4 = output / "host-a4-long-doc.html"
     embed_html_figure(
-        _compile(tree_fixture, "embed"), fixture=tree_fixture,
+        _compile(tree_fixture, "embed", theme), fixture=tree_fixture,
         host_file=HOST_FIXTURES / "a4-long-doc.html", output_host=a4,
         artifact_dir=diagrams, contract_key="a4-portrait", slot="structure",
         caption="The single root keeps the structural hierarchy bounded and immediately scannable.",
+        variant=variant,
     )
     embed_html_figure(
-        _compile(bar_fixture, "embed"), fixture=bar_fixture,
+        _compile(bar_fixture, "embed", theme), fixture=bar_fixture,
         host_file=a4, output_host=a4, artifact_dir=diagrams,
         contract_key="a4-portrait", slot="data",
         caption="The initial category establishes an exact baseline for every later comparison.",
+        variant=variant,
     )
 
     letter = output / "host-letter-document.html"
     embed_html_figure(
-        _compile(timeline_fixture, "embed"), fixture=timeline_fixture,
+        _compile(timeline_fixture, "embed", theme), fixture=timeline_fixture,
         host_file=HOST_FIXTURES / "letter-document.html", output_host=letter,
         artifact_dir=diagrams, contract_key="letter-portrait", slot="milestones",
         caption="Three ordered milestones fit the shorter Letter page without compressing their labels.",
+        variant=variant,
     )
 
     chinese = output / "host-a4-chinese.html"
     embed_html_figure(
-        _compile(chinese_fixture, "embed"), fixture=chinese_fixture,
+        _compile(chinese_fixture, "embed", theme), fixture=chinese_fixture,
         host_file=HOST_FIXTURES / "a4-chinese.html", output_host=chinese,
         artifact_dir=diagrams, contract_key="a4-portrait", slot="trend",
         caption="验证通过率连续上升，并在第三阶段达到百分之百。",
+        variant=variant,
     )
 
     deck_base = output / "host-slide-16x9-base.pptx"
@@ -73,16 +84,16 @@ def build_host_integration_sources(output_dir: str | Path) -> dict[str, dict[str
     if result.returncode != 0:
         raise RuntimeError(result.stderr.strip() or "seven-slide deck fixture failed")
     embed_pptx_slot(
-        _compile(architecture_fixture, "artifact"), fixture=architecture_fixture,
+        _compile(architecture_fixture, "artifact", theme), fixture=architecture_fixture,
         host_file=deck_base, output_host=deck, artifact_dir=diagrams,
         slot="architecture", caption="The bounded component view preserves one clear system focus on the slide.",
-        slide_index=3, profile="artifact",
+        slide_index=3, profile="artifact", variant=variant,
     )
     embed_pptx_slot(
-        _compile(line_fixture, "embed"), fixture=line_fixture,
+        _compile(line_fixture, "embed", theme), fixture=line_fixture,
         host_file=deck, output_host=deck, artifact_dir=diagrams,
         slot="trend", caption="The second point rises above the first and makes the direction immediately visible.",
-        slide_index=5, profile="embed",
+        slide_index=5, profile="embed", variant=variant,
     )
 
     products = {
