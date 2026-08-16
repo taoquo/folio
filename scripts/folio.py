@@ -519,6 +519,49 @@ def _drawing_metrics(
     return _write_json(result.metrics.to_dict(), output)
 
 
+def _json_schema_errors(schema: dict, payload: dict) -> list[str] | None:
+    """Return schema violations, or None when jsonschema is unavailable."""
+    try:
+        from jsonschema import Draft202012Validator
+    except ImportError:
+        return None
+    errors = sorted(
+        Draft202012Validator(schema).iter_errors(payload),
+        key=lambda item: [str(part) for part in item.absolute_path],
+    )
+    return [f"{'/'.join(str(part) for part in item.absolute_path) or '<root>'}: {item.message}" for item in errors]
+
+
+def _validate_drawing_schema_command(path: str) -> int:
+    """Validate against the registered type contract, or the legacy DrawingPlan contract."""
+    from drawing.schema_registry import SCHEMA_CONTRACTS
+
+    payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        print("ERROR: drawing input must be an object", file=sys.stderr)
+        return EXIT_INVALID_INPUT
+    kind = payload.get("kind")
+    if "composition" in payload or kind not in SCHEMA_CONTRACTS:
+        from drawing.schema import normalize_plan_payload
+
+        normalize_plan_payload(payload)
+        print("OK: drawing input conforms to DrawingPlan schema version 2.0")
+        return EXIT_VALID
+    contract = SCHEMA_CONTRACTS[kind]
+    errors = _json_schema_errors(contract.load_schema(), payload)
+    if errors is None:
+        from drawing.compiler import DEFAULT_COMPILER_REGISTRY
+
+        print("WARNING: jsonschema is unavailable; validating through the compiler boundary instead")
+        DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
+    elif errors:
+        for message in errors:
+            print(f"ERROR: {message}", file=sys.stderr)
+        return EXIT_INVALID_INPUT
+    print(f"OK: {kind} input conforms to schema version {contract.input_schema_version}")
+    return EXIT_VALID
+
+
 def _run_build(args: list[str]) -> int:
     result = subprocess.run([sys.executable, str(BUILD_SCRIPT), *args], cwd=ROOT)
     return result.returncode
@@ -672,8 +715,8 @@ def build_parser() -> argparse.ArgumentParser:
     migrate.add_argument("fixture", help="V1 or V2 DrawingPlan JSON.")
     migrate.add_argument("--output", help="Optional JSON output path.")
 
-    schema = subparsers.add_parser("validate-drawing-schema", help="Validate a DrawingPlan against the V2 authoring contract.")
-    schema.add_argument("fixture", help="DrawingPlan JSON.")
+    schema = subparsers.add_parser("validate-drawing-schema", help="Validate an authoring input against its registered JSON Schema.")
+    schema.add_argument("fixture", help="Registered diagram JSON or legacy DrawingPlan JSON.")
 
     bundle = subparsers.add_parser("bundle-drawing", help="Create an explicit overview/detail DrawingBundle.")
     bundle.add_argument("fixture", help="Architecture DrawingPlan JSON.")
@@ -794,11 +837,7 @@ def _main(argv: list[str]) -> int:
         payload = json.loads(Path(args.fixture).read_text(encoding="utf-8"))
         return _write_json(migrate_v1_payload(payload), args.output)
     if args.command == "validate-drawing-schema":
-        from drawing.schema import normalize_plan_payload
-
-        normalize_plan_payload(json.loads(Path(args.fixture).read_text(encoding="utf-8")))
-        print("OK: drawing input conforms to schema version 2.0")
-        return 0
+        return _validate_drawing_schema_command(args.fixture)
     if args.command == "bundle-drawing":
         from drawing.bundle import bundle_drawing
         from drawing.models import DrawingPlan

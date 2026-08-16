@@ -372,6 +372,26 @@ class FolioCliTests(TestCase):
             self.assertTrue(bundle["details"])
             self.assertTrue(bundle["navigation"])
 
+    def test_validate_drawing_schema_covers_registered_contracts_and_rejects_violations(self) -> None:
+        from drawing.schema_registry import list_schema_contracts, schema_contract
+
+        for contract in list_schema_contracts():
+            with self.subTest(kind=contract.kind):
+                stdout = io.StringIO()
+                with mock.patch("sys.stdout", stdout):
+                    code = folio.main(["folio.py", "validate-drawing-schema", str(contract.canonical_fixture)])
+                self.assertEqual(0, code)
+                self.assertIn(f"schema version {contract.input_schema_version}", stdout.getvalue())
+
+        contract = schema_contract("heatmap")
+        broken = contract.load_canonical_payload()
+        broken["rows"][0].pop("label")
+        with TemporaryDirectory() as temp:
+            path = Path(temp) / "broken.json"
+            path.write_text(json.dumps(broken), encoding="utf-8")
+            with mock.patch("sys.stdout", io.StringIO()), mock.patch("sys.stderr", io.StringIO()):
+                self.assertEqual(1, folio.main(["folio.py", "validate-drawing-schema", str(path)]))
+
     def test_review_drawing_remains_a_compilation_result_adapter(self) -> None:
         fixture = ROOT / "references" / "fixtures" / "flowchart" / "linear.json"
         with TemporaryDirectory() as temp:

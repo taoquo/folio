@@ -54,6 +54,8 @@ jobs:
           python scripts/folio.py init-drawing sequence --output "${RUNNER_TEMP}/sequence.json"
           python scripts/folio.py validate-drawing "${RUNNER_TEMP}/timeline.json" --format json > "${RUNNER_TEMP}/timeline-validation.json"
           python scripts/folio.py validate-drawing "${RUNNER_TEMP}/sequence.json" --format json > "${RUNNER_TEMP}/sequence-validation.json"
+          python scripts/folio.py validate-drawing-schema references/fixtures/v5/heatmap.json
+          python scripts/folio.py validate-drawing-schema references/fixtures/drawing/agent-runtime.drawing.json
           python scripts/folio.py import-chart-data references/fixtures/tabular/bar-import.json --output "${RUNNER_TEMP}/bar-imported.json"
           python scripts/folio.py validate-drawing "${RUNNER_TEMP}/bar-imported.json" --format json > "${RUNNER_TEMP}/bar-imported-validation.json"
           python scripts/folio.py batch-render-drawings references/fixtures/minimal --output-dir "${RUNNER_TEMP}/minimal-batch" --report-format json --report-output "${RUNNER_TEMP}/minimal-batch-report.json"

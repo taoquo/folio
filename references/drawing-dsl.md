@@ -177,7 +177,8 @@ python3 scripts/folio.py draw-scene references/fixtures/architecture-demo.json
 python3 scripts/folio.py draw-layout references/fixtures/architecture-demo.json
 python3 scripts/folio.py draw-metrics references/fixtures/architecture-demo.json
 python3 scripts/folio.py check-drawing references/fixtures/architecture-demo.json --explain-drawing
-python3 scripts/folio.py validate-drawing-schema references/fixtures/flowchart/branching.json
+python3 scripts/folio.py validate-drawing-schema references/fixtures/v5/heatmap.json
+python3 scripts/folio.py validate-drawing-schema references/fixtures/drawing/agent-runtime.drawing.json
 python3 scripts/folio.py render-drawing references/fixtures/v3/waterfall.json --profile embed --format svg --output /tmp/waterfall.svg
 python3 scripts/folio.py review-drawing references/fixtures/v3/state-machine.json --profile page-preview --output-dir /tmp/state-review
 python3 scripts/folio.py diagram-catalog --skip-dsl-build
