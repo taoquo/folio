@@ -38,12 +38,13 @@
       "$ref": "#/$defs/non-empty-string"
     },
     "width": {
-      "type": "integer",
-      "minimum": 320
+      "const": 960
     },
     "height": {
       "type": "integer",
-      "minimum": 240
+      "minimum": 500,
+      "maximum": 800,
+      "multipleOf": 4
     },
     "language": {
       "$ref": "#/$defs/non-empty-string"

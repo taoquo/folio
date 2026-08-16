@@ -7,6 +7,7 @@ from typing import Any, Iterable
 
 from .connectors.postprocess import clean_polyline
 from .connectors.labels import place_edge_labels
+from .canvas_contract import CANVAS_WIDTH, GRAPH_CANVAS, CanvasBand, canvas_issues
 from .layout.models import LayoutBox, LayoutEdge, LayoutResult
 from .scene import (
     ArrowGeometry,
@@ -81,6 +82,8 @@ def common_payload_diagnostics(
     allowed: set[str],
     required: Iterable[str],
     code: str,
+    band: CanvasBand = GRAPH_CANVAS,
+    default_height: int | None = None,
 ) -> list[DrawingDiagnostic]:
     diagnostics: list[DrawingDiagnostic] = []
     if payload.get("schema_version") != "3.0":
@@ -94,11 +97,8 @@ def common_payload_diagnostics(
         diagnostics.append(DrawingDiagnostic("ERROR", code, f"unknown field: {name}"))
     if not isinstance(payload.get("title"), str) or not payload.get("title", "").strip():
         diagnostics.append(DrawingDiagnostic("ERROR", code, "title must be a non-empty string"))
-    for name in ("width", "height"):
-        value = payload.get(name, 960 if name == "width" else 540)
-        minimum = 320 if name == "width" else 240
-        if not isinstance(value, int) or value < minimum:
-            diagnostics.append(DrawingDiagnostic("ERROR", code, f"{name} must be an integer of at least {minimum}"))
+    for issue in canvas_issues(payload, kind=kind, band=band, default_height=default_height):
+        diagnostics.append(DrawingDiagnostic("ERROR", code, issue))
     if payload.get("language") is not None and (not isinstance(payload["language"], str) or not payload["language"].strip()):
         diagnostics.append(DrawingDiagnostic("ERROR", code, "language must be a non-empty string"))
     return diagnostics
@@ -584,5 +584,14 @@ def cycle_exists(nodes: Iterable[str], edges: Iterable[tuple[str, str]]) -> bool
     return any(visit(node) for node in nodes)
 
 
-def dimensions(payload: dict[str, Any], default_height: int = 540) -> tuple[int, int]:
-    return int(payload.get("width", 960)), int(payload.get("height", default_height))
+def dimensions(
+    payload: dict[str, Any],
+    default_height: int | None = None,
+    band: CanvasBand = GRAPH_CANVAS,
+) -> tuple[int, int]:
+    """Resolve the stage size, clamping an out-of-band height back to the family default.
+
+    ``common_payload_diagnostics`` already reports the bad value, so this only keeps the
+    layout math safe until the diagnostics are raised.
+    """
+    return CANVAS_WIDTH, band.resolve(payload, default_height)

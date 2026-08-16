@@ -20,6 +20,7 @@ from .scene import (
     SceneText,
 )
 from .theme.folio import DEFAULT_FOLIO_THEME
+from .canvas_contract import CANVAS_WIDTH, CHART_CANVAS
 from .typography.roles import TextRole, resolve_text_style
 from .typography.measure import measure_text
 from .v3_common import (
@@ -45,13 +46,11 @@ SUPPORTED_LOCALES = {"en-US", "en-GB", "zh-CN", "zh-TW"}
 SERIES_KEY_X = 844
 SERIES_KEY_WIDTH = 100
 
-# Width stays fixed because every gutter constant (series keys, legends, label columns)
-# is measured against a 960-unit canvas. Height is a real knob: each plot band is derived
-# from the canvas height so taller or shorter charts keep the same top and bottom chrome.
-CHART_WIDTH = 960
-CHART_HEIGHT_DEFAULT = 540
-CHART_HEIGHT_MIN = 400
-CHART_HEIGHT_MAX = 720
+# Width stays fixed because every gutter constant (series keys, legends, label columns) is
+# measured against the shared 960-unit canvas. Height is a real knob inside CHART_CANVAS:
+# each plot band is derived from it so taller or shorter charts keep the same chrome.
+CHART_WIDTH = CANVAS_WIDTH
+CHART_HEIGHT_DEFAULT = CHART_CANVAS.default
 
 
 def _source_y(height: int) -> int:
@@ -367,7 +366,7 @@ def _common_chart(
     diagnostics = common_payload_diagnostics(
         payload, kind=kind,
         allowed={"schema_version", "kind", "title", "unit", "locale", "source", "value_format", "width", "height", "language", *extra_allowed},
-        required=("schema_version", "kind", "title", *required), code=code,
+        required=("schema_version", "kind", "title", *required), code=code, band=CHART_CANVAS,
     )
     for field in ("unit", "locale", "source"):
         if payload.get(field) is not None and not isinstance(payload[field], str):
@@ -384,30 +383,7 @@ def _common_chart(
         diagnostics.append(DrawingDiagnostic("ERROR", code, "value_format must be an object"))
     else:
         _validate_value_format(payload.get("value_format"), diagnostics, code)
-    _validate_canvas(payload, diagnostics, code, kind=kind)
     return diagnostics
-
-
-def _validate_canvas(
-    payload: dict[str, Any],
-    diagnostics: list[DrawingDiagnostic],
-    code: str,
-    *,
-    kind: str,
-) -> None:
-    """Width is fixed at 960; height is a bounded knob so hosts can trade air for density."""
-    if payload.get("width", CHART_WIDTH) != CHART_WIDTH:
-        diagnostics.append(DrawingDiagnostic(
-            "ERROR", code, f"{kind} canvas width must be exactly {CHART_WIDTH}; use an output profile to rescale",
-        ))
-    height = payload.get("height", CHART_HEIGHT_DEFAULT)
-    if not isinstance(height, int) or isinstance(height, bool) or not CHART_HEIGHT_MIN <= height <= CHART_HEIGHT_MAX:
-        diagnostics.append(DrawingDiagnostic(
-            "ERROR", code,
-            f"{kind} canvas height must be an integer from {CHART_HEIGHT_MIN} to {CHART_HEIGHT_MAX}",
-        ))
-    elif height % 4:
-        diagnostics.append(DrawingDiagnostic("ERROR", code, f"{kind} canvas height must sit on the 4-unit grid"))
 
 
 def _validate_value_format(value: Any, diagnostics: list[DrawingDiagnostic], code: str) -> None:
@@ -661,7 +637,7 @@ def compile_bar_payload(payload: dict[str, Any]):
     scale = nice_scale(scale_values, include_zero=True, unit=payload.get("unit"))
     _validate_reference_domain(reference_lines, scale, diagnostics, "BC014")
     require_no_errors("schema", diagnostics)
-    width, height = dimensions(payload)
+    width, height = dimensions(payload, band=CHART_CANVAS)
     language = infer_language(payload["title"], [*categories, *(str(item["label"]) for item in series)], payload.get("language"))
     marks = tuple({"id": _bar_id(item["id"], category), "series": item["id"], "category": category, "value": float(item["values"][index])} for item in series for index, category in enumerate(categories))
     locale = str(payload.get("locale") or ("zh-CN" if language.startswith("zh") else "en-US"))
@@ -861,7 +837,7 @@ def compile_line_payload(payload: dict[str, Any]):
     scale = nice_scale(values, include_zero=False, unit=payload.get("unit"))
     _validate_reference_domain(reference_lines, scale, diagnostics, "LC017")
     require_no_errors("schema", diagnostics)
-    width, height = dimensions(payload)
+    width, height = dimensions(payload, band=CHART_CANVAS)
     language = infer_language(payload["title"], [*categories, *(str(item["label"]) for item in normalized_series)], payload.get("language"))
     marks = tuple({"id": _point_id(item["id"], categories[index]), "series": item["id"], "category": categories[index], "value": value} for item in normalized_series for index, value in enumerate(item["values"]) if value is not None)
     locale = str(payload.get("locale") or ("zh-CN" if language.startswith("zh") else "en-US"))
@@ -979,7 +955,7 @@ def compile_donut_payload(payload: dict[str, Any]):
         diagnostics.append(DrawingDiagnostic("ERROR", "DN007", "focus_segment references unknown segment", str(focus)))
     require_no_errors("schema", diagnostics)
 
-    width, height = dimensions(payload)
+    width, height = dimensions(payload, band=CHART_CANVAS)
     language = infer_language(payload["title"], (str(item["label"]) for item in segments), payload.get("language"))
     marks = tuple({"id": f"segment:{item['id']}", "label": item["label"], "value": float(item["value"])} for item in segments)
     locale = str(payload.get("locale") or ("zh-CN" if language.startswith("zh") else "en-US"))
@@ -1090,7 +1066,7 @@ def compile_candlestick_payload(payload: dict[str, Any]):
     require_no_errors("schema", diagnostics)
 
     scale = nice_scale(prices, include_zero=False, unit=payload.get("unit"))
-    width, height = dimensions(payload)
+    width, height = dimensions(payload, band=CHART_CANVAS)
     language = infer_language(payload["title"], (str(item["date"]) for item in periods), payload.get("language"))
     marks = tuple({"id": f"candle:{item['id']}", **item} for item in periods)
     locale = str(payload.get("locale") or ("zh-CN" if language.startswith("zh") else "en-US"))
@@ -1214,7 +1190,7 @@ def compile_waterfall_payload(payload: dict[str, Any]):
             running += float(item["value"])
         levels.append(running)
     scale = nice_scale(levels, include_zero=True, unit=payload.get("unit"))
-    width, height = dimensions(payload)
+    width, height = dimensions(payload, band=CHART_CANVAS)
     language = infer_language(payload["title"], (str(item["label"]) for item in contributions), payload.get("language"))
     marks = ({"id": "waterfall:start", "label": "Start", "value": float(payload["start"]), "kind": "total"}, *({"id": f"waterfall:{item['id']}", "kind": item.get("kind", "delta"), **item} for item in contributions), {"id": "waterfall:end", "label": "End", "value": float(end), "kind": "total"})
     locale = str(payload.get("locale") or ("zh-CN" if language.startswith("zh") else "en-US"))
@@ -1376,7 +1352,7 @@ def compile_scatter_payload(payload: dict[str, Any]):
     y_axis = dict(payload["y_axis"])
     x_scale = nice_scale((float(item["x"]) for item in points), include_zero=bool(x_axis.get("include_zero", False)), unit=x_axis.get("unit"), tick_count=5)
     y_scale = nice_scale((float(item["y"]) for item in points), include_zero=bool(y_axis.get("include_zero", False)), unit=y_axis.get("unit"), tick_count=5)
-    width, height = dimensions(payload)
+    width, height = dimensions(payload, band=CHART_CANVAS)
     locale = payload.get("locale") or ("zh-CN" if infer_language(payload["title"], (str(item["label"]) for item in points)) == "zh" else "en-US")
     language = infer_language(payload["title"], (str(item["label"]) for item in points), payload.get("language"))
     semantic = DataSemantic("scatter", payload["title"], tuple(points), language, locale, payload.get("source"))
@@ -1547,7 +1523,7 @@ def compile_gantt_payload(payload: dict[str, Any]):
         diagnostics.append(DrawingDiagnostic("ERROR", "GA010", "gantt supports at most one focal task", ",".join(focal)))
     require_no_errors("schema", diagnostics)
 
-    width, height = dimensions(payload)
+    width, height = dimensions(payload, band=CHART_CANVAS)
     locale = payload.get("locale") or ("zh-CN" if infer_language(payload["title"], (str(item["label"]) for item in tasks)) == "zh" else "en-US")
     language = infer_language(payload["title"], (str(item["label"]) for item in tasks), payload.get("language"))
     semantic = DataSemantic("gantt", payload["title"], tuple(tasks), language, locale, payload.get("source"))
@@ -1726,7 +1702,7 @@ def compile_heatmap_payload(payload: dict[str, Any]):
         diagnostics.append(DrawingDiagnostic("ERROR", "HM009", "heatmap supports at most one focal row", ",".join(focal)))
     require_no_errors("schema", diagnostics)
 
-    width, height = dimensions(payload)
+    width, height = dimensions(payload, band=CHART_CANVAS)
     labels = [str(item["label"]) for item in rows] + [str(value) for value in columns]
     locale = payload.get("locale") or ("zh-CN" if infer_language(payload["title"], labels) == "zh" else "en-US")
     language = infer_language(payload["title"], labels, payload.get("language"))

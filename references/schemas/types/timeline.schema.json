@@ -10,7 +10,7 @@
     "title": {"$ref": "#/$defs/non-empty-string"},
     "events": {"type": "array", "minItems": 3, "maxItems": 10, "items": {"$ref": "#/$defs/event"}},
     "scale": {"enum": ["temporal", "ordinal"]}, "focus": {"type": ["string", "null"]},
-    "width": {"type": "integer", "minimum": 320}, "height": {"type": "integer", "minimum": 240},
+    "width": {"const": 960}, "height": {"type": "integer", "minimum": 500, "maximum": 800, "multipleOf": 4},
     "language": {"$ref": "#/$defs/non-empty-string"}
   },
   "$defs": {

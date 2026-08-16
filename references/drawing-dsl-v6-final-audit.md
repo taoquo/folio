@@ -85,39 +85,52 @@ the shipped default for that kind.
 
 The two lowest values are structural rather than radial: `timeline` is a single horizontal axis and
 `tree` is a shallow three-tier hierarchy, and neither can fill a 16:9 rectangle without inflating
-marks past the type scale. Authors who want a tighter frame can set `height` explicitly where the
-generator permits it; on `timeline`, `height: 400` raises utilization from 0.360 to 0.48 with zero new
-diagnostics, and `tree` moves 0.375 -> 0.51 the same way. Changing the shipped default would move
-every committed geometry baseline, so the default stays 960 x 540 while `height` is an enforced,
-bounded knob on every data chart and notation diagram.
+marks past the type scale. Authors who want a tighter frame can set `height` explicitly; at the graph
+floor of 500, `timeline` moves 0.360 -> 0.388 and `tree` moves 0.375 -> 0.405 with zero new
+diagnostics. Changing the shipped default would move every committed geometry baseline, so the
+default stays 960 x 540 while `height` is an enforced, bounded knob on every registered kind.
 
 ### 3.1 What the `height` knob does and does not do
 
-The knob is bounded and enforced, not universal. Two families accept a checked range and derive
-their geometry from the canvas; the remaining kinds pass validation only near their default.
+The knob is bounded and enforced across every family. One shared module,
+`scripts/drawing/canvas_contract.py`, owns the width constant and the three height bands, so the
+graph, chart, and notation entry points cannot drift apart. Enforcement is uniform; what differs is
+how much geometry each kind actually derives from the frame.
 
-| Family | Accepted canvas | Enforcement |
+| Family | Accepted canvas | Entry point |
 |---|---|---|
-| bar-chart, candlestick, donut-chart, gantt, heatmap, line-chart, scatter, waterfall | width 960, height 400-720 step 4 | `_validate_canvas` in `scripts/drawing/dataviz.py` |
-| er-diagram, sequence, uml-class | width 960, height 480-800 step 4 | `_valid_height` in `scripts/drawing/notation.py` |
+| architecture, flowchart, layer-stack, loop-flywheel, org-chart, pyramid, quadrant, state-machine, swimlane, timeline, tree, venn | width 960, height 500-800 step 4 | `common_payload_diagnostics` in `scripts/drawing/v3_common.py`, plus `schema.py` and `diagram_models.py` for plan-shaped Architecture input |
+| bar-chart, candlestick, donut-chart, gantt, heatmap, line-chart, scatter, waterfall | width 960, height 400-720 step 4 | `_common_chart` in `scripts/drawing/dataviz.py` |
+| er-diagram, sequence, uml-class | width 960, height 480-800 step 4 | `_common` in `scripts/drawing/notation.py` |
 
 Out-of-range values fail with `DN000` naming the accepted range, and the JSON contracts in
 `references/schemas/types/` carry the same bounds, so schema validation and compilation agree.
-Width stays fixed at 960 in both families because every gutter, legend, and label constant is
-measured against it.
+`tests/test_drawing_canvas_contract.py` asserts that agreement in both directions, so a schema edit
+and a code edit cannot land on their own. Width stays fixed at 960 in every family because every
+gutter, legend, and label constant is measured against it; responsive sizing belongs to `--size` and
+the host contract.
+
+Two compiler-owned adaptations survive validation. Flowchart fits the stage to its widest row, so a
+declared 960 x 540 resolves to a narrower scene, and its height only grows. State machine derives
+height from its layer count when the payload omits `height`, which is why the showcase render is
+960 x 400. Both still validate any declared height against the graph band.
 
 The knob changes the frame, and only some kinds gain utilization from a shorter frame. Measured with
 the same `VQ101` algorithm over the showcase corpus:
 
 | Kind | Measured behaviour | Cause |
 |---|---|---|
-| timeline | 0.360 at 540, 0.441 at 440, 0.476 at 400 | marks are height-independent, so a shorter frame is a real gain |
-| tree | 0.375, 0.460, 0.506 | same, tier spacing is capped |
-| donut-chart | 0.471, 0.420, 0.387 | radius is height-derived, so content shrinks with the frame |
-| candlestick | 0.542, 0.486, 0.455 | plot band is height-derived, same effect |
-| uml-class | 0.514 at 640, 0.525 at 560, `UC013` at 480 | grid rows are height-derived and member density is gated |
-| loop-flywheel | `circle outside canvas` at 480, `primitive text outside canvas` below | radial radius is not height-derived |
-| quadrant, venn | `primitive text outside canvas` at 480 | label ring is not height-derived |
+| timeline | 0.388 at 500, 0.360 at 540, 0.303 at 640, 0.243 at 800 | marks are height-independent, so a shorter frame is a real gain |
+| tree | 0.405, 0.375, 0.316, 0.253 across the same heights | same, tier spacing is capped |
+| donut-chart | 0.387 at 400, 0.420 at 440, 0.471 at 540, 0.354 at 720 | radius is height-derived, so content tracks the frame in both directions |
+| candlestick | 0.455 at 400, 0.542 at 540, 0.605 at 720 | plot band is height-derived, so a taller frame is the real gain |
+| uml-class | `UC013` at 480, 0.525 at 560, 0.514 at 640, 0.499 at 800 | grid rows are height-derived and member density is gated |
+| loop-flywheel | 0.627 at 500 down to 0.392 at 800, clean throughout | radial radius is not height-derived, so a taller frame only adds air |
+| quadrant, venn | 0.589 / 0.564 at 500 down to 0.368 / 0.353 at 800, clean throughout | label ring is not height-derived, same effect |
+
+The 500-unit graph floor is empirical: at 480 the loop-flywheel radial ring and the quadrant / venn
+label ring rendered outside the canvas. Charts keep a 400 floor because their chrome is fixed, and
+notation keeps 480 because `UC013` gates member density before geometry breaks.
 | pyramid | works at 480 (0.69), fails at 440 | tier text runs out of room |
 | org-chart | works to 440 (0.71), fails at 400 | tier text runs out of room |
 | architecture, flowchart, swimlane | accepted but flat or worse (`swimlane` 0.674 -> 0.60) | layout is width-driven |

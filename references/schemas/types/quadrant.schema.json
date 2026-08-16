@@ -14,7 +14,7 @@
     },
     "items": {"type": "array", "minItems": 4, "maxItems": 12, "items": {"$ref": "#/$defs/item"}},
     "preferred_region": {"enum": ["top-left", "top-right", "bottom-left", "bottom-right", null]},
-    "width": {"type": "integer", "minimum": 320}, "height": {"type": "integer", "minimum": 240},
+    "width": {"const": 960}, "height": {"type": "integer", "minimum": 500, "maximum": 800, "multipleOf": 4},
     "language": {"$ref": "#/$defs/non-empty-string"}
   },
   "$defs": {

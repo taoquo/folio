@@ -15,6 +15,7 @@ from .scene import (
     SceneText,
 )
 from .theme.folio import DEFAULT_FOLIO_THEME
+from .canvas_contract import CANVAS_WIDTH, NOTATION_CANVAS
 from .typography.roles import TextRole, resolve_text_style
 from .typography.measure import measure_text
 from .v3_common import (
@@ -72,33 +73,12 @@ def _grid(value: float | int) -> int:
 
 
 # Width stays fixed because every gutter constant (the 60..900 grid band, the 232-unit box width,
-# the sequence header pitch) is measured against a 960-unit canvas. Height is a real knob: the
-# notation grid and the sequence message band are derived from the canvas height, so taller or
-# shorter diagrams keep the same title chrome and bottom margin.
-NOTATION_WIDTH = 960
+# the sequence header pitch) is measured against the shared 960-unit canvas. Height is a real knob
+# inside NOTATION_CANVAS: the notation grid and the sequence message band are derived from it, so
+# taller or shorter diagrams keep the same title chrome and bottom margin.
+NOTATION_WIDTH = CANVAS_WIDTH
 SEQUENCE_HEIGHT_DEFAULT = 540
-BOX_NOTATION_HEIGHT_DEFAULT = 640
-NOTATION_HEIGHT_MIN = 480
-NOTATION_HEIGHT_MAX = 800
-
-
-def _valid_height(value: Any) -> bool:
-    return (
-        isinstance(value, int)
-        and not isinstance(value, bool)
-        and NOTATION_HEIGHT_MIN <= value <= NOTATION_HEIGHT_MAX
-        and value % 4 == 0
-    )
-
-
-def _canvas_height(payload: dict[str, Any], default: int) -> int:
-    """Resolve the canvas height, falling back to the default when the payload value is invalid.
-
-    _common already reports the bad value, so this only keeps layout math safe until the
-    diagnostics are raised.
-    """
-    value = payload.get("height", default)
-    return value if _valid_height(value) else default
+BOX_NOTATION_HEIGHT_DEFAULT = NOTATION_CANVAS.default
 
 
 def _title(title: str, width: int) -> SceneText:
@@ -112,11 +92,8 @@ def _common(payload: dict[str, Any], kind: str, allowed: set[str], required: tup
         payload, kind=kind,
         allowed={"schema_version", "kind", "title", "language", "width", "height", *allowed},
         required=("schema_version", "kind", "title", *required), code=code,
+        band=NOTATION_CANVAS, default_height=height,
     )
-    if payload.get("width", NOTATION_WIDTH) != NOTATION_WIDTH:
-        diagnostics.append(DrawingDiagnostic("ERROR", code, f"{kind} canvas width must be exactly {NOTATION_WIDTH}; use an output profile to rescale"))
-    if not _valid_height(payload.get("height", height)):
-        diagnostics.append(DrawingDiagnostic("ERROR", code, f"{kind} canvas height must be a multiple of 4 from {NOTATION_HEIGHT_MIN} to {NOTATION_HEIGHT_MAX}"))
     if isinstance(payload.get("title"), str) and len(payload["title"].strip()) > 64:
         diagnostics.append(DrawingDiagnostic("ERROR", code, "title must contain at most 64 characters"))
     return diagnostics
@@ -183,7 +160,7 @@ def compile_sequence_payload(payload: dict[str, Any]):
                     diagnostics.append(DrawingDiagnostic("ERROR", "SQ011", "message label does not fit between its participants", str(item.get("id"))))
     require_no_errors("schema", diagnostics)
 
-    width, height = dimensions(payload, SEQUENCE_HEIGHT_DEFAULT)
+    width, height = dimensions(payload, SEQUENCE_HEIGHT_DEFAULT, NOTATION_CANVAS)
     language = infer_language(payload["title"], [*(str(item["label"]) for item in participants), *(str(item["label"]) for item in messages)], payload.get("language"))
     marks = tuple(
         [*({**item, "id": f"participant:{item['id']}"} for item in participants), *({**item, "id": f"message:{item['id']}"} for item in messages)]
@@ -283,7 +260,7 @@ def compile_uml_class_payload(payload: dict[str, Any]):
     focus = payload.get("focus")
     if focus is not None and (not isinstance(focus, str) or focus not in type_ids):
         diagnostics.append(DrawingDiagnostic("ERROR", "UC012", "focus references an unknown UML type", str(focus)))
-    canvas_height = _canvas_height(payload, BOX_NOTATION_HEIGHT_DEFAULT)
+    canvas_height = NOTATION_CANVAS.resolve(payload, BOX_NOTATION_HEIGHT_DEFAULT)
     _validate_grid_capacity(types, diagnostics, "UC013", er=False, canvas_height=canvas_height)
     require_no_errors("schema", diagnostics)
 
@@ -391,7 +368,7 @@ def compile_er_payload(payload: dict[str, Any]):
     focus = payload.get("focus_entity")
     if focus is not None and (not isinstance(focus, str) or focus not in entity_ids):
         diagnostics.append(DrawingDiagnostic("ERROR", "ER013", "focus_entity references an unknown entity", str(focus)))
-    canvas_height = _canvas_height(payload, BOX_NOTATION_HEIGHT_DEFAULT)
+    canvas_height = NOTATION_CANVAS.resolve(payload, BOX_NOTATION_HEIGHT_DEFAULT)
     _validate_grid_capacity(entities, diagnostics, "ER014", er=True, canvas_height=canvas_height)
     require_no_errors("schema", diagnostics)
 

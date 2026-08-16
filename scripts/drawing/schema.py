@@ -4,6 +4,8 @@ from copy import deepcopy
 from collections import Counter
 from typing import Any
 
+from .canvas_contract import GRAPH_CANVAS, canvas_issues
+
 
 SCHEMA_VERSION = "2.0"
 
@@ -210,10 +212,13 @@ def _duplicates(values: list[Any]) -> list[Any]:
 
 
 def _validate_canvas_dimensions(payload: dict[str, Any], issues: list[str]) -> None:
-    for name, minimum in (("width", 320), ("height", 240)):
-        value = payload.get(name)
-        if value is not None and (not isinstance(value, int) or isinstance(value, bool) or value < minimum):
-            issues.append(f"{name} must be an integer >= {minimum}")
+    """Plan payloads share the graph canvas band with the V3 grammars.
+
+    Flowchart layout still narrows the stage to its widest row, but the declared canvas has to
+    start from the same 960-unit contract so hosts get one predictable input shape.
+    """
+    kind = str(payload.get("kind") or "diagram")
+    issues.extend(canvas_issues(payload, kind=kind, band=GRAPH_CANVAS))
 
 
 def _validate_architecture_intent(payload: dict[str, Any], issues: list[str]) -> None:

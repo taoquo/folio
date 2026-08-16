@@ -28,7 +28,7 @@
   ],
   "$defs": {
     "title": {"type": "string", "minLength": 1},
-    "dimension": {"type": "integer", "minimum": 240},
+    "graph-height": {"type": "integer", "minimum": 500, "maximum": 800, "multipleOf": 4},
     "canvas-width": {"const": 960},
     "chart-height": {"type": "integer", "minimum": 400, "maximum": 720, "multipleOf": 4},
     "notation-height": {"type": "integer", "minimum": 480, "maximum": 800, "multipleOf": 4},
@@ -41,7 +41,7 @@
         "schema_version": {"const": "3.0"}, "kind": {"const": "state-machine"}, "title": {"$ref": "#/$defs/title"},
         "states": {"$ref": "#/$defs/object-array"}, "transitions": {"$ref": "#/$defs/object-array"},
         "persistent": {"type": "boolean"}, "submachine": {"type": "boolean"}, "axis": {"enum": ["left-right", "top-down"]},
-        "focus": {"type": ["string", "null"]}, "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+        "focus": {"type": ["string", "null"]}, "width": {"$ref": "#/$defs/canvas-width"}, "height": {"$ref": "#/$defs/graph-height"}, "language": {"type": "string"}
       }
     },
     "swimlane": {
@@ -51,7 +51,7 @@
         "schema_version": {"const": "3.0"}, "kind": {"const": "swimlane"}, "title": {"$ref": "#/$defs/title"},
         "lanes": {"$ref": "#/$defs/object-array"}, "steps": {"$ref": "#/$defs/object-array"}, "flows": {"$ref": "#/$defs/object-array"},
         "axis": {"enum": ["left-right", "top-down"]}, "parallel_starts": {"type": "boolean"}, "focus_lane": {"type": ["string", "null"]},
-        "focus_path": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}, "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+        "focus_path": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}, "width": {"$ref": "#/$defs/canvas-width"}, "height": {"$ref": "#/$defs/graph-height"}, "language": {"type": "string"}
       }
     },
     "tree": {
@@ -60,7 +60,7 @@
       "properties": {
         "schema_version": {"const": "3.0"}, "kind": {"const": "tree"}, "title": {"$ref": "#/$defs/title"},
         "nodes": {"$ref": "#/$defs/object-array"}, "relations": {"$ref": "#/$defs/object-array"}, "focus_root": {"type": ["string", "null"]},
-        "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+        "width": {"$ref": "#/$defs/canvas-width"}, "height": {"$ref": "#/$defs/graph-height"}, "language": {"type": "string"}
       }
     },
     "layer-stack": {
@@ -69,7 +69,7 @@
       "properties": {
         "schema_version": {"const": "3.0"}, "kind": {"const": "layer-stack"}, "title": {"$ref": "#/$defs/title"},
         "layers": {"$ref": "#/$defs/object-array"}, "flows": {"$ref": "#/$defs/object-array"},
-        "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+        "width": {"$ref": "#/$defs/canvas-width"}, "height": {"$ref": "#/$defs/graph-height"}, "language": {"type": "string"}
       }
     },
     "timeline": {
@@ -78,7 +78,7 @@
       "properties": {
         "schema_version": {"const": "3.0"}, "kind": {"const": "timeline"}, "title": {"$ref": "#/$defs/title"},
         "events": {"$ref": "#/$defs/object-array"}, "scale": {"enum": ["temporal", "ordinal"]}, "focus": {"type": ["string", "null"]},
-        "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+        "width": {"$ref": "#/$defs/canvas-width"}, "height": {"$ref": "#/$defs/graph-height"}, "language": {"type": "string"}
       }
     },
     "quadrant": {
@@ -88,7 +88,7 @@
         "schema_version": {"const": "3.0"}, "kind": {"const": "quadrant"}, "title": {"$ref": "#/$defs/title"},
         "axes": {"type": "object"}, "items": {"$ref": "#/$defs/object-array"},
         "preferred_region": {"enum": ["top-left", "top-right", "bottom-left", "bottom-right", null]},
-        "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+        "width": {"$ref": "#/$defs/canvas-width"}, "height": {"$ref": "#/$defs/graph-height"}, "language": {"type": "string"}
       }
     },
     "venn": {
@@ -98,7 +98,7 @@
         "schema_version": {"const": "3.0"}, "kind": {"const": "venn"}, "title": {"$ref": "#/$defs/title"},
         "sets": {"$ref": "#/$defs/object-array"}, "intersections": {"$ref": "#/$defs/object-array"},
         "focus": {"type": "array", "items": {"type": "string"}, "maxItems": 1, "uniqueItems": true},
-        "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+        "width": {"$ref": "#/$defs/canvas-width"}, "height": {"$ref": "#/$defs/graph-height"}, "language": {"type": "string"}
       }
     },
     "bar-chart": {
@@ -181,7 +181,7 @@
       "properties": {
         "schema_version": {"const": "3.0"}, "kind": {"const": "pyramid"}, "title": {"$ref": "#/$defs/title"},
         "levels": {"$ref": "#/$defs/object-array"}, "orientation": {"enum": ["up", "down"]},
-        "focus": {"type": ["string", "null"]}, "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+        "focus": {"type": ["string", "null"]}, "width": {"$ref": "#/$defs/canvas-width"}, "height": {"$ref": "#/$defs/graph-height"}, "language": {"type": "string"}
       }
     },
     "org-chart": {
@@ -190,7 +190,7 @@
       "properties": {
         "schema_version": {"const": "3.0"}, "kind": {"const": "org-chart"}, "title": {"$ref": "#/$defs/title"},
         "units": {"$ref": "#/$defs/object-array"},
-        "focus": {"type": ["string", "null"]}, "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+        "focus": {"type": ["string", "null"]}, "width": {"$ref": "#/$defs/canvas-width"}, "height": {"$ref": "#/$defs/graph-height"}, "language": {"type": "string"}
       }
     },
     "loop-flywheel": {
@@ -199,7 +199,7 @@
       "properties": {
         "schema_version": {"const": "3.0"}, "kind": {"const": "loop-flywheel"}, "title": {"$ref": "#/$defs/title"},
         "stages": {"$ref": "#/$defs/object-array"}, "hub": {"type": ["string", "null"]},
-        "focus": {"type": ["string", "null"]}, "width": {"$ref": "#/$defs/dimension"}, "height": {"$ref": "#/$defs/dimension"}, "language": {"type": "string"}
+        "focus": {"type": ["string", "null"]}, "width": {"$ref": "#/$defs/canvas-width"}, "height": {"$ref": "#/$defs/graph-height"}, "language": {"type": "string"}
       }
     },
     "scatter": {

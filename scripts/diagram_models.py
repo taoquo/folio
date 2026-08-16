@@ -12,6 +12,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Union
 
+from drawing.canvas_contract import GRAPH_CANVAS, canvas_issues
+
 
 ARCHITECTURE_LAYOUTS = {"horizontal-layers", "vertical-stack", "hub-and-spoke"}
 ARCHITECTURE_NODE_KINDS = {"external", "service", "store", "cloud"}
@@ -171,10 +173,8 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
     if layout not in ARCHITECTURE_LAYOUTS:
         raise ValueError(f"unsupported architecture layout: {layout}")
 
-    for name, minimum in (("width", 320), ("height", 240)):
-        value = payload.get(name, 960 if name == "width" else 540)
-        if not isinstance(value, int) or isinstance(value, bool) or value < minimum:
-            raise ValueError(f"architecture {name} must be an integer >= {minimum}")
+    for issue in canvas_issues(payload, kind="architecture", band=GRAPH_CANVAS):
+        raise ValueError(issue)
     language = payload.get("language")
     if language is not None and (not isinstance(language, str) or not language.strip()):
         raise ValueError("architecture language must be a non-empty string")

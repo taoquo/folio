@@ -107,6 +107,22 @@ The authoritative type schemas live in `references/schemas/types/`. JSON Schema 
 
 Architecture semantic input is version `3.0`; legacy unversioned semantic payloads migrate deterministically to `3.0`. Expert-authored Architecture `DrawingPlan` input remains on its compatible `2.0` contract. Flowchart remains on input version `2.0`. All other current registered inputs use `3.0`.
 
+### Canvas contract
+
+Every payload declares the same 960-unit stage width, and `height` is the only canvas knob. The bounds come from one shared module, `scripts/drawing/canvas_contract.py`, so a family cannot quietly introduce its own floor.
+
+| Family | Kinds | Width | Height band | Default |
+|---|---|---|---|---|
+| Graph | architecture, flowchart, state-machine, swimlane, tree, layer-stack, timeline, quadrant, venn, pyramid, org-chart, loop-flywheel | `960` exactly | 500-800, step 4 | 540 |
+| Chart | bar-chart, line-chart, donut-chart, candlestick, waterfall, scatter, gantt, heatmap | `960` exactly | 400-720, step 4 | 540 |
+| Notation | sequence, uml-class, er-diagram | `960` exactly | 480-800, step 4 | 640 (sequence 540) |
+
+An off-grid or out-of-band height is an `ERROR`, not a silent clamp: `<kind> canvas height must be a multiple of 4 from <min> to <max>`. A width other than 960 reports `use an output profile to rescale`, because responsive sizing belongs to `--size` and the host contract, never to the payload.
+
+Two compiler-owned exceptions stay adaptive after validation. Flowchart fits the stage to its widest row, so its scene width can land below 960 and its height only grows. State machine derives height from its layer count when the payload omits `height`. Both still validate any height you declare against the graph band.
+
+On loop-flywheel, quadrant, and venn the radial geometry is not height-derived, so the knob validates but does not move the drawing.
+
 ## 8. Data visualization expansion
 
 - Bar supports `mode: grouped|stacked`; stacked mode keeps positive and negative accumulators separate.
@@ -114,7 +130,7 @@ Architecture semantic input is version `3.0`; legacy unversioned semantic payloa
 - Bar, Line, and Candlestick accept up to three semantic `annotations`; targets use series/category or period/field identity, never coordinates.
 - Waterfall contribution `kind` is `delta` by default or `subtotal`; a subtotal value must equal the current running total within `tolerance` and does not alter arithmetic.
 - `value_format` controls precision, compact notation, grouping, and unit position for display only. Semantic and accessible values remain exact.
-- Supported locales are `en-US`, `en-GB`, `zh-CN`, and `zh-TW`. The chart canvas width is fixed at 960; `height` is a bounded knob accepting 400-720 in steps of 4, defaulting to 540. Use output profiles or host contracts for responsive sizing.
+- Supported locales are `en-US`, `en-GB`, `zh-CN`, and `zh-TW`. The chart canvas follows the shared contract in section 7: width fixed at 960, `height` a bounded knob accepting 400-720 in steps of 4, defaulting to 540.
 - Heatmap accepts 3-12 `columns` (labels up to 12 characters) and 3-10 `rows`; every row needs a stable id, a label, and one finite value per column. Cells carry no numeric text: the graded intensity legend and the accessible description own the values, which keeps contrast safe on every theme.
 - Heatmap grades one measure with a single warm ramp and allows at most one `emphasis: focal` row, rendered in the accent color. Multi-hue colormaps are out of scope.
 
