@@ -3,7 +3,7 @@
 
 [project]
 name = "folio"
-version = "6.0.0"
+version = "6.1.0"
 description = "Folio document design system: templates, diagram DSL, and build tooling"
 readme = "README.md"
 requires-python = ">=3.9"

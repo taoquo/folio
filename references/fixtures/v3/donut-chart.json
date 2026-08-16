@@ -7,7 +7,7 @@
     {"id": "structural", "label": "Structural", "value": 6},
     {"id": "positional", "label": "Positional", "value": 6},
     {"id": "notation", "label": "Notation", "value": 3},
-    {"id": "data-viz", "label": "Data visualization", "value": 7}
+    {"id": "data-viz", "label": "Data visualization", "value": 8}
   ],
   "focus_segment": "data-viz"
 }

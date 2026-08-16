@@ -201,4 +201,4 @@ The intent-first workflow, per-type example policy, stable diagnostics, and batc
 
 The constrained vocabulary, single focal accent, 4-unit grid, and deletion-first information budget are informed by the editorial principles in [diagram-design](https://github.com/cathrynlavery/diagram-design). Folio implements those principles through its own compiler, theme, and artifact pipeline rather than importing the reference project's HTML templates.
 
-The closing program audit, including reference-principle conformance, the 22-kind showcase visual pass, and remaining limits, is `drawing-dsl-v6-final-audit.md`. Superseded release plans and per-version acceptance records for V2 through V5 are kept for history in `references/archive/`.
+The closing program audit, including reference-principle conformance, the 23-kind showcase visual pass, and remaining limits, is `drawing-dsl-v6-final-audit.md`. Superseded release plans and per-version acceptance records for V2 through V5 are kept for history in `references/archive/`.

@@ -4,6 +4,18 @@ Release highlights for the Folio design system and its Drawing DSL. Each entry l
 full bilingual release notes. Historical notes live in `docs/releases/`; the note for the
 current release stays at the repository root so packaging and release tooling can find it.
 
+## V6.1 - 2026-08
+
+Twenty-three generator-backed diagram types on a bounded, schema-enforced canvas.
+
+- Added Heatmap as the twenty-third generator-backed diagram type.
+- Turned canvas height into a bounded knob: 400-720 for charts, 480-800 for notations, step 4.
+- Aligned JSON contracts with the compiler and validated every registered contract in the CLI.
+- Added orphan-text and homepage miniature parity gates to the build checks and CI.
+- Threaded theme and variant through the host manifest and review paths.
+
+Full notes: [RELEASE_NOTES_V6.1.md](RELEASE_NOTES_V6.1.md)
+
 ## V6.0 - 2026-08
 
 Twenty-two generator-backed diagram types close the Drawing DSL program.
@@ -14,7 +26,7 @@ Twenty-two generator-backed diagram types close the Drawing DSL program.
 - Added render-layer output knobs for size, detail, audience, and variant.
 - Added Mermaid and draw.io import plus CSV / TSV chart normalization with a fidelity ledger.
 
-Full notes: [RELEASE_NOTES_V6.0.md](RELEASE_NOTES_V6.0.md)
+Full notes: [docs/releases/RELEASE_NOTES_V6.0.md](docs/releases/RELEASE_NOTES_V6.0.md)
 
 ## V4.3 - 2026-08
 

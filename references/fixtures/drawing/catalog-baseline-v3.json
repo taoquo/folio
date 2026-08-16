@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "catalog_schema_version": "3.0",
   "approval_state": "approved",
-  "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type",
+  "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1",
   "visual_policy": {
     "method": "exact-rgba-no-resize",
     "max_changed_channel_ratio": 0.01,
@@ -18,11 +18,11 @@
   "contact_sheets": [
     {
       "path": "assets/demos/drawing-dsl-all-types.png",
-      "sha256": "dbf49d3e513470689d1de99fac977a87780e6217c1040a06109cc90c6f64a976"
+      "sha256": "6a86b9faff337c7c9286c22a3475d0eb52b08aaae723d322454ec0676f02d6d2"
     },
     {
       "path": "assets/demos/drawing-dsl-supported-types.png",
-      "sha256": "468f82860f8aeaf1a361ffdbfd2c15c29d3c3eff0f9bcb7db3d01b76fe70e0a2"
+      "sha256": "b6ef22e59490b9ce09869eb637adb0a21d026fa741b6da695b81f97fd81b9fa3"
     }
   ],
   "diagrams": [
@@ -63,7 +63,7 @@
         "pdf": "708050fad6cbae55d57d435a278e3090e927b67eb23f1bb9e9095ac4bf6b4819"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "flowchart",
@@ -100,7 +100,7 @@
         "pdf": "5cc24d94a78531b45f8e01cacb155d99746ae11397042309d023897d770144a4"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "quadrant",
@@ -140,7 +140,7 @@
         "pdf": "6d48df2f5aa667f0926a5c516f1f4680720e4e5efb5c54a8768403ecb641257f"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "bar-chart",
@@ -151,13 +151,13 @@
         "bar:covered:47cfe5eb8a",
         "bar:covered:8b336cdf52",
         "bar:covered:bc5d84bed7",
-        "bar:covered:25c039d858",
         "bar:covered:79df3742da",
+        "bar:covered:6f81574ddd",
         "bar:legacy:47cfe5eb8a",
         "bar:legacy:8b336cdf52",
         "bar:legacy:bc5d84bed7",
-        "bar:legacy:25c039d858",
-        "bar:legacy:79df3742da"
+        "bar:legacy:79df3742da",
+        "bar:legacy:6f81574ddd"
       ],
       "dimensions": {
         "source": [
@@ -176,13 +176,13 @@
         600
       ],
       "digests": {
-        "png": "d61c34be5622b086fd46822ecb6b26607f2d6868cd64ad5eaf96c70eb502a4cf",
-        "input": "b8f4e8b2921c336cb6c315724bbeeb3ebc118796631b1a1df160994a93d980a8",
-        "svg": "b429a383137aec8523da949be0a63af940d6b552f14d4244f046ef2d25cb42bd",
-        "pdf": "126c82ad1e3492bec5867c534adbf178a098a4175d2c7a0962dd6ef2797df801"
+        "png": "4df315821fbc3926f9ae746a4fec8fd5b0cfb01990413604bdf21b07f055d740",
+        "input": "4a5786ce21b169abbc7de552392a8ed630e428e8157ba936ea3da805ec0a23b7",
+        "svg": "b236b88f4e7176174e2215edc63c8737f84209d98590d4e68eaf951635566c5b",
+        "pdf": "1277c03f25469b76a73c6f98ad8e7bac870c2a0793e42efb78e4300d3111e118"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "line-chart",
@@ -224,7 +224,7 @@
         "pdf": "01f61ff76927703a4aefba5236680c01a2d6ac3710636a139613f47e56c51b45"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "donut-chart",
@@ -248,19 +248,19 @@
         ]
       },
       "content_bounds": [
-        108,
+        107,
         104,
         1098,
         811
       ],
       "digests": {
-        "png": "993e8ddf233d526a6004d30e0a37171a091cfc5ec2d15c2489fb39a294329eed",
-        "input": "a33ab2cb1ac6b7c92698316907e4fcb22f9d9b6702f38a4d5ab35d8976502b9c",
-        "svg": "e62d6f897feb99b1cb9ae6292667e7ad2ff339132ff5b05b802b2846c32d83c4",
-        "pdf": "214db4a625b5883965dc64f1a0baeb0d0d927e583915e2f4c642e0c314b795e9"
+        "png": "64503db319911ccea01f8e2c7a5403db9c84cf130ee0e09db03a014016e294f2",
+        "input": "2c8032f1a83022985f6190d9b1e290ad774011e33bc541e3559a873cd5d45d2d",
+        "svg": "19feb39d40ef4281dc483ec18658d90dbe2abbf2e313caa4d4af91a0493b4e38",
+        "pdf": "be1af43e22c4f7375386baf114078e0e53319657a8a7d37f2e745172a64b6313"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "state-machine",
@@ -298,7 +298,7 @@
         "pdf": "a7d2556861b353ae23b8bd3779801d83b0919a5fc4c93e3f8d2a1bf028c20305"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "timeline",
@@ -337,7 +337,7 @@
         "pdf": "a329c3d1890b1824c543db6de3a67d60192db6a88e1e20507ee732238ce3dff4"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "swimlane",
@@ -374,7 +374,7 @@
         "pdf": "635bb535826c351bd544b5fbcd9433645728242e82f7c4ca537b0cfa2d599409"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "tree",
@@ -414,7 +414,7 @@
         "pdf": "4173546a51b050bb159655ebfa3d58420089c9135d165af97bf2ae31cfc8fd5a"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "layer-stack",
@@ -451,7 +451,7 @@
         "pdf": "b8203baff7e4fccd47be5ab7153ad37585b0652677d2f2a047ce7887d472956f"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "venn",
@@ -486,7 +486,7 @@
         "pdf": "54455a0d149c988939ae563011b85d37575e358c64835fbdb96a31ae709bead6"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "pyramid",
@@ -522,7 +522,7 @@
         "pdf": "0e454473d9f7374fd1eb3e4104d693f085b757110fe78868b6a74ee8df24d041"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "org-chart",
@@ -561,7 +561,7 @@
         "pdf": "55b7dda7c13d8e4912fc1f25bebafdfd932baac9c3ed0075481df2b4325da8b1"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "loop-flywheel",
@@ -597,7 +597,7 @@
         "pdf": "a4d27ddffb8c57ef102cdbe81015dafb02063c7b42f2d15fe41ca60179a1366f"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "candlestick",
@@ -636,7 +636,7 @@
         "pdf": "3986f502d741b01c02b686370752bdea349ddee6ba608ee5ab7bf208870fa024"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "waterfall",
@@ -675,7 +675,7 @@
         "pdf": "e454cf044b24666231e1365b4905d1581e3a0aa49e724a9e17edc9373531cc80"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "scatter",
@@ -713,7 +713,7 @@
         "pdf": "8660f6d547684883c03d31997fe573649010557cf27afc578153a0afc3d74351"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "gantt",
@@ -751,7 +751,7 @@
         "pdf": "fcef4df41dc3d68f093dbfa6c93c05ab82cb0eb6b98e06ee4b1355369fd5b04e"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "sequence",
@@ -790,7 +790,7 @@
         "pdf": "f9a231402c60131e4c40e92e0a6a520ec4221702d7c198d8849f320b58d9a075"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "uml-class",
@@ -829,7 +829,7 @@
         "pdf": "010eb4620cc4d2a9290a3226be4c2dd217322399404b5ffc5b5e572a196be471"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "er-diagram",
@@ -866,7 +866,7 @@
         "pdf": "7f07c7f27ca2962b383d834d9e78db201cfceb6611497171c8424ab2f298ce21"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     },
     {
       "kind": "heatmap",
@@ -903,7 +903,7 @@
         "pdf": "75cff8693cf4847a79774ea5d83bfeda833709429086396ce948cb2009b08337"
       },
       "approval_state": "approved",
-      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
     }
   ]
 }

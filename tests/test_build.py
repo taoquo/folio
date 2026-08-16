@@ -235,7 +235,8 @@ class BuildScriptTests(TestCase):
             "tests/test_drawing_dsl_v3.py",
             "tests/test_drawing_notation_v4.py",
             "docs/releases/RELEASE_NOTES_V4.3.md",
-            "RELEASE_NOTES_V6.0.md",
+            "docs/releases/RELEASE_NOTES_V6.0.md",
+            "RELEASE_NOTES_V6.1.md",
             "CHANGELOG.md",
         }
         excluded = {

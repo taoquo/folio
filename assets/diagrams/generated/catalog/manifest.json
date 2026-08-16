@@ -15,11 +15,11 @@
   "contact_sheets": [
     {
       "path": "assets/demos/drawing-dsl-all-types.png",
-      "sha256": "dbf49d3e513470689d1de99fac977a87780e6217c1040a06109cc90c6f64a976"
+      "sha256": "6a86b9faff337c7c9286c22a3475d0eb52b08aaae723d322454ec0676f02d6d2"
     },
     {
       "path": "assets/demos/drawing-dsl-supported-types.png",
-      "sha256": "468f82860f8aeaf1a361ffdbfd2c15c29d3c3eff0f9bcb7db3d01b76fe70e0a2"
+      "sha256": "b6ef22e59490b9ce09869eb637adb0a21d026fa741b6da695b81f97fd81b9fa3"
     }
   ],
   "diagrams": [
@@ -226,13 +226,13 @@
         "bar:covered:47cfe5eb8a",
         "bar:covered:8b336cdf52",
         "bar:covered:bc5d84bed7",
-        "bar:covered:25c039d858",
         "bar:covered:79df3742da",
+        "bar:covered:6f81574ddd",
         "bar:legacy:47cfe5eb8a",
         "bar:legacy:8b336cdf52",
         "bar:legacy:bc5d84bed7",
-        "bar:legacy:25c039d858",
-        "bar:legacy:79df3742da"
+        "bar:legacy:79df3742da",
+        "bar:legacy:6f81574ddd"
       ],
       "baseline_category": "generator-parity",
       "approval_state": "approved",
@@ -270,10 +270,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "d61c34be5622b086fd46822ecb6b26607f2d6868cd64ad5eaf96c70eb502a4cf",
-        "input": "b8f4e8b2921c336cb6c315724bbeeb3ebc118796631b1a1df160994a93d980a8",
-        "svg": "b429a383137aec8523da949be0a63af940d6b552f14d4244f046ef2d25cb42bd",
-        "pdf": "126c82ad1e3492bec5867c534adbf178a098a4175d2c7a0962dd6ef2797df801"
+        "png": "4df315821fbc3926f9ae746a4fec8fd5b0cfb01990413604bdf21b07f055d740",
+        "input": "4a5786ce21b169abbc7de552392a8ed630e428e8157ba936ea3da805ec0a23b7",
+        "svg": "b236b88f4e7176174e2215edc63c8737f84209d98590d4e68eaf951635566c5b",
+        "pdf": "1277c03f25469b76a73c6f98ad8e7bac870c2a0793e42efb78e4300d3111e118"
       },
       "unresolved_placeholders": []
     },
@@ -373,16 +373,16 @@
         ]
       },
       "content_bounds": [
-        108,
+        107,
         104,
         1098,
         811
       ],
       "diagnostics": [],
       "metrics": {
-        "content_width": 990,
+        "content_width": 991,
         "content_height": 707,
-        "bounding_box_ratio": 0.321553,
+        "bounding_box_ratio": 0.321878,
         "semantic_nodes": 4,
         "visual_nodes": 4,
         "edges": 0,
@@ -396,10 +396,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "993e8ddf233d526a6004d30e0a37171a091cfc5ec2d15c2489fb39a294329eed",
-        "input": "a33ab2cb1ac6b7c92698316907e4fcb22f9d9b6702f38a4d5ab35d8976502b9c",
-        "svg": "e62d6f897feb99b1cb9ae6292667e7ad2ff339132ff5b05b802b2846c32d83c4",
-        "pdf": "214db4a625b5883965dc64f1a0baeb0d0d927e583915e2f4c642e0c314b795e9"
+        "png": "64503db319911ccea01f8e2c7a5403db9c84cf130ee0e09db03a014016e294f2",
+        "input": "2c8032f1a83022985f6190d9b1e290ad774011e33bc541e3559a873cd5d45d2d",
+        "svg": "19feb39d40ef4281dc483ec18658d90dbe2abbf2e313caa4d4af91a0493b4e38",
+        "pdf": "be1af43e22c4f7375386baf114078e0e53319657a8a7d37f2e745172a64b6313"
       },
       "unresolved_placeholders": []
     },

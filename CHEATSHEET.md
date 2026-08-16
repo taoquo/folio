@@ -246,7 +246,7 @@ Combine freely: `<table class="folio-table financial striped">`.
 
 ## Diagram components
 
-Twenty-two built-in diagram types. Start from semantic JSON, compile it, and embed it through an explicit Folio host slot:
+Twenty-three built-in diagram types. Start from semantic JSON, compile it, and embed it through an explicit Folio host slot:
 
 
 | Type          | Kind            | Reference payload                             | Use                                             |
