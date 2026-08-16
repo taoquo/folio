@@ -2,15 +2,15 @@
   "schema_version": "1.0",
   "catalog_schema_version": "3.0",
   "approval_state": "approved",
-  "approval_reason": "Stable unversioned catalog naming for the public release",
+  "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type",
   "visual_policy": {
     "method": "exact-rgba-no-resize",
     "max_changed_channel_ratio": 0.01,
     "bounds_tolerance_px": 2
   },
   "coverage": {
-    "catalog_types": 22,
-    "drawing_dsl": 22,
+    "catalog_types": 23,
+    "drawing_dsl": 23,
     "drawing_dsl_v2": 0,
     "drawing_dsl_v3": 0,
     "html_template_baseline": 0
@@ -18,11 +18,11 @@
   "contact_sheets": [
     {
       "path": "assets/demos/drawing-dsl-all-types.png",
-      "sha256": "0a0a59c6b52bdc5700481254f37b5846a57b016c28b24dc3aaa7229e2beadc97"
+      "sha256": "dbf49d3e513470689d1de99fac977a87780e6217c1040a06109cc90c6f64a976"
     },
     {
       "path": "assets/demos/drawing-dsl-supported-types.png",
-      "sha256": "8e4d5eb1ddcaa1ef3024cea83a0ee96d489717cf036f06eb7dbcb5b52d6dac6e"
+      "sha256": "468f82860f8aeaf1a361ffdbfd2c15c29d3c3eff0f9bcb7db3d01b76fe70e0a2"
     }
   ],
   "diagrams": [
@@ -63,7 +63,7 @@
         "pdf": "708050fad6cbae55d57d435a278e3090e927b67eb23f1bb9e9095ac4bf6b4819"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "flowchart",
@@ -100,7 +100,7 @@
         "pdf": "5cc24d94a78531b45f8e01cacb155d99746ae11397042309d023897d770144a4"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "quadrant",
@@ -140,7 +140,7 @@
         "pdf": "6d48df2f5aa667f0926a5c516f1f4680720e4e5efb5c54a8768403ecb641257f"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "bar-chart",
@@ -182,7 +182,7 @@
         "pdf": "126c82ad1e3492bec5867c534adbf178a098a4175d2c7a0962dd6ef2797df801"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "line-chart",
@@ -224,7 +224,7 @@
         "pdf": "01f61ff76927703a4aefba5236680c01a2d6ac3710636a139613f47e56c51b45"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "donut-chart",
@@ -260,7 +260,7 @@
         "pdf": "214db4a625b5883965dc64f1a0baeb0d0d927e583915e2f4c642e0c314b795e9"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "state-machine",
@@ -298,7 +298,7 @@
         "pdf": "a7d2556861b353ae23b8bd3779801d83b0919a5fc4c93e3f8d2a1bf028c20305"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "timeline",
@@ -337,7 +337,7 @@
         "pdf": "a329c3d1890b1824c543db6de3a67d60192db6a88e1e20507ee732238ce3dff4"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "swimlane",
@@ -374,7 +374,7 @@
         "pdf": "635bb535826c351bd544b5fbcd9433645728242e82f7c4ca537b0cfa2d599409"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "tree",
@@ -414,7 +414,7 @@
         "pdf": "4173546a51b050bb159655ebfa3d58420089c9135d165af97bf2ae31cfc8fd5a"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "layer-stack",
@@ -451,7 +451,7 @@
         "pdf": "b8203baff7e4fccd47be5ab7153ad37585b0652677d2f2a047ce7887d472956f"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "venn",
@@ -486,7 +486,7 @@
         "pdf": "54455a0d149c988939ae563011b85d37575e358c64835fbdb96a31ae709bead6"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "pyramid",
@@ -522,7 +522,7 @@
         "pdf": "0e454473d9f7374fd1eb3e4104d693f085b757110fe78868b6a74ee8df24d041"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "org-chart",
@@ -561,7 +561,7 @@
         "pdf": "55b7dda7c13d8e4912fc1f25bebafdfd932baac9c3ed0075481df2b4325da8b1"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "loop-flywheel",
@@ -597,7 +597,7 @@
         "pdf": "a4d27ddffb8c57ef102cdbe81015dafb02063c7b42f2d15fe41ca60179a1366f"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "candlestick",
@@ -636,7 +636,7 @@
         "pdf": "3986f502d741b01c02b686370752bdea349ddee6ba608ee5ab7bf208870fa024"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "waterfall",
@@ -675,7 +675,7 @@
         "pdf": "e454cf044b24666231e1365b4905d1581e3a0aa49e724a9e17edc9373531cc80"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "scatter",
@@ -713,7 +713,7 @@
         "pdf": "8660f6d547684883c03d31997fe573649010557cf27afc578153a0afc3d74351"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "gantt",
@@ -751,7 +751,7 @@
         "pdf": "fcef4df41dc3d68f093dbfa6c93c05ab82cb0eb6b98e06ee4b1355369fd5b04e"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "sequence",
@@ -790,7 +790,7 @@
         "pdf": "f9a231402c60131e4c40e92e0a6a520ec4221702d7c198d8849f320b58d9a075"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "uml-class",
@@ -829,7 +829,7 @@
         "pdf": "010eb4620cc4d2a9290a3226be4c2dd217322399404b5ffc5b5e572a196be471"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     },
     {
       "kind": "er-diagram",
@@ -866,7 +866,44 @@
         "pdf": "7f07c7f27ca2962b383d834d9e78db201cfceb6611497171c8424ab2f298ce21"
       },
       "approval_state": "approved",
-      "approval_reason": "Stable unversioned catalog naming for the public release"
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
+    },
+    {
+      "kind": "heatmap",
+      "profile": "page-preview",
+      "registry_key": "heatmap@3",
+      "png": "assets/diagrams/generated/catalog/png/heatmap.png",
+      "semantic_ids": [
+        "schema",
+        "geometry",
+        "quality",
+        "access",
+        "output"
+      ],
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        101,
+        99,
+        1137,
+        720
+      ],
+      "digests": {
+        "png": "5e8e1561a76c0efe8d99a111e60e2d702db77f09ddf77eec6b9dc70faaf3dede",
+        "input": "ad464d3d548838319037749ac2b69b2698eed5e49548368488af149f689ed3b2",
+        "svg": "f629a1658647423908e066d03286765ce9ced2fd4e02257c1d6bd9d182cd89b5",
+        "pdf": "75cff8693cf4847a79774ea5d83bfeda833709429086396ce948cb2009b08337"
+      },
+      "approval_state": "approved",
+      "approval_reason": "Approve heatmap as the twenty-third generator-backed catalog type"
     }
   ]
 }

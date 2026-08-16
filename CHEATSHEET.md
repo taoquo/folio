@@ -273,6 +273,7 @@ Twenty-two built-in diagram types. Start from semantic JSON, compile it, and emb
 | Loop Flywheel | `loop-flywheel` | `references/fixtures/v5/loop-flywheel.json`   | Self-reinforcing cycle stages                   |
 | Scatter       | `scatter`       | `references/fixtures/v5/scatter.json`         | Correlation between two numeric measures        |
 | Gantt         | `gantt`         | `references/fixtures/v5/gantt.json`           | Task schedule across periods with milestones    |
+| Heatmap       | `heatmap`       | `references/fixtures/v5/heatmap.json`         | One measure graded across two categorical axes  |
 
 
 Usage: run `scripts/folio.py render-drawing` for standalone artifacts or `embed-drawing` plus `verify-drawing-host` for documents and slides. HTML diagram files are parity references, not the production authoring path.

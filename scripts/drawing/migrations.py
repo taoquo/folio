@@ -24,6 +24,7 @@ LATEST_INPUT_VERSIONS = {
     "waterfall": "3.0",
     "scatter": "3.0",
     "gantt": "3.0",
+    "heatmap": "3.0",
     "sequence": "3.0",
     "uml-class": "3.0",
     "er-diagram": "3.0",

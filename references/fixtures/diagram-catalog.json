@@ -23,6 +23,7 @@
     {"kind": "gantt", "label": "Gantt", "mode": "drawing-dsl", "source": "references/fixtures/v5/gantt.json"},
     {"kind": "sequence", "label": "Sequence", "mode": "drawing-dsl", "source": "references/fixtures/v4/sequence.json"},
     {"kind": "uml-class", "label": "UML Class", "mode": "drawing-dsl", "source": "references/fixtures/v4/uml-class.json"},
-    {"kind": "er-diagram", "label": "ER Diagram", "mode": "drawing-dsl", "source": "references/fixtures/v4/er-diagram.json"}
+    {"kind": "er-diagram", "label": "ER Diagram", "mode": "drawing-dsl", "source": "references/fixtures/v4/er-diagram.json"},
+    {"kind": "heatmap", "label": "Heatmap", "mode": "drawing-dsl", "source": "references/fixtures/v5/heatmap.json"}
   ]
 }

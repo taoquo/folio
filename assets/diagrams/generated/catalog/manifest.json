@@ -6,8 +6,8 @@
   },
   "catalog_fixture": "references/fixtures/diagram-catalog.json",
   "coverage": {
-    "catalog_types": 22,
-    "drawing_dsl": 22,
+    "catalog_types": 23,
+    "drawing_dsl": 23,
     "drawing_dsl_v2": 0,
     "drawing_dsl_v3": 0,
     "html_template_baseline": 0
@@ -15,11 +15,11 @@
   "contact_sheets": [
     {
       "path": "assets/demos/drawing-dsl-all-types.png",
-      "sha256": "0a0a59c6b52bdc5700481254f37b5846a57b016c28b24dc3aaa7229e2beadc97"
+      "sha256": "dbf49d3e513470689d1de99fac977a87780e6217c1040a06109cc90c6f64a976"
     },
     {
       "path": "assets/demos/drawing-dsl-supported-types.png",
-      "sha256": "8e4d5eb1ddcaa1ef3024cea83a0ee96d489717cf036f06eb7dbcb5b52d6dac6e"
+      "sha256": "468f82860f8aeaf1a361ffdbfd2c15c29d3c3eff0f9bcb7db3d01b76fe70e0a2"
     }
   ],
   "diagrams": [
@@ -1390,6 +1390,67 @@
         "input": "a34e03b91012df934dcdde1fb58b365bf8d1ac49bdf3cef822882666047449d2",
         "svg": "e2df0aad1642fc8d3fd0855f943154c50ecd945576fdab8baa9645d7754a7531",
         "pdf": "7f07c7f27ca2962b383d834d9e78db201cfceb6611497171c8424ab2f298ce21"
+      },
+      "unresolved_placeholders": []
+    },
+    {
+      "kind": "heatmap",
+      "label": "Heatmap",
+      "mode": "drawing-dsl",
+      "source": "references/fixtures/v5/heatmap.json",
+      "png": "assets/diagrams/generated/catalog/png/heatmap.png",
+      "svg": "assets/diagrams/generated/catalog/svg/heatmap.svg",
+      "pdf": "assets/diagrams/generated/catalog/pdf/heatmap.pdf",
+      "profile": "page-preview",
+      "compiler_contract": "3.0",
+      "registry_key": "heatmap@3",
+      "semantic_ids": [
+        "schema",
+        "geometry",
+        "quality",
+        "access",
+        "output"
+      ],
+      "baseline_category": "generator-parity",
+      "approval_state": "approved",
+      "dimensions": {
+        "source": [
+          960,
+          540
+        ],
+        "output": [
+          1241,
+          1754
+        ]
+      },
+      "content_bounds": [
+        101,
+        99,
+        1137,
+        720
+      ],
+      "diagnostics": [],
+      "metrics": {
+        "content_width": 1036,
+        "content_height": 621,
+        "bounding_box_ratio": 0.295563,
+        "semantic_nodes": 5,
+        "visual_nodes": 5,
+        "edges": 0,
+        "edge_labels": 0,
+        "focus": 1,
+        "crossings": 0,
+        "bends": 0,
+        "spine_bends": 0,
+        "text_overflow": 0,
+        "layout_warnings": 0,
+        "taste_warnings": 0
+      },
+      "digests": {
+        "png": "5e8e1561a76c0efe8d99a111e60e2d702db77f09ddf77eec6b9dc70faaf3dede",
+        "input": "ad464d3d548838319037749ac2b69b2698eed5e49548368488af149f689ed3b2",
+        "svg": "f629a1658647423908e066d03286765ce9ced2fd4e02257c1d6bd9d182cd89b5",
+        "pdf": "75cff8693cf4847a79774ea5d83bfeda833709429086396ce948cb2009b08337"
       },
       "unresolved_placeholders": []
     }

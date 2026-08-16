@@ -75,6 +75,7 @@ class DrawingSchemaRegistryTests(TestCase):
             "waterfall": "contributions",
             "scatter": "points",
             "gantt": "tasks",
+            "heatmap": "rows",
             "sequence": "participants",
             "uml-class": "types",
             "er-diagram": "entities",

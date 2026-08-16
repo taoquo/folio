@@ -9,7 +9,7 @@ description: 'Typeset professional documents: one-pagers, long docs, letters, po
 
 For documents worth keeping. One design language across eight document types: warm parchment canvas, cinnabar-coral accent, serif-led hierarchy, tight editorial rhythm.
 
-Folio delivers professional documents across eight templates and twenty-two diagram types.
+Folio delivers professional documents across eight templates and twenty-three diagram types.
 
 ## Step 0 · Load brand profile (if exists)
 
@@ -147,7 +147,7 @@ If a page mixes reading and workspace behavior, separate the reading region from
 
 ### Diagrams (primitives, not a 7th doc type)
 
-When the user asks for any of the twenty-two official diagram types, use the diagram artifact pipeline first.
+When the user asks for any of the twenty-three official diagram types, use the diagram artifact pipeline first.
 
 - standalone request -> generate `SVG + PNG + PDF`
 - HTML document request -> create an explicit `<figure data-folio-diagram-slot="...">`, then use `scripts/folio.py embed-drawing`
@@ -185,10 +185,11 @@ When the diagram type is not stated, route first: run `scripts/folio.py route-di
 | "飞轮 / flywheel / 增强回路 / virtuous cycle / 自增强循环"      | Loop Flywheel | `loop-flywheel` |
 | "散点图 / scatter / 相关性 / correlation / X 对 Y"             | Scatter       | `scatter`       |
 | "甘特图 / gantt / 排期 / sprint plan / workstream schedule"    | Gantt         | `gantt`         |
+| "热力图 / heatmap / 矩阵 / density matrix / 热度分布"           | Heatmap       | `heatmap`       |
 
 Read `references/diagrams.md`, `references/drawing-dsl.md`, and `references/drawing-dsl-authoring.md` before drawing. For HTML documents and slides, use explicit host slots so fit, trace metadata, alt text, captions, and stale checks remain enforceable.
 
-All twenty-two types use type-specific semantic and plan models followed by shared scene primitives and SVG serialization. Also read `references/drawing-architecture.md` for Architecture. Do not add pixel-level intent to semantic planners or visual-semantic branches to the SVG renderer.
+All twenty-three types use type-specific semantic and plan models followed by shared scene primitives and SVG serialization. Also read `references/drawing-architecture.md` for Architecture. Do not add pixel-level intent to semantic planners or visual-semantic branches to the SVG renderer.
 
 **Theme profiles.** Every drawing subcommand accepts `--theme folio|dark|terminal`, defaulting to `folio`. A theme is a full palette swap applied after layout, so geometry, reading order, and accessible data never change. Use `dark` or `terminal` only when the host surface is dark; keep `folio` for print documents. Registering a project palette goes through `drawing.theme.register_theme_profile`, which rejects any palette that fails WCAG contrast. See section 12 of `references/drawing-dsl-authoring.md`.
 

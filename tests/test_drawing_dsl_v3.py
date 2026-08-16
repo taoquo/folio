@@ -26,7 +26,7 @@ NEW_KINDS = {
     "state-machine", "swimlane", "tree", "layer-stack", "timeline", "quadrant",
     "venn", "bar-chart", "line-chart", "donut-chart", "candlestick", "waterfall",
     "sequence", "uml-class", "er-diagram",
-    "pyramid", "org-chart", "loop-flywheel", "scatter", "gantt",
+    "pyramid", "org-chart", "loop-flywheel", "scatter", "gantt", "heatmap",
 }
 ALL_KINDS = NEW_KINDS | {"architecture", "flowchart"}
 
@@ -66,6 +66,11 @@ def compact_payload(kind, canonical):
         payload.update(points=[{"id": f"p{i}", "label": f"P{i}", "x": i, "y": i * 2} for i in range(3)]); payload.pop("focus", None)
     elif kind == "gantt":
         payload.update(periods=["P1", "P2", "P3"], tasks=[{"id": f"t{i}", "label": f"T{i}", "start": i, "span": 1} for i in range(3)], milestones=[]); payload.pop("focus", None)
+    elif kind == "heatmap":
+        payload.update(
+            columns=["C1", "C2", "C3"],
+            rows=[{"id": f"r{i}", "label": f"R{i}", "values": [i, i + 1, i + 2]} for i in range(3)],
+        ); payload.pop("focus", None)
     elif kind == "bar-chart":
         payload.update(categories=["A"], series=[{"id": "s", "label": "S", "values": [1]}]); payload.pop("focus_series", None)
     elif kind == "line-chart":
@@ -159,6 +164,14 @@ def dense_payload(kind, canonical):
             tasks=[{"id": f"t{i}", "label": f"Task {i}", "start": i, "span": 2, "track": f"tr{i}"} for i in range(10)],
             milestones=[{"id": "m1", "label": "Mid", "at": 6}],
         ); payload.pop("focus", None)
+    elif kind == "heatmap":
+        payload.update(
+            columns=[f"W{i}" for i in range(12)],
+            rows=[
+                {"id": f"r{i}", "label": f"Row {i}", "values": [(i * 7 + j * 3) % 40 for j in range(12)]}
+                for i in range(10)
+            ],
+        ); payload.pop("focus", None)
     elif kind in {"bar-chart", "line-chart"}:
         count = 8 if kind == "bar-chart" else 12
         payload.update(categories=[f"C{i}" for i in range(count)], series=[{"id": f"s{j}", "label": f"S{j}", "values": [i * (j + 1) - 3 for i in range(count)]} for j in range(3)])
@@ -199,6 +212,7 @@ def overflow_payload(kind, canonical):
     elif kind == "loop-flywheel": payload["stages"].append({"id": "extra", "label": "Extra"})
     elif kind == "scatter": payload["points"].append({"id": "extra", "label": "Extra", "x": 1, "y": 1})
     elif kind == "gantt": payload["tasks"].append({"id": "extra", "label": "Extra", "start": 0, "span": 1})
+    elif kind == "heatmap": payload["rows"].append({"id": "extra", "label": "Extra", "values": [1] * len(payload["columns"])})
     elif kind in {"bar-chart", "line-chart"}: payload["categories"].append("Extra"); [item["values"].append(1) for item in payload["series"]]
     elif kind == "donut-chart": payload["segments"].append({"id": "extra", "label": "Extra", "value": 1})
     elif kind == "candlestick": payload["periods"].append({"id": "extra", "date": "2026-12-31", "open": 1, "high": 2, "low": 0, "close": 1})
@@ -213,7 +227,7 @@ def localized_payload(canonical, mixed=False):
     payload = deepcopy(canonical)
     payload["title"] = "中文 API 图表" if mixed else "中文图表"
     payload["language"] = "zh-CN"
-    for key in ("states", "lanes", "steps", "nodes", "layers", "events", "items", "sets", "series", "segments", "contributions", "participants", "messages", "relationships", "levels", "units", "stages", "points", "tasks"):
+    for key in ("states", "lanes", "steps", "nodes", "layers", "events", "items", "sets", "series", "segments", "contributions", "participants", "messages", "relationships", "levels", "units", "stages", "points", "tasks", "rows"):
         for index, item in enumerate(payload.get(key, [])):
             if "label" in item:
                 item["label"] = f"节点 {index} API" if mixed else f"节点{index}"

@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.local/schemas/types/heatmap.schema.json",
+  "title": "Folio Heatmap Authoring Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kind",
+    "title",
+    "columns",
+    "rows",
+    "x_axis",
+    "y_axis"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "3.0"
+    },
+    "kind": {
+      "const": "heatmap"
+    },
+    "title": {
+      "$ref": "#/$defs/non-empty-string"
+    },
+    "columns": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 12,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 12
+      }
+    },
+    "rows": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 10,
+      "items": {
+        "$ref": "#/$defs/row"
+      }
+    },
+    "x_axis": {
+      "$ref": "#/$defs/axis"
+    },
+    "y_axis": {
+      "$ref": "#/$defs/axis"
+    },
+    "focus": {
+      "$ref": "#/$defs/non-empty-string"
+    },
+    "unit": {
+      "type": "string",
+      "maxLength": 12
+    },
+    "locale": {
+      "enum": [
+        "en-US",
+        "en-GB",
+        "zh-CN",
+        "zh-TW"
+      ]
+    },
+    "source": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "value_format": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "precision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "compact": {
+          "type": "boolean"
+        },
+        "grouping": {
+          "type": "boolean"
+        },
+        "unit_position": {
+          "enum": [
+            "auto",
+            "prefix",
+            "suffix"
+          ]
+        }
+      }
+    },
+    "width": {
+      "const": 960
+    },
+    "height": {
+      "const": 540
+    },
+    "language": {
+      "$ref": "#/$defs/non-empty-string"
+    }
+  },
+  "$defs": {
+    "non-empty-string": {
+      "type": "string",
+      "minLength": 1
+    },
+    "axis": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "$ref": "#/$defs/non-empty-string"
+        },
+        "unit": {
+          "type": "string",
+          "maxLength": 12
+        }
+      }
+    },
+    "row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label",
+        "values"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/non-empty-string"
+        },
+        "label": {
+          "$ref": "#/$defs/non-empty-string"
+        },
+        "values": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 12,
+          "items": {
+            "type": "number"
+          }
+        },
+        "emphasis": {
+          "enum": [
+            "focal",
+            "normal"
+          ]
+        }
+      }
+    }
+  }
+}

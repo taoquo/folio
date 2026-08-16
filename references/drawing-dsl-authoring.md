@@ -115,6 +115,8 @@ Architecture semantic input is version `3.0`; legacy unversioned semantic payloa
 - Waterfall contribution `kind` is `delta` by default or `subtotal`; a subtotal value must equal the current running total within `tolerance` and does not alter arithmetic.
 - `value_format` controls precision, compact notation, grouping, and unit position for display only. Semantic and accessible values remain exact.
 - Supported locales are `en-US`, `en-GB`, `zh-CN`, and `zh-TW`. The chart canvas is exactly 960×540; use output profiles or host contracts for responsive sizing.
+- Heatmap accepts 3-12 `columns` (labels up to 12 characters) and 3-10 `rows`; every row needs a stable id, a label, and one finite value per column. Cells carry no numeric text: the graded intensity legend and the accessible description own the values, which keeps contrast safe on every theme.
+- Heatmap grades one measure with a single warm ramp and allows at most one `emphasis: focal` row, rendered in the accent color. Multi-hue colormaps are out of scope.
 
 Maintained feature examples live under `references/fixtures/v4/`.
 
@@ -145,7 +147,7 @@ HTML hosts use an exact `<figure data-folio-diagram-slot="slot-id">` placeholder
 ```bash
 python3 scripts/folio.py embed-drawing references/fixtures/v3/bar-chart.json \
   --host-contract a4-portrait --host-file report.html --output-host report-filled.html \
-  --slot coverage --caption "Generator-backed coverage reaches all twenty-two registered types."
+  --slot coverage --caption "Generator-backed coverage reaches all twenty-three registered types."
 
 python3 scripts/folio.py embed-drawing references/fixtures/v3/line-chart.json \
   --host-contract slide-16x9 --host-file deck.pptx --output-host deck-filled.pptx \

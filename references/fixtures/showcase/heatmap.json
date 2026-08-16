@@ -1,0 +1,95 @@
+{
+  "schema_version": "3.0",
+  "kind": "heatmap",
+  "title": "Agent Workload Latency by Region",
+  "source": "Production traces, rolling 30 days, p95 in ms",
+  "locale": "en-US",
+  "unit": "ms",
+  "value_format": {
+    "precision": 0,
+    "compact": false
+  },
+  "x_axis": {
+    "label": "Region"
+  },
+  "y_axis": {
+    "label": "Workload"
+  },
+  "columns": [
+    "us-east",
+    "us-west",
+    "eu-west",
+    "ap-south",
+    "ap-north"
+  ],
+  "rows": [
+    {
+      "id": "retrieval",
+      "label": "Retrieval",
+      "values": [
+        180,
+        210,
+        260,
+        410,
+        380
+      ]
+    },
+    {
+      "id": "planning",
+      "label": "Planning",
+      "values": [
+        240,
+        265,
+        320,
+        470,
+        445
+      ]
+    },
+    {
+      "id": "toolcall",
+      "label": "Tool calls",
+      "values": [
+        320,
+        355,
+        430,
+        640,
+        610
+      ],
+      "emphasis": "focal"
+    },
+    {
+      "id": "render",
+      "label": "Rendering",
+      "values": [
+        150,
+        175,
+        220,
+        355,
+        330
+      ]
+    },
+    {
+      "id": "persist",
+      "label": "Persistence",
+      "values": [
+        95,
+        110,
+        145,
+        260,
+        240
+      ]
+    },
+    {
+      "id": "audit",
+      "label": "Audit log",
+      "values": [
+        60,
+        72,
+        96,
+        175,
+        160
+      ]
+    }
+  ],
+  "focus": "toolcall"
+}

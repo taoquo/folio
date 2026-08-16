@@ -1,8 +1,8 @@
 # Diagrams
 
-folio's drawing capability. **22 diagram types** covering structural, process, notation, and data chart scenarios. All wear folio's skin (parchment + cinnabar-coral + warm grays). No second design system.
+folio's drawing capability. **23 diagram types** covering structural, process, notation, and data chart scenarios. All wear folio's skin (parchment + cinnabar-coral + warm grays). No second design system.
 
-All twenty-two official diagram types are generator-backed. Structured semantic JSON compiles through type-owned grammars into shared scene primitives and exports as SVG, PNG, or PDF. The self-contained HTML + inline SVG files and legacy UML loader remain parity references and manual escape hatches.
+All twenty-three official diagram types are generator-backed. Structured semantic JSON compiles through type-owned grammars into shared scene primitives and exports as SVG, PNG, or PDF. The self-contained HTML + inline SVG files and legacy UML loader remain parity references and manual escape hatches.
 
 Artifact flow:
 
@@ -36,7 +36,7 @@ All diagrams should look drawn by the same editorial hand, whether they come fro
 
 ## 1. Selection
 
-All twenty-two rows below are generator-backed. The `Kind` column is the registered
+All twenty-three rows below are generator-backed. The `Kind` column is the registered
 `kind` accepted by every `scripts/folio.py` drawing subcommand, and the `Reference payload`
 column is the canonical fixture registered in `references/fixtures/diagram-catalog.json`.
 Start from the fixture, do not hand-edit SVG.
@@ -62,6 +62,7 @@ Start from the fixture, do not hand-edit SVG.
 | Revenue bridge, valuation decomposition, cash flow breakdown | **Waterfall** | `waterfall` | `references/fixtures/v3/waterfall.json` |
 | Correlation between two numeric measures | **Scatter** | `scatter` | `references/fixtures/v5/scatter.json` |
 | Task schedule across periods with milestones | **Gantt** | `gantt` | `references/fixtures/v5/gantt.json` |
+| One measure graded across two categorical axes | **Heatmap** | `heatmap` | `references/fixtures/v5/heatmap.json` |
 | Ordered interactions among actors, systems, and stores | **Sequence** | `sequence` | `references/fixtures/v4/sequence.json` |
 | Types, members, inheritance, association, aggregation, composition | **UML Class** | `uml-class` | `references/fixtures/v4/uml-class.json` |
 | Database entities, fields, keys, and cardinality | **ER Diagram** | `er-diagram` | `references/fixtures/v4/er-diagram.json` |

@@ -20,7 +20,7 @@
 
 ## See Folio First
 
-Folio is a document design system for the AI era: eight document types, twenty-two generator-backed Drawing DSL diagram types, bilingual English/Chinese paths, and Web guidance for reading pages and product workspaces built for agent-generated deliverables.
+Folio is a document design system for the AI era: eight document types, twenty-three generator-backed Drawing DSL diagram types, bilingual English/Chinese paths, and Web guidance for reading pages and product workspaces built for agent-generated deliverables.
 
 It optimizes for stable, readable, professional output rather than novelty.
 
@@ -31,7 +31,7 @@ Read the full project text in [references/manifesto.md](references/manifesto.md)
 What matters on first contact:
 
 - eight document types, each with a stable editorial layout
-- twenty-two structured diagram grammars with `SVG + PNG + PDF` output
+- twenty-three structured diagram grammars with `SVG + PNG + PDF` output
 - bilingual English and Chinese generation paths
 - Web guidance for reading pages and product workspaces without turning Folio into a frontend framework
 - PDF- and PPTX-oriented outputs instead of generic HTML mockups
@@ -126,7 +126,7 @@ What matters on first contact:
 
 ## Complete Diagram Catalog
 
-Every one of the twenty-two types is generator-backed: Architecture, Flowchart, State Machine, Swimlane, Tree, Layer Stack, Timeline, Quadrant, Venn, Pyramid, Org Chart, Loop Flywheel, Bar, Line, Donut, Candlestick, Waterfall, Scatter, Gantt, Sequence, UML Class, and ER Diagram.
+Every one of the twenty-three types is generator-backed: Architecture, Flowchart, State Machine, Swimlane, Tree, Layer Stack, Timeline, Quadrant, Venn, Pyramid, Org Chart, Loop Flywheel, Bar, Line, Donut, Candlestick, Waterfall, Scatter, Gantt, Heatmap, Sequence, UML Class, and ER Diagram.
 
 <p align="center">
   <img src="assets/demos/drawing-dsl-supported-types.png" alt="Complete Drawing DSL diagram catalog" width="100%">

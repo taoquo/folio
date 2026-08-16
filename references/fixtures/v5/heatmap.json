@@ -1,0 +1,82 @@
+{
+  "schema_version": "3.0",
+  "kind": "heatmap",
+  "title": "Drawing DSL gate coverage",
+  "source": "Folio quality gates, V6 program",
+  "unit": "%",
+  "value_format": {
+    "precision": 0
+  },
+  "x_axis": {
+    "label": "Release wave"
+  },
+  "y_axis": {
+    "label": "Gate family"
+  },
+  "columns": [
+    "V3",
+    "V4",
+    "V5",
+    "V6",
+    "V7"
+  ],
+  "rows": [
+    {
+      "id": "schema",
+      "label": "Schema",
+      "values": [
+        62,
+        74,
+        85,
+        96,
+        98
+      ]
+    },
+    {
+      "id": "geometry",
+      "label": "Geometry",
+      "values": [
+        48,
+        61,
+        78,
+        92,
+        95
+      ]
+    },
+    {
+      "id": "quality",
+      "label": "Visual quality",
+      "values": [
+        21,
+        44,
+        66,
+        88,
+        94
+      ],
+      "emphasis": "focal"
+    },
+    {
+      "id": "access",
+      "label": "Accessibility",
+      "values": [
+        35,
+        52,
+        71,
+        90,
+        93
+      ]
+    },
+    {
+      "id": "output",
+      "label": "Output knobs",
+      "values": [
+        0,
+        18,
+        55,
+        84,
+        90
+      ]
+    }
+  ],
+  "focus": "quality"
+}

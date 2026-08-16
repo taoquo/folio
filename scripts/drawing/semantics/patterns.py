@@ -24,7 +24,7 @@ SEMANTIC_PATTERNS: tuple[str, ...] = (
 # which keeps routing deterministic when scores tie.
 PATTERN_KINDS: dict[str, tuple[str, ...]] = {
     "architecture": ("architecture", "layer-stack"),
-    "comparison": ("bar-chart", "quadrant", "venn"),
+    "comparison": ("bar-chart", "quadrant", "venn", "heatmap"),
     "data": ("bar-chart", "line-chart", "donut-chart", "waterfall", "candlestick", "scatter"),
     "flow": ("flowchart", "swimlane", "sequence", "loop-flywheel"),
     "hierarchy": ("tree", "layer-stack", "org-chart", "pyramid"),
@@ -43,7 +43,8 @@ PATTERN_KEYWORDS: dict[str, tuple[str, ...]] = {
     ),
     "comparison": (
         "compare", "comparison", "versus", " vs ", "ranking", "tradeoff", "overlap",
-        "对比", "比较", "排名", "权衡", "重叠",
+        "heatmap", "heat map", "matrix", "density",
+        "对比", "比较", "排名", "权衡", "重叠", "热力图", "矩阵", "热度",
     ),
     "data": (
         "metric", "metrics", "revenue", "growth", "distribution", "share", "trend", "scatter",

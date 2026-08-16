@@ -1,0 +1,45 @@
+{
+  "schema_version": "3.0",
+  "kind": "heatmap",
+  "title": "Untitled Heatmap",
+  "x_axis": {
+    "label": "Column"
+  },
+  "y_axis": {
+    "label": "Row"
+  },
+  "columns": [
+    "C1",
+    "C2",
+    "C3"
+  ],
+  "rows": [
+    {
+      "id": "a",
+      "label": "First row",
+      "values": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": "b",
+      "label": "Second row",
+      "values": [
+        2,
+        3,
+        1
+      ]
+    },
+    {
+      "id": "c",
+      "label": "Third row",
+      "values": [
+        3,
+        1,
+        2
+      ]
+    }
+  ]
+}

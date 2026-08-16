@@ -1542,3 +1542,210 @@ def _resolve_gantt(plan: GanttPlan, layout: ChartLayout, source: str | None) -> 
         plan.width, plan.height, theme.parchment, _title(plan.title, plan.width), (), (), (),
         description=description, language=plan.language, reading_order=tuple(reading), primitives=tuple(primitives),
     )
+
+
+HEATMAP_LABEL_X = 40
+HEATMAP_PLOT = SceneBox(232, 112, 560, 340)
+HEATMAP_LEGEND_X = 808
+HEATMAP_LEGEND_VALUE_X = 832
+# Cells are capped instead of stretched so a 3x3 matrix keeps editorial cell
+# proportions and the focal row never exceeds the 5% saturated-accent budget.
+HEATMAP_MAX_CELL_W = 96
+HEATMAP_MAX_CELL_H = 48
+HEATMAP_RAMP_STEPS = 5
+HEATMAP_FOCAL_OPACITY = (0.16, 0.3, 0.46, 0.65, 0.85)
+
+
+def _heatmap_ramp(theme) -> tuple[str, ...]:
+    """Single-hue neutral ramp; ADR 0006 keeps one accent and forbids colormaps."""
+    return (theme.ivory, theme.border, theme.neutral_light, theme.neutral_mid, theme.neutral_deep)
+
+
+def _heatmap_bucket(value: float, scale: ScalePlan) -> int:
+    span = scale.domain_max - scale.domain_min
+    if span <= 0:
+        return HEATMAP_RAMP_STEPS // 2
+    ratio = (float(value) - scale.domain_min) / span
+    return max(0, min(HEATMAP_RAMP_STEPS - 1, int(ratio * HEATMAP_RAMP_STEPS)))
+
+
+def _cell_span(available: int, count: int, maximum: int) -> int:
+    return max(16, int(min(maximum, available / count) // 4 * 4))
+
+
+@dataclass(frozen=True)
+class HeatmapPlan:
+    kind: str
+    title: str
+    columns: tuple[str, ...]
+    rows: tuple[dict[str, Any], ...]
+    x_axis: dict[str, Any]
+    y_axis: dict[str, Any]
+    scale: ScalePlan
+    focus_series: str | None
+    value_format: ValueFormatPlan
+    width: int
+    height: int
+    language: str
+    locale: str
+    schema_version: str = "3.0"
+
+    def to_dict(self):
+        return asdict(self)
+
+
+def compile_heatmap_payload(payload: dict[str, Any]):
+    code = "HM000"
+    diagnostics = _common_chart(
+        payload, kind="heatmap",
+        extra_allowed={"columns", "rows", "x_axis", "y_axis", "focus"},
+        required=("columns", "rows", "x_axis", "y_axis"), code=code,
+    )
+    columns = payload.get("columns")
+    if not isinstance(columns, list) or not columns or any(not isinstance(value, str) or not value.strip() for value in columns):
+        diagnostics.append(DrawingDiagnostic("ERROR", "HM001", "columns must be a non-empty array of non-empty strings"))
+        columns = []
+    if columns and not 3 <= len(columns) <= 12:
+        diagnostics.append(DrawingDiagnostic("ERROR", "HM002", "heatmap requires between three and twelve columns"))
+    for label in columns:
+        if len(label.strip()) > 12:
+            diagnostics.append(DrawingDiagnostic("ERROR", "HM003", "column label must contain at most 12 characters", label))
+    rows = object_list(payload, "rows", diagnostics, code)
+    validate_object_fields(rows, name="rows", allowed={"id", "label", "values", "emphasis"}, required=("id", "label", "values"), diagnostics=diagnostics, code=code)
+    validate_item_strings(rows, ("label",), diagnostics=diagnostics, code=code)
+    row_ids = validate_unique_ids(rows, name="heatmap row", diagnostics=diagnostics, code=code)
+    _validate_text_budget(rows, ("label",), diagnostics, code)
+    if not 3 <= len(rows) <= 10:
+        diagnostics.append(DrawingDiagnostic("ERROR", "HM004", "heatmap requires between three and ten rows"))
+    for item in rows:
+        values = item.get("values")
+        if not isinstance(values, list) or (columns and len(values) != len(columns)) or any(not finite_number(value) for value in values or []):
+            diagnostics.append(DrawingDiagnostic("ERROR", "HM005", "row values must be finite numbers matching the column count", str(item.get("id"))))
+        if item.get("emphasis") is not None and item.get("emphasis") not in {"focal", "normal"}:
+            diagnostics.append(DrawingDiagnostic("ERROR", "HM006", "emphasis must be focal or normal", str(item.get("id"))))
+    for name in ("x_axis", "y_axis"):
+        axis = payload.get(name)
+        if not isinstance(axis, dict):
+            diagnostics.append(DrawingDiagnostic("ERROR", "HM007", f"{name} must be an object"))
+            continue
+        for field in sorted(set(axis) - {"label", "unit"}):
+            diagnostics.append(DrawingDiagnostic("ERROR", "HM007", f"{name} has unknown field: {field}"))
+        if not isinstance(axis.get("label"), str) or not axis.get("label", "").strip():
+            diagnostics.append(DrawingDiagnostic("ERROR", "HM007", f"{name}.label must be a non-empty string"))
+        if axis.get("unit") is not None and (not isinstance(axis["unit"], str) or len(axis["unit"]) > 12):
+            diagnostics.append(DrawingDiagnostic("ERROR", "HM007", f"{name}.unit must be a string of at most 12 characters"))
+    focus = payload.get("focus")
+    if focus is not None and focus not in row_ids:
+        diagnostics.append(DrawingDiagnostic("ERROR", "HM008", "focus must reference a known row id"))
+        focus = None
+    focal = [str(item["id"]) for item in rows if item.get("emphasis") == "focal"]
+    if focus and focus not in focal:
+        focal.append(str(focus))
+    if len(focal) > 1:
+        diagnostics.append(DrawingDiagnostic("ERROR", "HM009", "heatmap supports at most one focal row", ",".join(focal)))
+    require_no_errors("schema", diagnostics)
+
+    width, height = dimensions(payload)
+    labels = [str(item["label"]) for item in rows] + [str(value) for value in columns]
+    locale = payload.get("locale") or ("zh-CN" if infer_language(payload["title"], labels) == "zh" else "en-US")
+    language = infer_language(payload["title"], labels, payload.get("language"))
+    scale = nice_scale(
+        (float(value) for item in rows for value in item["values"]),
+        include_zero=False, unit=payload.get("unit"), tick_count=5,
+    )
+    semantic = DataSemantic("heatmap", payload["title"], tuple(rows), language, locale, payload.get("source"))
+    plan = HeatmapPlan(
+        "heatmap", payload["title"], tuple(str(value) for value in columns), tuple(rows),
+        dict(payload["x_axis"]), dict(payload["y_axis"]), scale, focal[0] if focal else None,
+        _value_format(payload), width, height, language, locale,
+    )
+    layout = _layout_heatmap(plan)
+    scene = _resolve_heatmap(plan, layout, payload.get("source"))
+    scene_diagnostics = validate_resolved_scene(scene)
+    return semantic, plan, layout, scene, tuple([*diagnostics, *scene_diagnostics])
+
+
+def _layout_heatmap(plan: HeatmapPlan) -> ChartLayout:
+    plot = HEATMAP_PLOT
+    cell_w = _cell_span(plot.w, len(plan.columns), HEATMAP_MAX_CELL_W)
+    cell_h = _cell_span(plot.h, len(plan.rows), HEATMAP_MAX_CELL_H)
+    grid_w = cell_w * len(plan.columns)
+    grid_h = cell_h * len(plan.rows)
+    origin_x = _grid(plot.x + (plot.w - grid_w) / 2)
+    origin_y = _grid(plot.y + (plot.h - grid_h) / 2)
+    label_x = origin_x - 16
+    marks: dict[str, Any] = {}
+    for row_index, item in enumerate(plan.rows):
+        top = origin_y + row_index * cell_h
+        marks[str(item["id"])] = {
+            "boxes": tuple(
+                SceneBox(origin_x + column_index * cell_w, top, cell_w, cell_h)
+                for column_index in range(len(plan.columns))
+            ),
+            "row_center": top + cell_h // 2,
+            "label_x": label_x,
+        }
+    positions = tuple(origin_x + column_index * cell_w + cell_w // 2 for column_index in range(len(plan.columns)))
+    return ChartLayout(plot, plan.scale, marks, positions)
+
+
+def _resolve_heatmap(plan: HeatmapPlan, layout: ChartLayout, source: str | None) -> ResolvedScene:
+    theme = DEFAULT_FOLIO_THEME
+    ramp = _heatmap_ramp(theme)
+    boxes = [box for mark in layout.marks.values() for box in mark["boxes"]]
+    grid_top = min(box.y for box in boxes)
+    grid_bottom = max(box.y + box.h for box in boxes)
+    grid_left = min(box.x for box in boxes)
+    grid_right = max(box.x + box.w for box in boxes)
+    label_x = layout.marks[str(plan.rows[0]["id"])]["label_x"]
+    label_width = max(96, label_x - HEATMAP_LABEL_X)
+    primitives: list[object] = []
+    for index, label in enumerate(plan.columns):
+        text = wrap_text(label, max(16, layout.marks[str(plan.rows[0]["id"])]["boxes"][0].w - 4), 8, theme.mono, max_lines=1)[0]
+        primitives.append(SceneText(text, layout.x_positions[index], grid_top - 12, theme.stone, 8, theme.mono, "middle"))
+    primitives.append(SceneText(str(plan.y_axis["label"]), HEATMAP_LABEL_X, grid_top - 32, theme.olive, 9, theme.serif))
+    primitives.append(SceneText(str(plan.x_axis["label"]), (grid_left + grid_right) // 2, grid_bottom + 40, theme.olive, 9, theme.serif, "middle"))
+    reading: list[str] = []
+    for item in plan.rows:
+        row_id = str(item["id"])
+        mark = layout.marks[row_id]
+        focal = row_id == plan.focus_series
+        children: list[object] = []
+        for index, value in enumerate(item["values"]):
+            bucket = _heatmap_bucket(float(value), plan.scale)
+            style = (
+                SceneStyle(theme.brand, theme.parchment, 1, fill_opacity=HEATMAP_FOCAL_OPACITY[bucket])
+                if focal else SceneStyle(ramp[bucket], theme.parchment, 1)
+            )
+            children.append(SceneRect(f"segment:{row_id}:{index}", mark["boxes"][index], style))
+        label_lines = wrap_text(str(item["label"]), label_width, 10, theme.serif, max_lines=1)
+        children.append(SceneText(
+            label_lines[0], mark["label_x"], mark["row_center"] + 4,
+            theme.brand if focal else theme.near_black, 10, theme.serif, "end",
+        ))
+        primitives.append(SceneGroup(row_id, tuple(children)))
+        reading.append(row_id)
+    legend_top = _grid(HEATMAP_PLOT.y + (HEATMAP_PLOT.h - HEATMAP_RAMP_STEPS * 20 + 4) / 2)
+    primitives.append(SceneText("INTENSITY", HEATMAP_LEGEND_X, legend_top - 12, theme.stone, 8, theme.mono))
+    for index in range(HEATMAP_RAMP_STEPS):
+        top = legend_top + (HEATMAP_RAMP_STEPS - 1 - index) * 20
+        primitives.append(SceneRect(f"legend-step:{index}", SceneBox(HEATMAP_LEGEND_X, top, 16, 16), SceneStyle(ramp[index], theme.parchment, 1)))
+        if index in (0, HEATMAP_RAMP_STEPS - 1):
+            bound = plan.scale.domain_max if index == HEATMAP_RAMP_STEPS - 1 else plan.scale.domain_min
+            primitives.append(SceneText(
+                _format(bound, plan.scale.unit, plan.locale, plan.value_format),
+                HEATMAP_LEGEND_VALUE_X, top + 12, theme.stone, 8, theme.mono,
+            ))
+    if source:
+        primitives.append(SceneText(f"Source: {source}", HEATMAP_LABEL_X, 508, theme.stone, 8, theme.mono))
+    description = f"Heatmap {plan.title}. {plan.x_axis['label']}: " + ", ".join(plan.columns) + ". " + "; ".join(
+        f"{item['label']}: " + ", ".join(
+            f"{plan.columns[index]} {_format(float(value), plan.scale.unit, plan.locale, plan.value_format)}"
+            for index, value in enumerate(item["values"])
+        )
+        for item in plan.rows
+    ) + (f". Source: {source}" if source else "")
+    return ResolvedScene(
+        plan.width, plan.height, theme.parchment, _title(plan.title, plan.width), (), (), (),
+        description=description, language=plan.language, reading_order=tuple(reading), primitives=tuple(primitives),
+    )

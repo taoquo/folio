@@ -14,6 +14,7 @@ from .dataviz import (
     compile_candlestick_payload,
     compile_donut_payload,
     compile_gantt_payload,
+    compile_heatmap_payload,
     compile_line_payload,
     compile_scatter_payload,
     compile_waterfall_payload,
@@ -341,6 +342,7 @@ DEFAULT_COMPILER_REGISTRY.register("candlestick", lambda payload: _dataviz(paylo
 DEFAULT_COMPILER_REGISTRY.register("waterfall", lambda payload: _dataviz(payload, compile_waterfall_payload))
 DEFAULT_COMPILER_REGISTRY.register("scatter", lambda payload: _dataviz(payload, compile_scatter_payload))
 DEFAULT_COMPILER_REGISTRY.register("gantt", lambda payload: _dataviz(payload, compile_gantt_payload))
+DEFAULT_COMPILER_REGISTRY.register("heatmap", lambda payload: _dataviz(payload, compile_heatmap_payload))
 DEFAULT_COMPILER_REGISTRY.register("sequence", lambda payload: _notation(payload, compile_sequence_payload))
 DEFAULT_COMPILER_REGISTRY.register("uml-class", lambda payload: _notation(payload, compile_uml_class_payload))
 DEFAULT_COMPILER_REGISTRY.register("er-diagram", lambda payload: _notation(payload, compile_er_payload))

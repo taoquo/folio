@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://folio.local/schemas/drawing-payload-v3.schema.json",
   "title": "Folio Drawing DSL V3 Type Payloads",
-  "description": "Published top-level contract for the twenty V3 grammar payloads. Runtime compilers enforce notation and numerical invariants.",
+  "description": "Published top-level contract for the twenty-one V3 grammar payloads. Runtime compilers enforce notation and numerical invariants.",
   "oneOf": [
     {"$ref": "#/$defs/state-machine"},
     {"$ref": "#/$defs/swimlane"},
@@ -21,6 +21,7 @@
     {"$ref": "#/$defs/waterfall"},
     {"$ref": "#/$defs/scatter"},
     {"$ref": "#/$defs/gantt"},
+    {"$ref": "#/$defs/heatmap"},
     {"$ref": "#/$defs/sequence"},
     {"$ref": "#/$defs/uml-class"},
     {"$ref": "#/$defs/er-diagram"}
@@ -216,6 +217,19 @@
         "schema_version": {"const": "3.0"}, "kind": {"const": "gantt"}, "title": {"$ref": "#/$defs/title"},
         "periods": {"type": "array", "items": {"type": "string", "minLength": 1}},
         "tasks": {"$ref": "#/$defs/object-array"}, "milestones": {"$ref": "#/$defs/object-array"},
+        "focus": {"type": ["string", "null"]}, "unit": {"type": ["string", "null"]}, "locale": {"type": "string"},
+        "source": {"type": ["string", "null"]}, "value_format": {"$ref": "#/$defs/value-format"},
+        "width": {"const": 960}, "height": {"const": 540}, "language": {"type": "string"}
+      }
+    },
+    "heatmap": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "kind", "title", "columns", "rows", "x_axis", "y_axis"],
+      "properties": {
+        "schema_version": {"const": "3.0"}, "kind": {"const": "heatmap"}, "title": {"$ref": "#/$defs/title"},
+        "columns": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "rows": {"$ref": "#/$defs/object-array"},
+        "x_axis": {"type": "object"}, "y_axis": {"type": "object"},
         "focus": {"type": ["string", "null"]}, "unit": {"type": ["string", "null"]}, "locale": {"type": "string"},
         "source": {"type": ["string", "null"]}, "value_format": {"$ref": "#/$defs/value-format"},
         "width": {"const": 960}, "height": {"const": 540}, "language": {"type": "string"}

@@ -107,7 +107,7 @@ class AudienceKnobTests(TestCase):
 class KnobMatrixTests(TestCase):
     def test_every_catalog_type_compiles_clean_under_all_knob_combinations(self):
         catalog = _load("references/fixtures/diagram-catalog.json")
-        self.assertEqual(22, len(catalog["diagrams"]))
+        self.assertEqual(23, len(catalog["diagrams"]))
         for item in catalog["diagrams"]:
             payload = _load(item["source"])
             for detail in OUTPUT_DETAIL_NAMES:

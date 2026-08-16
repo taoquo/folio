@@ -204,6 +204,8 @@ def _select_kind(pattern: str, request: RouteRequest) -> tuple[str, str]:
             return "layer-stack", "shallow stack without cross links"
         return "tree", "parent-child breakdown"
     if pattern == "comparison":
+        if said("heatmap", "heat map", "matrix", "density", "热力图", "矩阵", "热度"):
+            return "heatmap", "one measure graded across two categorical axes"
         if shape.numeric and shape.category_count >= 2:
             return "bar-chart", "numeric magnitudes across categories"
         if shape.node_count and shape.node_count <= 3:

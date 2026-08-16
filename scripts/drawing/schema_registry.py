@@ -69,6 +69,7 @@ SCHEMA_CONTRACTS: dict[str, DiagramSchemaContract] = {
         _contract("waterfall", "references/fixtures/v3/waterfall.json", "3.0"),
         _contract("scatter", "references/fixtures/v5/scatter.json", "3.0"),
         _contract("gantt", "references/fixtures/v5/gantt.json", "3.0"),
+        _contract("heatmap", "references/fixtures/v5/heatmap.json", "3.0"),
         _contract("sequence", "references/fixtures/v4/sequence.json", "3.0"),
         _contract("uml-class", "references/fixtures/v4/uml-class.json", "3.0"),
         _contract("er-diagram", "references/fixtures/v4/er-diagram.json", "3.0"),
