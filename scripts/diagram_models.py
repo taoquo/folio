@@ -153,6 +153,20 @@ def _require(value: Any, message: str) -> Any:
     return value
 
 
+def _require_text(value: Any, message: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(message)
+    return value
+
+
+def _spec_text(item: dict[str, Any], context: str, field_name: str) -> str:
+    return _require_text(item.get(field_name), f"{context} {field_name} must be a non-empty string")
+
+
+def _spec_optional_text(item: dict[str, Any], context: str, field_name: str) -> str | None:
+    return None if item.get(field_name) is None else _spec_text(item, context, field_name)
+
+
 def _require_object(value: Any, context: str, allowed: set[str]) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ValueError(f"{context} must be an object")
@@ -184,9 +198,9 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
 
     layers = [
         LayerSpec(
-            id=item["id"],
-            label=item["label"],
-            purpose=item.get("purpose"),
+            id=_spec_text(item, "architecture layer", "id"),
+            label=_spec_text(item, "architecture layer", "label"),
+            purpose=_spec_optional_text(item, "architecture layer", "purpose"),
             order=item.get("order"),
             row_policy=item.get("row_policy"),
         )
@@ -198,17 +212,19 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
             raise ValueError(f"unsupported architecture row_policy: {layer.row_policy}")
     groups = [
         GroupSpec(
-            id=item["id"],
-            label=item["label"],
-            kind=item["kind"],
-            layer=item.get("layer"),
+            id=_spec_text(item, "architecture group", "id"),
+            label=_spec_text(item, "architecture group", "label"),
+            kind=_spec_text(item, "architecture group", "kind"),
+            layer=_spec_optional_text(item, "architecture group", "layer"),
             members=list(item.get("members", [])),
             layout_policy=item.get("layout_policy"),
-            side_label=item.get("side_label"),
-            summary=item.get("summary"),
+            side_label=_spec_optional_text(item, "architecture group", "side_label"),
+            summary=_spec_optional_text(item, "architecture group", "summary"),
         )
         for raw_item in payload.get("groups", [])
-        for item in [_require_object(raw_item, "architecture group", {"id", "label", "kind", "layer", "members", "layout_policy", "side_label", "summary"})]
+        for item in [_require_object(raw_item, "architecture group", {
+            "id", "label", "kind", "layer", "members", "layout_policy", "side_label", "summary",
+        })]
     ]
     for group in groups:
         if group.layout_policy is not None and group.layout_policy not in ARCHITECTURE_GROUP_LAYOUT_POLICIES:
@@ -230,14 +246,14 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
             raise ValueError(f"unsupported architecture lifecycle_phase: {lifecycle_phase}")
         nodes.append(
             ArchitectureNodeSpec(
-                id=item["id"],
+                id=_spec_text(item, "architecture node", "id"),
                 kind=kind,
-                label=item["label"],
-                layer=item.get("layer"),
-                sublabel=item.get("sublabel"),
-                role=item.get("role"),
-                group=item.get("group"),
-                description=item.get("description"),
+                label=_spec_text(item, "architecture node", "label"),
+                layer=_spec_optional_text(item, "architecture node", "layer"),
+                sublabel=_spec_optional_text(item, "architecture node", "sublabel"),
+                role=_spec_optional_text(item, "architecture node", "role"),
+                group=_spec_optional_text(item, "architecture node", "group"),
+                description=_spec_optional_text(item, "architecture node", "description"),
                 importance=importance,
                 state_owner=item.get("state_owner"),
                 lifecycle_phase=lifecycle_phase,
@@ -255,18 +271,18 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
             raise ValueError(f"unsupported architecture edge kind: {kind}")
         edges.append(
             ArchitectureEdgeSpec(
-                source=item["source"],
-                target=item["target"],
+                source=_spec_text(item, "architecture edge", "source"),
+                target=_spec_text(item, "architecture edge", "target"),
                 kind=kind,
-                label=item.get("label"),
-                flow=item.get("flow"),
-                interaction=item.get("interaction"),
-                priority=item.get("priority"),
+                label=_spec_optional_text(item, "architecture edge", "label"),
+                flow=_spec_optional_text(item, "architecture edge", "flow"),
+                interaction=_spec_optional_text(item, "architecture edge", "interaction"),
+                priority=_spec_optional_text(item, "architecture edge", "priority"),
                 dashed=bool(item.get("dashed", False)),
-                source_port=item.get("source_port"),
-                target_port=item.get("target_port"),
-                route_hint=item.get("route_hint"),
-                phase=item.get("phase"),
+                source_port=_spec_optional_text(item, "architecture edge", "source_port"),
+                target_port=_spec_optional_text(item, "architecture edge", "target_port"),
+                route_hint=_spec_optional_text(item, "architecture edge", "route_hint"),
+                phase=_spec_optional_text(item, "architecture edge", "phase"),
             )
         )
 
@@ -274,20 +290,21 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
     for raw_item in payload.get("legend", []):
         item = raw_item
         if isinstance(item, str):
-            legend.append(LegendItemSpec(flow="unspecified", label=item))
+            label = _require_text(item, "architecture legend item label must be a non-empty string")
+            legend.append(LegendItemSpec(flow="unspecified", label=label))
         else:
             item = _require_object(item, "architecture legend item", {"flow", "label", "reason"})
             legend.append(
                 LegendItemSpec(
-                    flow=item["flow"],
-                    label=item["label"],
-                    reason=item.get("reason"),
+                    flow=_spec_text(item, "architecture legend item", "flow"),
+                    label=_spec_text(item, "architecture legend item", "label"),
+                    reason=_spec_optional_text(item, "architecture legend item", "reason"),
                 )
             )
 
     return ArchitectureDiagramSpec(
         kind="architecture",
-        title=_require(payload.get("title"), "diagram title is required"),
+        title=_require_text(payload.get("title"), "diagram title is required"),
         layout=layout,
         width=int(payload.get("width", 960)),
         height=int(payload.get("height", 540)),

@@ -1,5 +1,6 @@
 import importlib.util
 import sys
+from copy import deepcopy
 from pathlib import Path
 from unittest import TestCase
 
@@ -208,3 +209,74 @@ class DiagramModelTests(TestCase):
         self.assertEqual("control", spec.edges[0].flow)
         self.assertEqual("schedules", spec.edges[0].interaction)
         self.assertEqual("Main runtime flow", spec.legend[0].label)
+
+    def test_reject_blank_architecture_strings(self) -> None:
+        payload = {
+            "kind": "architecture",
+            "title": "Blank Guard",
+            "layout": "horizontal-layers",
+            "layers": [{"id": "runtime", "label": "Runtime", "purpose": "Frame execution"}],
+            "groups": [
+                {"id": "loop", "label": "Loop", "kind": "runtime-loop", "layer": "runtime", "summary": "Tick path"}
+            ],
+            "nodes": [
+                {
+                    "id": "world",
+                    "kind": "service",
+                    "label": "World",
+                    "layer": "runtime",
+                    "sublabel": "state owner",
+                    "role": "world",
+                    "group": "loop",
+                }
+            ],
+            "edges": [
+                {"source": "world", "target": "world", "kind": "primary", "label": "tick", "flow": "control"}
+            ],
+            "legend": [{"flow": "control", "label": "Main flow", "reason": "Frame loop"}],
+        }
+        self.assertEqual("architecture", models.load_diagram_spec(deepcopy(payload)).kind)
+
+        blank_paths = (
+            ("title",),
+            ("layers", 0, "id"),
+            ("layers", 0, "label"),
+            ("layers", 0, "purpose"),
+            ("groups", 0, "label"),
+            ("groups", 0, "kind"),
+            ("groups", 0, "summary"),
+            ("nodes", 0, "id"),
+            ("nodes", 0, "label"),
+            ("nodes", 0, "layer"),
+            ("nodes", 0, "sublabel"),
+            ("nodes", 0, "role"),
+            ("edges", 0, "source"),
+            ("edges", 0, "label"),
+            ("edges", 0, "flow"),
+            ("legend", 0, "flow"),
+            ("legend", 0, "label"),
+            ("legend", 0, "reason"),
+        )
+        for path in blank_paths:
+            for blank in ("", "   "):
+                with self.subTest(path=path, blank=repr(blank)):
+                    mutated = deepcopy(payload)
+                    target = mutated
+                    for key in path[:-1]:
+                        target = target[key]
+                    target[path[-1]] = blank
+                    with self.assertRaises(ValueError):
+                        models.load_diagram_spec(mutated)
+
+    def test_reject_blank_architecture_string_legend_entry(self) -> None:
+        payload = {
+            "kind": "architecture",
+            "title": "Blank Legend",
+            "layout": "horizontal-layers",
+            "nodes": [{"id": "world", "kind": "service", "label": "World"}],
+            "edges": [],
+            "legend": ["  "],
+        }
+
+        with self.assertRaisesRegex(ValueError, "legend item label must be a non-empty string"):
+            models.load_diagram_spec(payload)
