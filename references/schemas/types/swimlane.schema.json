@@ -18,9 +18,10 @@
     "focus_path": {"type": "array", "items": {"$ref": "#/$defs/non-empty-string"}, "uniqueItems": true},
     "width": {"const": 960},
     "height": {"type": "integer", "minimum": 500, "maximum": 800, "multipleOf": 4},
-    "language": {"$ref": "#/$defs/non-empty-string"}
+    "language": {"$ref": "#/$defs/nullable-string"}
   },
   "$defs": {
+    "nullable-string": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/non-empty-string"}]},
     "non-empty-string": {"type": "string", "pattern": ".*\\S.*"},
     "lane": {
       "type": "object", "additionalProperties": false, "required": ["id", "label"],

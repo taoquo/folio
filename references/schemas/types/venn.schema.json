@@ -12,9 +12,10 @@
     "intersections": {"type": "array", "items": {"$ref": "#/$defs/intersection"}},
     "focus": {"type": "array", "maxItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/non-empty-string"}},
     "width": {"const": 960}, "height": {"type": "integer", "minimum": 500, "maximum": 800, "multipleOf": 4},
-    "language": {"$ref": "#/$defs/non-empty-string"}
+    "language": {"$ref": "#/$defs/nullable-string"}
   },
   "$defs": {
+    "nullable-string": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/non-empty-string"}]},
     "non-empty-string": {"type": "string", "pattern": ".*\\S.*"},
     "string-list": {"type": "array", "items": {"$ref": "#/$defs/non-empty-string"}},
     "set": {

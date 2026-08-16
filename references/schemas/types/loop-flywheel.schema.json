@@ -20,9 +20,7 @@
     "title": {
       "$ref": "#/$defs/non-empty-string"
     },
-    "hub": {
-      "$ref": "#/$defs/non-empty-string"
-    },
+    "hub": {"$ref": "#/$defs/nullable-string"},
     "stages": {
       "type": "array",
       "minItems": 3,
@@ -31,9 +29,7 @@
         "$ref": "#/$defs/stage"
       }
     },
-    "focus": {
-      "$ref": "#/$defs/non-empty-string"
-    },
+    "focus": {"$ref": "#/$defs/nullable-string"},
     "width": {
       "const": 960
     },
@@ -43,11 +39,10 @@
       "maximum": 800,
       "multipleOf": 4
     },
-    "language": {
-      "$ref": "#/$defs/non-empty-string"
-    }
+    "language": {"$ref": "#/$defs/nullable-string"}
   },
   "$defs": {
+    "nullable-string": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/non-empty-string"}]},
     "non-empty-string": {
       "type": "string",
       "pattern": ".*\\S.*"

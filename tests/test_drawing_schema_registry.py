@@ -12,6 +12,24 @@ from drawing.compiler import DEFAULT_COMPILER_REGISTRY
 from drawing.schema_registry import list_schema_contracts, schema_contract
 
 
+def _schema_allows_null(schema: dict, node: object) -> bool:
+    """Resolve local refs and unions to decide whether a property may be null."""
+    if not isinstance(node, dict):
+        return False
+    ref = node.get("$ref")
+    if ref:
+        return _schema_allows_null(schema, schema.get("$defs", {}).get(ref.rsplit("/", 1)[-1], {}))
+    for key in ("oneOf", "anyOf"):
+        if key in node:
+            return any(_schema_allows_null(schema, item) for item in node[key])
+    if "enum" in node:
+        return None in node["enum"]
+    declared = node.get("type")
+    if isinstance(declared, list):
+        return "null" in declared
+    return declared == "null"
+
+
 class DrawingSchemaRegistryTests(TestCase):
     def test_schema_registry_matches_compiler_registry(self) -> None:
         contracts = list_schema_contracts()
@@ -144,3 +162,23 @@ class DrawingSchemaRegistryTests(TestCase):
                     DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
                 self.assertTrue(context.exception.diagnostics)
                 self.assertTrue(all(item.code for item in context.exception.diagnostics))
+
+    def test_optional_field_nullability_matches_the_runtime(self) -> None:
+        from drawing.validation import DrawingCompilationError
+
+        for contract in list_schema_contracts():
+            schema = contract.load_schema()
+            required = set(schema.get("required", []))
+            base = contract.load_minimal_payload()
+            for name, node in sorted(schema.get("properties", {}).items()):
+                if name in required:
+                    continue
+                with self.subTest(kind=contract.kind, field=name):
+                    payload = deepcopy(base)
+                    payload[name] = None
+                    try:
+                        DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
+                        accepted = True
+                    except DrawingCompilationError:
+                        accepted = False
+                    self.assertEqual(_schema_allows_null(schema, node), accepted)

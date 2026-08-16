@@ -11,9 +11,10 @@
     "events": {"type": "array", "minItems": 3, "maxItems": 10, "items": {"$ref": "#/$defs/event"}},
     "scale": {"enum": ["temporal", "ordinal"]}, "focus": {"type": ["string", "null"]},
     "width": {"const": 960}, "height": {"type": "integer", "minimum": 500, "maximum": 800, "multipleOf": 4},
-    "language": {"$ref": "#/$defs/non-empty-string"}
+    "language": {"$ref": "#/$defs/nullable-string"}
   },
   "$defs": {
+    "nullable-string": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/non-empty-string"}]},
     "non-empty-string": {"type": "string", "pattern": ".*\\S.*"},
     "event": {
       "type": "object", "additionalProperties": false, "required": ["id", "date", "label"],

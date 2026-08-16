@@ -12,7 +12,7 @@
     "layout": {"enum": ["horizontal-layers", "vertical-stack", "hub-and-spoke"]},
     "width": {"const": 960},
     "height": {"type": "integer", "minimum": 500, "maximum": 800, "multipleOf": 4},
-    "language": {"$ref": "#/$defs/non-empty-string"},
+    "language": {"$ref": "#/$defs/nullable-string"},
     "subtitle": {"$ref": "#/$defs/nullable-string"},
     "caption": {"$ref": "#/$defs/nullable-string"},
     "focus": {"$ref": "#/$defs/nullable-string"},

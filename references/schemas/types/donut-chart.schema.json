@@ -15,13 +15,14 @@
     "value_format": {"$ref": "#/$defs/value-format"},
     "segments": {"type": "array", "minItems": 2, "maxItems": 6, "items": {"$ref": "#/$defs/segment"}},
     "focus_segment": {"type": ["string", "null"]},
-    "percent_total": {"type": "boolean"},
+    "percent_total": {"type": ["boolean", "null"]},
     "tolerance": {"type": "number", "minimum": 0},
     "width": {"const": 960},
     "height": {"type": "integer", "minimum": 400, "maximum": 720, "multipleOf": 4},
-    "language": {"$ref": "#/$defs/non-empty-string"}
+    "language": {"$ref": "#/$defs/nullable-string"}
   },
   "$defs": {
+    "nullable-string": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/non-empty-string"}]},
     "non-empty-string": {"type": "string", "pattern": ".*\\S.*", "maxLength": 64},
     "value-format": {
       "type": "object", "additionalProperties": false,

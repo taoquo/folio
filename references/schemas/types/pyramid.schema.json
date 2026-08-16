@@ -34,9 +34,7 @@
         "$ref": "#/$defs/level"
       }
     },
-    "focus": {
-      "$ref": "#/$defs/non-empty-string"
-    },
+    "focus": {"$ref": "#/$defs/nullable-string"},
     "width": {
       "const": 960
     },
@@ -46,11 +44,10 @@
       "maximum": 800,
       "multipleOf": 4
     },
-    "language": {
-      "$ref": "#/$defs/non-empty-string"
-    }
+    "language": {"$ref": "#/$defs/nullable-string"}
   },
   "$defs": {
+    "nullable-string": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/non-empty-string"}]},
     "non-empty-string": {
       "type": "string",
       "pattern": ".*\\S.*"

@@ -44,25 +44,10 @@
         "$ref": "#/$defs/milestone"
       }
     },
-    "focus": {
-      "$ref": "#/$defs/non-empty-string"
-    },
-    "unit": {
-      "type": "string",
-      "maxLength": 12
-    },
-    "locale": {
-      "enum": [
-        "en-US",
-        "en-GB",
-        "zh-CN",
-        "zh-TW"
-      ]
-    },
-    "source": {
-      "type": "string",
-      "maxLength": 256
-    },
+    "focus": {"$ref": "#/$defs/nullable-string"},
+    "unit": {"type": ["string", "null"], "maxLength": 12},
+    "locale": {"enum": ["en-US", "en-GB", "zh-CN", "zh-TW", null]},
+    "source": {"type": ["string", "null"], "maxLength": 256},
     "value_format": {
       "type": "object",
       "additionalProperties": false,
@@ -91,11 +76,10 @@
       "const": 960
     },
     "height": {"type": "integer", "minimum": 400, "maximum": 720, "multipleOf": 4},
-    "language": {
-      "$ref": "#/$defs/non-empty-string"
-    }
+    "language": {"$ref": "#/$defs/nullable-string"}
   },
   "$defs": {
+    "nullable-string": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/non-empty-string"}]},
     "non-empty-string": {
       "type": "string",
       "pattern": ".*\\S.*"

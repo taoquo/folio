@@ -107,6 +107,8 @@ The authoritative type schemas live in `references/schemas/types/`. JSON Schema 
 
 Architecture semantic input is version `3.0`; legacy unversioned semantic payloads migrate deterministically to `3.0`. Expert-authored Architecture `DrawingPlan` input remains on its compatible `2.0` contract. Flowchart remains on input version `2.0`. All other current registered inputs use `3.0`.
 
+An explicit `null` on an optional field means the same thing as omitting it, so every optional property accepts `null` in both the schema and the compiler. A blank or non-string value is still rejected. `tests/test_drawing_schema_registry.py` cross-checks the two sides for every optional field of every kind, so the schema can no longer drift from the runtime.
+
 ### Canvas contract
 
 Every payload declares the same 960-unit stage width, and `height` is the only canvas knob. The bounds come from one shared module, `scripts/drawing/canvas_contract.py`, so a family cannot quietly introduce its own floor.

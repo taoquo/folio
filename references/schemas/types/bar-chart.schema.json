@@ -30,7 +30,7 @@
     },
     "width": {"const": 960},
     "height": {"type": "integer", "minimum": 400, "maximum": 720, "multipleOf": 4},
-    "language": {"$ref": "#/$defs/non-empty-string"}
+    "language": {"$ref": "#/$defs/nullable-string"}
   },
   "allOf": [
     {
@@ -39,6 +39,7 @@
     }
   ],
   "$defs": {
+    "nullable-string": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/non-empty-string"}]},
     "non-empty-string": {"type": "string", "pattern": ".*\\S.*", "maxLength": 64},
     "value-format": {
       "type": "object", "additionalProperties": false,
