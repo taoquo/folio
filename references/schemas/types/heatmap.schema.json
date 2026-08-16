@@ -29,7 +29,7 @@
       "maxItems": 12,
       "items": {
         "type": "string",
-        "minLength": 1,
+        "pattern": ".*\\S.*",
         "maxLength": 12
       }
     },
@@ -101,7 +101,7 @@
   "$defs": {
     "non-empty-string": {
       "type": "string",
-      "minLength": 1
+      "pattern": ".*\\S.*"
     },
     "axis": {
       "type": "object",

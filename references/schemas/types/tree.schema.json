@@ -17,7 +17,7 @@
     "language": {"$ref": "#/$defs/non-empty-string"}
   },
   "$defs": {
-    "non-empty-string": {"type": "string", "minLength": 1},
+    "non-empty-string": {"type": "string", "pattern": ".*\\S.*"},
     "node": {
       "type": "object", "additionalProperties": false, "required": ["id", "label"],
       "properties": {

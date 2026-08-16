@@ -90,7 +90,7 @@
   "$defs": {
     "non-empty-string": {
       "type": "string",
-      "minLength": 1
+      "pattern": ".*\\S.*"
     },
     "axis": {
       "type": "object",

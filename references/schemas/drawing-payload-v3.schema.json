@@ -27,7 +27,7 @@
     {"$ref": "#/$defs/er-diagram"}
   ],
   "$defs": {
-    "title": {"type": "string", "minLength": 1},
+    "title": {"type": "string", "pattern": ".*\\S.*"},
     "graph-height": {"type": "integer", "minimum": 500, "maximum": 800, "multipleOf": 4},
     "canvas-width": {"const": 960},
     "chart-height": {"type": "integer", "minimum": 400, "maximum": 720, "multipleOf": 4},
@@ -218,7 +218,7 @@
       "required": ["schema_version", "kind", "title", "periods", "tasks"],
       "properties": {
         "schema_version": {"const": "3.0"}, "kind": {"const": "gantt"}, "title": {"$ref": "#/$defs/title"},
-        "periods": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "periods": {"type": "array", "items": {"type": "string", "pattern": ".*\\S.*"}},
         "tasks": {"$ref": "#/$defs/object-array"}, "milestones": {"$ref": "#/$defs/object-array"},
         "focus": {"type": ["string", "null"]}, "unit": {"type": ["string", "null"]}, "locale": {"type": "string"},
         "source": {"type": ["string", "null"]}, "value_format": {"$ref": "#/$defs/value-format"},
@@ -230,7 +230,7 @@
       "required": ["schema_version", "kind", "title", "columns", "rows", "x_axis", "y_axis"],
       "properties": {
         "schema_version": {"const": "3.0"}, "kind": {"const": "heatmap"}, "title": {"$ref": "#/$defs/title"},
-        "columns": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "columns": {"type": "array", "items": {"type": "string", "pattern": ".*\\S.*"}},
         "rows": {"$ref": "#/$defs/object-array"},
         "x_axis": {"type": "object"}, "y_axis": {"type": "object"},
         "focus": {"type": ["string", "null"]}, "unit": {"type": ["string", "null"]}, "locale": {"type": "string"},
