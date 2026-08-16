@@ -182,3 +182,21 @@ class DrawingSchemaRegistryTests(TestCase):
                     except DrawingCompilationError:
                         accepted = False
                     self.assertEqual(_schema_allows_null(schema, node), accepted)
+
+    def test_required_fields_are_rejected_when_missing(self) -> None:
+        from drawing.validation import DrawingCompilationError
+
+        # architecture schema_version keeps a legacy backfill, covered by the migration test above.
+        exempt = {("architecture", "schema_version")}
+        for contract in list_schema_contracts():
+            schema = contract.load_schema()
+            base = contract.load_minimal_payload()
+            for name in sorted(set(schema.get("required", [])) - {"kind"}):
+                if (contract.kind, name) in exempt:
+                    continue
+                with self.subTest(kind=contract.kind, field=name):
+                    payload = deepcopy(base)
+                    self.assertIn(name, payload)
+                    payload.pop(name)
+                    with self.assertRaises(DrawingCompilationError):
+                        DEFAULT_COMPILER_REGISTRY.compile_payload(payload)

@@ -183,6 +183,9 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
     })
     if payload.get("schema_version", "3.0") != "3.0":
         raise ValueError("architecture semantic schema_version must be 3.0")
+    for name in ("nodes", "edges"):
+        if name not in payload:
+            raise ValueError(f"architecture {name} is required")
     layout = _require(payload.get("layout"), "architecture layout is required")
     if layout not in ARCHITECTURE_LAYOUTS:
         raise ValueError(f"unsupported architecture layout: {layout}")

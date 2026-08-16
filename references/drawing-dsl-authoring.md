@@ -109,6 +109,8 @@ Architecture semantic input is version `3.0`; legacy unversioned semantic payloa
 
 An explicit `null` on an optional field means the same thing as omitting it, so every optional property accepts `null` in both the schema and the compiler. A blank or non-string value is still rejected. `tests/test_drawing_schema_registry.py` cross-checks the two sides for every optional field of every kind, so the schema can no longer drift from the runtime.
 
+A missing required field is rejected by both sides as well, with one deliberate exception: Architecture backfills `schema_version` for legacy unversioned semantic payloads. The same registry test asserts the rejection for every other required field of every kind.
+
 ### Canvas contract
 
 Every payload declares the same 960-unit stage width, and `height` is the only canvas knob. The bounds come from one shared module, `scripts/drawing/canvas_contract.py`, so a family cannot quietly introduce its own floor.
