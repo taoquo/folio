@@ -1,0 +1,36 @@
+# Folio has no installable Python package. This file only pins the interpreter
+# floor and the lint configuration so local runs match CI.
+
+[project]
+name = "folio"
+version = "6.0.0"
+description = "Folio document design system: templates, diagram DSL, and build tooling"
+readme = "README.md"
+requires-python = ">=3.9"
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
+extend-exclude = [
+    ".font-libs",
+    ".venv-weasy",
+    "node_modules",
+    "scripts/vendor",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+# Long lines are intentional in the SVG renderers and layout tables, where
+# wrapping coordinate math hurts readability more than it helps.
+# B905 needs zip(strict=), which is 3.10+; the interpreter floor here is 3.9.
+ignore = ["E501", "B905"]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests and slide templates must extend sys.path before importing project modules.
+"tests/*" = ["E402"]
+"assets/templates/*" = ["E402"]
+# The overflow fixture table is intentionally written as compact one-line rows.
+"tests/test_drawing_dsl_v3.py" = ["E402", "E701", "E702"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["drawing", "renderers"]

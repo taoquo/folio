@@ -51,4 +51,3 @@ def composite(foreground: str, background: str, opacity: float) -> str:
         return background
     mixed = tuple(round(channel * opacity + base * (1 - opacity)) for channel, base in zip(fg, bg))
     return "#" + "".join(f"{channel:02X}" for channel in mixed)
-

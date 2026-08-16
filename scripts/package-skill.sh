@@ -17,13 +17,21 @@ EXTRA_MANIFEST="$(mktemp)"
 trap 'rm -f "$MANIFEST" "$FILTERED_MANIFEST" "$ZIP_MANIFEST" "$MISSING_MANIFEST" "$EXTRA_MANIFEST"' EXIT
 
 {
-  git ls-files
+  # Only keep tracked paths that still exist on disk. A tracked file can be
+  # deleted or moved in the worktree before the deletion is staged, and the
+  # archive can only ever contain real files.
+  git ls-files | while IFS= read -r tracked; do
+    if [ -f "$tracked" ]; then
+      printf '%s\n' "$tracked"
+    fi
+  done
   for source in \
     assets/diagrams/generated/catalog/png \
     scripts/drawing \
     scripts/renderers \
     scripts/diagram_catalog.py \
     scripts/drawing_host_integration.py \
+    CHANGELOG.md \
     references/decisions \
     references/schemas \
     references/fixtures \
@@ -35,7 +43,9 @@ trap 'rm -f "$MANIFEST" "$FILTERED_MANIFEST" "$ZIP_MANIFEST" "$MISSING_MANIFEST"
     fi
   done
   find references -maxdepth 1 -type f -name 'drawing-*.md'
+  find references/archive -maxdepth 1 -type f -name '*.md'
   find . -maxdepth 1 -type f -name 'RELEASE_NOTES_*.md' -print | sed 's#^\./##'
+  find docs/releases -maxdepth 1 -type f -name 'RELEASE_NOTES_*.md'
 } | LC_ALL=C sort -u > "$MANIFEST"
 awk '
   /^\.font-libs\// { next }
@@ -51,7 +61,9 @@ awk '
   { print }
 ' "$MANIFEST" > "$FILTERED_MANIFEST"
 
-zip -q "$OUT" -@ < "$FILTERED_MANIFEST"
+# -X drops extra file attributes (uid/gid, extended timestamps) so the archive
+# only depends on file contents, names, and the normalized mtime below.
+zip -qX "$OUT" -@ < "$FILTERED_MANIFEST"
 
 zipinfo -1 "$OUT" | sort > "$ZIP_MANIFEST"
 sort "$FILTERED_MANIFEST" -o "$FILTERED_MANIFEST"

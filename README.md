@@ -165,11 +165,11 @@ Run `doctor` first on a new machine. It checks WeasyPrint native libraries, PDF 
 
 **Claude Desktop**
 
-Build or copy `dist/folio.zip`, open Customize > Skills > "+" > Create skill, and upload the ZIP directly.
+Run `bash scripts/package-skill.sh` to build `dist/folio.zip`, then open Customize > Skills > "+" > Create skill and upload the ZIP. The ZIP is a build output, not a tracked file in this repository.
 
 **Generic agents** (Codex, OpenCode, Pi, and other tools that read from `~/.agents/`)
 
-Use the packaged ZIP for a local install now, or publish this repository under your own namespace and install from that destination later.
+Build the ZIP for a local install now, or publish this repository under your own namespace and install from that destination later.
 
 Folio auto-triggers from natural requests. Tell it:
 
@@ -342,6 +342,7 @@ Use the short guide first, then go deeper only when needed.
 - [references/drawing-dsl-authoring.md](references/drawing-dsl-authoring.md): intent-first diagram authoring workflow
 - [references/drawing-dsl-v6-final-audit.md](references/drawing-dsl-v6-final-audit.md): closing audit, gate evidence, and known limits
 - [references/web-foundation.md](references/web-foundation.md): Web guidance foundation for reading pages and product workspaces
+- [CHANGELOG.md](CHANGELOG.md): release highlights with links to the full notes in `docs/releases/`
 
 ## Image Prompting
 

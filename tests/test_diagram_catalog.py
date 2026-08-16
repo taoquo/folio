@@ -134,5 +134,59 @@ class DiagramCatalogTests(TestCase):
             changed["diagrams"][0]["dimensions"]["output"] = [21, 12]
             report = compare_visual_baseline(changed, baseline)
             self.assertFalse(report["passed"])
-            self.assertTrue(any("semantic_ids changed" in issue for issue in report["issues"]))
-            self.assertTrue(any("dimensions changed" in issue for issue in report["issues"]))
+        self.assertTrue(any("semantic_ids changed" in issue for issue in report["issues"]))
+        self.assertTrue(any("dimensions changed" in issue for issue in report["issues"]))
+
+
+def parse_selection_table(path: Path) -> dict[str, str]:
+    lines = path.read_text(encoding="utf-8").splitlines()
+    header_index = next(
+        (
+            index
+            for index, line in enumerate(lines)
+            if line.startswith("|") and "Kind" in line and "Reference payload" in line
+        ),
+        None,
+    )
+    if header_index is None:
+        raise AssertionError(f"no kind/payload selection table found in {path}")
+
+    columns = [cell.strip() for cell in lines[header_index].strip().strip("|").split("|")]
+    kind_column = columns.index("Kind")
+    payload_column = columns.index("Reference payload")
+    rows: dict[str, str] = {}
+    for line in lines[header_index + 2 :]:
+        if not line.startswith("|"):
+            break
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if len(cells) <= max(kind_column, payload_column):
+            continue
+        rows[cells[kind_column].strip("`")] = cells[payload_column].strip("`")
+    return rows
+
+
+class DiagramSelectionTableTests(TestCase):
+    """Guard the human-facing selection tables against registry drift."""
+
+    documents = ("references/diagrams.md", "CHEATSHEET.md")
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.expected = {
+            item["kind"]: item["source"] for item in load_catalog()["diagrams"]
+        }
+
+    def test_tables_list_every_registered_kind(self) -> None:
+        for document in self.documents:
+            rows = parse_selection_table(ROOT / document)
+            self.assertEqual(set(DEFAULT_COMPILER_REGISTRY.kinds), set(rows), document)
+
+    def test_tables_point_at_registered_catalog_fixtures(self) -> None:
+        for document in self.documents:
+            rows = parse_selection_table(ROOT / document)
+            self.assertEqual(self.expected, rows, document)
+
+    def test_referenced_fixtures_exist_on_disk(self) -> None:
+        for document in self.documents:
+            for kind, payload in parse_selection_table(ROOT / document).items():
+                self.assertTrue((ROOT / payload).is_file(), f"{document}:{kind}")

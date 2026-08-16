@@ -1,28 +1,21 @@
 from __future__ import annotations
 
 import json
-import shutil
 import subprocess
 import sys
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 from diagram_models import ArchitectureDiagramSpec, DiagramSpec, UmlClassDiagramSpec
 from drawing.grammar.architecture import DEFAULT_ARCHITECTURE_GRAMMAR
+from drawing.layout.elk import ELK_RUNNER, elk_available
 from drawing.layout.models import LayoutBox, LayoutEdge, LayoutResult
 from drawing.validation.layout import validate_layout
 
 
 ROOT = Path(__file__).resolve().parents[1]
-ELK_RUNNER = ROOT / "scripts" / "diagram_elk_runner.js"
-ELK_BUNDLED = ROOT / "scripts" / "vendor" / "elk.bundled.js"
 _ARCH_GRAMMAR = DEFAULT_ARCHITECTURE_GRAMMAR.geometry
 GRID = _ARCH_GRAMMAR.grid
-
-
-def elk_available() -> bool:
-    return shutil.which("node") is not None and ELK_RUNNER.exists() and ELK_BUNDLED.exists()
 
 
 def layout_diagram(spec: DiagramSpec) -> LayoutResult:

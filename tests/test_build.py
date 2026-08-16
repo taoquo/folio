@@ -234,7 +234,9 @@ class BuildScriptTests(TestCase):
             "tests/test_diagram_export.py",
             "tests/test_drawing_dsl_v3.py",
             "tests/test_drawing_notation_v4.py",
-            "RELEASE_NOTES_V4.3.md",
+            "docs/releases/RELEASE_NOTES_V4.3.md",
+            "RELEASE_NOTES_V6.0.md",
+            "CHANGELOG.md",
         }
         excluded = {
             "assets/fonts/LXGWWenKai-Regular.ttf",

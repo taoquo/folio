@@ -6,10 +6,9 @@ import shutil
 import tempfile
 from html import escape as html_escape
 from pathlib import Path
-from typing import Optional
 
 HTML = None
-_WEASYPRINT_IMPORT_ERROR: Optional[Exception] = None
+_WEASYPRINT_IMPORT_ERROR: Exception | None = None
 
 
 def _get_weasyprint_html():

@@ -4,7 +4,7 @@ from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass, replace
 from typing import Any
 
-from .layout.models import LayoutBox, LayoutResult
+from .layout.models import LayoutBox
 from .scene import ResolvedScene, SceneBox, SceneRegion, SceneStyle, SceneText, ScenePolyline
 from .theme.folio import DEFAULT_FOLIO_THEME
 from .v3_common import (

@@ -21,6 +21,8 @@ def load_module(name: str, filename: str):
 models = load_module("folio_diagram_models_render", "diagram_models.py")
 renderer = load_module("folio_diagram_render_svg", "diagram_render_svg.py")
 
+from drawing.pipeline import compile_architecture
+
 
 class DiagramRendererTests(TestCase):
     def test_render_architecture_svg_uses_folio_palette(self) -> None:
@@ -141,7 +143,7 @@ class DiagramRendererTests(TestCase):
         self.assertNotIn('class="arch-edge-label-bg', svg)
         self.assertIn('class="arch-edge arch-edge--primary', svg)
         self.assertIn('class="arch-edge arch-edge--secondary', svg)
-        _semantic, _drawing, layout, _scene = renderer.compile_architecture(spec)
+        _semantic, _drawing, layout, _scene = compile_architecture(spec)
         labelled = [edge for edge in layout.edges if edge.label_box]
         self.assertTrue(labelled)
         for edge in labelled:
@@ -247,7 +249,7 @@ class DiagramRendererTests(TestCase):
             }
         )
 
-        _semantic, _drawing, _layout, scene = renderer.compile_architecture(spec)
+        _semantic, _drawing, _layout, scene = compile_architecture(spec)
         legend = scene.legend
 
         self.assertIsNotNone(legend)

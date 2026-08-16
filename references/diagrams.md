@@ -36,25 +36,38 @@ All diagrams should look drawn by the same editorial hand, whether they come fro
 
 ## 1. Selection
 
-| Showing… | Use | Template |
-|---|---|---|
-| System components + connections | **Architecture** | `assets/diagrams/architecture.html` |
-| Decision branches, "if A then B else C" | **Flowchart** | `assets/diagrams/flowchart.html` |
-| Two-axis positioning / prioritization | **Quadrant** | `assets/diagrams/quadrant.html` |
-| Category comparison (revenue, market share, quarterly) | **Bar Chart** | `assets/diagrams/bar-chart.html` |
-| Trend over time (stock price, growth rate, time series) | **Line Chart** | `assets/diagrams/line-chart.html` |
-| Proportional breakdown (spend, user segments, share) | **Donut Chart** | `assets/diagrams/donut-chart.html` |
-| Finite states + directed transitions (lifecycle, state machine) | **State Machine** | `assets/diagrams/state-machine.html` |
-| Time axis + milestone events (roadmap, project progress) | **Timeline** | `assets/diagrams/timeline.html` |
-| Cross-responsibility process (multi-role, API request path) | **Swimlane** | `assets/diagrams/swimlane.html` |
-| Hierarchical relationships (org chart, module deps, directory tree) | **Tree** | `assets/diagrams/tree.html` |
-| Vertically stacked system layers (OSI, application stack) | **Layer Stack** | `assets/diagrams/layer-stack.html` |
-| Set intersections (feature overlap, audience comparison, capability map) | **Venn** | `assets/diagrams/venn.html` |
-| OHLC price action (stock price, trading days, up/down candles) | **Candlestick** | `assets/diagrams/candlestick.html` |
-| Revenue bridge, valuation decomposition, cash flow breakdown | **Waterfall** | `assets/diagrams/waterfall.html` |
-| Ordered interactions among actors, systems, and stores | **Sequence** | `references/fixtures/v4/sequence.json` |
-| Types, members, inheritance, association, aggregation, composition | **UML Class** | `references/fixtures/v4/uml-class.json` |
-| Database entities, fields, keys, and cardinality | **ER Diagram** | `references/fixtures/v4/er-diagram.json` |
+All twenty-two rows below are generator-backed. The `Kind` column is the registered
+`kind` accepted by every `scripts/folio.py` drawing subcommand, and the `Reference payload`
+column is the canonical fixture registered in `references/fixtures/diagram-catalog.json`.
+Start from the fixture, do not hand-edit SVG.
+
+| Showing… | Use | Kind | Reference payload |
+|---|---|---|---|
+| System components + connections | **Architecture** | `architecture` | `references/fixtures/architecture-demo.json` |
+| Decision branches, "if A then B else C" | **Flowchart** | `flowchart` | `references/fixtures/flowchart/branching.json` |
+| Two-axis positioning / prioritization | **Quadrant** | `quadrant` | `references/fixtures/v3/quadrant.json` |
+| Category comparison (revenue, market share, quarterly) | **Bar Chart** | `bar-chart` | `references/fixtures/v3/bar-chart.json` |
+| Trend over time (stock price, growth rate, time series) | **Line Chart** | `line-chart` | `references/fixtures/v3/line-chart.json` |
+| Proportional breakdown (spend, user segments, share) | **Donut Chart** | `donut-chart` | `references/fixtures/v3/donut-chart.json` |
+| Finite states + directed transitions (lifecycle, state machine) | **State Machine** | `state-machine` | `references/fixtures/v3/state-machine.json` |
+| Time axis + milestone events (roadmap, project progress) | **Timeline** | `timeline` | `references/fixtures/v3/timeline.json` |
+| Cross-responsibility process (multi-role, API request path) | **Swimlane** | `swimlane` | `references/fixtures/v3/swimlane.json` |
+| Hierarchical relationships (module deps, directory tree) | **Tree** | `tree` | `references/fixtures/v3/tree.json` |
+| Vertically stacked system layers (OSI, application stack) | **Layer Stack** | `layer-stack` | `references/fixtures/v3/layer-stack.json` |
+| Set intersections (feature overlap, audience comparison, capability map) | **Venn** | `venn` | `references/fixtures/v3/venn.json` |
+| Converging levels, funnel stages, or narrowing hierarchy | **Pyramid** | `pyramid` | `references/fixtures/v5/pyramid.json` |
+| Reporting lines, unit ownership, and headcount | **Org Chart** | `org-chart` | `references/fixtures/v5/org-chart.json` |
+| Self-reinforcing cycle where each stage feeds the next | **Loop Flywheel** | `loop-flywheel` | `references/fixtures/v5/loop-flywheel.json` |
+| OHLC price action (stock price, trading days, up/down candles) | **Candlestick** | `candlestick` | `references/fixtures/v3/candlestick.json` |
+| Revenue bridge, valuation decomposition, cash flow breakdown | **Waterfall** | `waterfall` | `references/fixtures/v3/waterfall.json` |
+| Correlation between two numeric measures | **Scatter** | `scatter` | `references/fixtures/v5/scatter.json` |
+| Task schedule across periods with milestones | **Gantt** | `gantt` | `references/fixtures/v5/gantt.json` |
+| Ordered interactions among actors, systems, and stores | **Sequence** | `sequence` | `references/fixtures/v4/sequence.json` |
+| Types, members, inheritance, association, aggregation, composition | **UML Class** | `uml-class` | `references/fixtures/v4/uml-class.json` |
+| Database entities, fields, keys, and cardinality | **ER Diagram** | `er-diagram` | `references/fixtures/v4/er-diagram.json` |
+
+Fourteen of these types also ship a hand-authored `assets/diagrams/*.html` twin. Those files are
+**legacy parity references and manual escape hatches only**, never the authoring path. See section 8.
 
 Not on the list:
 - **Compare two things**: use a table. A three-column table beats any diagram of a binary contrast.
@@ -290,6 +303,20 @@ The compiler calculates scales, ticks, baseline, positive/negative stacks, refer
 | ER Diagram | 2-8 entities, 1-8 fields each, 1-12 relationships | Every entity, field, and relationship has a stable id |
 
 Sequence rejects self-messages in V4.3. UML and ER reject parallel directed relationships instead of silently collapsing routes. Authors provide no coordinates. Sankey is intentionally excluded; see `references/decisions/0007-sankey-is-not-a-v4-3-grammar.md`.
+
+### UML Class contract
+
+Production UML Class input uses `schema_version: "3.0"`, `kind: "uml-class"`, and optional `layout: "class-grid"`. Start from `references/fixtures/minimal/uml-class.json` or `references/fixtures/v4/uml-class.json`; the authoritative contract is `references/schemas/types/uml-class.schema.json`.
+
+Authors provide type members and relationships, never `x`, `y`, box dimensions, connector paths, colors, or SVG. The compiler owns a bounded 960x640 grid, shared scene validation, accessibility metadata, output profiles, and SVG / PNG / PDF serialization.
+
+| Axis | Accepted values |
+|---|---|
+| Type kinds | `class`, `interface`, `enum` |
+| Relationship kinds | `inheritance`, `association`, `aggregation`, `composition` |
+| Budget | 1-8 types, up to 6 attributes and 5 methods per type, 0-12 relationships |
+
+Every type and relationship needs a stable id, and a relationship must reference two distinct known types. The older unversioned `references/fixtures/uml-class-demo.json` plus its `diagram_models.py` loader stay callable for compatibility tests only; production CLI, catalog, host, and build artifact paths use the versioned registry compiler.
 
 ---
 

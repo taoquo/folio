@@ -33,7 +33,6 @@ from typing import Any
 
 from diagram_geometry import validate_diagram_html
 from diagram_layout import elk_available
-from diagram_models import load_diagram_spec_file
 from diagram_render_svg import render_diagram_svg, render_flowchart_svg
 from diagram_semantic_planning import plan_architecture_from_text
 from shared import (
@@ -502,8 +501,8 @@ def build_diagram_artifact(name: str) -> bool:
             spec = plan_architecture_from_text(text, config["title"])
             svg = render_diagram_svg(spec)
         else:
-            spec = load_diagram_spec_file(ROOT / config["spec"])
-            svg = render_diagram_svg(spec)
+            print(f"ERROR: {name}: target has no drawing, flowchart, or text source")
+            return False
 
         GENERATED_DIAGRAM_SVG.mkdir(parents=True, exist_ok=True)
         GENERATED_DIAGRAM_PNG.mkdir(parents=True, exist_ok=True)

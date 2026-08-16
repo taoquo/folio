@@ -249,30 +249,30 @@ Combine freely: `<table class="folio-table financial striped">`.
 Twenty-two built-in diagram types. Start from semantic JSON, compile it, and embed it through an explicit Folio host slot:
 
 
-| Type          | File                                 | Use                                             |
-| ------------- | ------------------------------------ | ----------------------------------------------- |
-| Architecture  | `assets/diagrams/architecture.html`  | System components and connections               |
-| Flowchart     | `assets/diagrams/flowchart.html`     | Decision branches and flows                     |
-| Quadrant      | `assets/diagrams/quadrant.html`      | 2×2 positioning                                 |
-| Bar Chart     | `assets/diagrams/bar-chart.html`     | Category comparison (up to 8 groups × 3 series) |
-| Line Chart    | `assets/diagrams/line-chart.html`    | Trends over time (up to 12 points × 3 lines)    |
-| Donut Chart   | `assets/diagrams/donut-chart.html`   | Proportional breakdown (up to 6 segments)       |
-| State Machine | `assets/diagrams/state-machine.html` | Finite states + directed transitions            |
-| Timeline      | `assets/diagrams/timeline.html`      | Time axis + milestone events                    |
-| Swimlane      | `assets/diagrams/swimlane.html`      | Cross-responsibility process flow               |
-| Tree          | `assets/diagrams/tree.html`          | Hierarchical relationships                      |
-| Layer Stack   | `assets/diagrams/layer-stack.html`   | Vertically stacked system layers                |
-| Venn          | `assets/diagrams/venn.html`          | Set intersections and overlaps                  |
-| Candlestick   | `assets/diagrams/candlestick.html`   | OHLC price history (up to 30 days)              |
-| Waterfall     | `assets/diagrams/waterfall.html`     | Revenue bridge / decomposition                  |
-| Sequence      | `references/fixtures/v4/sequence.json` | Ordered participant interactions              |
-| UML Class     | `references/fixtures/v4/uml-class.json` | Types, members, and relationships             |
-| ER Diagram    | `references/fixtures/v4/er-diagram.json` | Entities, fields, keys, and cardinality       |
-| Pyramid       | `references/fixtures/v5/pyramid.json` | Converging levels, funnel or hierarchy stages |
-| Org Chart     | `references/fixtures/v5/org-chart.json` | Reporting lines and unit headcount          |
-| Loop Flywheel | `references/fixtures/v5/loop-flywheel.json` | Self-reinforcing cycle stages           |
-| Scatter       | `references/fixtures/v5/scatter.json` | Correlation between two numeric measures      |
-| Gantt         | `references/fixtures/v5/gantt.json` | Task schedule across periods with milestones    |
+| Type          | Kind            | Reference payload                             | Use                                             |
+| ------------- | --------------- | --------------------------------------------- | ----------------------------------------------- |
+| Architecture  | `architecture`  | `references/fixtures/architecture-demo.json`  | System components and connections               |
+| Flowchart     | `flowchart`     | `references/fixtures/flowchart/branching.json` | Decision branches and flows                   |
+| Quadrant      | `quadrant`      | `references/fixtures/v3/quadrant.json`        | 2×2 positioning                                 |
+| Bar Chart     | `bar-chart`     | `references/fixtures/v3/bar-chart.json`       | Category comparison (up to 8 groups × 3 series) |
+| Line Chart    | `line-chart`    | `references/fixtures/v3/line-chart.json`      | Trends over time (up to 12 points × 3 lines)    |
+| Donut Chart   | `donut-chart`   | `references/fixtures/v3/donut-chart.json`     | Proportional breakdown (up to 6 segments)       |
+| State Machine | `state-machine` | `references/fixtures/v3/state-machine.json`   | Finite states + directed transitions            |
+| Timeline      | `timeline`      | `references/fixtures/v3/timeline.json`        | Time axis + milestone events                    |
+| Swimlane      | `swimlane`      | `references/fixtures/v3/swimlane.json`        | Cross-responsibility process flow               |
+| Tree          | `tree`          | `references/fixtures/v3/tree.json`            | Hierarchical relationships                      |
+| Layer Stack   | `layer-stack`   | `references/fixtures/v3/layer-stack.json`     | Vertically stacked system layers                |
+| Venn          | `venn`          | `references/fixtures/v3/venn.json`            | Set intersections and overlaps                  |
+| Candlestick   | `candlestick`   | `references/fixtures/v3/candlestick.json`     | OHLC price history (up to 30 days)              |
+| Waterfall     | `waterfall`     | `references/fixtures/v3/waterfall.json`       | Revenue bridge / decomposition                  |
+| Sequence      | `sequence`      | `references/fixtures/v4/sequence.json`        | Ordered participant interactions                |
+| UML Class     | `uml-class`     | `references/fixtures/v4/uml-class.json`       | Types, members, and relationships               |
+| ER Diagram    | `er-diagram`    | `references/fixtures/v4/er-diagram.json`      | Entities, fields, keys, and cardinality         |
+| Pyramid       | `pyramid`       | `references/fixtures/v5/pyramid.json`         | Converging levels, funnel or hierarchy stages   |
+| Org Chart     | `org-chart`     | `references/fixtures/v5/org-chart.json`       | Reporting lines and unit headcount              |
+| Loop Flywheel | `loop-flywheel` | `references/fixtures/v5/loop-flywheel.json`   | Self-reinforcing cycle stages                   |
+| Scatter       | `scatter`       | `references/fixtures/v5/scatter.json`         | Correlation between two numeric measures        |
+| Gantt         | `gantt`         | `references/fixtures/v5/gantt.json`           | Task schedule across periods with milestones    |
 
 
 Usage: run `scripts/folio.py render-drawing` for standalone artifacts or `embed-drawing` plus `verify-drawing-host` for documents and slides. HTML diagram files are parity references, not the production authoring path.

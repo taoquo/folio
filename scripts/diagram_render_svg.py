@@ -1,16 +1,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
 from xml.sax.saxutils import escape
 
 from diagram_models import ArchitectureDiagramSpec, DiagramSpec, UmlClassDiagramSpec
 from diagram_layout import LayoutBox, layout_diagram
-from drawing.pipeline import compile_architecture
 from drawing.compiler import DEFAULT_COMPILER_REGISTRY
 from drawing.theme.folio import DEFAULT_FOLIO_THEME
 from renderers.svg import render_svg
-from drawing.flowchart import compile_flowchart_payload
 
 
 PARCHMENT = DEFAULT_FOLIO_THEME.parchment
@@ -167,7 +164,7 @@ def _chevron_for_segment(
     start: tuple[int, int],
     end: tuple[int, int],
     stroke: str,
-    klass: Optional[str] = None,
+    klass: str | None = None,
     stroke_width: float = 1.4,
 ) -> str:
     x1, y1 = start

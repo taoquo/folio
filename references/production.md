@@ -374,7 +374,7 @@ python3 scripts/build.py --check
 python3 scripts/build.py --verify
 ```
 
-`scripts/stabilize.py` is intentionally independent from `scripts/build.py`. Thresholds and solver behavior are controlled by `references/stabilizer_profiles.json`.
+`scripts/stabilize.py` is intentionally independent from `scripts/build.py`. Thresholds and solver behavior are controlled by `references/stabilizer_profiles.json`, and `tests/test_stabilize.py` covers the normalizers, target resolution, and profile validation.
 
 ### Hi-res visual inspection
 

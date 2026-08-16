@@ -19,7 +19,10 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 | `scripts/build.py` | PDF / PPTX build and verification script, plus placeholder / orphan / rhythm checks | Low |
 | `scripts/folio.py` | Drawing DSL CLI, routing, render, import, catalog | Low |
 | `scripts/package-skill.sh` | Codex Desktop ZIP packager, excluding large fonts | Low |
-| `dist/folio.zip` | Codex Desktop ZIP artifact, updated from main | Medium |
+| `CHANGELOG.md` | Aggregated release highlights linking to full notes | Medium |
+| `docs/releases/` | Archived release notes for superseded versions | Low |
+| `pyproject.toml` | Interpreter floor and ruff lint configuration shared with CI | Low |
+| `dist/folio.zip` | Codex Desktop ZIP build output, rebuilt on demand, not tracked in git | Medium |
 
 Reference docs are English-only. Do not recreate `*.en.md` duplicates. Chinese / English output differences belong in the templates.
 Do not use graphic emoticons in docs, template comments, or script output. Use `OK:` / `ERROR:` for status and `Use` / `Avoid` for comparisons.
@@ -33,6 +36,12 @@ python3 scripts/build.py --sync   # check CSS token drift across templates
 python3 scripts/build.py --verify # verify templates, page counts, fonts, and slides
 python3 scripts/build.py --check-placeholders path/to/filled.html
 python3 scripts/build.py --check-orphans [path/to/doc.pdf]  # scan for orphan text (last line <= 2 words)
+```
+
+Lint runs from the shared `pyproject.toml` config, so local and CI results match:
+
+```bash
+ruff check .                      # same rule set the fast-gate CI job enforces
 ```
 
 Expected page counts: one-pager 1 / letter 1 / resume 2 strict / long-doc 7 +/- 2 / portfolio 6 +/- 2 / slides 7 +/- 3 / equity-report 2-3 / changelog 1-2
@@ -99,7 +108,7 @@ bash scripts/package-skill.sh        # writes dist/folio.zip (<5MB, excludes LXG
 python3 scripts/build.py --verify
 ```
 
-`dist/folio.zip` is a tracked artifact and should be committed with the release changes. If you publish the project to a repository host, upload this ZIP to your project-owned release destination and keep all download links aligned with that destination.
+`dist/folio.zip` is a build output ignored by git, so rebuild it on every release instead of committing it. If you publish the project to a repository host, upload the freshly built ZIP to your project-owned release destination and keep all download links aligned with that destination.
 
 Release notes must follow this project format:
 
@@ -110,6 +119,8 @@ Release notes must follow this project format:
 5. Final blockquote with one concise project description sentence and the repository URL.
 
 Do not mix English and Chinese inside the same numbered item. Keep both lists aligned by number, use 5-8 items, and write one concise sentence per item. Do not use graphic emoticons in the release title or body unless the user explicitly asks for them.
+
+Keep the current release note as `RELEASE_NOTES_V<version>.md` at the repository root, move the superseded one into `docs/releases/`, and add a matching section at the top of `CHANGELOG.md`. `scripts/package-skill.sh` bundles both locations.
 
 ## Fonts
 

@@ -18,7 +18,7 @@ from drawing.pipeline import compile_drawing_plan, drawing_plan_from_spec
 from drawing.review import write_review_bundle
 from drawing.review import _visual_diff
 from drawing.schema import validate_plan_payload
-from drawing.validation import DrawingCompilationError, validate_canvas, validate_scene_accessibility, validate_scene_primitives
+from drawing.validation import DrawingCompilationError, validate_scene_accessibility, validate_scene_primitives
 from drawing.validation.layout import validate_layout
 from drawing.output import apply_html_output_profile
 from drawing.scene import ResolvedScene, SceneBox, SceneCircle, SceneClip, SceneGroup, ScenePath, SceneRect, SceneStyle, SceneText

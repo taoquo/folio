@@ -1,7 +1,7 @@
 import importlib.util
 import json
 import sys
-from dataclasses import asdict, replace
+from dataclasses import asdict
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import TestCase
@@ -15,7 +15,6 @@ from drawing.compiler import DEFAULT_COMPILER_REGISTRY
 from drawing.theme import (
     DARK_THEME,
     DEFAULT_FOLIO_THEME,
-    FolioTheme,
     TERMINAL_THEME,
     THEME_PROFILE_NAMES,
     contrast_ratio,

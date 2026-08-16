@@ -138,4 +138,3 @@ class VariantMatrixTests(TestCase):
                     self.assertTrue(markup.startswith("<svg "))
                     self.assertTrue(markup.endswith("</svg>"))
                     self.assertIn(f'data-folio-variant="{variant}"', markup)
-

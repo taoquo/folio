@@ -56,4 +56,3 @@ def _motion_defs(reading_order_size: int) -> str:
         f"{delays}"
         "}</style></defs>"
     )
-

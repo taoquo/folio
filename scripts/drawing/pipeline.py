@@ -34,7 +34,7 @@ def _layout_or_error(drawing: DrawingPlan, semantic: SemanticDiagram | None, gra
         raise
     except (KeyError, TypeError, ValueError) as exc:
         raise_for_errors("layout", (DrawingDiagnostic("ERROR", "LY000", str(exc)),))
-        raise AssertionError("unreachable")
+        raise AssertionError("unreachable") from exc
 
 
 def _scene_or_error(
@@ -49,7 +49,7 @@ def _scene_or_error(
         raise
     except (KeyError, TypeError, ValueError) as exc:
         raise_for_errors("scene", (DrawingDiagnostic("ERROR", "RS000", str(exc)),))
-        raise AssertionError("unreachable")
+        raise AssertionError("unreachable") from exc
 
 
 def semantic_from_spec(spec: ArchitectureDiagramSpec) -> SemanticDiagram:

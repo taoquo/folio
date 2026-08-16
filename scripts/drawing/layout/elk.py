@@ -47,8 +47,13 @@ def layout_drawing(
 
 
 def _require_elk() -> None:
-    if shutil.which("node") is None or not ELK_RUNNER.exists() or not ELK_BUNDLED.exists():
+    if not elk_available():
         raise RuntimeError("ELK layout unavailable: require node and scripts/vendor/elk.bundled.js")
+
+
+def elk_available() -> bool:
+    """Return True when the bundled ELK runner can be executed by node."""
+    return shutil.which("node") is not None and ELK_RUNNER.exists() and ELK_BUNDLED.exists()
 
 
 def _elk_seed_layout(drawing: DrawingPlan, constraints: LayoutConstraintSet) -> dict[str, LayoutBox]:

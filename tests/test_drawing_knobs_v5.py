@@ -119,4 +119,3 @@ class KnobMatrixTests(TestCase):
                         self.assertEqual(detail, result.detail)
                         self.assertEqual(audience, result.audience)
                         self.assertEqual([], [d.code for d in result.diagnostics])
-

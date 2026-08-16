@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from datetime import date
-from itertools import combinations
 from typing import Any
 
 from .scene import (

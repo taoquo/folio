@@ -53,4 +53,3 @@ def _walk(value: Any, mapping: dict[str, str], *, color: bool = False) -> Any:
         items = {key: _walk(item, mapping, color=color) for key, item in value.items()}
         return items if any(items[key] is not value[key] for key in value) else value
     return value
-

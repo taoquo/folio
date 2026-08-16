@@ -6,7 +6,7 @@ quality gates, and a full visual pass over a purpose-built showcase corpus.
 
 Status: complete
 Audit date: 2026-08-15
-Predecessor: `drawing-dsl-v5-final-audit.md`
+Predecessor: `archive/drawing-dsl-v5-final-audit.md`
 
 ## 1. Reference-principle conformance
 
@@ -151,7 +151,7 @@ python3 scripts/folio.py batch-render-drawings references/fixtures/showcase \
   --output-dir build/showcase/svg --format svg --profile artifact
 ```
 
-The 26-module regression command is listed in `drawing-dsl-v5-final-audit.md` and is unchanged.
+The 26-module regression command is listed in `archive/drawing-dsl-v5-final-audit.md` and is unchanged.
 
 ## 6. Verdict
 

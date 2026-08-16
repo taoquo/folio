@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from collections import Counter
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from typing import Any
 
 from .connectors.postprocess import clean_polyline
@@ -183,12 +183,12 @@ def compile_flowchart_payload(payload: dict[str, Any]) -> tuple[FlowchartSemanti
         layout = layout_flowchart(plan)
     except (KeyError, TypeError, ValueError) as exc:
         raise_for_errors("layout", (DrawingDiagnostic("ERROR", "FC100", str(exc)),))
-        raise AssertionError("unreachable")
+        raise AssertionError("unreachable") from exc
     try:
         scene = resolve_flowchart_scene(plan, layout)
     except (KeyError, TypeError, ValueError) as exc:
         raise_for_errors("scene", (DrawingDiagnostic("ERROR", "FC101", str(exc)),))
-        raise AssertionError("unreachable")
+        raise AssertionError("unreachable") from exc
     raise_for_errors("scene", [
         *validate_canvas(scene),
         *validate_scene_primitives(scene),

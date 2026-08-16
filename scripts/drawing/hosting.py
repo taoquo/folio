@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 import re
 from tempfile import NamedTemporaryFile, TemporaryDirectory
-from typing import Any, Iterable
+from typing import Any
 
 from .compiler import CompilationResult
 

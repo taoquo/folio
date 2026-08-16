@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from typing import Any, Optional
+from typing import Any
 import re
 
 from drawing.adapters import drawing_to_legacy
@@ -28,7 +28,7 @@ class NodeRule:
     importance: str
     state_owner: bool
     lifecycle_phase: str
-    description: Optional[str] = None
+    description: str | None = None
     rules: tuple[MatchRule, ...] = ()
     min_score: int = 3
 

@@ -165,11 +165,11 @@ python3 scripts/folio.py package
 
 **Claude Desktop**
 
-构建或直接使用 `dist/folio.zip`，打开 Customize > Skills > "+" > Create skill，然后直接上传 ZIP。
+先执行 `bash scripts/package-skill.sh` 构建 `dist/folio.zip`，再打开 Customize > Skills > "+" > Create skill 上传 ZIP。该 ZIP 是构建产物，仓库不再跟踪它。
 
 **通用 agent 环境**（Codex、OpenCode、Pi，以及其他读取 `~/.agents/` 的工具）
 
-可以先用打包好的 ZIP 本地安装；如果后续要发布，再把仓库放到你自己的命名空间下。
+可以先自行打包 ZIP 做本地安装；如果后续要发布，再把仓库放到你自己的命名空间下。
 
 Folio 会根据自然语言请求自动触发。你只需要尽量把下面这些信息讲清楚：
 
@@ -342,6 +342,7 @@ Folio 不只是模板集合，还带了一份紧凑的操作参考：[CHEATSHEET
 - [references/drawing-dsl-authoring.md](references/drawing-dsl-authoring.md)：意图优先的图表创作流程
 - [references/drawing-dsl-v6-final-audit.md](references/drawing-dsl-v6-final-audit.md)：收尾审计、门禁证据与已知限制
 - [references/web-foundation.md](references/web-foundation.md)：阅读页面和产品工作台的 Web 设计指导基础
+- [CHANGELOG.md](CHANGELOG.md)：版本亮点汇总，附 `docs/releases/` 中完整发布说明的链接
 
 ## 生图提示词
 

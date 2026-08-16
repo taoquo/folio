@@ -348,6 +348,8 @@ The full spec files for reference:
 - Writing: `references/writing.md`
 - Production: `references/production.md`
 - Diagrams: `references/diagrams.md`
+- Resume content rules: `references/resume-writing.md`
+- Architecture diagram JSON facade: `references/architecture-diagram-spec.md`
 
 ## Step 4 · Fill content into the template
 
