@@ -172,6 +172,21 @@ class DrawingDslV2Tests(TestCase):
 
         self.assertEqual("schema", context.exception.stage)
 
+    def test_flowchart_language_matches_the_cross_family_contract(self) -> None:
+        base = json.loads((ROOT / "references" / "fixtures" / "flowchart" / "linear.json").read_text())
+
+        for accepted in (None, "zh"):
+            payload = dict(base)
+            payload["language"] = accepted
+            self.assertEqual([], validate_plan_payload(payload))
+
+        for rejected in ("", "   ", 7, True):
+            payload = dict(base)
+            payload["language"] = rejected
+            with self.assertRaises(DrawingCompilationError) as context:
+                compile_flowchart_payload(payload)
+            self.assertEqual("schema", context.exception.stage)
+
     def test_aud_003_parallel_flowchart_edges_preserve_routes_and_labels(self) -> None:
         payload = {
             "schema_version": "2.0", "kind": "flowchart", "title": "Parallel",
@@ -311,7 +326,7 @@ class DrawingDslV2Tests(TestCase):
 
     def test_aud_006_017_published_schemas_and_runtime_cover_the_same_core_contracts(self) -> None:
         drawing_schema = json.loads((ROOT / "references" / "schemas" / "drawing-plan-v2.schema.json").read_text())
-        flow_schema = json.loads((ROOT / "references" / "schemas" / "flowchart-v2.schema.json").read_text())
+        flow_schema = json.loads((ROOT / "references" / "schemas" / "types" / "flowchart.schema.json").read_text())
         self.assertFalse(drawing_schema["additionalProperties"])
         self.assertFalse(flow_schema["additionalProperties"])
         self.assertIn("composition", drawing_schema["required"])

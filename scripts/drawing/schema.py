@@ -158,6 +158,8 @@ def _validate_flowchart_payload(payload: dict[str, Any]) -> list[str]:
         issues.append("axis must be top-down or left-right")
     if not isinstance(payload.get("title"), str) or not payload.get("title", "").strip():
         issues.append("title must be a non-empty string")
+    if payload.get("language") is not None and (not isinstance(payload["language"], str) or not payload["language"].strip()):
+        issues.append("language must be a non-empty string")
     _validate_canvas_dimensions(payload, issues)
     node_allowed = {"id", "type", "label", "description"}
     for index, node in enumerate(payload.get("nodes", [])):

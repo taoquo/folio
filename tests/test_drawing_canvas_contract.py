@@ -170,7 +170,7 @@ class PublishedSchemaContractTests(TestCase):
         self.assertNotIn("dimension", defs)
 
     def test_plan_schemas_track_the_graph_band(self) -> None:
-        for name in ("drawing-plan-v2.schema.json", "flowchart-v2.schema.json"):
+        for name in ("drawing-plan-v2.schema.json", "types/flowchart.schema.json"):
             with self.subTest(schema=name):
                 properties = self._schema(name)["properties"]
                 self.assertEqual({"const": CANVAS_WIDTH}, properties["width"])

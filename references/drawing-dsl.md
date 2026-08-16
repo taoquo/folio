@@ -46,7 +46,7 @@ Reduction decisions are serialized with their targets, reason, and whether they 
 ## V2 additions
 
 - Architecture plans use the versioned `2.0` authoring contract in `references/schemas/drawing-plan-v2.schema.json`; missing versions migrate deterministically from V1.
-- Flowchart input uses `references/schemas/flowchart-v2.schema.json` and a type-specific semantic, plan, layout, and validation grammar.
+- Flowchart input uses `references/schemas/types/flowchart.schema.json` and a type-specific semantic, plan, layout, and validation grammar.
 - Architecture nodes choose exactly one content-driven tier: `compact` 144 x 64, `regular` 176 x 72, or `wide` 224 x 80.
 - Typed annotations, first-class legends, trust boundaries, phase bands, and twelve built-in semantic pictograms resolve into shared scene primitives.
 - Architecture layout evaluates at most eight grammar-approved candidates and selects lexicographically by errors, connector violations, crossings, spine bends, total bends, spacing variance, and stable candidate name.
