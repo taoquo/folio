@@ -33,9 +33,9 @@ from pathlib import Path
 from typing import Any
 
 from diagram_geometry import validate_diagram_html
-from diagram_layout import elk_available
-from diagram_render_svg import render_diagram_svg, render_flowchart_svg
+from diagram_render_svg import render_diagram_svg
 from diagram_semantic_planning import plan_architecture_from_text
+from drawing.layout.elk import elk_available
 from shared import (
     COOL_GRAY_BLOCKLIST,
     DIAGRAMS,
@@ -163,7 +163,7 @@ DIAGRAM_ARTIFACT_TARGETS: dict[str, dict[str, str]] = {
         },
     },
     "artifact-flowchart-v2-demo": {
-        "flowchart": "references/fixtures/flowchart/branching.json",
+        "drawing": "references/fixtures/flowchart/branching.json",
         "svg": "flowchart-v2-demo.svg",
         "png": "flowchart-v2-demo.png",
         "pdf": "flowchart-v2-demo.pdf",
@@ -493,16 +493,12 @@ def build_diagram_artifact(name: str) -> bool:
             result = DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
             svg = render_svg(result.scene, result.profile)
             spec = type("DrawingArtifact", (), {"title": result.plan.title})()
-        elif "flowchart" in config:
-            payload = json.loads((ROOT / config["flowchart"]).read_text(encoding="utf-8"))
-            svg = render_flowchart_svg(payload)
-            spec = type("FlowchartArtifact", (), {"title": payload["title"]})()
         elif "text" in config:
             text = (ROOT / config["text"]).read_text(encoding="utf-8")
             spec = plan_architecture_from_text(text, config["title"])
             svg = render_diagram_svg(spec)
         else:
-            print(f"ERROR: {name}: target has no drawing, flowchart, or text source")
+            print(f"ERROR: {name}: target has no drawing or text source")
             return False
 
         GENERATED_DIAGRAM_SVG.mkdir(parents=True, exist_ok=True)

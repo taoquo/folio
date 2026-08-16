@@ -22,6 +22,8 @@ models = load_module("folio_diagram_models_layout", "diagram_models.py")
 layout = load_module("folio_diagram_layout", "diagram_layout.py")
 planning = load_module("folio_diagram_semantic_planning_layout", "diagram_semantic_planning.py")
 
+from drawing.validation.layout import _point_touches_box
+
 
 class DiagramLayoutTests(TestCase):
     def test_elk_adapter_lays_out_architecture_fixture(self) -> None:
@@ -41,7 +43,7 @@ class DiagramLayoutTests(TestCase):
         self.assertEqual([], layout.validate_layout(result, spec.width, spec.height))
         for edge in result.edges:
             self.assertIn(edge.target, result.boxes)
-            self.assertTrue(layout._point_touches_box(edge.points[-1], result.boxes[edge.target]))
+            self.assertTrue(_point_touches_box(edge.points[-1], result.boxes[edge.target]))
 
     def test_layout_coordinates_snap_to_four_px_grid(self) -> None:
         spec = models.load_diagram_spec(

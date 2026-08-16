@@ -1,3 +1,10 @@
+"""Legacy spec SVG renderer facade.
+
+Architecture specs forward to the registry compiler plus `renderers.svg.render_svg`.
+`render_uml_class_svg` is the last self-owned renderer and only serves the
+coordinate-bearing UML compatibility facade.
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -42,11 +49,6 @@ def render_diagram_svg(spec: DiagramSpec) -> str:
 
 def render_architecture_svg(spec: ArchitectureDiagramSpec) -> str:
     result = DEFAULT_COMPILER_REGISTRY.compile_architecture_spec(spec)
-    return render_svg(result.scene, result.profile)
-
-
-def render_flowchart_svg(payload: dict[str, object]) -> str:
-    result = DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
     return render_svg(result.scene, result.profile)
 
 

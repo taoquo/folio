@@ -1,3 +1,10 @@
+"""Architecture and UML Class spec contracts.
+
+`load_diagram_spec` is the shared entry the registry compiler and the text planner both
+use for Architecture payloads. The UML Class branch is a coordinate-bearing compatibility
+facade; production UML artifacts go through the coordinate-free registry contract.
+"""
+
 from __future__ import annotations
 
 import json

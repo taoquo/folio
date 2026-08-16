@@ -1,3 +1,9 @@
+"""Text to Architecture semantic planner.
+
+Turns prose notes into an `ArchitectureDiagramSpec`. This is the supported plain-text
+authoring path for Architecture artifacts, not a legacy shim.
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, replace

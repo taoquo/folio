@@ -148,7 +148,8 @@ python3 scripts/folio.py batch-render-drawings references/fixtures/v5 \
 - Connectors use orthogonal segments, 8-unit rounded elbows, distinct attach points, opaque label masks, and bridge hops at unavoidable crossings.
 - Folio keeps one accent color.
 - Architecture SVG, PNG, and PDF artifact entrypoints remain compatible.
-- The legacy coordinate-bearing UML loader remains available only as a compatibility facade; production UML artifacts use the coordinate-free registry contract.
+- The coordinate-bearing UML loader in `scripts/diagram_models.py` plus `scripts/diagram_layout.py:layout_uml_class` remain available only as a compatibility facade; production UML artifacts use the coordinate-free registry contract.
+- `scripts/diagram_models.py` is the Architecture spec contract shared by the registry compiler and `scripts/diagram_semantic_planning.py`; the latter is the supported text-to-Architecture planner, not a legacy path.
 
 ## Diagnostics
 

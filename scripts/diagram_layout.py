@@ -1,3 +1,10 @@
+"""Legacy spec layout facade.
+
+Architecture specs forward to `drawing.layout.elk.layout_drawing`. `layout_uml_class`
+is the last self-owned implementation and only serves the coordinate-bearing UML
+compatibility facade.
+"""
+
 from __future__ import annotations
 
 import json
@@ -393,74 +400,6 @@ def _shift_edge(edge: LayoutEdge, dx: int, dy: int) -> LayoutEdge:
     )
 
 
-def _legacy_validate_layout(result: LayoutResult, width: int, height: int) -> list[str]:
-    issues: list[str] = []
-    boxes = result.boxes
-    items = list(boxes.items())
-    for index, (left_id, left) in enumerate(items):
-        if left.x < 0 or left.y < 0 or left.x + left.w > width or left.y + left.h > height:
-            issues.append(f"{left_id} outside canvas")
-        for right_id, right in items[index + 1:]:
-            if _boxes_overlap(left, right, padding=8):
-                issues.append(f"{left_id} overlaps {right_id}")
-    for edge in result.edges:
-        if len(edge.points) < 2:
-            issues.append(f"{edge.source}->{edge.target} has no route")
-            continue
-        target_box = boxes.get(edge.target)
-        if target_box and not _point_touches_box(edge.points[-1], target_box):
-            issues.append(f"{edge.source}->{edge.target} arrow does not terminate on target")
-        for node_id, box in boxes.items():
-            if node_id in {edge.source, edge.target}:
-                continue
-            if _polyline_crosses_box(edge.points, box):
-                issues.append(f"{edge.source}->{edge.target} crosses {node_id}")
-        if edge.label_box:
-            if edge.label_box.x < 0 or edge.label_box.y < 0 or edge.label_box.x + edge.label_box.w > width or edge.label_box.y + edge.label_box.h > height:
-                issues.append(f"{edge.source}->{edge.target} label outside canvas")
-            for node_id, box in boxes.items():
-                if _boxes_overlap(edge.label_box, box, padding=2):
-                    issues.append(f"{edge.source}->{edge.target} label overlaps {node_id}")
-
-    edge_list = result.edges
-    for i, left in enumerate(edge_list):
-        for right in edge_list[i + 1:]:
-            if {left.source, left.target} == {right.source, right.target}:
-                continue
-            if left.source in {right.source, right.target} or left.target in {right.source, right.target}:
-                continue
-            if _polylines_collinear_overlap(left.points, right.points):
-                issues.append(f"{left.source}->{left.target} overlaps edge {right.source}->{right.target}")
-    return issues
-
-
-def _polylines_collinear_overlap(left: list[tuple[int, int]], right: list[tuple[int, int]]) -> bool:
-    left_segs = list(zip(left, left[1:]))
-    right_segs = list(zip(right, right[1:]))
-    for ls, le in left_segs:
-        for rs, re in right_segs:
-            if _segments_collinear_overlap(ls, le, rs, re):
-                return True
-    return False
-
-
-def _segments_collinear_overlap(
-    a1: tuple[int, int],
-    a2: tuple[int, int],
-    b1: tuple[int, int],
-    b2: tuple[int, int],
-) -> bool:
-    if a1[0] == a2[0] and b1[0] == b2[0] and abs(a1[0] - b1[0]) < 8:
-        lo = max(min(a1[1], a2[1]), min(b1[1], b2[1]))
-        hi = min(max(a1[1], a2[1]), max(b1[1], b2[1]))
-        return hi - lo > 8
-    if a1[1] == a2[1] and b1[1] == b2[1] and abs(a1[1] - b1[1]) < 8:
-        lo = max(min(a1[0], a2[0]), min(b1[0], b2[0]))
-        hi = min(max(a1[0], a2[0]), max(b1[0], b2[0]))
-        return hi - lo > 8
-    return False
-
-
 def _boxes_overlap(left: LayoutBox, right: LayoutBox, padding: int = 0) -> bool:
     return not (
         left.x + left.w + padding <= right.x
@@ -468,27 +407,6 @@ def _boxes_overlap(left: LayoutBox, right: LayoutBox, padding: int = 0) -> bool:
         or left.y + left.h + padding <= right.y
         or right.y + right.h + padding <= left.y
     )
-
-
-def _point_touches_box(point: tuple[int, int], box: LayoutBox) -> bool:
-    x, y = point
-    return box.x - 6 <= x <= box.x + box.w + 6 and box.y - 6 <= y <= box.y + box.h + 6
-
-
-def _polyline_crosses_box(points: list[tuple[int, int]], box: LayoutBox) -> bool:
-    padded = LayoutBox(box.x - 4, box.y - 4, box.w + 8, box.h + 8)
-    for start, end in zip(points, points[1:]):
-        if start[0] == end[0]:
-            x = start[0]
-            y1, y2 = sorted([start[1], end[1]])
-            if padded.x < x < padded.x + padded.w and y1 < padded.y + padded.h and y2 > padded.y:
-                return True
-        elif start[1] == end[1]:
-            y = start[1]
-            x1, x2 = sorted([start[0], end[0]])
-            if padded.y < y < padded.y + padded.h and x1 < padded.x + padded.w and x2 > padded.x:
-                return True
-    return False
 
 
 def _grid(value: float | int) -> int:

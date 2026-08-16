@@ -316,7 +316,7 @@ Authors provide type members and relationships, never `x`, `y`, box dimensions, 
 | Relationship kinds | `inheritance`, `association`, `aggregation`, `composition` |
 | Budget | 1-8 types, up to 6 attributes and 5 methods per type, 0-12 relationships |
 
-Every type and relationship needs a stable id, and a relationship must reference two distinct known types. The older unversioned `references/fixtures/uml-class-demo.json` plus its `diagram_models.py` loader stay callable for compatibility tests only; production CLI, catalog, host, and build artifact paths use the versioned registry compiler.
+Every type and relationship needs a stable id, and a relationship must reference two distinct known types. Production CLI, catalog, host, and build artifact paths use the versioned registry compiler. `scripts/diagram_models.py` is the Architecture spec contract layer that the registry compiler and the text planner both load through `load_diagram_spec`; it is not a legacy shim. Its coordinate-bearing UML branch, together with the older unversioned `references/fixtures/uml-class-demo.json` and `scripts/diagram_layout.py:layout_uml_class`, is the one remaining compatibility facade.
 
 ---
 
