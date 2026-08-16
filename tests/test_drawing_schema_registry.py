@@ -35,6 +35,26 @@ class DrawingSchemaRegistryTests(TestCase):
                 minimal_result = DEFAULT_COMPILER_REGISTRY.compile_payload(minimal)
                 self.assertEqual(contract.kind, minimal_result.kind)
 
+    def test_aggregate_schema_covers_every_kind_without_a_standalone_contract(self) -> None:
+        aggregate = json.loads(
+            (ROOT / "references" / "schemas" / "drawing-payload-v3.schema.json").read_text(encoding="utf-8")
+        )
+        standalone = {"architecture", "flowchart"}
+        refs = {item["$ref"].rsplit("/", 1)[-1] for item in aggregate["oneOf"]}
+
+        kind_defs = {
+            name
+            for name, definition in aggregate["$defs"].items()
+            if "kind" in definition.get("properties", {})
+        }
+
+        self.assertEqual(set(DEFAULT_COMPILER_REGISTRY.kinds) - standalone, refs)
+        self.assertEqual(refs, kind_defs)
+        for kind in standalone:
+            top_level = schema_contract(kind).load_schema()
+            self.assertEqual(kind, top_level["properties"]["kind"]["const"])
+            self.assertNotIn(kind, refs)
+
     def test_schema_contract_metadata_is_portable(self) -> None:
         metadata = schema_contract("waterfall").to_dict()
 
