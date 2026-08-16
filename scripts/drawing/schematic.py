@@ -224,11 +224,23 @@ def _resolve_pyramid(plan: PyramidPlan, layout: PyramidLayout) -> ResolvedScene:
 
 
 LOOP_CENTER_X = 336
-LOOP_CENTER_Y = 300
-LOOP_RING_RADIUS = 168
 LOOP_STAGE_RADIUS = 56
 LOOP_DETAIL_X = 596
 LOOP_DETAIL_WIDTH = 300
+LOOP_RING_RADIUS = 168
+LOOP_TOP_MARGIN = 76
+LOOP_BOTTOM_MARGIN = 16
+
+
+def loop_ring_geometry(height: int) -> tuple[int, int]:
+    """Return the ring centre and radius that fit inside the requested canvas height."""
+    usable = height - LOOP_TOP_MARGIN - LOOP_BOTTOM_MARGIN
+    radius = _grid(min(LOOP_RING_RADIUS, usable / 2 - LOOP_STAGE_RADIUS))
+    span = radius + LOOP_STAGE_RADIUS
+    midpoint = (LOOP_TOP_MARGIN + height - LOOP_BOTTOM_MARGIN) / 2
+    lowest = LOOP_TOP_MARGIN + span
+    highest = height - LOOP_BOTTOM_MARGIN - span
+    return _grid(min(max(midpoint, lowest), highest)), radius
 
 
 @dataclass(frozen=True)
@@ -318,6 +330,7 @@ def compile_loop_flywheel_payload(payload: dict[str, Any]):
 
 def _layout_loop_flywheel(plan: LoopFlywheelPlan) -> LoopFlywheelLayout:
     count = len(plan.stages)
+    center_y, radius = loop_ring_geometry(plan.height)
     step = 2 * pi / count
     gap = min(step * 0.34, 0.44)
     centers: dict[str, tuple[int, int]] = {}
@@ -328,28 +341,35 @@ def _layout_loop_flywheel(plan: LoopFlywheelPlan) -> LoopFlywheelLayout:
     for index, item in enumerate(plan.stages):
         angle = -pi / 2 + index * step
         angles.append(angle)
-        centers[item["id"]] = _point_on_ring(angle)
-        detail_positions[item["id"]] = (LOOP_DETAIL_X, _grid(140 + index * (300 / max(1, count - 1))))
+        centers[item["id"]] = _point_on_ring(angle, center_y, radius)
+        detail_positions[item["id"]] = (LOOP_DETAIL_X, _loop_detail_y(plan.height, index, count))
     for index, item in enumerate(plan.stages):
         start_angle = angles[index] + gap
         end_angle = angles[(index + 1) % count] - gap
         if end_angle < start_angle:
             end_angle += 2 * pi
-        arcs[item["id"]] = (_point_on_ring(start_angle), _point_on_ring(end_angle))
-        arrows[item["id"]] = _arrow_head(end_angle)
+        arcs[item["id"]] = (_point_on_ring(start_angle, center_y, radius), _point_on_ring(end_angle, center_y, radius))
+        arrows[item["id"]] = _arrow_head(end_angle, center_y, radius)
     return LoopFlywheelLayout(centers, arcs, arrows, detail_positions)
 
 
-def _point_on_ring(angle: float) -> tuple[int, int]:
+def _loop_detail_y(height: int, index: int, count: int) -> int:
+    top = LOOP_TOP_MARGIN + 64
+    bottom = height - LOOP_BOTTOM_MARGIN - 48
+    span = min(300.0, max(0.0, bottom - top))
+    return _grid(top + index * (span / max(1, count - 1)))
+
+
+def _point_on_ring(angle: float, center_y: int, radius: int) -> tuple[int, int]:
     return (
-        _grid(LOOP_CENTER_X + LOOP_RING_RADIUS * cos(angle)),
-        _grid(LOOP_CENTER_Y + LOOP_RING_RADIUS * sin(angle)),
+        _grid(LOOP_CENTER_X + radius * cos(angle)),
+        _grid(center_y + radius * sin(angle)),
     )
 
 
-def _arrow_head(angle: float) -> tuple[tuple[int, int], ...]:
-    tip_x = LOOP_CENTER_X + LOOP_RING_RADIUS * cos(angle)
-    tip_y = LOOP_CENTER_Y + LOOP_RING_RADIUS * sin(angle)
+def _arrow_head(angle: float, center_y: int, radius: int) -> tuple[tuple[int, int], ...]:
+    tip_x = LOOP_CENTER_X + radius * cos(angle)
+    tip_y = center_y + radius * sin(angle)
     tangent = angle + pi / 2
     back_x = tip_x - 13 * cos(tangent)
     back_y = tip_y - 13 * sin(tangent)
@@ -364,11 +384,13 @@ def _arrow_head(angle: float) -> tuple[tuple[int, int], ...]:
 
 def _resolve_loop_flywheel(plan: LoopFlywheelPlan, layout: LoopFlywheelLayout) -> ResolvedScene:
     theme = DEFAULT_FOLIO_THEME
+    center_y, radius = loop_ring_geometry(plan.height)
+    hub_radius = _grid(min(72, radius - 24))
     primitives: list[object] = []
     reading: list[str] = []
     for item in plan.stages:
         start, end = layout.arcs[item["id"]]
-        path = f"M {start[0]} {start[1]} A {LOOP_RING_RADIUS} {LOOP_RING_RADIUS} 0 0 1 {end[0]} {end[1]}"
+        path = f"M {start[0]} {start[1]} A {radius} {radius} 0 0 1 {end[0]} {end[1]}"
         primitives.append(ScenePath(f"arc:{item['id']}", path, SceneStyle("none", theme.muted_stroke, 1)))
         points = layout.arrows[item["id"]]
         head = "M " + " L ".join(f"{x} {y}" for x, y in points) + " Z"
@@ -376,10 +398,10 @@ def _resolve_loop_flywheel(plan: LoopFlywheelPlan, layout: LoopFlywheelLayout) -
     if plan.hub:
         hub_lines = wrap_text(plan.hub, 132, 11, theme.serif, max_lines=2)
         hub_children: list[object] = [
-            SceneCircle("hub-disc", LOOP_CENTER_X, LOOP_CENTER_Y, 72, SceneStyle(theme.ivory, theme.border, 1)),
+            SceneCircle("hub-disc", LOOP_CENTER_X, center_y, hub_radius, SceneStyle(theme.ivory, theme.border, 1)),
         ]
         for line_index, line in enumerate(hub_lines):
-            hub_children.append(SceneText(line, LOOP_CENTER_X, int(round(LOOP_CENTER_Y + 4 + (line_index - (len(hub_lines) - 1) / 2) * 15)), theme.olive, 11, theme.serif, "middle"))
+            hub_children.append(SceneText(line, LOOP_CENTER_X, int(round(center_y + 4 + (line_index - (len(hub_lines) - 1) / 2) * 15)), theme.olive, 11, theme.serif, "middle"))
         primitives.append(SceneGroup("hub", tuple(hub_children)))
     for index, item in enumerate(plan.stages):
         item_id = str(item["id"])

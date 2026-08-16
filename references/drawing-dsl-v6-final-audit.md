@@ -115,40 +115,50 @@ declared 960 x 540 resolves to a narrower scene, and its height only grows. Stat
 height from its layer count when the payload omits `height`, which is why the showcase render is
 960 x 400. Both still validate any declared height against the graph band.
 
-The knob changes the frame, and only some kinds gain utilization from a shorter frame. Measured with
-the same `VQ101` algorithm over the showcase corpus:
+The knob changes the frame, and only some kinds gain utilization from a shorter frame. Every graph
+kind below is clean across the whole 500-800 band; the numbers are the `VQ101` utilization at
+500 / 540 / 640 / 800 on the showcase corpus.
+
+| Kind | 500 | 540 | 640 | 800 | Response to a shorter frame |
+|---|---|---|---|---|---|
+| timeline | 0.388 | 0.360 | 0.303 | 0.243 | gain, marks are height-independent |
+| tree | 0.405 | 0.375 | 0.316 | 0.253 | gain, tier spacing is capped |
+| pyramid | 0.662 | 0.613 | 0.517 | 0.414 | gain, tier bands are capped |
+| org-chart | 0.628 | 0.581 | 0.490 | 0.392 | gain, tier spacing is capped |
+| layer-stack | 0.619 | 0.574 | 0.484 | 0.387 | gain, band height is capped |
+| state-machine | 0.433 | 0.401 | 0.338 | 0.271 | gain, layer spacing is capped |
+| quadrant | 0.589 | 0.545 | 0.460 | 0.368 | gain, the label ring is capped |
+| venn | 0.564 | 0.523 | 0.441 | 0.353 | gain, set radius is capped |
+| loop-flywheel | 0.557 | 0.581 | 0.490 | 0.468 | peak at the default, the ring shrinks to fit a short frame |
+| architecture | 0.542 | 0.553 | 0.575 | 0.598 | loss, a taller frame is the real gain |
+| flowchart | 0.520 | 0.520 | 0.530 | 0.568 | loss, the stage is width-driven and only grows |
+| swimlane | 0.657 | 0.674 | 0.707 | 0.742 | loss, lane height is the content |
+
+The chart and notation families behave the same way against their own bands:
 
 | Kind | Measured behaviour | Cause |
 |---|---|---|
-| timeline | 0.388 at 500, 0.360 at 540, 0.303 at 640, 0.243 at 800 | marks are height-independent, so a shorter frame is a real gain |
-| tree | 0.405, 0.375, 0.316, 0.253 across the same heights | same, tier spacing is capped |
 | donut-chart | 0.387 at 400, 0.420 at 440, 0.471 at 540, 0.354 at 720 | radius is height-derived, so content tracks the frame in both directions |
 | candlestick | 0.455 at 400, 0.542 at 540, 0.605 at 720 | plot band is height-derived, so a taller frame is the real gain |
-| uml-class | `UC013` at 480, 0.525 at 560, 0.514 at 640, 0.499 at 800 | grid rows are height-derived and member density is gated |
-| loop-flywheel | 0.627 at 500 down to 0.392 at 800, clean throughout | radial radius is not height-derived, so a taller frame only adds air |
-| quadrant, venn | 0.589 / 0.564 at 500 down to 0.368 / 0.353 at 800, clean throughout | label ring is not height-derived, same effect |
+| uml-class | `UC013` at 480, 0.525 at 540, 0.514 at 640, 0.499 at 800 | grid rows are height-derived and member density is gated |
 
-The 500-unit graph floor is empirical: at 480 the loop-flywheel radial ring and the quadrant / venn
-label ring rendered outside the canvas. Charts keep a 400 floor because their chrome is fixed, and
-notation keeps 480 because `UC013` gates member density before geometry breaks.
-| pyramid | works at 480 (0.69), fails at 440 | tier text runs out of room |
-| org-chart | works to 440 (0.71), fails at 400 | tier text runs out of room |
-| architecture, flowchart, swimlane | accepted but flat or worse (`swimlane` 0.674 -> 0.60) | layout is width-driven |
-| layer-stack, state-machine | monotonic gain (`layer-stack` 0.574 -> 0.77) | height-driven layout |
+The 500-unit graph floor is empirical: below it the pyramid tier text and the quadrant label ring
+leave the canvas. Charts keep a 400 floor because their chrome is fixed, and notation keeps 480
+because `UC013` gates member density before geometry breaks.
 
 So the knob is a framing control on every data chart and notation diagram, and a utilization
-mitigation only on the kinds whose marks do not scale with the canvas. Recorded as a known limit:
-radial geometry still rejects a shorter frame on `loop-flywheel`, `quadrant`, and `venn`.
+mitigation on the kinds whose marks do not scale with the canvas.
 
 ## 4. Remaining limits
 
 Known, bounded, and non-blocking.
 
-- Canvas utilization for `timeline` (0.360) and `tree` (0.375) is the lowest in the catalog, with
-  `donut-chart` (0.471) next. The explicit `height` knob mitigates `timeline` and `tree`, measured at
-  0.476 and 0.506 on a 400-high canvas. It is a no-op for `donut-chart`, whose radius is
-  height-derived, and rejected by `loop-flywheel`, `quadrant`, and `venn`, whose radial geometry is
-  not. See section 3.1.
+- Canvas utilization at the default height for `timeline` (0.360) and `tree` (0.375) is the lowest in
+  the catalog, with `state-machine` (0.401) and `donut-chart` (0.471) next. The explicit `height` knob
+  is the mitigation and it stays inside the published band: at the 500 floor `timeline` reaches 0.388
+  and `tree` reaches 0.405. Going lower is a band change, not an authoring choice. The knob is a
+  framing control rather than a utilization lever on `donut-chart`, whose radius is height-derived.
+  See section 3.1.
 - Sibling connectors in `tree` now merge into one shared horizontal bus per parent, matching
   `org-chart`. The routing moved off the `scene.edges` channel, because `DG112` (connector overlap)
   and `DG115` (shared attach point) iterate `scene.edges` only and reject an edge-channel trunk.

@@ -82,13 +82,46 @@ class GraphCanvasContractTests(TestCase):
                     payload = showcase_fixture(kind)
                     payload.update(width=CANVAS_WIDTH, height=height)
                     result = DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
-                    self.assertFalse([item for item in result.diagnostics if item.severity == "ERROR"])
+                    self.assertFalse([item for item in result.diagnostics if item.level == "ERROR"])
                     if kind in ADAPTIVE_WIDTH_KINDS:
                         # Flowchart only grows the stage, so a taller canvas must never shrink it.
                         self.assertGreaterEqual(result.scene.height, height)
                         self.assertLessEqual(result.scene.width, CANVAS_WIDTH)
                     else:
                         self.assertEqual((CANVAS_WIDTH, height), (result.scene.width, result.scene.height))
+
+    def test_graph_band_holds_for_every_published_fixture_shape(self) -> None:
+        """The band is a promise about geometry, not only about the showcase fixture."""
+        heights = (GRAPH_CANVAS.minimum, GRAPH_CANVAS.default, GRAPH_CANVAS.maximum)
+        for kind in GRAPH_KINDS:
+            for directory in ("v3", "v5", "minimal"):
+                path = ROOT / "references" / "fixtures" / directory / f"{kind}.json"
+                if not path.exists():
+                    continue
+                for height in heights:
+                    with self.subTest(kind=kind, fixture=directory, height=height):
+                        payload = json.loads(path.read_text(encoding="utf-8"))
+                        payload.update(width=CANVAS_WIDTH, height=height)
+                        result = DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
+                        self.assertFalse([item for item in result.diagnostics if item.level == "ERROR"])
+
+    def test_loop_flywheel_ring_stays_inside_every_band_height(self) -> None:
+        """Radial geometry is derived from the canvas, so no stage count can push the ring out."""
+        from drawing.schematic import LOOP_STAGE_RADIUS, loop_ring_geometry
+
+        payload = showcase_fixture("loop-flywheel")
+        stages = payload["stages"]
+        for height in range(GRAPH_CANVAS.minimum, GRAPH_CANVAS.maximum + 1, 4):
+            center, radius = loop_ring_geometry(height)
+            self.assertGreater(radius, 0)
+            self.assertGreaterEqual(center - radius - LOOP_STAGE_RADIUS, 0)
+            self.assertLessEqual(center + radius + LOOP_STAGE_RADIUS, height)
+        for count in range(3, len(stages) + 1):
+            for height in range(GRAPH_CANVAS.minimum, GRAPH_CANVAS.maximum + 1, 4):
+                with self.subTest(stages=count, height=height):
+                    candidate = dict(payload, stages=stages[:count], width=CANVAS_WIDTH, height=height)
+                    result = DEFAULT_COMPILER_REGISTRY.compile_payload(candidate)
+                    self.assertFalse([item for item in result.diagnostics if item.level == "ERROR"])
 
     def test_out_of_band_graph_canvas_is_rejected(self) -> None:
         cases = (

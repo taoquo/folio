@@ -155,7 +155,7 @@ class DrawingDataVizV4RegressionTests(TestCase):
                     result = DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
                     self.assertEqual(result.scene.height, height)
                     self.assertEqual(result.scene.width, 960)
-                    self.assertFalse([item for item in result.diagnostics if item.severity == "ERROR"])
+                    self.assertFalse([item for item in result.diagnostics if item.level == "ERROR"])
                     plot_heights.append(result.layout.plot.h)
             with self.subTest(kind=kind):
                 # The donut ring caps its radius at the VQ104 accent budget, so growth can plateau,
@@ -173,7 +173,7 @@ class DrawingDataVizV4RegressionTests(TestCase):
                     result = DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
                     self.assertEqual(result.scene.height, height)
                     self.assertEqual(result.scene.width, 960)
-                    self.assertFalse([item for item in result.diagnostics if item.severity == "ERROR"])
+                    self.assertFalse([item for item in result.diagnostics if item.level == "ERROR"])
                     # Sequence spends the extra height on the message band, box notations on the grid.
                     if kind == "sequence":
                         floors.append(max(route[-1][1] for route in result.layout.relations.values()))
