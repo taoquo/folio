@@ -24,7 +24,7 @@
     "reference_lines": {"type": "array", "maxItems": 3, "items": {"$ref": "#/$defs/reference-line"}},
     "annotations": {"type": "array", "maxItems": 3, "items": {"$ref": "#/$defs/annotation"}},
     "width": {"const": 960},
-    "height": {"const": 540},
+    "height": {"type": "integer", "minimum": 400, "maximum": 720, "multipleOf": 4},
     "language": {"$ref": "#/$defs/non-empty-string"}
   },
   "$defs": {

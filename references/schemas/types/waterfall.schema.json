@@ -18,7 +18,7 @@
     "end": {"type": "number"},
     "tolerance": {"type": "number", "minimum": 0},
     "width": {"const": 960},
-    "height": {"const": 540},
+    "height": {"type": "integer", "minimum": 400, "maximum": 720, "multipleOf": 4},
     "language": {"$ref": "#/$defs/non-empty-string"}
   },
   "$defs": {

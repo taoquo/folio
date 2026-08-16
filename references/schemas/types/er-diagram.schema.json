@@ -13,7 +13,7 @@
     "relationships": {"type": "array", "minItems": 1, "maxItems": 12, "items": {"$ref": "#/$defs/relationship"}},
     "focus_entity": {"type": ["string", "null"]},
     "width": {"const": 960},
-    "height": {"const": 640},
+    "height": {"type": "integer", "minimum": 480, "maximum": 800, "multipleOf": 4},
     "language": {"$ref": "#/$defs/text"}
   },
   "$defs": {

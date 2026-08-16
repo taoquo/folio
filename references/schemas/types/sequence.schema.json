@@ -13,7 +13,7 @@
     "messages": {"type": "array", "minItems": 1, "maxItems": 12, "items": {"$ref": "#/$defs/message"}},
     "focus_participant": {"type": ["string", "null"]},
     "width": {"const": 960},
-    "height": {"const": 540},
+    "height": {"type": "integer", "minimum": 480, "maximum": 800, "multipleOf": 4},
     "language": {"$ref": "#/$defs/text"}
   },
   "$defs": {

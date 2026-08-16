@@ -114,7 +114,7 @@ Architecture semantic input is version `3.0`; legacy unversioned semantic payloa
 - Bar, Line, and Candlestick accept up to three semantic `annotations`; targets use series/category or period/field identity, never coordinates.
 - Waterfall contribution `kind` is `delta` by default or `subtotal`; a subtotal value must equal the current running total within `tolerance` and does not alter arithmetic.
 - `value_format` controls precision, compact notation, grouping, and unit position for display only. Semantic and accessible values remain exact.
-- Supported locales are `en-US`, `en-GB`, `zh-CN`, and `zh-TW`. The chart canvas is exactly 960×540; use output profiles or host contracts for responsive sizing.
+- Supported locales are `en-US`, `en-GB`, `zh-CN`, and `zh-TW`. The chart canvas width is fixed at 960; `height` is a bounded knob accepting 400-720 in steps of 4, defaulting to 540. Use output profiles or host contracts for responsive sizing.
 - Heatmap accepts 3-12 `columns` (labels up to 12 characters) and 3-10 `rows`; every row needs a stable id, a label, and one finite value per column. Cells carry no numeric text: the graded intensity legend and the accessible description own the values, which keeps contrast safe on every theme.
 - Heatmap grades one measure with a single warm ramp and allows at most one `emphasis: focal` row, rendered in the accent color. Multi-hue colormaps are out of scope.
 

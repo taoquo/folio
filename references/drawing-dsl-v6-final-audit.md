@@ -88,17 +88,26 @@ The two lowest values are structural rather than radial: `timeline` is a single 
 marks past the type scale. Authors who want a tighter frame can set `height` explicitly where the
 generator permits it; on `timeline`, `height: 400` raises utilization from 0.360 to 0.48 with zero new
 diagnostics, and `tree` moves 0.375 -> 0.51 the same way. Changing the shipped default would move
-every committed geometry baseline, so the default stays 960 x 540 and the knob is documented instead.
+every committed geometry baseline, so the default stays 960 x 540 while `height` is an enforced,
+bounded knob on every data chart and notation diagram.
 
 ### 3.1 Where the `height` knob does not apply
 
-The knob is not universal. Several generators assert an exact canvas and reject any other height
-before layout runs, and several others pass validation only at the default height.
+The knob is bounded, not universal. Data charts and notation diagrams derive their plot band from the
+canvas height and accept a checked range; the remaining kinds pass validation only near the default.
+
+| Family | Accepted canvas | Enforcement |
+|---|---|---|
+| bar-chart, candlestick, donut-chart, gantt, heatmap, line-chart, scatter, waterfall | width 960, height 400-720 step 4 | `_validate_canvas` in `scripts/drawing/dataviz.py` |
+| er-diagram, sequence, uml-class | width 960, height 480-800 step 4 | `_valid_height` in `scripts/drawing/notation.py` |
+
+Out-of-range values fail with `DN000` naming the accepted range, and the JSON contracts in
+`references/schemas/types/` carry the same bounds, so schema validation and compilation agree.
 
 | Kinds | Behaviour at 480 / 440 / 400 | Cause |
 |---|---|---|
-| bar-chart, candlestick, donut-chart, gantt, line-chart, scatter, waterfall | `DN000` `data chart canvas must be exactly 960x540` | hard assertion in `dataviz.py:338` |
-| er-diagram, sequence, uml-class | same class of exact-canvas assertion | per-kind canvas contract |
+| bar-chart, candlestick, donut-chart, gantt, heatmap, line-chart, scatter, waterfall | plot band scales with the canvas | height-derived layout |
+| er-diagram, sequence, uml-class | message band and grid rows scale with the canvas | height-derived layout |
 | loop-flywheel | `circle outside canvas` at 480, `primitive text outside canvas` below | radial radius is not height-derived |
 | quadrant, venn | `primitive text outside canvas` at 480 | label ring is not height-derived |
 | pyramid | works at 480 (0.69), fails at 440 | tier text runs out of room |
@@ -106,18 +115,17 @@ before layout runs, and several others pass validation only at the default heigh
 | architecture, flowchart, swimlane | accepted but flat or worse (`swimlane` 0.67 -> 0.60) | layout is width-driven |
 | timeline, tree, layer-stack, state-machine | monotonic gain (`layer-stack` 0.57 -> 0.77) | height-driven layout |
 
-Recorded as a known limit, not fixed in this pass: the `dataviz.py:338` assertion means the mitigation
-named in section 4 is unavailable for `donut-chart`, and the radial geometry means it is unavailable
-for `loop-flywheel`.
+Recorded as a known limit: radial geometry means the mitigation named in section 4 is still
+unavailable for `loop-flywheel`, `quadrant`, and `venn`.
 
 ## 4. Remaining limits
 
 Known, bounded, and non-blocking.
 
 - Canvas utilization for `timeline` (0.360) and `tree` (0.375) is the lowest in the catalog, with
-  `donut-chart` (0.471) next. Mitigation is the explicit `height` knob, which works for `timeline` and
-  `tree` but is blocked for `donut-chart` by the exact-canvas assertion in `dataviz.py:338` and for
-  `loop-flywheel` by radial geometry. See section 3.1.
+  `donut-chart` (0.471) next. Mitigation is the explicit `height` knob, which now works for
+  `timeline`, `tree`, and every data chart including `donut-chart`; it stays blocked for
+  `loop-flywheel`, `quadrant`, and `venn` by radial geometry. See section 3.1.
 - Sibling connectors in `tree` now merge into one shared horizontal bus per parent, matching
   `org-chart`. The routing moved off the `scene.edges` channel, because `DG112` (connector overlap)
   and `DG115` (shared attach point) iterate `scene.edges` only and reject an edge-channel trunk.

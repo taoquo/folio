@@ -309,7 +309,7 @@ Sequence rejects self-messages in V4.3. UML and ER reject parallel directed rela
 
 Production UML Class input uses `schema_version: "3.0"`, `kind: "uml-class"`, and optional `layout: "class-grid"`. Start from `references/fixtures/minimal/uml-class.json` or `references/fixtures/v4/uml-class.json`; the authoritative contract is `references/schemas/types/uml-class.schema.json`.
 
-Authors provide type members and relationships, never `x`, `y`, box dimensions, connector paths, colors, or SVG. The compiler owns a bounded 960x640 grid, shared scene validation, accessibility metadata, output profiles, and SVG / PNG / PDF serialization.
+Authors provide type members and relationships, never `x`, `y`, box dimensions, connector paths, colors, or SVG. The compiler owns the grid: width is fixed at 960 and `height` accepts 480-800 in steps of 4, defaulting to 640, with grid rows derived from the canvas. It also owns shared scene validation, accessibility metadata, output profiles, and SVG / PNG / PDF serialization.
 
 | Axis | Accepted values |
 |---|---|

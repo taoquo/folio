@@ -45,6 +45,56 @@ SUPPORTED_LOCALES = {"en-US", "en-GB", "zh-CN", "zh-TW"}
 SERIES_KEY_X = 844
 SERIES_KEY_WIDTH = 100
 
+# Width stays fixed because every gutter constant (series keys, legends, label columns)
+# is measured against a 960-unit canvas. Height is a real knob: each plot band is derived
+# from the canvas height so taller or shorter charts keep the same top and bottom chrome.
+CHART_WIDTH = 960
+CHART_HEIGHT_DEFAULT = 540
+CHART_HEIGHT_MIN = 400
+CHART_HEIGHT_MAX = 720
+
+
+def _source_y(height: int) -> int:
+    """Baseline for the optional source caption, 32 units above the canvas floor."""
+    return height - 32
+
+
+def _axis_plot(height: int) -> SceneBox:
+    """Plot band for value-axis charts: bar, line, candlestick, waterfall."""
+    return SceneBox(100, 80, 720, height - 200)
+
+
+# The donut ring sits left of a right-hand legend column. Both are derived from a band that
+# starts below the title and stops above the bottom margin, so height stays a real knob.
+DONUT_CENTER_X = 250
+DONUT_BAND_TOP = 96
+DONUT_BAND_BOTTOM_PAD = 48
+# outer stays <= 190 so a single 50% brand segment keeps its bounding box under the VQ104 budget.
+DONUT_OUTER_MAX = 190
+DONUT_INNER_RATIO = 108 / 190
+
+
+@dataclass(frozen=True)
+class DonutGeometry:
+    cx: int
+    cy: int
+    outer: int
+    inner: int
+    legend_top: int
+    legend_step: int
+
+
+def _donut_geometry(height: int, segments: int) -> DonutGeometry:
+    band_top, band_bottom = DONUT_BAND_TOP, height - DONUT_BAND_BOTTOM_PAD
+    band_h = band_bottom - band_top
+    center = _grid((band_top + band_bottom) / 2)
+    outer = min(DONUT_OUTER_MAX, band_h // 2)
+    rows = max(1, segments - 1)
+    legend_step = min(72 if segments <= 5 else 60, max(24, (band_h - 42) // rows))
+    legend_span = rows * legend_step + 30
+    legend_top = max(band_top, min(int(center - rows * legend_step / 2) - 12, band_bottom - legend_span))
+    return DonutGeometry(DONUT_CENTER_X, center, outer, _grid(outer * DONUT_INNER_RATIO), legend_top, legend_step)
+
 
 def _series_key_primitives(label: str, top: int, color: str, theme) -> list[object]:
     """Right-gutter series key, wrapped so long labels never overflow the canvas."""
@@ -334,9 +384,30 @@ def _common_chart(
         diagnostics.append(DrawingDiagnostic("ERROR", code, "value_format must be an object"))
     else:
         _validate_value_format(payload.get("value_format"), diagnostics, code)
-    if payload.get("width", 960) != 960 or payload.get("height", 540) != 540:
-        diagnostics.append(DrawingDiagnostic("ERROR", code, "data chart canvas must be exactly 960x540; use an output profile or host contract to resize"))
+    _validate_canvas(payload, diagnostics, code, kind=kind)
     return diagnostics
+
+
+def _validate_canvas(
+    payload: dict[str, Any],
+    diagnostics: list[DrawingDiagnostic],
+    code: str,
+    *,
+    kind: str,
+) -> None:
+    """Width is fixed at 960; height is a bounded knob so hosts can trade air for density."""
+    if payload.get("width", CHART_WIDTH) != CHART_WIDTH:
+        diagnostics.append(DrawingDiagnostic(
+            "ERROR", code, f"{kind} canvas width must be exactly {CHART_WIDTH}; use an output profile to rescale",
+        ))
+    height = payload.get("height", CHART_HEIGHT_DEFAULT)
+    if not isinstance(height, int) or isinstance(height, bool) or not CHART_HEIGHT_MIN <= height <= CHART_HEIGHT_MAX:
+        diagnostics.append(DrawingDiagnostic(
+            "ERROR", code,
+            f"{kind} canvas height must be an integer from {CHART_HEIGHT_MIN} to {CHART_HEIGHT_MAX}",
+        ))
+    elif height % 4:
+        diagnostics.append(DrawingDiagnostic("ERROR", code, f"{kind} canvas height must sit on the 4-unit grid"))
 
 
 def _validate_value_format(value: Any, diagnostics: list[DrawingDiagnostic], code: str) -> None:
@@ -608,7 +679,7 @@ def compile_bar_payload(payload: dict[str, Any]):
 
 
 def _layout_bars(plan: BarPlan) -> ChartLayout:
-    plot = SceneBox(100, 80, 720, 340)
+    plot = _axis_plot(plan.height)
     baseline = _y(0, plan.scale, plot)
     group_width = plot.w / len(plan.categories)
     # V5: slimmer grouped bars keep editorial air and hold the solid-accent budget (VQ104).
@@ -808,7 +879,7 @@ def compile_line_payload(payload: dict[str, Any]):
 
 
 def _layout_lines(plan: LinePlan) -> ChartLayout:
-    plot = SceneBox(100, 80, 720, 340)
+    plot = _axis_plot(plan.height)
     if plan.x_scale == "time":
         parsed = [date.fromisoformat(value) for value in plan.categories]
         span = max(1, (parsed[-1] - parsed[0]).days)
@@ -927,7 +998,9 @@ def _layout_donut(plan: DonutPlan) -> ChartLayout:
         sweep = float(item["value"]) / plan.total * 360
         angles[f"segment:{item['id']}"] = (start, start + sweep)
         start += sweep
-    return ChartLayout(SceneBox(60, 104, 380, 380), None, angles)
+    geometry = _donut_geometry(plan.height, len(plan.segments))
+    plot = SceneBox(geometry.cx - geometry.outer, geometry.cy - geometry.outer, geometry.outer * 2, geometry.outer * 2)
+    return ChartLayout(plot, None, angles)
 
 
 def _donut_path(cx: int, cy: int, outer: int, inner: int, start: float, end: float) -> str:
@@ -950,12 +1023,9 @@ def _resolve_donut(plan: DonutPlan, layout: ChartLayout, source: str | None) -> 
     palette = (theme.olive, theme.stone, theme.neutral_mid, theme.neutral_light, theme.brand_tint, theme.neutral_deep)
     primitives: list[object] = []
     reading: list[str] = []
-    # The donut sits left of a right-hand legend column. Both are pushed toward the canvas edges so
-    # the chart fills its frame instead of floating in the middle third.
-    # outer stays <= 192 so a single 50% brand segment keeps its bounding box under the VQ104 budget.
-    cx, cy, outer, inner = 250, 296, 190, 108
-    legend_step = 72 if len(plan.segments) <= 5 else 60
-    legend_top = max(120, int(cy - (len(plan.segments) - 1) * legend_step / 2) - 12)
+    geometry = _donut_geometry(plan.height, len(plan.segments))
+    cx, cy, outer, inner = geometry.cx, geometry.cy, geometry.outer, geometry.inner
+    legend_step, legend_top = geometry.legend_step, geometry.legend_top
     for index, item in enumerate(plan.segments):
         mark_id = f"segment:{item['id']}"
         start, end = layout.marks[mark_id]
@@ -1038,7 +1108,7 @@ def compile_candlestick_payload(payload: dict[str, Any]):
 
 
 def _layout_candles(plan: CandlestickPlan) -> ChartLayout:
-    plot = SceneBox(100, 80, 720, 340)
+    plot = _axis_plot(plan.height)
     parsed = [date.fromisoformat(str(item["date"])) for item in plan.periods]
     span = max(1, (parsed[-1] - parsed[0]).days) if len(parsed) > 1 else 1
     inner_left, inner_width = plot.x + 12, plot.w - 24
@@ -1157,7 +1227,7 @@ def compile_waterfall_payload(payload: dict[str, Any]):
 
 
 def _layout_waterfall(plan: WaterfallPlan) -> ChartLayout:
-    plot = SceneBox(100, 80, 720, 340)
+    plot = _axis_plot(plan.height)
     count = len(plan.contributions) + 2
     step = plot.w / count
     bar_width = max(24, min(56, _grid(step * 0.56)))
@@ -1228,9 +1298,13 @@ def _data_description(title: str, series: Iterable[tuple[str, Iterable[str], Ite
     return title + ". " + "; ".join(parts) + (f". Source: {source}" if source else "")
 
 
-SCATTER_PLOT = SceneBox(104, 88, 656, 344)
 SCATTER_LEGEND_X = 792
 SCATTER_LEGEND_WIDTH = 152
+
+
+def _scatter_plot(height: int) -> SceneBox:
+    """Scatter reserves extra bottom chrome for the x-axis label and overflow legend."""
+    return SceneBox(104, 88, 656, height - 196)
 
 
 @dataclass(frozen=True)
@@ -1322,7 +1396,7 @@ def _x(value: float, scale: ScalePlan, plot: SceneBox) -> int:
 
 
 def _layout_scatter(plan: ScatterPlan) -> ChartLayout:
-    plot = SCATTER_PLOT
+    plot = _scatter_plot(plan.height)
     marks: dict[str, Any] = {}
     occupied: list[SceneBox] = []
     offsets = ((10, -10), (10, 2), (-10, -10), (-10, 2), (0, -18), (0, 14))
@@ -1387,7 +1461,7 @@ def _resolve_scatter(plan: ScatterPlan, layout: ChartLayout, source: str | None)
         f"{item['label']}: {plan.x_axis['label']} {item['x']}, {plan.y_axis['label']} {item['y']}" for item in plan.points
     ) + (f". Source: {source}" if source else "")
     if source:
-        primitives.append(SceneText(f"Source: {source}", plot.x, 508, theme.stone, 8, theme.mono))
+        primitives.append(SceneText(f"Source: {source}", plot.x, _source_y(plan.height), theme.stone, 8, theme.mono))
     return ResolvedScene(
         plan.width, plan.height, theme.parchment, _title(plan.title, plan.width), (), (), (),
         description=description, language=plan.language, reading_order=tuple(reading), primitives=tuple(primitives),
@@ -1396,10 +1470,13 @@ def _resolve_scatter(plan: ScatterPlan, layout: ChartLayout, source: str | None)
 
 GANTT_LABEL_X = 40
 GANTT_LABEL_WIDTH = 176
-# The plot stops at x=840 so the right-hand track column (8pt mono, up to 88 units wide) still
-# fits inside the 960-unit canvas instead of being clipped by the right edge.
-GANTT_PLOT = SceneBox(232, 104, 608, 356)
 GANTT_TRACK_WIDTH = 88
+
+
+def _gantt_plot(height: int) -> SceneBox:
+    """The plot stops at x=840 so the right-hand track column (8pt mono, up to 88 units wide)
+    still fits inside the 960-unit canvas instead of being clipped by the right edge."""
+    return SceneBox(232, 104, 608, height - 184)
 
 
 @dataclass(frozen=True)
@@ -1482,7 +1559,7 @@ def compile_gantt_payload(payload: dict[str, Any]):
 
 
 def _layout_gantt(plan: GanttPlan) -> ChartLayout:
-    plot = GANTT_PLOT
+    plot = _gantt_plot(plan.height)
     column = plot.w / len(plan.periods)
     rows = len(plan.tasks)
     row_height = plot.h / rows
@@ -1534,7 +1611,7 @@ def _resolve_gantt(plan: GanttPlan, layout: ChartLayout, source: str | None) -> 
         primitives.append(ScenePath(f"milestone-mark:{item['id']}", f"M {x} {plot.y + plot.h + 4} L {x + 6} {plot.y + plot.h + 12} L {x} {plot.y + plot.h + 20} L {x - 6} {plot.y + plot.h + 12} Z", SceneStyle(theme.olive, "none", 0)))
         primitives.append(SceneText(str(item["label"]), x + 10, plot.y + plot.h + 16, theme.olive, 8, theme.serif))
     if source:
-        primitives.append(SceneText(f"Source: {source}", GANTT_LABEL_X, 508, theme.stone, 8, theme.mono))
+        primitives.append(SceneText(f"Source: {source}", GANTT_LABEL_X, _source_y(plan.height), theme.stone, 8, theme.mono))
     description = f"Gantt {plan.title}. Periods: " + ", ".join(plan.periods) + ". " + "; ".join(
         f"{item['label']} runs {plan.periods[int(item['start'])]} to {plan.periods[int(item['start']) + int(item['span']) - 1]}" for item in plan.tasks
     ) + ("; " + "; ".join(f"milestone {item['label']}" for item in plan.milestones) if plan.milestones else "") + (f". Source: {source}" if source else "")
@@ -1545,7 +1622,6 @@ def _resolve_gantt(plan: GanttPlan, layout: ChartLayout, source: str | None) -> 
 
 
 HEATMAP_LABEL_X = 40
-HEATMAP_PLOT = SceneBox(232, 112, 560, 340)
 HEATMAP_LEGEND_X = 808
 HEATMAP_LEGEND_VALUE_X = 832
 # Cells are capped instead of stretched so a 3x3 matrix keeps editorial cell
@@ -1554,6 +1630,11 @@ HEATMAP_MAX_CELL_W = 96
 HEATMAP_MAX_CELL_H = 48
 HEATMAP_RAMP_STEPS = 5
 HEATMAP_FOCAL_OPACITY = (0.16, 0.3, 0.46, 0.65, 0.85)
+
+
+def _heatmap_plot(height: int) -> SceneBox:
+    """Heatmap keeps the column header band on top and the axis caption band below."""
+    return SceneBox(232, 112, 560, height - 200)
 
 
 def _heatmap_ramp(theme) -> tuple[str, ...]:
@@ -1666,7 +1747,7 @@ def compile_heatmap_payload(payload: dict[str, Any]):
 
 
 def _layout_heatmap(plan: HeatmapPlan) -> ChartLayout:
-    plot = HEATMAP_PLOT
+    plot = _heatmap_plot(plan.height)
     cell_w = _cell_span(plot.w, len(plan.columns), HEATMAP_MAX_CELL_W)
     cell_h = _cell_span(plot.h, len(plan.rows), HEATMAP_MAX_CELL_H)
     grid_w = cell_w * len(plan.columns)
@@ -1725,7 +1806,8 @@ def _resolve_heatmap(plan: HeatmapPlan, layout: ChartLayout, source: str | None)
         ))
         primitives.append(SceneGroup(row_id, tuple(children)))
         reading.append(row_id)
-    legend_top = _grid(HEATMAP_PLOT.y + (HEATMAP_PLOT.h - HEATMAP_RAMP_STEPS * 20 + 4) / 2)
+    plot = layout.plot
+    legend_top = _grid(plot.y + (plot.h - HEATMAP_RAMP_STEPS * 20 + 4) / 2)
     primitives.append(SceneText("INTENSITY", HEATMAP_LEGEND_X, legend_top - 12, theme.stone, 8, theme.mono))
     for index in range(HEATMAP_RAMP_STEPS):
         top = legend_top + (HEATMAP_RAMP_STEPS - 1 - index) * 20
@@ -1737,7 +1819,7 @@ def _resolve_heatmap(plan: HeatmapPlan, layout: ChartLayout, source: str | None)
                 HEATMAP_LEGEND_VALUE_X, top + 12, theme.stone, 8, theme.mono,
             ))
     if source:
-        primitives.append(SceneText(f"Source: {source}", HEATMAP_LABEL_X, 508, theme.stone, 8, theme.mono))
+        primitives.append(SceneText(f"Source: {source}", HEATMAP_LABEL_X, _source_y(plan.height), theme.stone, 8, theme.mono))
     description = f"Heatmap {plan.title}. {plan.x_axis['label']}: " + ", ".join(plan.columns) + ". " + "; ".join(
         f"{item['label']}: " + ", ".join(
             f"{plan.columns[index]} {_format(float(value), plan.scale.unit, plan.locale, plan.value_format)}"

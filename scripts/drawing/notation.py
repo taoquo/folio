@@ -19,6 +19,7 @@ from .typography.roles import TextRole, resolve_text_style
 from .typography.measure import measure_text
 from .v3_common import (
     common_payload_diagnostics,
+    dimensions,
     infer_language,
     object_list,
     require_no_errors,
@@ -70,6 +71,36 @@ def _grid(value: float | int) -> int:
     return int(round(float(value) / 4) * 4)
 
 
+# Width stays fixed because every gutter constant (the 60..900 grid band, the 232-unit box width,
+# the sequence header pitch) is measured against a 960-unit canvas. Height is a real knob: the
+# notation grid and the sequence message band are derived from the canvas height, so taller or
+# shorter diagrams keep the same title chrome and bottom margin.
+NOTATION_WIDTH = 960
+SEQUENCE_HEIGHT_DEFAULT = 540
+BOX_NOTATION_HEIGHT_DEFAULT = 640
+NOTATION_HEIGHT_MIN = 480
+NOTATION_HEIGHT_MAX = 800
+
+
+def _valid_height(value: Any) -> bool:
+    return (
+        isinstance(value, int)
+        and not isinstance(value, bool)
+        and NOTATION_HEIGHT_MIN <= value <= NOTATION_HEIGHT_MAX
+        and value % 4 == 0
+    )
+
+
+def _canvas_height(payload: dict[str, Any], default: int) -> int:
+    """Resolve the canvas height, falling back to the default when the payload value is invalid.
+
+    _common already reports the bad value, so this only keeps layout math safe until the
+    diagnostics are raised.
+    """
+    value = payload.get("height", default)
+    return value if _valid_height(value) else default
+
+
 def _title(title: str, width: int) -> SceneText:
     theme = DEFAULT_FOLIO_THEME
     style = resolve_text_style(TextRole.DIAGRAM_TITLE, theme)
@@ -82,8 +113,10 @@ def _common(payload: dict[str, Any], kind: str, allowed: set[str], required: tup
         allowed={"schema_version", "kind", "title", "language", "width", "height", *allowed},
         required=("schema_version", "kind", "title", *required), code=code,
     )
-    if payload.get("width", 960) != 960 or payload.get("height", height) != height:
-        diagnostics.append(DrawingDiagnostic("ERROR", code, f"{kind} canvas must be exactly 960x{height}; use an output profile or host contract to resize"))
+    if payload.get("width", NOTATION_WIDTH) != NOTATION_WIDTH:
+        diagnostics.append(DrawingDiagnostic("ERROR", code, f"{kind} canvas width must be exactly {NOTATION_WIDTH}; use an output profile to rescale"))
+    if not _valid_height(payload.get("height", height)):
+        diagnostics.append(DrawingDiagnostic("ERROR", code, f"{kind} canvas height must be a multiple of 4 from {NOTATION_HEIGHT_MIN} to {NOTATION_HEIGHT_MAX}"))
     if isinstance(payload.get("title"), str) and len(payload["title"].strip()) > 64:
         diagnostics.append(DrawingDiagnostic("ERROR", code, "title must contain at most 64 characters"))
     return diagnostics
@@ -108,7 +141,7 @@ def _chevron(item_id: str, start: tuple[int, int], end: tuple[int, int], color: 
 
 
 def compile_sequence_payload(payload: dict[str, Any]):
-    diagnostics = _common(payload, "sequence", {"participants", "messages", "focus_participant"}, ("participants", "messages"), "SQ000", 540)
+    diagnostics = _common(payload, "sequence", {"participants", "messages", "focus_participant"}, ("participants", "messages"), "SQ000", SEQUENCE_HEIGHT_DEFAULT)
     participants = object_list(payload, "participants", diagnostics, "SQ000")
     validate_object_fields(participants, name="participants", allowed={"id", "label", "kind"}, required=("id", "label", "kind"), diagnostics=diagnostics, code="SQ000")
     validate_item_strings(participants, ("label",), diagnostics=diagnostics, code="SQ000")
@@ -150,7 +183,7 @@ def compile_sequence_payload(payload: dict[str, Any]):
                     diagnostics.append(DrawingDiagnostic("ERROR", "SQ011", "message label does not fit between its participants", str(item.get("id"))))
     require_no_errors("schema", diagnostics)
 
-    width, height = 960, 540
+    width, height = dimensions(payload, SEQUENCE_HEIGHT_DEFAULT)
     language = infer_language(payload["title"], [*(str(item["label"]) for item in participants), *(str(item["label"]) for item in messages)], payload.get("language"))
     marks = tuple(
         [*({**item, "id": f"participant:{item['id']}"} for item in participants), *({**item, "id": f"message:{item['id']}"} for item in messages)]
@@ -203,7 +236,7 @@ def _resolve_sequence(plan: NotationPlan, focus: str | None) -> tuple[NotationLa
 
 
 def compile_uml_class_payload(payload: dict[str, Any]):
-    diagnostics = _common(payload, "uml-class", {"layout", "types", "relationships", "focus"}, ("types", "relationships"), "UC000", 640)
+    diagnostics = _common(payload, "uml-class", {"layout", "types", "relationships", "focus"}, ("types", "relationships"), "UC000", BOX_NOTATION_HEIGHT_DEFAULT)
     if payload.get("layout", "class-grid") != "class-grid":
         diagnostics.append(DrawingDiagnostic("ERROR", "UC001", "uml-class layout must be class-grid"))
     types = object_list(payload, "types", diagnostics, "UC000")
@@ -250,15 +283,16 @@ def compile_uml_class_payload(payload: dict[str, Any]):
     focus = payload.get("focus")
     if focus is not None and (not isinstance(focus, str) or focus not in type_ids):
         diagnostics.append(DrawingDiagnostic("ERROR", "UC012", "focus references an unknown UML type", str(focus)))
-    _validate_grid_capacity(types, diagnostics, "UC013", er=False)
+    canvas_height = _canvas_height(payload, BOX_NOTATION_HEIGHT_DEFAULT)
+    _validate_grid_capacity(types, diagnostics, "UC013", er=False, canvas_height=canvas_height)
     require_no_errors("schema", diagnostics)
 
-    boxes = _uml_grid(types)
+    boxes = _uml_grid(types, canvas_height)
     routes = {item["id"]: _box_route(boxes[item["source"]], boxes[item["target"]]) for item in relationships}
     language = infer_language(payload["title"], [*(str(item["name"]) for item in types), *(str(item.get("label", "")) for item in relationships)], payload.get("language"))
     marks = tuple([*({**item, "id": f"type:{item['id']}"} for item in types), *({**item, "id": f"relationship:{item['id']}"} for item in relationships)])
     semantic = NotationSemantic("uml-class", payload["title"], marks, language)
-    plan = NotationPlan("uml-class", payload["title"], tuple(types), tuple(relationships), 960, 640, language)
+    plan = NotationPlan("uml-class", payload["title"], tuple(types), tuple(relationships), NOTATION_WIDTH, canvas_height, language)
     layout = NotationLayout(boxes, routes)
     diagnostics.extend(_validate_box_layout(plan, layout, "UC100"))
     scene = _resolve_box_notation(plan, layout, focus, er=False)
@@ -266,10 +300,23 @@ def compile_uml_class_payload(payload: dict[str, Any]):
     return semantic, plan, layout, scene, tuple([*diagnostics, *scene_diagnostics])
 
 
-def _notation_grid(items: list[dict[str, Any]], height_of) -> dict[str, SceneBox]:
-    columns = 3 if len(items) > 4 else 2
-    rows = (len(items) + columns - 1) // columns
-    cell_h = 500 / rows
+def _grid_rows(count: int) -> tuple[int, int]:
+    columns = 3 if count > 4 else 2
+    return columns, max(1, (count + columns - 1) // columns)
+
+
+def _cell_height(canvas_height: int, rows: int) -> float:
+    """Row pitch inside the grid band: 76 units of title chrome on top, 64 of margin below."""
+    return (canvas_height - 140) / rows
+
+
+def _max_box_height(canvas_height: int, rows: int) -> float:
+    return min(220, _cell_height(canvas_height, rows) - 36)
+
+
+def _notation_grid(items: list[dict[str, Any]], height_of, canvas_height: int) -> dict[str, SceneBox]:
+    columns, rows = _grid_rows(len(items))
+    cell_h = _cell_height(canvas_height, rows)
     box_w = 232
     # Spread columns edge to edge across the 60..900 band instead of centering each box inside
     # its cell. The grid then fills the canvas and relationship routes gain room for labels.
@@ -277,7 +324,7 @@ def _notation_grid(items: list[dict[str, Any]], height_of) -> dict[str, SceneBox
     result = {}
     for index, item in enumerate(items):
         column, row = index % columns, index // columns
-        height = min(220, cell_h - 36, height_of(item))
+        height = min(_max_box_height(canvas_height, rows), height_of(item))
         result[item["id"]] = SceneBox(
             _grid(60 + column * (box_w + gutter)),
             _grid(76 + row * cell_h + (cell_h - height) / 2),
@@ -286,12 +333,12 @@ def _notation_grid(items: list[dict[str, Any]], height_of) -> dict[str, SceneBox
     return result
 
 
-def _uml_grid(types: list[dict[str, Any]]) -> dict[str, SceneBox]:
-    return _notation_grid(types, _uml_box_height)
+def _uml_grid(types: list[dict[str, Any]], canvas_height: int) -> dict[str, SceneBox]:
+    return _notation_grid(types, _uml_box_height, canvas_height)
 
 
 def compile_er_payload(payload: dict[str, Any]):
-    diagnostics = _common(payload, "er-diagram", {"entities", "relationships", "focus_entity"}, ("entities", "relationships"), "ER000", 640)
+    diagnostics = _common(payload, "er-diagram", {"entities", "relationships", "focus_entity"}, ("entities", "relationships"), "ER000", BOX_NOTATION_HEIGHT_DEFAULT)
     entities = object_list(payload, "entities", diagnostics, "ER000")
     validate_object_fields(entities, name="entities", allowed={"id", "name", "fields"}, required=("id", "name", "fields"), diagnostics=diagnostics, code="ER000")
     validate_item_strings(entities, ("name",), diagnostics=diagnostics, code="ER000")
@@ -344,15 +391,16 @@ def compile_er_payload(payload: dict[str, Any]):
     focus = payload.get("focus_entity")
     if focus is not None and (not isinstance(focus, str) or focus not in entity_ids):
         diagnostics.append(DrawingDiagnostic("ERROR", "ER013", "focus_entity references an unknown entity", str(focus)))
-    _validate_grid_capacity(entities, diagnostics, "ER014", er=True)
+    canvas_height = _canvas_height(payload, BOX_NOTATION_HEIGHT_DEFAULT)
+    _validate_grid_capacity(entities, diagnostics, "ER014", er=True, canvas_height=canvas_height)
     require_no_errors("schema", diagnostics)
 
-    boxes = _entity_grid(entities)
+    boxes = _entity_grid(entities, canvas_height)
     routes = {item["id"]: _box_route(boxes[item["source"]], boxes[item["target"]]) for item in relationships}
     language = infer_language(payload["title"], [*(str(item["name"]) for item in entities), *(str(item["label"]) for item in relationships)], payload.get("language"))
     marks = tuple([*({**item, "id": f"entity:{item['id']}"} for item in entities), *({**item, "id": f"relationship:{item['id']}"} for item in relationships)])
     semantic = NotationSemantic("er-diagram", payload["title"], marks, language)
-    plan = NotationPlan("er-diagram", payload["title"], tuple(entities), tuple(relationships), 960, 640, language)
+    plan = NotationPlan("er-diagram", payload["title"], tuple(entities), tuple(relationships), NOTATION_WIDTH, canvas_height, language)
     layout = NotationLayout(boxes, routes)
     diagnostics.extend(_validate_box_layout(plan, layout, "ER100"))
     scene = _resolve_box_notation(plan, layout, focus, er=True)
@@ -360,8 +408,8 @@ def compile_er_payload(payload: dict[str, Any]):
     return semantic, plan, layout, scene, tuple([*diagnostics, *scene_diagnostics])
 
 
-def _entity_grid(entities: list[dict[str, Any]]) -> dict[str, SceneBox]:
-    return _notation_grid(entities, lambda item: 52 + 24 * len(item["fields"]))
+def _entity_grid(entities: list[dict[str, Any]], canvas_height: int) -> dict[str, SceneBox]:
+    return _notation_grid(entities, lambda item: 52 + 24 * len(item["fields"]), canvas_height)
 
 
 def _box_route(source: SceneBox, target: SceneBox) -> tuple[tuple[int, int], ...]:
@@ -396,10 +444,9 @@ def _normalize_route(points: tuple[tuple[int, int], ...]) -> tuple[tuple[int, in
     return tuple(result)
 
 
-def _validate_grid_capacity(items: list[dict[str, Any]], diagnostics: list[DrawingDiagnostic], code: str, *, er: bool) -> None:
-    columns = 3 if len(items) > 4 else 2
-    rows = max(1, (len(items) + columns - 1) // columns)
-    maximum_height = min(220, 500 / rows - 36)
+def _validate_grid_capacity(items: list[dict[str, Any]], diagnostics: list[DrawingDiagnostic], code: str, *, er: bool, canvas_height: int) -> None:
+    _, rows = _grid_rows(len(items))
+    maximum_height = _max_box_height(canvas_height, rows)
     for item in items:
         if er:
             fields = item.get("fields", [])

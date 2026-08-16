@@ -21,6 +21,14 @@ def fixture(kind: str) -> dict:
     return json.loads((ROOT / "references" / "fixtures" / "v3" / f"{kind}.json").read_text(encoding="utf-8"))
 
 
+def minimal_fixture(kind: str) -> dict:
+    return json.loads((ROOT / "references" / "fixtures" / "minimal" / f"{kind}.json").read_text(encoding="utf-8"))
+
+
+def showcase_fixture(kind: str) -> dict:
+    return json.loads((ROOT / "references" / "fixtures" / "showcase" / f"{kind}.json").read_text(encoding="utf-8"))
+
+
 class DrawingDataVizV4RegressionTests(TestCase):
     def test_maintained_v42_feature_fixtures_match_detailed_schemas(self) -> None:
         try:
@@ -121,14 +129,82 @@ class DrawingDataVizV4RegressionTests(TestCase):
             self.skipTest("jsonschema is installed by requirements-ci.txt")
 
         for kind in ("bar-chart", "line-chart", "donut-chart", "candlestick", "waterfall"):
+            schema = json.loads((ROOT / "references" / "schemas" / "types" / f"{kind}.schema.json").read_text(encoding="utf-8"))
+            validator = Draft202012Validator(schema)
+            for width, height, reason in ((320, 240, "both out of range"), (960, 396, "height below minimum"), (960, 724, "height above maximum"), (960, 542, "height off the 4-unit grid"), (940, 540, "width is not 960")):
+                with self.subTest(kind=kind, reason=reason):
+                    payload = fixture(kind)
+                    payload.update(width=width, height=height)
+                    self.assertTrue(list(validator.iter_errors(payload)))
+                    with self.assertRaises(DrawingCompilationError) as context:
+                        DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
+                    self.assertIn("canvas", str(context.exception))
+            for height in (400, 480, 640, 720):
+                with self.subTest(kind=kind, height=height):
+                    payload = fixture(kind)
+                    payload.update(width=960, height=height)
+                    self.assertEqual(list(validator.iter_errors(payload)), [])
+
+    def test_bounded_canvas_height_is_a_real_knob(self) -> None:
+        for kind in ("bar-chart", "line-chart", "donut-chart", "candlestick", "waterfall", "scatter", "gantt", "heatmap"):
+            plot_heights = []
+            for height in (400, 540, 720):
+                with self.subTest(kind=kind, height=height):
+                    payload = minimal_fixture(kind)
+                    payload["height"] = height
+                    result = DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
+                    self.assertEqual(result.scene.height, height)
+                    self.assertEqual(result.scene.width, 960)
+                    self.assertFalse([item for item in result.diagnostics if item.severity == "ERROR"])
+                    plot_heights.append(result.layout.plot.h)
             with self.subTest(kind=kind):
-                payload = fixture(kind)
-                payload.update(width=320, height=240)
-                schema = json.loads((ROOT / "references" / "schemas" / "types" / f"{kind}.schema.json").read_text(encoding="utf-8"))
-                self.assertTrue(list(Draft202012Validator(schema).iter_errors(payload)))
-                with self.assertRaises(DrawingCompilationError) as context:
-                    DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
-                self.assertIn("canvas must be exactly 960x540", str(context.exception))
+                # The donut ring caps its radius at the VQ104 accent budget, so growth can plateau,
+                # but a taller canvas must never shrink the plot band.
+                self.assertEqual(sorted(plot_heights), plot_heights)
+                self.assertGreater(len(set(plot_heights)), 1)
+
+    def test_notation_canvas_height_is_a_real_knob(self) -> None:
+        for kind, heights in (("sequence", (480, 540, 800)), ("uml-class", (560, 640, 800)), ("er-diagram", (560, 640, 800))):
+            floors = []
+            for height in heights:
+                with self.subTest(kind=kind, height=height):
+                    payload = showcase_fixture(kind)
+                    payload["height"] = height
+                    result = DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
+                    self.assertEqual(result.scene.height, height)
+                    self.assertEqual(result.scene.width, 960)
+                    self.assertFalse([item for item in result.diagnostics if item.severity == "ERROR"])
+                    # Sequence spends the extra height on the message band, box notations on the grid.
+                    if kind == "sequence":
+                        floors.append(max(route[-1][1] for route in result.layout.relations.values()))
+                    else:
+                        floors.append(max(box.y + box.h for box in result.layout.boxes.values()))
+            with self.subTest(kind=kind):
+                self.assertEqual(sorted(set(floors)), floors)
+                self.assertEqual(len(set(floors)), len(floors))
+
+    def test_out_of_range_notation_height_is_rejected(self) -> None:
+        for kind in ("sequence", "uml-class", "er-diagram"):
+            for height in (476, 804, 641):
+                with self.subTest(kind=kind, height=height):
+                    payload = showcase_fixture(kind)
+                    payload["height"] = height
+                    with self.assertRaises(DrawingCompilationError) as context:
+                        DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
+                    self.assertIn("canvas height", str(context.exception))
+
+    def test_default_canvas_geometry_is_unchanged(self) -> None:
+        expected = {
+            "bar-chart": (100, 80, 720, 340), "line-chart": (100, 80, 720, 340),
+            "candlestick": (100, 80, 720, 340), "waterfall": (100, 80, 720, 340),
+            "scatter": (104, 88, 656, 344), "gantt": (232, 104, 608, 356),
+            "heatmap": (232, 112, 560, 340),
+        }
+        for kind, box in expected.items():
+            with self.subTest(kind=kind):
+                result = DEFAULT_COMPILER_REGISTRY.compile_payload(minimal_fixture(kind))
+                plot = result.layout.plot
+                self.assertEqual((plot.x, plot.y, plot.w, plot.h), box)
 
     def test_waterfall_invalid_numeric_fields_keep_specific_diagnostics(self) -> None:
         for field, value, code in (("start", None, "WF001"), ("tolerance", "bad", "WF005")):

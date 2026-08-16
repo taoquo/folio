@@ -584,5 +584,5 @@ def cycle_exists(nodes: Iterable[str], edges: Iterable[tuple[str, str]]) -> bool
     return any(visit(node) for node in nodes)
 
 
-def dimensions(payload: dict[str, Any]) -> tuple[int, int]:
-    return int(payload.get("width", 960)), int(payload.get("height", 540))
+def dimensions(payload: dict[str, Any], default_height: int = 540) -> tuple[int, int]:
+    return int(payload.get("width", 960)), int(payload.get("height", default_height))
