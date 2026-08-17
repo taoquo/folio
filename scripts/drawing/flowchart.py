@@ -12,7 +12,7 @@ from .scene import ArrowGeometry, ResolvedScene, SceneBox, SceneEdge, SceneNode,
 from .theme.folio import DEFAULT_FOLIO_THEME, FolioTheme
 from .typography.measure import measure_text
 from .typography.roles import TextRole, resolve_text_style
-from .schema import validate_plan_payload
+from .schema import flowchart_payload_issues
 from .validation import validate_canvas, validate_scene_accessibility, validate_scene_geometry, validate_scene_primitives
 from .validation.models import DrawingDiagnostic, raise_for_errors
 
@@ -173,8 +173,8 @@ def plan_flowchart(semantic: FlowchartSemanticDiagram) -> FlowchartDrawingPlan:
 def compile_flowchart_payload(payload: dict[str, Any]) -> tuple[FlowchartSemanticDiagram, FlowchartDrawingPlan, LayoutResult, ResolvedScene]:
     if "schema_version" not in payload:
         raise_for_errors("schema", (DrawingDiagnostic("ERROR", "FC000", "flowchart requires an explicit schema_version"),))
-    schema_issues = validate_plan_payload(payload)
-    raise_for_errors("schema", (DrawingDiagnostic("ERROR", "FC000", item) for item in schema_issues))
+    schema_issues = flowchart_payload_issues(payload)
+    raise_for_errors("schema", (DrawingDiagnostic("ERROR", code, message) for code, message in schema_issues))
     semantic = semantic_from_flowchart_payload(payload)
     plan = plan_flowchart(semantic)
     diagnostics = validate_flowchart(semantic, plan)

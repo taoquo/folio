@@ -293,6 +293,47 @@ class DrawingDslV2Tests(TestCase):
                 compile_flowchart_payload(payload)
             self.assertTrue(any(item.code == code for item in context.exception.diagnostics))
 
+    def test_flowchart_schema_stage_reports_specific_diagnostic_codes(self) -> None:
+        base = {
+            "schema_version": "2.0", "kind": "flowchart", "title": "Codes",
+            "nodes": [
+                {"id": "start", "type": "terminal", "label": "Start"},
+                {"id": "work", "type": "step", "label": "Work"},
+                {"id": "end", "type": "terminal", "label": "End"},
+            ],
+            "edges": [
+                {"id": "e1", "source": "start", "target": "work"},
+                {"id": "e2", "source": "work", "target": "end"},
+            ],
+        }
+
+        def mutate(**changes: object) -> dict:
+            payload = json.loads(json.dumps(base))
+            for path, value in changes.items():
+                cursor: object = payload
+                keys = path.split("__")
+                for key in keys[:-1]:
+                    cursor = cursor[int(key)] if key.isdigit() else cursor[key]
+                last = keys[-1]
+                cursor[int(last) if last.isdigit() else last] = value
+            return payload
+
+        cases = {
+            "FC009": mutate(axis="sideways"),
+            "FC011": mutate(nodes__1__id="start"),
+            "FC012": mutate(edges__1__id="e1"),
+            "FC003": mutate(edges__1__target="absent"),
+            "FC005": mutate(nodes__1__type="teleport"),
+            "FC004": mutate(edges__1__kind="teleport"),
+            "FC017": mutate(focus="absent"),
+            "FC000": mutate(title="   "),
+        }
+        for code, payload in cases.items():
+            with self.subTest(code=code), self.assertRaises(DrawingCompilationError) as context:
+                compile_flowchart_payload(payload)
+            self.assertEqual("schema", context.exception.stage)
+            self.assertIn(code, {item.code for item in context.exception.diagnostics})
+
     def test_flowchart_rejects_duplicate_ids_unknown_focus_and_complex_loops(self) -> None:
         invalid_contract = {
             "schema_version": "2.0", "kind": "flowchart", "title": "Duplicate",
@@ -305,7 +346,9 @@ class DrawingDslV2Tests(TestCase):
         }
         with self.assertRaises(DrawingCompilationError) as context:
             compile_flowchart_payload(invalid_contract)
-        self.assertTrue(any(item.code == "FC000" for item in context.exception.diagnostics))
+        codes = {item.code for item in context.exception.diagnostics}
+        self.assertIn("FC011", codes)
+        self.assertIn("FC017", codes)
 
         loop_payload = {
             "kind": "flowchart", "title": "Loops",

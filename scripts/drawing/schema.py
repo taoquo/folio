@@ -50,15 +50,7 @@ def migrate_v1_payload(payload: dict[str, Any]) -> dict[str, Any]:
 def validate_plan_payload(payload: dict[str, Any]) -> list[str]:
     issues: list[str] = []
     if payload.get("kind") == "flowchart":
-        for required in ("schema_version", "kind", "title", "nodes", "edges"):
-            if required not in payload:
-                issues.append(f"missing required field: {required}")
-        if str(payload.get("schema_version", "")).split(".", 1)[0] != "2":
-            issues.append("schema_version must use major version 2")
-        if not isinstance(payload.get("nodes", []), list) or not isinstance(payload.get("edges", []), list):
-            issues.append("nodes and edges must be arrays")
-            return issues
-        return [*issues, *_validate_flowchart_payload(payload)]
+        return [message for _code, message in flowchart_payload_issues(payload)]
     allowed = {
         "schema_version", "kind", "title", "composition", "hierarchy", "regions", "nodes", "edges",
         "annotations", "legend", "width", "height", "subtitle", "caption", "explanation", "reductions", "language",
@@ -150,62 +142,82 @@ def validate_plan_payload(payload: dict[str, Any]) -> list[str]:
     return issues
 
 
-def _validate_flowchart_payload(payload: dict[str, Any]) -> list[str]:
-    issues: list[str] = []
+def flowchart_payload_issues(payload: dict[str, Any]) -> list[tuple[str, str]]:
+    """Validate a flowchart payload and pair every issue with the diagnostic code it belongs to.
+
+    Shape problems keep the FC000 catch-all. Problems that already own a plan-stage code reuse
+    that code so callers see the same identifier whether the payload fails at schema or plan time.
+    """
+    issues: list[tuple[str, str]] = []
+    for required in ("schema_version", "kind", "title", "nodes", "edges"):
+        if required not in payload:
+            issues.append(("FC000", f"missing required field: {required}"))
+    if str(payload.get("schema_version", "")).split(".", 1)[0] != "2":
+        issues.append(("FC000", "schema_version must use major version 2"))
+    if not isinstance(payload.get("nodes", []), list) or not isinstance(payload.get("edges", []), list):
+        issues.append(("FC000", "nodes and edges must be arrays"))
+        return issues
+    return [*issues, *_flowchart_body_issues(payload)]
+
+
+def _flowchart_body_issues(payload: dict[str, Any]) -> list[tuple[str, str]]:
+    issues: list[tuple[str, str]] = []
     allowed = {"schema_version", "kind", "title", "focus", "nodes", "edges", "width", "height", "language", "axis"}
-    issues.extend(f"unknown field: {name}" for name in sorted(set(payload) - allowed))
+    issues.extend(("FC000", f"unknown field: {name}") for name in sorted(set(payload) - allowed))
     if payload.get("axis", "top-down") not in {"top-down", "left-right"}:
-        issues.append("axis must be top-down or left-right")
+        issues.append(("FC009", "axis must be top-down or left-right"))
     if not isinstance(payload.get("title"), str) or not payload.get("title", "").strip():
-        issues.append("title must be a non-empty string")
+        issues.append(("FC000", "title must be a non-empty string"))
     if payload.get("language") is not None and (not isinstance(payload["language"], str) or not payload["language"].strip()):
-        issues.append("language must be a non-empty string")
-    _validate_canvas_dimensions(payload, issues)
+        issues.append(("FC000", "language must be a non-empty string"))
+    canvas_messages: list[str] = []
+    _validate_canvas_dimensions(payload, canvas_messages)
+    issues.extend(("FC000", message) for message in canvas_messages)
     node_allowed = {"id", "type", "label", "description"}
     for index, node in enumerate(payload.get("nodes", [])):
         if not isinstance(node, dict):
-            issues.append(f"nodes[{index}] must be an object")
+            issues.append(("FC000", f"nodes[{index}] must be an object"))
             continue
-        issues.extend(f"nodes[{index}]: unknown field: {name}" for name in sorted(set(node) - node_allowed))
+        issues.extend(("FC000", f"nodes[{index}]: unknown field: {name}") for name in sorted(set(node) - node_allowed))
         if node.get("type", "step") not in {"step", "decision", "terminal", "data", "subprocess"}:
-            issues.append(f"nodes[{index}].type is invalid")
+            issues.append(("FC005", f"nodes[{index}].type is invalid"))
         for required in ("id", "label"):
             if required not in node:
-                issues.append(f"nodes[{index}]: missing required field: {required}")
+                issues.append(("FC000", f"nodes[{index}]: missing required field: {required}"))
         if not isinstance(node.get("id"), str) or not node.get("id", "").strip():
-            issues.append(f"nodes[{index}].id must be a non-empty string")
+            issues.append(("FC000", f"nodes[{index}].id must be a non-empty string"))
         if not isinstance(node.get("label"), str) or not node.get("label", "").strip():
-            issues.append(f"nodes[{index}].label must be a non-empty string")
+            issues.append(("FC000", f"nodes[{index}].label must be a non-empty string"))
     edge_allowed = {"id", "source", "target", "kind", "label"}
     for index, edge in enumerate(payload.get("edges", [])):
         if not isinstance(edge, dict):
-            issues.append(f"edges[{index}] must be an object")
+            issues.append(("FC000", f"edges[{index}] must be an object"))
             continue
-        issues.extend(f"edges[{index}]: unknown field: {name}" for name in sorted(set(edge) - edge_allowed))
+        issues.extend(("FC000", f"edges[{index}]: unknown field: {name}") for name in sorted(set(edge) - edge_allowed))
         if edge.get("kind", "sequence-flow") not in {"sequence-flow", "conditional-flow", "exception-flow"}:
-            issues.append(f"edges[{index}].kind is invalid")
+            issues.append(("FC004", f"edges[{index}].kind is invalid"))
         for required in ("source", "target"):
             if required not in edge:
-                issues.append(f"edges[{index}]: missing required field: {required}")
+                issues.append(("FC000", f"edges[{index}]: missing required field: {required}"))
         for field in ("source", "target"):
             if not isinstance(edge.get(field), str) or not edge.get(field, "").strip():
-                issues.append(f"edges[{index}].{field} must be a non-empty string")
+                issues.append(("FC000", f"edges[{index}].{field} must be a non-empty string"))
         if "id" in edge and (not isinstance(edge.get("id"), str) or not edge.get("id", "").strip()):
-            issues.append(f"edges[{index}].id must be a non-empty string")
+            issues.append(("FC000", f"edges[{index}].id must be a non-empty string"))
     node_ids = [item.get("id") for item in payload.get("nodes", []) if isinstance(item, dict) and isinstance(item.get("id"), str)]
     edge_ids = [item.get("id") for item in payload.get("edges", []) if isinstance(item, dict) and isinstance(item.get("id"), str)]
-    issues.extend(f"duplicate node id: {item}" for item in _duplicates(node_ids))
-    issues.extend(f"duplicate edge id: {item}" for item in _duplicates(edge_ids))
+    issues.extend(("FC011", f"duplicate node id: {item}") for item in _duplicates(node_ids))
+    issues.extend(("FC012", f"duplicate edge id: {item}") for item in _duplicates(edge_ids))
     known = set(node_ids)
     for index, edge in enumerate(payload.get("edges", [])):
         if not isinstance(edge, dict):
             continue
         if edge.get("source") not in known:
-            issues.append(f"edges[{index}].source references an unknown node")
+            issues.append(("FC003", f"edges[{index}].source references an unknown node"))
         if edge.get("target") not in known:
-            issues.append(f"edges[{index}].target references an unknown node")
+            issues.append(("FC003", f"edges[{index}].target references an unknown node"))
     if payload.get("focus") is not None and payload.get("focus") not in known:
-        issues.append("focus references an unknown node")
+        issues.append(("FC017", "focus references an unknown node"))
     return issues
 
 
