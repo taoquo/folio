@@ -410,3 +410,28 @@ class DrawingDslV3Tests(TestCase):
                             self.assertAlmostEqual(595.28, float(page.mediabox.width), delta=1)
                             self.assertAlmostEqual(841.89, float(page.mediabox.height), delta=1)
             self.assertEqual(len(self.payloads) * 3 * 3, artifact_count)
+
+    def test_indistinguishable_parallel_edges_fail_closed(self):
+        cases = (
+            ("architecture", "edges", "DG042", {"label": "distinct"}),
+            ("flowchart", "edges", "FC019", {"label": "distinct"}),
+            ("layer-stack", "flows", "LS009", {"label": "distinct"}),
+            ("state-machine", "transitions", "SM023", {"event": "distinct"}),
+            ("swimlane", "flows", "SW020", {"label": "distinct"}),
+        )
+        for kind, collection, code, distinct in cases:
+            duplicated = deepcopy(self.payloads[kind])
+            clone = deepcopy(duplicated[collection][0])
+            if "id" in clone:
+                clone["id"] = f"{clone['id']}-dupe"
+            duplicated[collection].append(clone)
+            with self.subTest(kind=kind, edges="indistinguishable"):
+                with self.assertRaises(DrawingCompilationError) as caught:
+                    DEFAULT_COMPILER_REGISTRY.compile_payload(duplicated)
+                self.assertIn(code, {item.code for item in caught.exception.diagnostics})
+            distinguished = deepcopy(duplicated)
+            distinguished[collection][-1].update(distinct)
+            with self.subTest(kind=kind, edges="distinguished"):
+                result = DEFAULT_COMPILER_REGISTRY.compile_payload(distinguished)
+                self.assertFalse([item for item in result.diagnostics if item.level == "ERROR"])
+                self.assertEqual(len(distinguished[collection]), result.metrics.edges)

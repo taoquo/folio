@@ -28,6 +28,16 @@ def validate_drawing_semantics(drawing: DrawingPlan, budget: InformationBudget =
     for edge in drawing.edges:
         if edge.source not in known or edge.target not in known:
             diagnostics.append(DrawingDiagnostic("ERROR", "DG004", "edge references an unknown node", edge.id))
+    drawn_edges: dict[tuple[str, str, str], set[str]] = {}
+    for edge in drawing.edges:
+        signature = (edge.label or "").strip()
+        bucket = drawn_edges.setdefault((edge.source, edge.target, edge.channel), set())
+        if signature in bucket:
+            diagnostics.append(DrawingDiagnostic(
+                "ERROR", "DG042",
+                "parallel edges between the same pair need a distinct label or channel", edge.id,
+            ))
+        bucket.add(signature)
     edge_labels = sum(1 for edge in drawing.edges if edge.label)
     if edge_labels > budget.max_edge_labels:
         diagnostics.append(DrawingDiagnostic("WARNING", "DG008", f"{edge_labels} edge labels exceed preferred budget {budget.max_edge_labels}"))

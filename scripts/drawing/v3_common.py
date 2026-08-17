@@ -173,6 +173,41 @@ def validate_unique_ids(
     return set(ids)
 
 
+def validate_distinguishable_parallel_edges(
+    items: list[dict[str, Any]],
+    *,
+    diagnostics: list[DrawingDiagnostic],
+    code: str,
+    label_fields: Iterable[str] = ("label",),
+    channel_field: str | None = "channel",
+) -> None:
+    """Reject parallel edges a reader cannot tell apart.
+
+    Two edges between the same pair are legitimate when something distinguishes them: a different
+    label or a different channel. When the labels repeat, or are all missing, and the channel is the
+    same too, the extra edge only adds ink and the diagram silently loses meaning.
+    """
+    fields = tuple(label_fields)
+    seen: dict[tuple[str, str, str], set[str]] = {}
+    for item in items:
+        channel = str(item.get(channel_field)) if channel_field else ""
+        pair = (str(item.get("source")), str(item.get("target")), channel)
+        signature = edge_label_signature(item, fields)
+        bucket = seen.setdefault(pair, set())
+        if signature in bucket:
+            diagnostics.append(DrawingDiagnostic(
+                "ERROR", code,
+                "parallel edges between the same pair need a distinct label or channel",
+                str(item.get("id")),
+            ))
+        bucket.add(signature)
+
+
+def edge_label_signature(item: dict[str, Any], fields: Iterable[str]) -> str:
+    parts = [str(item[field]).strip() for field in fields if isinstance(item.get(field), str) and item[field].strip()]
+    return "\u001f".join(parts)
+
+
 def finite_number(value: Any) -> bool:
     return isinstance(value, (int, float)) and not isinstance(value, bool) and isfinite(float(value))
 

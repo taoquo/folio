@@ -368,6 +368,16 @@ def validate_flowchart(semantic: FlowchartSemanticDiagram, plan: FlowchartDrawin
         diagnostics.append(DrawingDiagnostic("ERROR", "FC017", "focus references an unknown node", semantic.focus))
     if _loop_complexity(semantic) > 2:
         diagnostics.append(DrawingDiagnostic("ERROR", "FC018", "flowchart exceeds nested loop depth 2"))
+    seen_pairs: dict[tuple[str, str, str], set[str]] = {}
+    for edge in semantic.edges:
+        signature = (edge.label or "").strip()
+        bucket = seen_pairs.setdefault((edge.source, edge.target, edge.relation), set())
+        if signature in bucket:
+            diagnostics.append(DrawingDiagnostic(
+                "ERROR", "FC019",
+                "parallel flows between the same pair need a distinct label or kind", edge.id,
+            ))
+        bucket.add(signature)
     branch_labels = sum(bool(edge.label) for edge in semantic.edges if edge.relation == "conditional-flow")
     if branch_labels > 8:
         diagnostics.append(DrawingDiagnostic("WARNING", "FC108", "flowchart exceeds 8 visible branch labels"))

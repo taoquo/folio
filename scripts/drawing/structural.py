@@ -25,6 +25,7 @@ from .v3_common import (
     require_no_errors,
     resolve_graph_scene,
     route_graph_edges,
+    validate_distinguishable_parallel_edges,
     validate_item_strings,
     validate_object_fields,
     validate_resolved_scene,
@@ -177,6 +178,9 @@ def compile_state_machine_payload(payload: dict[str, Any]):
     axis = payload.get("axis", "left-right")
     if axis not in {"left-right", "top-down"}:
         diagnostics.append(DrawingDiagnostic("ERROR", "SM022", "state-machine axis must be left-right or top-down"))
+    validate_distinguishable_parallel_edges(
+        transitions, diagnostics=diagnostics, code="SM023", label_fields=("event", "guard", "action"),
+    )
     require_no_errors("schema", diagnostics)
 
     language = infer_language(payload["title"], (str(item.get("label", "")) for item in states), payload.get("language"))
@@ -318,6 +322,7 @@ def compile_swimlane_payload(payload: dict[str, Any]):
     axis = payload.get("axis", "left-right")
     if axis not in {"left-right", "top-down"}:
         diagnostics.append(DrawingDiagnostic("ERROR", "SW017", "swimlane axis must be left-right or top-down"))
+    validate_distinguishable_parallel_edges(flows, diagnostics=diagnostics, code="SW020")
     require_no_errors("schema", diagnostics)
 
     language = infer_language(payload["title"], [str(item["label"]) for item in [*lanes, *steps]], payload.get("language"))
@@ -575,6 +580,7 @@ def compile_layer_stack_payload(payload: dict[str, Any]):
             diagnostics.append(DrawingDiagnostic("ERROR", "LS006", "layer flows must connect adjacent layers", str(item.get("id"))))
         if item.get("channel") not in {"request", "response"}:
             diagnostics.append(DrawingDiagnostic("ERROR", "LS007", "layer flow channel must be request or response", str(item.get("id"))))
+    validate_distinguishable_parallel_edges(flows, diagnostics=diagnostics, code="LS009")
     require_no_errors("schema", diagnostics)
 
     language = infer_language(payload["title"], (str(item["label"]) for item in layers), payload.get("language"))

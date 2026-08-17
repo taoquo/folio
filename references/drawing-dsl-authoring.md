@@ -154,6 +154,18 @@ Start from `references/fixtures/v4/sequence.json`, `uml-class.json`, or `er-diag
 
 Use one clear focus, bounded labels, and evidence-backed data. Split a diagram when it exceeds the type budget. Avoid double axes, 3D marks, decorative colors, arbitrary geometry, hidden transformations, or a generic object bag. If the content cannot be expressed without those escapes, improve the type grammar or choose a different diagram type instead of bypassing the compiler.
 
+Parallel edges must stay readable. Architecture, Flowchart, Layer Stack, State Machine, and Swimlane reject a second edge between the same pair when nothing distinguishes it, joining UML and ER in that rule:
+
+| Diagram | Distinguishing fields | Code |
+|---|---|---|
+| Architecture | `label`, `kind` | `DG042` |
+| Flowchart | `label`, `kind` | `FC019` |
+| Layer Stack | `label`, `channel` | `LS009` |
+| State Machine | `event`, `guard`, `action` | `SM023` |
+| Swimlane | `label`, `channel` | `SW020` |
+
+Give each parallel edge its own label or channel, or merge the two into one relation. Labels on parallel edges are exempt from the edge-label budget, so the compiler never drops the text that tells them apart.
+
 ## 11. Embed in documents and slides
 
 Discover the four explicit host contracts:

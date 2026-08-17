@@ -196,10 +196,18 @@ def plan_drawing(
     # diagnose_taste flags DG118 above 75% labelled edges, so honour the same ceiling here
     # instead of emitting a plan the taste gate is guaranteed to reject.
     label_ceiling = min(budget.max_edge_labels, int(len(raw_edges) * 0.75)) if raw_edges else 0
+    # Parallel edges only stay readable while their labels survive, so they never pay the budget.
+    # Dropping one would collapse two distinct relations into one indistinguishable arrow (DG042).
+    parallel_pairs = {
+        pair
+        for pair, count in Counter((edge.source, edge.target, edge.channel) for edge in raw_edges).items()
+        if count > 1
+    }
     for edge in raw_edges:
         label = edge.label
         if label:
-            if labelled >= label_ceiling and edge.emphasis != "focal":
+            protected = edge.emphasis == "focal" or (edge.source, edge.target, edge.channel) in parallel_pairs
+            if labelled >= label_ceiling and not protected:
                 label = None
                 dropped_labels += 1
             else:
