@@ -370,6 +370,10 @@ def validate_flowchart(semantic: FlowchartSemanticDiagram, plan: FlowchartDrawin
         diagnostics.append(DrawingDiagnostic("ERROR", "FC018", "flowchart exceeds nested loop depth 2"))
     seen_pairs: dict[tuple[str, str, str], set[str]] = {}
     for edge in semantic.edges:
+        if edge.source == edge.target:
+            diagnostics.append(DrawingDiagnostic(
+                "ERROR", "FC020", "flow cannot start and end on the same node", edge.id,
+            ))
         signature = (edge.label or "").strip()
         bucket = seen_pairs.setdefault((edge.source, edge.target, edge.relation), set())
         if signature in bucket:

@@ -28,6 +28,8 @@ def validate_drawing_semantics(drawing: DrawingPlan, budget: InformationBudget =
     for edge in drawing.edges:
         if edge.source not in known or edge.target not in known:
             diagnostics.append(DrawingDiagnostic("ERROR", "DG004", "edge references an unknown node", edge.id))
+        if edge.source == edge.target:
+            diagnostics.append(DrawingDiagnostic("ERROR", "DG043", "edge cannot start and end on the same node", edge.id))
     drawn_edges: dict[tuple[str, str, str], set[str]] = {}
     for edge in drawing.edges:
         signature = (edge.label or "").strip()

@@ -435,3 +435,19 @@ class DrawingDslV3Tests(TestCase):
                 result = DEFAULT_COMPILER_REGISTRY.compile_payload(distinguished)
                 self.assertFalse([item for item in result.diagnostics if item.level == "ERROR"])
                 self.assertEqual(len(distinguished[collection]), result.metrics.edges)
+
+    def test_self_edges_fail_closed(self):
+        cases = (
+            ("architecture", "edges", "DG043", {"source": "gateway", "target": "gateway", "kind": "primary"}),
+            ("flowchart", "edges", "FC020", {"source": "publish", "target": "publish", "kind": "sequence-flow"}),
+            ("layer-stack", "flows", "LS010", {"id": "self", "source": "render", "target": "render", "channel": "request"}),
+            ("state-machine", "transitions", "SM024", {"id": "self", "source": "rendering", "target": "rendering"}),
+            ("swimlane", "flows", "SW021", {"id": "self", "source": "reconcile", "target": "reconcile", "channel": "request"}),
+        )
+        for kind, collection, code, self_edge in cases:
+            payload = deepcopy(self.payloads[kind])
+            payload[collection].append(self_edge)
+            with self.subTest(kind=kind):
+                with self.assertRaises(DrawingCompilationError) as caught:
+                    DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
+                self.assertIn(code, {item.code for item in caught.exception.diagnostics})

@@ -27,6 +27,7 @@ from .v3_common import (
     route_graph_edges,
     validate_distinguishable_parallel_edges,
     validate_item_strings,
+    validate_no_self_edges,
     validate_object_fields,
     validate_resolved_scene,
     validate_unique_ids,
@@ -181,6 +182,7 @@ def compile_state_machine_payload(payload: dict[str, Any]):
     validate_distinguishable_parallel_edges(
         transitions, diagnostics=diagnostics, code="SM023", label_fields=("event", "guard", "action"),
     )
+    validate_no_self_edges(transitions, diagnostics=diagnostics, code="SM024")
     require_no_errors("schema", diagnostics)
 
     language = infer_language(payload["title"], (str(item.get("label", "")) for item in states), payload.get("language"))
@@ -323,6 +325,7 @@ def compile_swimlane_payload(payload: dict[str, Any]):
     if axis not in {"left-right", "top-down"}:
         diagnostics.append(DrawingDiagnostic("ERROR", "SW017", "swimlane axis must be left-right or top-down"))
     validate_distinguishable_parallel_edges(flows, diagnostics=diagnostics, code="SW020")
+    validate_no_self_edges(flows, diagnostics=diagnostics, code="SW021")
     require_no_errors("schema", diagnostics)
 
     language = infer_language(payload["title"], [str(item["label"]) for item in [*lanes, *steps]], payload.get("language"))
@@ -581,6 +584,7 @@ def compile_layer_stack_payload(payload: dict[str, Any]):
         if item.get("channel") not in {"request", "response"}:
             diagnostics.append(DrawingDiagnostic("ERROR", "LS007", "layer flow channel must be request or response", str(item.get("id"))))
     validate_distinguishable_parallel_edges(flows, diagnostics=diagnostics, code="LS009")
+    validate_no_self_edges(flows, diagnostics=diagnostics, code="LS010")
     require_no_errors("schema", diagnostics)
 
     language = infer_language(payload["title"], (str(item["label"]) for item in layers), payload.get("language"))

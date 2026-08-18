@@ -166,6 +166,18 @@ Parallel edges must stay readable. Architecture, Flowchart, Layer Stack, State M
 
 Give each parallel edge its own label or channel, or merge the two into one relation. Labels on parallel edges are exempt from the edge-label budget, so the compiler never drops the text that tells them apart.
 
+Self edges are rejected everywhere. Folio routes between distinct boxes, so an edge whose source equals its target collapses behind its own node and leaves an orphan label with no visible path. Sequence, ER, UML, and Tree already refused them; the graph family now matches:
+
+| Diagram | Collection | Code |
+|---|---|---|
+| Architecture | `edges` | `DG043` |
+| Flowchart | `edges` | `FC020` |
+| Layer Stack | `flows` | `LS010` |
+| State Machine | `transitions` | `SM024` |
+| Swimlane | `flows` | `SW021` |
+
+To express a retry or loop, add an explicit intermediate node such as a retry gate, or model the repetition with a Loop Flywheel diagram.
+
 ## 11. Embed in documents and slides
 
 Discover the four explicit host contracts:

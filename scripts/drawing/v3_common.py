@@ -173,6 +173,29 @@ def validate_unique_ids(
     return set(ids)
 
 
+def validate_no_self_edges(
+    items: list[dict[str, Any]],
+    *,
+    diagnostics: list[DrawingDiagnostic],
+    code: str,
+    source_field: str = "source",
+    target_field: str = "target",
+) -> None:
+    """Reject edges that start and end on the same node.
+
+    Folio routes connectors between distinct boxes, so a self edge has nowhere to go: the polyline
+    collapses behind its own node and only an orphan label survives. Sequence, ER, UML, and tree
+    diagrams already refuse them; graph diagrams must fail the same way instead of shipping ink
+    the reader cannot follow.
+    """
+    for item in items:
+        source = item.get(source_field)
+        if source is not None and source == item.get(target_field):
+            diagnostics.append(DrawingDiagnostic(
+                "ERROR", code, "edge cannot start and end on the same node", str(item.get("id")),
+            ))
+
+
 def validate_distinguishable_parallel_edges(
     items: list[dict[str, Any]],
     *,
