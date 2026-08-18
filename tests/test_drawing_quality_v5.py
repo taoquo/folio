@@ -94,6 +94,26 @@ class DrawingQualityV5Tests(TestCase):
         line = SceneLine("divider", (40, 120), (280, 120), SceneStyle("none", "#E9DED4", 1))
         self.assertNotIn("VQ107", _codes(_scene(line)))
 
+    def test_overlapping_text_is_an_error(self) -> None:
+        first = SceneText("alpha", 80, 120, INK, 10, "Courier")
+        second = SceneText("beta", 84, 122, INK, 10, "Courier")
+        diagnostics = validate_scene_quality(_scene(first, second))
+        hit = [item for item in diagnostics if item.code == "VQ108"]
+        self.assertEqual(1, len(hit))
+        self.assertEqual("ERROR", hit[0].level)
+        self.assertEqual("primitive-text:alpha", hit[0].object_id)
+        self.assertEqual(("primitive-text:beta",), hit[0].related_ids)
+
+    def test_stacked_lines_at_the_normal_pitch_do_not_collide(self) -> None:
+        first = SceneText("attribute one", 80, 120, INK, 10, "Courier")
+        second = SceneText("attribute two", 80, 138, INK, 10, "Courier")
+        self.assertNotIn("VQ108", _codes(_scene(first, second)))
+
+    def test_side_by_side_text_at_the_same_baseline_does_not_collide(self) -> None:
+        first = SceneText("left", 40, 120, INK, 10, "Courier")
+        second = SceneText("right", 200, 120, INK, 10, "Courier")
+        self.assertNotIn("VQ108", _codes(_scene(first, second)))
+
     def test_contrast_ratio_known_values(self) -> None:
         self.assertAlmostEqual(21.0, contrast_ratio("#000000", "#FFFFFF"), places=6)
         self.assertAlmostEqual(1.0, contrast_ratio("#ABCDEF", "#ABCDEF"), places=6)

@@ -21,9 +21,9 @@ principle.
 | Semantic tokens over literal color | Payloads carry roles and importance; theme resolves color at render time | Met |
 | Grid discipline | 4-unit grid enforced on every `SceneText` by `DG119` | Met |
 | Deletion-first information budget | Per-kind caps on nodes, edges, series, labels; `WARNING` before `ERROR` | Met |
-| Anti-slop rules as an executable gate | 5 canvas/taste gates (`VQ101`-`VQ107`) plus 12 geometry gates run on every compile | Met |
+| Anti-slop rules as an executable gate | 6 canvas/taste gates (`VQ101`-`VQ108`) plus 12 geometry gates run on every compile | Met |
 | Inline SVG output, document-native | `artifact`, `embed`, and `page-preview` profiles; host embedding verified by digest | Met |
-| Editorial type scale and serif hierarchy | Shared Folio theme across all kinds; contrast gated by `VQ106`/`VQ107` | Met |
+| Editorial type scale and serif hierarchy | Shared Folio theme across all kinds; contrast gated by `VQ106`/`VQ107`, label collisions by `VQ108` | Met |
 | Catalog breadth | 23 generator-backed kinds against the reference project's 13 | Exceeded |
 
 Folio additionally enforces properties the reference project leaves to the author: deterministic

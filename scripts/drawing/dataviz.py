@@ -709,7 +709,36 @@ def _resolve_bars(plan: BarPlan, layout: ChartLayout, source: str | None) -> Res
     def _struck(label_y: int) -> bool:
         return any(label_y - 8 <= rule <= label_y + 2 for rule in rule_ys)
 
+    def _free(label_x: int, label_y: int, label_w: int) -> bool:
+        candidate = SceneBox(label_x - label_w // 2 - 2, label_y - 10, label_w + 4, 14)
+        return not any(_overlap(candidate, placed) for placed in value_label_boxes)
+
+    bar_boxes = tuple(layout.marks.values())
+
+    def _over_fill(label_x: int, label_y: int, label_w: int) -> bool:
+        candidate = SceneBox(label_x - label_w // 2, label_y - 10, label_w, 14)
+        return any(_overlap(candidate, bar) for bar in bar_boxes)
+
+    def _knockout(label_x: int, label_y: int, label_w: int) -> SceneRect | None:
+        """Parchment pad under a value label that cannot step off a rule or a bar fill.
+
+        A negative bar ends on the plot floor, so its number has nowhere to go but back
+        onto the solid mark, where near-black on brand or stone reads at 3.2:1 and fails
+        VQ106. Reference rules span the whole plot and cannot move either. In both cases
+        the paint yields instead of the number.
+        """
+        if not (_struck(label_y) or _over_fill(label_x, label_y, label_w)):
+            return None
+        return SceneRect(
+            f"value-label-knockout:{label_x}:{label_y}",
+            SceneBox(label_x - label_w // 2 - 3, label_y - 10, label_w + 6, 13),
+            SceneStyle(theme.parchment, "none"),
+        )
+
     palette = (theme.olive, theme.stone, theme.neutral_mid)
+    # Bars paint in series order, so a label emitted inside the loop would sit under the
+    # next series' mark. Collect the numbers and lay them over the finished bars instead.
+    pending_labels: list[tuple[str, str, int, int, int]] = []
     for series_index, item in enumerate(plan.series):
         color = theme.brand if item["id"] == plan.focus_series or (plan.focus_series is None and series_index == 0) else palette[min(series_index, 2)]
         for category_index, value in enumerate(item["values"]):
@@ -717,23 +746,34 @@ def _resolve_bars(plan: BarPlan, layout: ChartLayout, source: str | None) -> Res
             box = layout.marks[mark_id]
             primitives.append(SceneRect(mark_id, box, SceneStyle(color, "none", radius=2)))
             if plan.mode == "grouped" and box.w >= 20:
-                label_y = max(72, box.y - 8) if float(value) >= 0 else min(layout.plot.y + layout.plot.h - 4, box.y + box.h + 14)
-                label_y = _grid(label_y)
+                above = float(value) >= 0
                 text_value = _format(float(value), plan.scale.unit, plan.locale, plan.value_format)
                 label_w = max(24, int(measure_text(text_value, 8, theme.mono)))
                 label_x = box.x + box.w // 2
-                if _struck(label_y):
-                    # Reference rules span the whole plot, so the label cannot step aside. Knock a
-                    # parchment gap into the dashes instead and keep the label on top of its bar.
-                    primitives.append(SceneRect(
-                        f"{mark_id}:label-knockout",
-                        SceneBox(label_x - label_w // 2 - 3, label_y - 10, label_w + 6, 13),
-                        SceneStyle(theme.parchment, "none"),
-                    ))
-                primitives.append(SceneText(text_value, label_x, label_y, theme.near_black, 8, theme.mono, "middle"))
+                floor_y, ceiling_y = 72, layout.plot.y + layout.plot.h - 4
+                base_y = max(floor_y, box.y - 8) if above else min(ceiling_y, box.y + box.h + 14)
+                # Equal-height neighbours in one group land their value labels on the same
+                # baseline, where two numbers merge into one unreadable run. Step the later
+                # label one 16-unit row further from the axis so each number keeps its own row.
+                step = -16 if above else 16
+                # Outward rows first, then rows that step back over the bar fill: a mark that
+                # already touches the plot edge leaves no air outside it, and the knockout pad
+                # keeps the number legible where it lands on paint.
+                offsets = [step * row for row in range(4)] + [-step * row for row in range(1, 5)]
+                rows = [_grid(base_y + offset) for offset in offsets]
+                label_y = next(
+                    (row_y for row_y in rows if floor_y <= row_y <= ceiling_y and _free(label_x, row_y, label_w)),
+                    rows[0],
+                )
+                pending_labels.append((mark_id, text_value, label_x, label_y, label_w))
                 value_label_boxes.append(SceneBox(label_x - label_w // 2, label_y - 10, label_w, 14))
             reading.append(mark_id)
         primitives.extend(_series_key_primitives(item["label"], 112 + series_index * 24, theme.brand if color == theme.brand else theme.near_black, theme))
+    for mark_id, text_value, label_x, label_y, label_w in pending_labels:
+        pad = _knockout(label_x, label_y, label_w)
+        if pad is not None:
+            primitives.append(SceneRect(f"{mark_id}:label-knockout", pad.box, pad.style))
+        primitives.append(SceneText(text_value, label_x, label_y, theme.near_black, 8, theme.mono, "middle"))
     if plan.mode == "stacked":
         group_width = layout.plot.w / len(plan.categories)
         for category_index in range(len(plan.categories)):
@@ -741,18 +781,19 @@ def _resolve_bars(plan: BarPlan, layout: ChartLayout, source: str | None) -> Res
             positive = sum(value for value in values if value > 0)
             negative = sum(value for value in values if value < 0)
             x = _grid(layout.plot.x + (category_index + 0.5) * group_width)
-            if positive:
-                primitives.append(SceneText(
-                    _format(positive, plan.scale.unit, plan.locale, plan.value_format),
-                    x, max(72, _y(positive, plan.scale, layout.plot) - 8),
-                    theme.near_black, 8, theme.mono, "middle",
-                ))
-            if negative:
-                primitives.append(SceneText(
-                    _format(negative, plan.scale.unit, plan.locale, plan.value_format),
-                    x, min(layout.plot.y + layout.plot.h - 4, _y(negative, plan.scale, layout.plot) + 14),
-                    theme.near_black, 8, theme.mono, "middle",
-                ))
+            totals = (
+                (positive, max(72, _y(positive, plan.scale, layout.plot) - 8)),
+                (negative, min(layout.plot.y + layout.plot.h - 4, _y(negative, plan.scale, layout.plot) + 14)),
+            )
+            for total, label_y in totals:
+                if not total:
+                    continue
+                text_value = _format(total, plan.scale.unit, plan.locale, plan.value_format)
+                label_w = max(24, int(measure_text(text_value, 8, theme.mono)))
+                pad = _knockout(x, label_y, label_w)
+                if pad is not None:
+                    primitives.append(pad)
+                primitives.append(SceneText(text_value, x, label_y, theme.near_black, 8, theme.mono, "middle"))
     anchors = {
         mark_id: (box.x + box.w // 2, box.y if next(float(value) for item in plan.series for index, value in enumerate(item["values"]) if _bar_id(item["id"], plan.categories[index]) == mark_id) >= 0 else box.y + box.h)
         for mark_id, box in layout.marks.items()

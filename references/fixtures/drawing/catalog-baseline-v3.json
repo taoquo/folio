@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "catalog_schema_version": "3.0",
   "approval_state": "approved",
-  "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1",
+  "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate.",
   "visual_policy": {
     "method": "exact-rgba-no-resize",
     "max_changed_channel_ratio": 0.01,
@@ -18,11 +18,11 @@
   "contact_sheets": [
     {
       "path": "assets/demos/drawing-dsl-all-types.png",
-      "sha256": "6a86b9faff337c7c9286c22a3475d0eb52b08aaae723d322454ec0676f02d6d2"
+      "sha256": "1a2937105dcf8cbe096bc22f2c8a9f316f930c19e07e39b6e4295e9f123207dd"
     },
     {
       "path": "assets/demos/drawing-dsl-supported-types.png",
-      "sha256": "b6ef22e59490b9ce09869eb637adb0a21d026fa741b6da695b81f97fd81b9fa3"
+      "sha256": "04368504d55bdd4479c8a5059082e64bcf0620ae4fa515cccad36cd3d7e2bdd3"
     }
   ],
   "diagrams": [
@@ -63,7 +63,7 @@
         "pdf": "708050fad6cbae55d57d435a278e3090e927b67eb23f1bb9e9095ac4bf6b4819"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "flowchart",
@@ -100,7 +100,7 @@
         "pdf": "5cc24d94a78531b45f8e01cacb155d99746ae11397042309d023897d770144a4"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "quadrant",
@@ -140,7 +140,7 @@
         "pdf": "6d48df2f5aa667f0926a5c516f1f4680720e4e5efb5c54a8768403ecb641257f"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "bar-chart",
@@ -178,11 +178,11 @@
       "digests": {
         "png": "4df315821fbc3926f9ae746a4fec8fd5b0cfb01990413604bdf21b07f055d740",
         "input": "4a5786ce21b169abbc7de552392a8ed630e428e8157ba936ea3da805ec0a23b7",
-        "svg": "b236b88f4e7176174e2215edc63c8737f84209d98590d4e68eaf951635566c5b",
-        "pdf": "1277c03f25469b76a73c6f98ad8e7bac870c2a0793e42efb78e4300d3111e118"
+        "svg": "98239bef50ba8dbd4cdd964a0f1e376be738377e4595879a9a2321efe2675953",
+        "pdf": "30978f4f25f7007d625efeaf9783f6472b055063d89a26855434beba793ce8cc"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "line-chart",
@@ -224,7 +224,7 @@
         "pdf": "01f61ff76927703a4aefba5236680c01a2d6ac3710636a139613f47e56c51b45"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "donut-chart",
@@ -260,7 +260,7 @@
         "pdf": "be1af43e22c4f7375386baf114078e0e53319657a8a7d37f2e745172a64b6313"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "state-machine",
@@ -298,7 +298,7 @@
         "pdf": "a7d2556861b353ae23b8bd3779801d83b0919a5fc4c93e3f8d2a1bf028c20305"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "timeline",
@@ -337,7 +337,7 @@
         "pdf": "a329c3d1890b1824c543db6de3a67d60192db6a88e1e20507ee732238ce3dff4"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "swimlane",
@@ -374,7 +374,7 @@
         "pdf": "635bb535826c351bd544b5fbcd9433645728242e82f7c4ca537b0cfa2d599409"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "tree",
@@ -414,7 +414,7 @@
         "pdf": "4173546a51b050bb159655ebfa3d58420089c9135d165af97bf2ae31cfc8fd5a"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "layer-stack",
@@ -451,7 +451,7 @@
         "pdf": "b8203baff7e4fccd47be5ab7153ad37585b0652677d2f2a047ce7887d472956f"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "venn",
@@ -486,7 +486,7 @@
         "pdf": "54455a0d149c988939ae563011b85d37575e358c64835fbdb96a31ae709bead6"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "pyramid",
@@ -522,7 +522,7 @@
         "pdf": "0e454473d9f7374fd1eb3e4104d693f085b757110fe78868b6a74ee8df24d041"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "org-chart",
@@ -561,7 +561,7 @@
         "pdf": "55b7dda7c13d8e4912fc1f25bebafdfd932baac9c3ed0075481df2b4325da8b1"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "loop-flywheel",
@@ -597,7 +597,7 @@
         "pdf": "a4d27ddffb8c57ef102cdbe81015dafb02063c7b42f2d15fe41ca60179a1366f"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "candlestick",
@@ -636,7 +636,7 @@
         "pdf": "3986f502d741b01c02b686370752bdea349ddee6ba608ee5ab7bf208870fa024"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "waterfall",
@@ -675,7 +675,7 @@
         "pdf": "e454cf044b24666231e1365b4905d1581e3a0aa49e724a9e17edc9373531cc80"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "scatter",
@@ -713,7 +713,7 @@
         "pdf": "8660f6d547684883c03d31997fe573649010557cf27afc578153a0afc3d74351"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "gantt",
@@ -751,7 +751,7 @@
         "pdf": "fcef4df41dc3d68f093dbfa6c93c05ab82cb0eb6b98e06ee4b1355369fd5b04e"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "sequence",
@@ -790,7 +790,7 @@
         "pdf": "f9a231402c60131e4c40e92e0a6a520ec4221702d7c198d8849f320b58d9a075"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "uml-class",
@@ -823,13 +823,13 @@
         686
       ],
       "digests": {
-        "png": "6d923a9e1fc9d79f69c76a2877787dca7b4cb7be93ced8849fd2a2710e72623c",
+        "png": "d7ad1b78c7d180a834485fdc06f1d81440640c9b9d6b0ff3d7fcd4936ca6c517",
         "input": "d72321f3a09ac556aa4ecc86b518bb2313f007f4d3d4da5178c406d005aedceb",
-        "svg": "b5b7a2974f4e7002157071145483fefe237f8a688d0efbeaa86aaeaa650a5c9a",
-        "pdf": "010eb4620cc4d2a9290a3226be4c2dd217322399404b5ffc5b5e572a196be471"
+        "svg": "8ce9f7fc487088e2b0692ac90e78b825fb9b27567dbe3b3968b3ef68267db489",
+        "pdf": "8ea85055e315def13de9e80ca71c7a3a183282eabb094e72edfdb9058295e669"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "er-diagram",
@@ -860,13 +860,13 @@
         705
       ],
       "digests": {
-        "png": "96fc1e5b2f672f926822b715786a49773bf23002d705d42678bb36fa7bdea519",
+        "png": "a80fb63e8293399211a579ccd93623d0f9934666c03acea4e31e8f2e34eb672c",
         "input": "a34e03b91012df934dcdde1fb58b365bf8d1ac49bdf3cef822882666047449d2",
-        "svg": "e2df0aad1642fc8d3fd0855f943154c50ecd945576fdab8baa9645d7754a7531",
-        "pdf": "7f07c7f27ca2962b383d834d9e78db201cfceb6611497171c8424ab2f298ce21"
+        "svg": "17faf7e140db83e1dff154b253ac59b290cb091f433bcb2bd900870182fe34f0",
+        "pdf": "6a67628e0d60566d1104b5d35773430f5724cecbbe818449d5e179f15dfbc7db"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     },
     {
       "kind": "heatmap",
@@ -903,7 +903,7 @@
         "pdf": "75cff8693cf4847a79774ea5d83bfeda833709429086396ce948cb2009b08337"
       },
       "approval_state": "approved",
-      "approval_reason": "Refresh self-describing catalog data to twenty-three types for V6.1"
+      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
     }
   ]
 }

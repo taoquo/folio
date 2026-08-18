@@ -54,6 +54,7 @@ def validate_scene_quality(
     diagnostics.extend(_validate_accent_budget(scene, theme))
     diagnostics.extend(_validate_compartments(scene))
     diagnostics.extend(_validate_contrast(scene))
+    diagnostics.extend(_validate_text_collisions(scene))
     return diagnostics
 
 
@@ -270,6 +271,63 @@ def _check_graphic(
             f"graphic contrast is {ratio:.2f}:1; WCAG non-text target is {GRAPHIC_MINIMUM:.1f}:1", object_id,
             hint="Confirm the low-contrast stroke is decorative, or use a darker token.",
         ))
+
+
+def _validate_text_collisions(scene: ResolvedScene) -> list[DrawingDiagnostic]:
+    """Reject scenes where two text runs paint over each other.
+
+    Boxes are measured on the ink band only (cap height above the baseline, no
+    line-height padding), so stacked lines inside a node stay clean and only real
+    glyph overlap is reported.
+    """
+    labelled = _labelled_texts(scene)
+    diagnostics: list[DrawingDiagnostic] = []
+    for index, (left_id, left) in enumerate(labelled):
+        for right_id, right in labelled[index + 1:]:
+            if _ink_overlap(left, right):
+                diagnostics.append(DrawingDiagnostic(
+                    "ERROR", "VQ108",
+                    f"text overlaps {right_id}", left_id,
+                    hint="Shift one label to a free slot or shorten the text.",
+                    related_ids=(right_id,),
+                ))
+    return diagnostics
+
+
+def _labelled_texts(scene: ResolvedScene) -> list[tuple[str, SceneText]]:
+    items: list[tuple[str, SceneText]] = [("scene-title", scene.title)]
+    for node in scene.nodes:
+        items.extend((f"{node.id}:text:{index}", text) for index, text in enumerate(node.text_runs))
+    for edge in scene.edges:
+        if edge.label:
+            items.append((f"{edge.id}:label", edge.label))
+    items.extend((f"{region.id}:label", region.label) for region in scene.regions)
+    items.extend((f"{annotation.id}:text", annotation.text) for annotation in scene.annotations)
+    if scene.legend:
+        items.append(("legend:title", scene.legend.title))
+        items.extend((f"legend:item:{index}", item.label) for index, item in enumerate(scene.legend.items))
+    items.extend(
+        (f"primitive-text:{item.text}", item)
+        for item in _flatten(scene.primitives)
+        if isinstance(item, SceneText)
+    )
+    return [item for item in items if item[1].text.strip()]
+
+
+def _ink_box(item: SceneText) -> SceneBox:
+    width = measure_text(item.text, item.size, item.family)
+    if item.tracking:
+        width += item.tracking * item.size * max(0, len(item.text) - 1)
+    width = max(1.0, width)
+    x = item.x - width if item.anchor == "end" else item.x - width / 2 if item.anchor == "middle" else item.x
+    return SceneBox(int(round(x)), int(round(item.y - item.size * 0.80)), int(round(width)), int(round(item.size)))
+
+
+def _ink_overlap(left: SceneText, right: SceneText) -> bool:
+    first, second = _ink_box(left), _ink_box(right)
+    horizontal = min(first.x + first.w, second.x + second.w) - max(first.x, second.x)
+    vertical = min(first.y + first.h, second.y + second.h) - max(first.y, second.y)
+    return horizontal > 0 and vertical > 0
 
 
 def _content_boxes(scene: ResolvedScene) -> list[SceneBox]:

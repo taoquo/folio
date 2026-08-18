@@ -15,7 +15,9 @@ from diagram_models import load_diagram_spec_file
 from diagram_render_svg import render_diagram_svg
 from drawing.compiler import DEFAULT_COMPILER_REGISTRY
 from drawing.hosting import embed_html_figure, verify_hosted_html
+from drawing.scene import SceneText
 from drawing.validation import DrawingCompilationError
+from drawing.validation.quality import _ink_box
 from renderers.svg import render_svg
 
 
@@ -212,3 +214,38 @@ class DrawingNotationV43Tests(TestCase):
             manifest = verify_hosted_html(output)[0]
             self.assertEqual("sequence", manifest["kind"])
             self.assertIsNone(manifest["data"])
+
+    def test_notation_route_labels_never_overlap_each_other_or_a_box(self) -> None:
+        for directory in ("minimal", "showcase", "v4"):
+            for kind in ("uml-class", "er-diagram"):
+                path = ROOT / "references" / "fixtures" / directory / f"{kind}.json"
+                if not path.exists():
+                    continue
+                payload = json.loads(path.read_text(encoding="utf-8"))
+                result = DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
+                boxes = [
+                    child.box
+                    for group in result.scene.primitives
+                    for child in getattr(group, "children", ())
+                    if getattr(child, "id", "").startswith("item-box:")
+                ]
+                labels = [
+                    _ink_box(child)
+                    for group in result.scene.primitives
+                    if getattr(group, "id", "").startswith("relationship:")
+                    for child in group.children
+                    if isinstance(child, SceneText)
+                ]
+                with self.subTest(fixture=f"{directory}/{kind}"):
+                    self.assertFalse([item.code for item in result.diagnostics if item.level == "ERROR"])
+                    for index, label in enumerate(labels):
+                        for other in labels[index + 1:]:
+                            self.assertFalse(_boxes_touch(label, other))
+                        for box in boxes:
+                            self.assertFalse(_boxes_touch(label, box))
+
+
+def _boxes_touch(left, right) -> bool:
+    horizontal = min(left.x + left.w, right.x + right.w) - max(left.x, right.x)
+    vertical = min(left.y + left.h, right.y + right.h) - max(left.y, right.y)
+    return horizontal > 0 and vertical > 0

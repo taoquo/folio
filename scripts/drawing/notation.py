@@ -505,14 +505,16 @@ def _validate_box_layout(plan: NotationPlan, layout: NotationLayout, code: str) 
 def _resolve_box_notation(plan: NotationPlan, layout: NotationLayout, focus: str | None, *, er: bool) -> ResolvedScene:
     theme = DEFAULT_FOLIO_THEME
     primitives: list[object] = []
+    blocked = tuple(layout.boxes.values())
+    placed: list[SceneBox] = []
     for relation in plan.relations:
         route = layout.relations[relation["id"]]
         children: list[object] = [ScenePolyline(f"relationship-line:{relation['id']}", route, SceneStyle("none", theme.olive, 1.2))]
         if er:
-            children.extend([
-                SceneText(_cardinality(str(relation["source_cardinality"])), route[0][0] + 8, route[0][1] - 6, theme.stone, 8, theme.mono),
-                SceneText(_cardinality(str(relation["target_cardinality"])), route[-1][0] - 8, route[-1][1] - 6, theme.stone, 8, theme.mono, "end"),
-            ])
+            for field, at_source in (("source_cardinality", True), ("target_cardinality", False)):
+                label = _cardinality(str(relation[field]))
+                x, y, anchor = _place_text(label, _endpoint_slots(route, at_source=at_source), placed, blocked)
+                children.append(SceneText(label, x, y, theme.stone, 8, theme.mono, anchor))
         else:
             kind = relation["kind"]
             if kind == "association":
@@ -521,13 +523,16 @@ def _resolve_box_notation(plan: NotationPlan, layout: NotationLayout, focus: str
                 children.append(_triangle(f"relationship-head:{relation['id']}", route[-2], route[-1], theme.parchment, theme.olive))
             elif kind in {"aggregation", "composition"}:
                 children.append(_diamond(f"relationship-head:{relation['id']}", route[1], route[0], theme.olive if kind == "composition" else theme.parchment, theme.olive))
-            if relation.get("source_multiplicity"):
-                children.append(SceneText(str(relation["source_multiplicity"]), route[0][0] + 8, route[0][1] - 6, theme.stone, 8, theme.mono))
-            if relation.get("target_multiplicity"):
-                children.append(SceneText(str(relation["target_multiplicity"]), route[-1][0] - 8, route[-1][1] - 6, theme.stone, 8, theme.mono, "end"))
+            for field, at_source in (("source_multiplicity", True), ("target_multiplicity", False)):
+                if not relation.get(field):
+                    continue
+                label = str(relation[field])
+                x, y, anchor = _place_text(label, _endpoint_slots(route, at_source=at_source), placed, blocked)
+                children.append(SceneText(label, x, y, theme.stone, 8, theme.mono, anchor))
         if relation.get("label"):
-            middle = _longest_segment_midpoint(route)
-            children.append(SceneText(str(relation["label"]), middle[0], middle[1] - 8, theme.stone, 8, theme.mono, "middle"))
+            label = str(relation["label"])
+            x, y, anchor = _place_text(label, _segment_slots(*_longest_segment(route)), placed, blocked)
+            children.append(SceneText(label, x, y, theme.stone, 8, theme.mono, anchor))
         primitives.append(SceneGroup(f"relationship:{relation['id']}", tuple(children)))
     for item in plan.items:
         box = layout.boxes[item["id"]]
@@ -565,12 +570,77 @@ def _resolve_box_notation(plan: NotationPlan, layout: NotationLayout, focus: str
     return ResolvedScene(plan.width, plan.height, theme.parchment, _title(plan.title, plan.width), (), (), (), description=description, language=plan.language, reading_order=reading, primitives=tuple(primitives))
 
 
-def _longest_segment_midpoint(route: tuple[tuple[int, int], ...]) -> tuple[int, int]:
-    start, end = max(
+def _longest_segment(route: tuple[tuple[int, int], ...]) -> tuple[tuple[int, int], tuple[int, int]]:
+    return max(
         zip(route, route[1:]),
         key=lambda pair: abs(pair[1][0] - pair[0][0]) + abs(pair[1][1] - pair[0][1]),
     )
-    return _grid((start[0] + end[0]) / 2), _grid((start[1] + end[1]) / 2)
+
+
+# Notation labels are small mono strings pinned to a route. A single hard-coded offset collides as
+# soon as two routes leave the same box edge, so each label walks an ordered slot list and takes the
+# first slot that clears both the already placed labels and every entity box.
+LABEL_SIZE = 8
+LABEL_GAP = 4
+
+
+def _endpoint_slots(route: tuple[tuple[int, int], ...], *, at_source: bool) -> tuple[tuple[int, int, str], ...]:
+    point, neighbour = (route[0], route[1]) if at_source else (route[-1], route[-2])
+    vertical = point[0] == neighbour[0]
+    outward = 1 if (neighbour[1] > point[1] if vertical else neighbour[0] > point[0]) else -1
+    slots: list[tuple[int, int, str]] = []
+    for step in (0, 1, 2, 3):
+        shift = 8 + step * 12
+        if vertical:
+            base = point[1] + outward * shift
+            slots.append((point[0] + 8, base, "start"))
+            slots.append((point[0] - 8, base, "end"))
+        else:
+            base = point[0] + outward * shift
+            slots.append((base, point[1] - 6, "middle"))
+            slots.append((base, point[1] + 14, "middle"))
+    return tuple(slots)
+
+
+def _segment_slots(start: tuple[int, int], end: tuple[int, int]) -> tuple[tuple[int, int, str], ...]:
+    center = (_grid((start[0] + end[0]) / 2), _grid((start[1] + end[1]) / 2))
+    vertical = start[0] == end[0]
+    span = abs(end[1] - start[1]) if vertical else abs(end[0] - start[0])
+    reach = max(0, span // 2 - 12)
+    slots: list[tuple[int, int, str]] = []
+    for shift in (0, 12, -12, 24, -24, 36, -36):
+        if abs(shift) > reach:
+            continue
+        if vertical:
+            slots.append((center[0] + 8, center[1] + shift, "start"))
+            slots.append((center[0] - 8, center[1] + shift, "end"))
+        else:
+            slots.append((center[0] + shift, center[1] - 8, "middle"))
+            slots.append((center[0] + shift, center[1] + 16, "middle"))
+    return tuple(slots) or ((center[0], center[1] - 8, "middle"),)
+
+
+def _label_box(text: str, x: int, y: int, anchor: str) -> SceneBox:
+    width = max(1, int(round(measure_text(text, LABEL_SIZE, DEFAULT_FOLIO_THEME.mono))))
+    left = x - width if anchor == "end" else x - width // 2 if anchor == "middle" else x
+    height = max(1, int(round(LABEL_SIZE * 1.25)))
+    return SceneBox(int(left), int(y - height), width, height)
+
+
+def _label_free(box: SceneBox, placed: Iterable[SceneBox], blocked: Iterable[SceneBox]) -> bool:
+    padded = SceneBox(box.x - LABEL_GAP, box.y - LABEL_GAP, box.w + LABEL_GAP * 2, box.h + LABEL_GAP * 2)
+    return not any(_boxes_overlap(padded, other, 0) for other in (*placed, *blocked))
+
+
+def _place_text(text: str, slots: tuple[tuple[int, int, str], ...], placed: list[SceneBox], blocked: Iterable[SceneBox]) -> tuple[int, int, str]:
+    for x, y, anchor in slots:
+        box = _label_box(text, x, y, anchor)
+        if _label_free(box, placed, blocked):
+            placed.append(box)
+            return x, y, anchor
+    x, y, anchor = slots[0]
+    placed.append(_label_box(text, x, y, anchor))
+    return x, y, anchor
 
 
 def _uml_box_height(item: dict[str, Any]) -> int:
