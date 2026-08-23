@@ -4,15 +4,13 @@
 # Python
 __pycache__/
 *.pyc
-.pytest_cache/
 .ruff_cache/
 .venv-weasy/
 
 # Node scratch space, Folio has no JS runtime dependency
 node_modules/
 
-# Font build artifacts
-assets/fonts/*.otf
+# WeasyPrint native libraries, resolved per platform and never committed
 .font-libs/
 
 # Generated document and diagram examples, rebuild via: python3 scripts/build.py
@@ -23,10 +21,10 @@ assets/examples/
 
 /tmp/
 *.log
-.vercel
 
-# Slides build artifact (moved into assets/examples/ by build.py)
-/output.pptx
+# Slides build artifact: the pptx script writes beside its own template, and
+# build.py moves it into assets/examples/ under the target name.
+assets/templates/output.pptx
 
 # Local agent scratch directories
 .superpowers/
