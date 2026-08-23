@@ -598,8 +598,10 @@ def _layout_org_chart(plan: OrgChartPlan) -> OrgChartLayout:
             continue
         parent_box = boxes[str(parent)]
         box = boxes[item_id]
-        start = (parent_box.x + parent_box.w // 2, parent_box.y + parent_box.h)
-        end = (box.x + box.w // 2, box.y)
+        # Half of an on-grid width is not necessarily on the grid: a 100-unit box at x=460 centres
+        # on 510. DG120 rejects that for scene edges, so link primitives are held to it too.
+        start = (_grid(parent_box.x + parent_box.w / 2), parent_box.y + parent_box.h)
+        end = (_grid(box.x + box.w / 2), box.y)
         middle = _grid((start[1] + end[1]) / 2)
         connectors[item_id] = ((start[0], start[1]), (start[0], middle), (end[0], middle), (end[0], end[1]))
     return OrgChartLayout(boxes, depths, connectors)

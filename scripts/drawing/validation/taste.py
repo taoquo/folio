@@ -10,22 +10,6 @@ def _bends(points: tuple[tuple[int, int], ...]) -> int:
     return max(0, len(points) - 2)
 
 
-def diagnose_connector_collisions(scene: ResolvedScene) -> list[DrawingDiagnostic]:
-    """Geometry-only connector faults, valid for any family that routes edges.
-
-    Kept separate from :func:`diagnose_taste` because the rest of that function is calibrated
-    against the architecture grammar: its spine-bend, density and focal-object thresholds all
-    assume a layered component diagram. A flowchart with a decision needs bends by
-    construction, carries its own budgets in FC001/FC002/FC201, and has no focal object at
-    all, so importing those thresholds wholesale reports faults that are not faults. A
-    connector crossing another connector is wrong everywhere.
-    """
-    crossings = crossing_count(scene)
-    if not crossings:
-        return []
-    return [DrawingDiagnostic("TASTE", "DG204", f"diagram contains {crossings} connector crossings")]
-
-
 def diagnose_taste(drawing: DrawingPlan, scene: ResolvedScene) -> list[DrawingDiagnostic]:
     """Aesthetic diagnostics shared by every graph family.
 

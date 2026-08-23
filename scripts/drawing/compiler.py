@@ -8,6 +8,7 @@ from typing import Any, Callable
 
 from diagram_models import ArchitectureDiagramSpec, load_diagram_spec
 
+from .connectors.contract import check_contract
 from .flowchart import compile_flowchart_payload, validate_flowchart
 from .dataviz import (
     compile_bar_payload,
@@ -44,7 +45,6 @@ from .validation import (
     DrawingMetrics,
     collect_metrics,
     collect_scene_metrics,
-    diagnose_connector_collisions,
     diagnose_taste,
     validate_canvas,
     validate_drawing_grammar,
@@ -174,6 +174,9 @@ class DiagramCompilerRegistry:
             *validate_scene_accessibility(result.scene),
             *validate_scene_geometry(result.scene),
             *validate_scene_quality(result.scene, palette),
+            # Every kind funnels through here, so the connector contract cannot be forgotten by
+            # a new family the way bridge hops were once forgotten by flowcharts.
+            *check_contract(result.scene),
         ))
         raise_for_errors("quality", diagnostics)
         schema_version = str(normalized_input.get("schema_version", getattr(result.plan, "schema_version", "legacy")))
@@ -247,10 +250,6 @@ def _flowchart(payload: dict[str, Any]) -> CompilationResult:
         *validate_scene_primitives(scene),
         *validate_scene_accessibility(scene),
         *validate_scene_geometry(scene),
-        # Flowcharts were the one graph family with no crossing gate, so a tangled route went
-        # unreported however bad it got. Only the geometry check transfers: the rest of
-        # diagnose_taste is calibrated against the architecture grammar.
-        *diagnose_connector_collisions(scene),
     ])
     taste = sum(item.level in {"WARNING", "TASTE"} for item in diagnostics)
     metrics = collect_metrics(plan, scene, semantic_node_count=len(semantic.nodes), taste_warning_count=taste)

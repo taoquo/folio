@@ -5,6 +5,7 @@
 __pycache__/
 *.pyc
 .pytest_cache/
+.ruff_cache/
 .venv-weasy/
 
 # Node scratch space, Folio has no JS runtime dependency

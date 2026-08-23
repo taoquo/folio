@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 from dataclasses import replace
 
+from .connectors.contract import assign_bridges
 from .connectors.grammar import resolve_connector_style
 from .connectors.postprocess import clean_polyline
 from .grammar.architecture import ArchitectureGrammar, DEFAULT_ARCHITECTURE_GRAMMAR
@@ -301,25 +302,6 @@ def resolve_scene(
         language=drawing.language,
         reading_order=tuple(node.id for node in drawing.nodes),
     )
-
-
-def assign_bridges(scene_edges: list[SceneEdge]) -> list[SceneEdge]:
-    """Mark hop-over points on the later edge of every unavoidable crossing pair.
-
-    Routing dodges what it can, but a congested corridor can leave a genuine crossing: two
-    connectors may both need the single clear band between two node rows. A hop-over is the
-    honest answer there -- it shows which line passes over which instead of letting them merge
-    into an ambiguous plus sign.
-    """
-    bridge_map: dict[str, list[tuple[int, int]]] = defaultdict(list)
-    for index, upper in enumerate(scene_edges):
-        for lower in scene_edges[index + 1:]:
-            if {upper.source, upper.target} & {lower.source, lower.target}:
-                continue
-            crossing = _first_crossing(upper.points, lower.points)
-            if crossing:
-                bridge_map[lower.id].append(crossing)
-    return [replace(edge, bridges=tuple(sorted(set(bridge_map[edge.id])))) for edge in scene_edges]
 
 
 def _first_crossing(

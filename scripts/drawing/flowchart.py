@@ -8,7 +8,7 @@ from typing import Any
 from .connectors.postprocess import clean_polyline
 from .connectors.labels import place_edge_labels
 from .layout.models import LayoutBox, LayoutEdge, LayoutResult
-from .resolve import assign_bridges
+from .connectors.contract import assign_bridges, blocks_lane, route_is_clear, run_hits_segment
 from .scene import ArrowGeometry, ResolvedScene, SceneBox, SceneEdge, SceneNode, SceneStyle, SceneText
 from .theme.folio import DEFAULT_FOLIO_THEME, FolioTheme
 from .typography.measure import measure_text
@@ -283,57 +283,6 @@ def _slot_offsets(
     return source_offsets, target_offsets
 
 
-def _blocks_lane(box: LayoutBox, lane: int, span: tuple[int, int], *, horizontal: bool) -> bool:
-    """True when a connector run at ``lane`` would touch this box.
-
-    Border contact counts, not just the interior: a run placed exactly on a node's edge merges
-    with its outline and reads as a connector attached to that node (DG136).
-    """
-    low, high = sorted(span)
-    if horizontal:
-        return box.y <= lane <= box.y + box.h and low < box.x + box.w and high > box.x
-    return box.x <= lane <= box.x + box.w and low < box.y + box.h and high > box.y
-
-
-def _run_hits_segment(
-    lane: int, span: tuple[int, int], seg: tuple[tuple[int, int], tuple[int, int]], *, horizontal: bool
-) -> bool:
-    """True when a connector run at ``lane`` would touch an already placed segment."""
-    low, high = sorted(span)
-    (ax, ay), (bx, by) = seg
-    if horizontal:
-        if ay == by:  # collinear runs read as one thick line
-            return ay == lane and min(max(ax, bx), high) > max(min(ax, bx), low)
-        return low <= ax <= high and min(ay, by) <= lane <= max(ay, by)
-    if ax == bx:
-        return ax == lane and min(max(ay, by), high) > max(min(ay, by), low)
-    return low <= ay <= high and min(ax, bx) <= lane <= max(ax, bx)
-
-
-
-
-def _route_is_clear(
-    points: list[tuple[int, int]],
-    obstacles: list[LayoutBox],
-    placed: list[tuple[tuple[int, int], tuple[int, int]]],
-) -> bool:
-    """True when every run in a candidate route clears the nodes and the earlier connectors.
-
-    Checking only the lane run was not enough: the two stubs that drop from the source and rise
-    into the target are what actually collided, because moving the lane changes their length and
-    can push them straight through a connector that was already placed.
-    """
-    for first, second in zip(points, points[1:]):
-        if first == second:
-            continue
-        horizontal = first[1] == second[1]
-        lane = first[1] if horizontal else first[0]
-        span = (first[0], second[0]) if horizontal else (first[1], second[1])
-        if any(_blocks_lane(box, lane, span, horizontal=horizontal) for box in obstacles):
-            return False
-        if any(_run_hits_segment(lane, span, seg, horizontal=horizontal) for seg in placed):
-            return False
-    return True
 
 
 def _corridor_route(
@@ -353,11 +302,11 @@ def _corridor_route(
         return [start, (lane, start[1]), (lane, end[1]), end]
 
     low, high = sorted((start[1], end[1]) if horizontal else (start[0], end[0]))
-    if _route_is_clear(build(preferred), obstacles, placed):
+    if route_is_clear(build(preferred), obstacles, placed):
         return build(preferred)
     for step in range(4, high - low, 4):
         for candidate in (preferred + step, preferred - step):
-            if low < candidate < high and _route_is_clear(build(candidate), obstacles, placed):
+            if low < candidate < high and route_is_clear(build(candidate), obstacles, placed):
                 return build(candidate)
     return build(preferred)
 
@@ -402,7 +351,7 @@ def _side_channel_route(
                     if not target.y < entry < target.y + target.h:
                         continue
                     route = build(channel, exit_lane, entry, face)
-                    if _route_is_clear(route, obstacles, placed):
+                    if route_is_clear(route, obstacles, placed):
                         return route
     return None
 
