@@ -15,11 +15,11 @@
   "contact_sheets": [
     {
       "path": "assets/demos/drawing-dsl-all-types.png",
-      "sha256": "1a2937105dcf8cbe096bc22f2c8a9f316f930c19e07e39b6e4295e9f123207dd"
+      "sha256": "762db2c717096a0bb680a94049652aa7824e3a776fd0e3136b9e168b295a2a68"
     },
     {
       "path": "assets/demos/drawing-dsl-supported-types.png",
-      "sha256": "04368504d55bdd4479c8a5059082e64bcf0620ae4fa515cccad36cd3d7e2bdd3"
+      "sha256": "37234aafbcbb2dca1403700114bbb51049715c53fdce385fbc150d1f14de07a5"
     }
   ],
   "diagrams": [
@@ -140,10 +140,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "92468ab5e96b41681d4d2c066c131f770b0215a41a13d6080abf9f83e1663e89",
+        "png": "a2468d02bc5e6491d4b44327c7a987d2b4d3ced3427c945794b7d3b78e1d97ca",
         "input": "716dc64d01f794aeebddd3e178a56c574e8758246e38766997fe85930390ac30",
-        "svg": "4b8996e95e16e7866bb743c17c1cd166c1bf3a4682b71a278f82d6440346e6db",
-        "pdf": "5cc24d94a78531b45f8e01cacb155d99746ae11397042309d023897d770144a4"
+        "svg": "435c90656c91b2bac77ecd660844908e9f928fd58c2a6add98a83e94bddb9357",
+        "pdf": "11d9ff812a95e53e49f37bc910ca35fe0d58e3b0afc93e819efa4f640ab165f1"
       },
       "unresolved_placeholders": []
     },
@@ -878,11 +878,11 @@
         "bounding_box_ratio": 0.245103,
         "semantic_nodes": 7,
         "visual_nodes": 7,
-        "edges": 0,
+        "edges": 6,
         "edge_labels": 0,
         "focus": 1,
         "crossings": 0,
-        "bends": 0,
+        "bends": 12,
         "spine_bends": 0,
         "text_overflow": 0,
         "layout_warnings": 0,

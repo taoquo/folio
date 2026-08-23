@@ -16,7 +16,10 @@ class DrawingDiagnostic:
 
     def __str__(self) -> str:
         target = f" [{self.object_id}]" if self.object_id else ""
-        return f"{self.level} {self.code}{target}: {self.message}"
+        # The hint is the repair instruction, so it has to reach the terminal too. Without it
+        # the CLI showed only what broke and never what to do about it.
+        repair = f" (hint: {self.hint})" if self.hint else ""
+        return f"{self.level} {self.code}{target}: {self.message}{repair}"
 
     def to_envelope(self, *, stage: str, kind: str | None) -> dict[str, object]:
         related = sorted({*(self.related_ids or ()), *([self.object_id] if self.object_id else [])})

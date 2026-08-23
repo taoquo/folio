@@ -26,26 +26,59 @@ class DrawingMetrics:
 
 
 def _crosses(a: tuple[int, int], b: tuple[int, int], c: tuple[int, int], d: tuple[int, int]) -> bool:
+    """True when an axis-aligned pair meets anywhere along both spans, endpoints included.
+
+    ``<=`` rather than ``<`` so a segment that begins exactly on another segment still counts.
+    Those T-junctions read as a merge rather than a hop and are the shape a fan-out produces,
+    so excluding them hid the most common collision in practice.
+    """
     if a[0] == b[0] and c[1] == d[1]:
-        return min(c[0], d[0]) < a[0] < max(c[0], d[0]) and min(a[1], b[1]) < c[1] < max(a[1], b[1])
+        return min(c[0], d[0]) <= a[0] <= max(c[0], d[0]) and min(a[1], b[1]) <= c[1] <= max(a[1], b[1])
     if a[1] == b[1] and c[0] == d[0]:
-        return min(a[0], b[0]) < c[0] < max(a[0], b[0]) and min(c[1], d[1]) < a[1] < max(c[1], d[1])
+        return min(a[0], b[0]) <= c[0] <= max(a[0], b[0]) and min(c[1], d[1]) <= a[1] <= max(c[1], d[1])
     return False
 
 
+def _shared_endpoints(left, right) -> set[tuple[int, int]]:
+    """Points where two connectors legitimately meet because they share a node."""
+    return {left.points[0], left.points[-1]} & {right.points[0], right.points[-1]}
+
+
 def crossing_count(scene: ResolvedScene) -> int:
+    """Connector pairs that collide away from any point they are entitled to share.
+
+    Pairs sharing a node used to be skipped outright, which made every fan-out crossing
+    invisible: two edges leaving one decision can still tangle well below the node they came
+    from. Only the shared attach point itself is exempt now.
+    """
     count = 0
     for index, left in enumerate(scene.edges):
         for right in scene.edges[index + 1:]:
-            if {left.source, left.target} & {right.source, right.target}:
-                continue
-            if any(
-                _crosses(a, b, c, d) or _crosses(c, d, a, b)
-                for a, b in zip(left.points, left.points[1:])
-                for c, d in zip(right.points, right.points[1:])
-            ):
+            exempt = _shared_endpoints(left, right)
+            hit = False
+            for a, b in zip(left.points, left.points[1:]):
+                for c, d in zip(right.points, right.points[1:]):
+                    if not (_crosses(a, b, c, d) or _crosses(c, d, a, b)):
+                        continue
+                    if _meeting_point(a, b, c, d) in exempt:
+                        continue
+                    hit = True
+                    break
+                if hit:
+                    break
+            if hit:
                 count += 1
     return count
+
+
+def _meeting_point(
+    a: tuple[int, int], b: tuple[int, int], c: tuple[int, int], d: tuple[int, int]
+) -> tuple[int, int] | None:
+    if a[0] == b[0] and c[1] == d[1]:
+        return (a[0], c[1])
+    if a[1] == b[1] and c[0] == d[0]:
+        return (c[0], a[1])
+    return None
 
 
 def collect_metrics(

@@ -8,10 +8,10 @@ from .models import DrawingCompilationError, DrawingDiagnostic, diagnostic_envel
 from .primitives import validate_scene_primitives
 from .quality import contrast_ratio, validate_scene_quality
 from .semantic import validate_drawing_semantics
-from .taste import diagnose_taste
+from .taste import diagnose_connector_collisions, diagnose_taste
 
 __all__ = [
-    "DrawingCompilationError", "DrawingDiagnostic", "DrawingMetrics", "collect_metrics", "collect_scene_metrics", "diagnose_taste",
+    "DrawingCompilationError", "DrawingDiagnostic", "DrawingMetrics", "collect_metrics", "collect_scene_metrics", "diagnose_connector_collisions", "diagnose_taste",
     "diagnostic_envelopes",
     "raise_for_errors", "validate_canvas", "validate_drawing_grammar", "validate_drawing_semantics",
     "validate_layout", "validate_scene_accessibility", "validate_scene_geometry", "validate_scene_primitives",

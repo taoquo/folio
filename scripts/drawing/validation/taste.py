@@ -10,7 +10,29 @@ def _bends(points: tuple[tuple[int, int], ...]) -> int:
     return max(0, len(points) - 2)
 
 
+def diagnose_connector_collisions(scene: ResolvedScene) -> list[DrawingDiagnostic]:
+    """Geometry-only connector faults, valid for any family that routes edges.
+
+    Kept separate from :func:`diagnose_taste` because the rest of that function is calibrated
+    against the architecture grammar: its spine-bend, density and focal-object thresholds all
+    assume a layered component diagram. A flowchart with a decision needs bends by
+    construction, carries its own budgets in FC001/FC002/FC201, and has no focal object at
+    all, so importing those thresholds wholesale reports faults that are not faults. A
+    connector crossing another connector is wrong everywhere.
+    """
+    crossings = crossing_count(scene)
+    if not crossings:
+        return []
+    return [DrawingDiagnostic("TASTE", "DG204", f"diagram contains {crossings} connector crossings")]
+
+
 def diagnose_taste(drawing: DrawingPlan, scene: ResolvedScene) -> list[DrawingDiagnostic]:
+    """Aesthetic diagnostics shared by every graph family.
+
+    ``drawing`` only has to expose ``composition.spine``, ``nodes`` and ``edges``. Region
+    banding is read defensively so families without a region model -- flowcharts, for one --
+    can still be gated on crossings, bends and focus.
+    """
     diagnostics: list[DrawingDiagnostic] = []
     total_bends = sum(_bends(edge.points) for edge in scene.edges)
     spine_pairs = set(zip(drawing.composition.spine, drawing.composition.spine[1:]))
@@ -33,7 +55,7 @@ def diagnose_taste(drawing: DrawingPlan, scene: ResolvedScene) -> list[DrawingDi
     if focal == 0:
         diagnostics.append(DrawingDiagnostic("TASTE", "DG206", "diagram has no focal object"))
     layer_centers = []
-    for region in drawing.regions:
+    for region in getattr(drawing, "regions", ()):
         if region.treatment != "layer-band":
             continue
         members = [node.box.y + node.box.h / 2 for node in scene.nodes if node.id in region.members]

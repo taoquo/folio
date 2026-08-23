@@ -111,16 +111,27 @@ def _list_diagram_types(output_format: str) -> int:
     return EXIT_VALID
 
 
-def _init_drawing(kind: str, language: str | None, output: str | None) -> int:
+def _init_drawing(kind: str, language: str | None, output: str | None, example: bool = False) -> int:
     from drawing.compiler import DEFAULT_COMPILER_REGISTRY
     from drawing.schema_registry import schema_contract
 
     contract = schema_contract(kind)
-    payload = contract.load_minimal_payload()
+    payload = contract.load_canonical_payload() if example else contract.load_minimal_payload()
     if language:
         payload["language"] = language
     DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
-    return _write_json(payload, output)
+    status = _write_json(payload, output)
+    if not example:
+        # The minimal payload is a bare contract floor: it carries no edges and, for
+        # architecture, no 'layers'. Authors who start here cannot see how to grow the diagram,
+        # so point them at the worked example that the schema registry already tracks.
+        relative = contract.canonical_fixture.relative_to(ROOT)
+        print(
+            f"OK: minimal contract floor. For a worked example run"
+            f" 'init-drawing {kind} --example' or read {relative}",
+            file=sys.stderr,
+        )
+    return status
 
 
 def _route_diagram(request_path: str | None, args) -> int:
@@ -609,6 +620,11 @@ def build_parser() -> argparse.ArgumentParser:
     init_drawing.add_argument("kind", help="Registered diagram kind.")
     init_drawing.add_argument("--language", help="Explicit output language code.")
     init_drawing.add_argument("--output", help="Optional JSON output path.")
+    init_drawing.add_argument(
+        "--example",
+        action="store_true",
+        help="Write the worked canonical fixture instead of the bare minimal one.",
+    )
 
     route_diagram = subparsers.add_parser("route-diagram", help="Recommend one diagram kind from a semantic brief.")
     route_diagram.add_argument("request", nargs="?", help="Optional routing request JSON path.")
@@ -768,7 +784,7 @@ def _main(argv: list[str]) -> int:
     if args.command == "list-diagram-types":
         return _list_diagram_types(args.format)
     if args.command == "init-drawing":
-        return _init_drawing(args.kind, args.language, args.output)
+        return _init_drawing(args.kind, args.language, args.output, args.example)
     if args.command == "route-diagram":
         return _route_diagram(args.request, args)
     if args.command == "import-chart-data":

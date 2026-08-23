@@ -26,6 +26,26 @@ def _on_edge(point: tuple[int, int], box: SceneBox) -> bool:
     return vertical or horizontal
 
 
+def _segment_grazes_box(start: tuple[int, int], end: tuple[int, int], box: SceneBox, minimum: int = 16) -> int:
+    """Overlap length where a segment runs along one of the box's own borders.
+
+    ``_segment_crosses_box`` only reports interior hits, so a connector routed exactly on a
+    node's edge slipped through: geometrically it misses the box, visually it merges with the
+    outline and reads as a connector attached to that node. Short touches are ignored because
+    a connector legitimately meets a border at its own attach point.
+    """
+    right, bottom = box.x + box.w, box.y + box.h
+    if start[1] == end[1] and start[1] in {box.y, bottom}:
+        low, high = sorted((start[0], end[0]))
+        overlap = min(high, right) - max(low, box.x)
+        return overlap if overlap >= minimum else 0
+    if start[0] == end[0] and start[0] in {box.x, right}:
+        low, high = sorted((start[1], end[1]))
+        overlap = min(high, bottom) - max(low, box.y)
+        return overlap if overlap >= minimum else 0
+    return 0
+
+
 def _segment_crosses_box(start: tuple[int, int], end: tuple[int, int], box: SceneBox) -> bool:
     if start[0] == end[0]:
         x = start[0]
@@ -107,6 +127,18 @@ def validate_scene_geometry(
                 continue
             if any(_segment_crosses_box(start, end, box) for start, end in zip(edge.points, edge.points[1:])):
                 diagnostics.append(DrawingDiagnostic("ERROR", "DG109", f"edge crosses unrelated node {node_id}", edge.id))
+                continue
+            grazed = max(
+                (_segment_grazes_box(start, end, box) for start, end in zip(edge.points, edge.points[1:])),
+                default=0,
+            )
+            if grazed:
+                diagnostics.append(DrawingDiagnostic(
+                    "TASTE", "DG136",
+                    f"connector runs {grazed} units along the border of unrelated node {node_id}",
+                    edge.id,
+                    hint="route the connector clear of the node instead of along its outline",
+                ))
         if len(edge.arrow.points) != 3:
             diagnostics.append(DrawingDiagnostic("ERROR", "DG110", "arrowhead requires exactly three points", edge.id))
         else:

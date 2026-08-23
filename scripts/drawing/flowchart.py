@@ -8,6 +8,7 @@ from typing import Any
 from .connectors.postprocess import clean_polyline
 from .connectors.labels import place_edge_labels
 from .layout.models import LayoutBox, LayoutEdge, LayoutResult
+from .resolve import assign_bridges
 from .scene import ArrowGeometry, ResolvedScene, SceneBox, SceneEdge, SceneNode, SceneStyle, SceneText
 from .theme.folio import DEFAULT_FOLIO_THEME, FolioTheme
 from .typography.measure import measure_text
@@ -239,24 +240,191 @@ def layout_flowchart(plan: FlowchartDrawingPlan) -> LayoutResult:
     return LayoutResult(boxes, edges, bounds)
 
 
-def _flow_edges(plan: FlowchartDrawingPlan, boxes: dict[str, LayoutBox]) -> list[LayoutEdge]:
-    outgoing: dict[str, list[str]] = defaultdict(list)
-    incoming: dict[str, list[str]] = defaultdict(list)
-    for edge in plan.edges:
-        outgoing[edge.source].append(edge.id)
-        incoming[edge.target].append(edge.id)
-    results = []
+def _slot_offsets(
+    plan: FlowchartDrawingPlan, boxes: dict[str, LayoutBox]
+) -> tuple[dict[str, float], dict[str, float]]:
+    """Attach-point offsets per edge id, allocated by neighbour position.
+
+    A fan-out has to leave its source in the same order as its targets are laid out, or the
+    connectors cross immediately outside the node. Ordering slots by edge id instead let
+    declaration order -- and, whenever an author supplies explicit ids, the id spelling --
+    decide the geometry, so ``ok->end`` could take the left slot while ``end`` sat on the
+    right. Edges are grouped by the face they actually leave from, because a forward and a
+    backward edge attach to different faces and must not share one slot run.
+    """
+    order = {edge.id: index for index, edge in enumerate(plan.edges)}
+    ends = {edge.id: (boxes[edge.source], boxes[edge.target]) for edge in plan.edges}
+
+    def center(box: LayoutBox, axis: str) -> float:
+        return box.x + box.w / 2 if axis == "x" else box.y + box.h / 2
+
+    source_groups: dict[tuple[str, str], list[str]] = defaultdict(list)
+    target_groups: dict[tuple[str, str], list[str]] = defaultdict(list)
     for edge in plan.edges:
         source, target = boxes[edge.source], boxes[edge.target]
-        source_edges = sorted(outgoing[edge.source])
-        offset = (source_edges.index(edge.id) - (len(source_edges) - 1) / 2) * 20
-        target_edges = sorted(incoming[edge.target])
-        target_offset = (target_edges.index(edge.id) - (len(target_edges) - 1) / 2) * 20
+        if plan.composition.axis == "left-right":
+            axis = "y" if target.x > source.x else "x"
+        else:
+            axis = "x" if target.y > source.y else "y"
+        source_groups[(edge.source, axis)].append(edge.id)
+        target_groups[(edge.target, axis)].append(edge.id)
+
+    source_offsets: dict[str, float] = {}
+    target_offsets: dict[str, float] = {}
+    for (_node, axis), ids in source_groups.items():
+        # Ties fall back to declaration order, which is structural rather than lexical.
+        ids.sort(key=lambda item: (center(ends[item][1], axis), order[item]))
+        for slot, item in enumerate(ids):
+            source_offsets[item] = (slot - (len(ids) - 1) / 2) * 20
+    for (_node, axis), ids in target_groups.items():
+        ids.sort(key=lambda item: (center(ends[item][0], axis), order[item]))
+        for slot, item in enumerate(ids):
+            target_offsets[item] = (slot - (len(ids) - 1) / 2) * 20
+    return source_offsets, target_offsets
+
+
+def _blocks_lane(box: LayoutBox, lane: int, span: tuple[int, int], *, horizontal: bool) -> bool:
+    """True when a connector run at ``lane`` would touch this box.
+
+    Border contact counts, not just the interior: a run placed exactly on a node's edge merges
+    with its outline and reads as a connector attached to that node (DG136).
+    """
+    low, high = sorted(span)
+    if horizontal:
+        return box.y <= lane <= box.y + box.h and low < box.x + box.w and high > box.x
+    return box.x <= lane <= box.x + box.w and low < box.y + box.h and high > box.y
+
+
+def _run_hits_segment(
+    lane: int, span: tuple[int, int], seg: tuple[tuple[int, int], tuple[int, int]], *, horizontal: bool
+) -> bool:
+    """True when a connector run at ``lane`` would touch an already placed segment."""
+    low, high = sorted(span)
+    (ax, ay), (bx, by) = seg
+    if horizontal:
+        if ay == by:  # collinear runs read as one thick line
+            return ay == lane and min(max(ax, bx), high) > max(min(ax, bx), low)
+        return low <= ax <= high and min(ay, by) <= lane <= max(ay, by)
+    if ax == bx:
+        return ax == lane and min(max(ay, by), high) > max(min(ay, by), low)
+    return low <= ay <= high and min(ax, bx) <= lane <= max(ax, bx)
+
+
+
+
+def _route_is_clear(
+    points: list[tuple[int, int]],
+    obstacles: list[LayoutBox],
+    placed: list[tuple[tuple[int, int], tuple[int, int]]],
+) -> bool:
+    """True when every run in a candidate route clears the nodes and the earlier connectors.
+
+    Checking only the lane run was not enough: the two stubs that drop from the source and rise
+    into the target are what actually collided, because moving the lane changes their length and
+    can push them straight through a connector that was already placed.
+    """
+    for first, second in zip(points, points[1:]):
+        if first == second:
+            continue
+        horizontal = first[1] == second[1]
+        lane = first[1] if horizontal else first[0]
+        span = (first[0], second[0]) if horizontal else (first[1], second[1])
+        if any(_blocks_lane(box, lane, span, horizontal=horizontal) for box in obstacles):
+            return False
+        if any(_run_hits_segment(lane, span, seg, horizontal=horizontal) for seg in placed):
+            return False
+    return True
+
+
+def _corridor_route(
+    start: tuple[int, int],
+    end: tuple[int, int],
+    preferred: int,
+    obstacles: list[LayoutBox],
+    placed: list[tuple[tuple[int, int], tuple[int, int]]],
+    *,
+    horizontal: bool,
+) -> list[tuple[int, int]]:
+    """Three-run route through the gap between endpoints, on the first lane that stays clear."""
+
+    def build(lane: int) -> list[tuple[int, int]]:
+        if horizontal:
+            return [start, (start[0], lane), (end[0], lane), end]
+        return [start, (lane, start[1]), (lane, end[1]), end]
+
+    low, high = sorted((start[1], end[1]) if horizontal else (start[0], end[0]))
+    if _route_is_clear(build(preferred), obstacles, placed):
+        return build(preferred)
+    for step in range(4, high - low, 4):
+        for candidate in (preferred + step, preferred - step):
+            if low < candidate < high and _route_is_clear(build(candidate), obstacles, placed):
+                return build(candidate)
+    return build(preferred)
+
+
+def _side_channel_route(
+    start: tuple[int, int],
+    target: LayoutBox,
+    width: int,
+    obstacles: list[LayoutBox],
+    placed: list[tuple[tuple[int, int], tuple[int, int]]],
+) -> list[tuple[int, int]] | None:
+    """Route a row-skipping edge around the outside and into the target's side face.
+
+    A forward edge that jumps more than one row cannot use the midpoint lane: that lane sits
+    inside an intervening row, so the run either grazes a node there or fights the short edges
+    that legitimately own the gap. Approaching the target from above does not help either --
+    a target gathering several incoming edges already has its top corridor full, and a run
+    crossing it must cut through every one of their stubs. Coming down an outer channel and
+    entering the side keeps the shortcut clear of both, which is what the existing
+    backward-edge channel already does. ``None`` when no clear channel exists, so the caller
+    can fall back to the corridor route.
+    """
+    margin = 32
+    left_limit = min((box.x for box in obstacles), default=width)
+    right_limit = max((box.x + box.w for box in obstacles), default=0)
+    options = []
+    if width - right_limit >= margin + 8:
+        options.append((_grid(right_limit + (width - right_limit) / 2), target.x + target.w))
+    if left_limit >= margin + 8:
+        options.append((_grid(left_limit / 2), target.x))
+
+    def build(channel: int, exit_lane: int, entry: int, face: int) -> list[tuple[int, int]]:
+        return [start, (start[0], exit_lane), (channel, exit_lane), (channel, entry), (face, entry)]
+
+    for channel, face in options:
+        for exit_step in range(0, target.y - start[1], 4):
+            exit_lane = _grid(start[1] + 24) + exit_step
+            if not start[1] < exit_lane < target.y:
+                break
+            for entry_step in range(0, target.h, 4):
+                for entry in (_grid(target.y + target.h / 2) + entry_step, _grid(target.y + target.h / 2) - entry_step):
+                    if not target.y < entry < target.y + target.h:
+                        continue
+                    route = build(channel, exit_lane, entry, face)
+                    if _route_is_clear(route, obstacles, placed):
+                        return route
+    return None
+
+
+def _flow_edges(plan: FlowchartDrawingPlan, boxes: dict[str, LayoutBox]) -> list[LayoutEdge]:
+    source_offsets, target_offsets = _slot_offsets(plan, boxes)
+    depth = _depths(plan)
+    results = []
+    placed: list[tuple[tuple[int, int], tuple[int, int]]] = []
+    for edge in plan.edges:
+        source, target = boxes[edge.source], boxes[edge.target]
+        offset = source_offsets[edge.id]
+        target_offset = target_offsets[edge.id]
+        obstacles = [box for node_id, box in boxes.items() if node_id not in {edge.source, edge.target}]
         if plan.composition.axis == "left-right" and target.x > source.x:
             start = (source.x + source.w, _grid(source.y + source.h / 2 + offset))
             end = (target.x, _grid(target.y + target.h / 2 + target_offset))
-            lane = _grid((start[0] + end[0]) / 2 + offset)
-            points = [start, (lane, start[1]), (lane, end[1]), end]
+            # The lane sits on the plain midpoint. Nudging it by the fan-out offset used to be how
+            # sibling branches avoided sharing a lane, but that pushed one of them hard against its
+            # target and left no room for the arrowhead. Collision search separates them properly.
+            preferred = _grid((start[0] + end[0]) / 2)
+            points = _corridor_route(start, end, preferred, obstacles, placed, horizontal=False)
         elif plan.composition.axis == "left-right":
             start = (_grid(source.x + source.w / 2 + offset), source.y + source.h)
             end = (_grid(target.x + target.w / 2 + target_offset), target.y + target.h)
@@ -265,15 +433,23 @@ def _flow_edges(plan: FlowchartDrawingPlan, boxes: dict[str, LayoutBox]) -> list
         elif target.y > source.y:
             start = (_grid(source.x + source.w / 2 + offset), source.y + source.h)
             end = (_grid(target.x + target.w / 2 + target_offset), target.y)
-            lane = _grid((start[1] + end[1]) / 2 + offset)
-            points = [start, (start[0], lane), (end[0], lane), end]
+            detour = None
+            if depth[edge.target] - depth[edge.source] > 1:
+                detour = _side_channel_route(start, target, plan.width, obstacles, placed)
+            if detour is not None:
+                points = detour
+            else:
+                preferred = _grid((start[1] + end[1]) / 2)
+                points = _corridor_route(start, end, preferred, obstacles, placed, horizontal=True)
         else:
             start = (source.x, _grid(source.y + source.h / 2 + offset))
             end = (target.x, _grid(target.y + target.h / 2 + target_offset))
             lane = 32
             points = [start, (lane, start[1]), (lane, end[1]), end]
         label = edge.label.upper() if edge.label and len(edge.label) <= 14 else None
-        results.append(LayoutEdge(edge.source, edge.target, list(clean_polyline(points)), label, None, edge.id))
+        route = list(clean_polyline(points))
+        placed.extend(zip(route, route[1:]))
+        results.append(LayoutEdge(edge.source, edge.target, route, label, None, edge.id))
     return place_edge_labels(results, list(boxes.values()), plan.width, plan.height)
 
 
@@ -312,6 +488,9 @@ def resolve_flowchart_scene(plan: FlowchartDrawingPlan, layout: LayoutResult, th
         scene_edges.append(SceneEdge(edge.id, edge.source, edge.target, points, SceneStyle(stroke=stroke, stroke_width=1.4, dash=dash), arrow, f"flow-edge flow-edge--{edge.channel}", label, SceneBox(**asdict(route.label_box)) if route.label_box else None))
     title_style = resolve_text_style(TextRole.DIAGRAM_TITLE, theme)
     title = SceneText(plan.title, plan.width // 2, 40, title_style.color, title_style.size, title_style.family, "middle")
+    # Lane avoidance clears what it can; a congested corridor can still force one crossing, and
+    # a hop-over shows which connector passes over instead of leaving an ambiguous junction.
+    scene_edges = assign_bridges(scene_edges)
     return ResolvedScene(plan.width, plan.height, theme.parchment, title, (), tuple(scene_edges), tuple(scene_nodes), description=f"Flowchart: {plan.title}", language=plan.language, reading_order=_reading_order(plan))
 
 
@@ -506,13 +685,58 @@ def _longest_path(semantic: FlowchartSemanticDiagram) -> tuple[str, ...]:
     return max((walk(start, ()) for start in starts), key=lambda path: (len(path), path), default=())
 
 
+def _back_edges(plan: FlowchartDrawingPlan) -> set[tuple[str, str]]:
+    """Cycle-closing edges, found by DFS colouring.
+
+    Depth relaxation must ignore these or a cycle saturates every downstream node to the
+    node-count ceiling and collapses the layout into one row. Spine membership cannot be
+    used to detect them: the spine is itself derived from these depths, and its longest-path
+    tie-break compares node-id tuples, so identical graphs disagreed on the spine purely
+    because of how their nodes happened to be named.
+
+    Traversal follows payload order for both roots and successors, so the result stays
+    deterministic without depending on the id strings themselves.
+    """
+    graph: dict[str, list[str]] = defaultdict(list)
+    for edge in plan.edges:
+        graph[edge.source].append(edge.target)
+    WHITE, GRAY, BLACK = 0, 1, 2
+    color: dict[str, int] = {node.id: WHITE for node in plan.nodes}
+    back: set[tuple[str, str]] = set()
+
+    def visit(root: str) -> None:
+        # Explicit stack: deep flows would otherwise risk a recursion limit.
+        stack: list[tuple[str, int]] = [(root, 0)]
+        color[root] = GRAY
+        while stack:
+            node, cursor = stack[-1]
+            targets = graph[node]
+            if cursor >= len(targets):
+                color[node] = BLACK
+                stack.pop()
+                continue
+            stack[-1] = (node, cursor + 1)
+            target = targets[cursor]
+            state = color.get(target, WHITE)
+            if state == GRAY:
+                back.add((node, target))
+            elif state == WHITE:
+                color[target] = GRAY
+                stack.append((target, 0))
+
+    for node in plan.nodes:
+        if color.get(node.id, WHITE) == WHITE:
+            visit(node.id)
+    return back
+
+
 def _depths(plan: FlowchartDrawingPlan) -> dict[str, int]:
     depth = {node.id: 0 for node in plan.nodes}
-    spine_index = {node_id: index for index, node_id in enumerate(plan.composition.spine)}
+    back = _back_edges(plan)
     for _ in range(len(plan.nodes)):
         changed = False
         for edge in plan.edges:
-            if edge.source in spine_index and edge.target in spine_index and spine_index[edge.target] <= spine_index[edge.source]:
+            if (edge.source, edge.target) in back:
                 continue
             candidate = min(len(plan.nodes) - 1, depth[edge.source] + 1)
             if candidate > depth[edge.target]:

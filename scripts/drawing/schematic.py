@@ -4,6 +4,7 @@ from dataclasses import asdict, dataclass
 from math import cos, pi, sin
 from typing import Any
 
+from .connectors.postprocess import clean_polyline
 from .scene import (
     ResolvedScene,
     SceneBox,
@@ -612,7 +613,10 @@ def _resolve_org_chart(plan: OrgChartPlan, layout: OrgChartLayout) -> ResolvedSc
         item_id = str(item["id"])
         if item_id not in layout.connectors:
             continue
-        primitives.append(ScenePolyline(f"link:{item_id}", layout.connectors[item_id], SceneStyle(stroke=theme.muted_stroke, stroke_width=1)))
+        # grid=1 keeps the existing coordinates exactly: the goal here is only to drop the
+        # repeated point a child sitting directly under its parent produces, so a straight drop
+        # stays a two-point line. Snapping would nudge off-grid trunks into 2-unit diagonals.
+        primitives.append(ScenePolyline(f"link:{item_id}", clean_polyline(list(layout.connectors[item_id]), grid=1), SceneStyle(stroke=theme.muted_stroke, stroke_width=1)))
     ordered = sorted(plan.units, key=lambda item: (layout.depths[str(item["id"])], layout.boxes[str(item["id"])].x))
     for item in ordered:
         item_id = str(item["id"])

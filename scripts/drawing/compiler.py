@@ -44,6 +44,7 @@ from .validation import (
     DrawingMetrics,
     collect_metrics,
     collect_scene_metrics,
+    diagnose_connector_collisions,
     diagnose_taste,
     validate_canvas,
     validate_drawing_grammar,
@@ -246,6 +247,10 @@ def _flowchart(payload: dict[str, Any]) -> CompilationResult:
         *validate_scene_primitives(scene),
         *validate_scene_accessibility(scene),
         *validate_scene_geometry(scene),
+        # Flowcharts were the one graph family with no crossing gate, so a tangled route went
+        # unreported however bad it got. Only the geometry check transfers: the rest of
+        # diagnose_taste is calibrated against the architecture grammar.
+        *diagnose_connector_collisions(scene),
     ])
     taste = sum(item.level in {"WARNING", "TASTE"} for item in diagnostics)
     metrics = collect_metrics(plan, scene, semantic_node_count=len(semantic.nodes), taste_warning_count=taste)
@@ -283,12 +288,18 @@ def _positional(payload: dict[str, Any], compiler: Callable[[dict[str, Any]], An
     focus = len(focus_value) if isinstance(focus_value, tuple) else int(bool(focus_value))
     items = getattr(plan, "items", ())
     focus = max(focus, sum(item.get("emphasis") == "focal" for item in items))
+    # Org charts draw their hierarchy as link primitives rather than scene edges, so without
+    # this the metrics reported zero connectors and zero bends for a fully connected diagram.
+    connectors = _primitive_connectors(scene)
     metrics = collect_scene_metrics(
         scene,
         semantic_count=len(semantic.nodes),
         visual_count=len(scene.reading_order),
         focus_count=focus,
         taste_warning_count=sum(item.level in {"WARNING", "TASTE"} for item in diagnostics),
+        edge_count=len(connectors) if connectors else None,
+        edge_label_count=0 if connectors else None,
+        bend_count=sum(max(0, len(points) - 2) for points in connectors) if connectors else None,
     )
     return CompilationResult(plan.kind, semantic, plan, layout, scene, tuple(diagnostics), metrics)
 

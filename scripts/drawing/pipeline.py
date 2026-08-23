@@ -5,6 +5,7 @@ from dataclasses import replace
 from diagram_models import ArchitectureDiagramSpec
 
 from .adapters import semantic_from_legacy
+from .canvas_contract import CANVAS_WIDTH
 from .grammar.architecture import ArchitectureGrammar, DEFAULT_ARCHITECTURE_GRAMMAR
 from .layout.candidates import select_layout
 from .layout.models import LayoutResult
@@ -25,6 +26,28 @@ from .validation import (
     validate_scene_geometry,
     validate_scene_primitives,
 )
+
+
+def _layout_diagnostics(drawing: DrawingPlan, layout: LayoutResult) -> list[DrawingDiagnostic]:
+    """Wrap layout warnings, attaching a repair hint for the single-band overflow case.
+
+    An architecture payload without a ``layers`` declaration puts every node in one band. The
+    stage is a fixed width, so past a handful of nodes the row simply runs off the canvas and
+    the author sees a bare "outside canvas" geometry error. The actual repair -- declare
+    ``layers`` and give each node a ``layer`` so the rows wrap -- was never stated anywhere.
+    """
+    bands = sum(1 for region in drawing.regions if region.treatment == "layer-band")
+    crowded = bands <= 1 and len(drawing.nodes) > 4
+    hint = None
+    if crowded:
+        hint = (
+            f"all {len(drawing.nodes)} nodes share one band on a fixed {CANVAS_WIDTH}-unit stage; "
+            "declare 'layers' and set each node's 'layer' so the rows wrap, or use fewer nodes"
+        )
+    return [
+        DrawingDiagnostic("ERROR", "LY001", item, hint=hint if "outside canvas" in item else None)
+        for item in layout.warnings
+    ]
 
 
 def _layout_or_error(drawing: DrawingPlan, semantic: SemanticDiagram | None, grammar: ArchitectureGrammar) -> LayoutResult:
@@ -94,10 +117,7 @@ def compile_architecture(
     drawing = drawing_plan_from_spec(spec, grammar)
     raise_for_errors("plan", [*validate_drawing_semantics(drawing), *validate_drawing_grammar(drawing, grammar)])
     layout = _layout_or_error(drawing, semantic, grammar)
-    raise_for_errors(
-        "layout",
-        [DrawingDiagnostic("ERROR", "LY001", item) for item in layout.warnings],
-    )
+    raise_for_errors("layout", _layout_diagnostics(drawing, layout))
     scene = _scene_or_error(drawing, layout, grammar, theme)
     raise_for_errors("scene", [
         *validate_canvas(scene),
@@ -115,10 +135,7 @@ def compile_drawing_plan(
 ) -> tuple[LayoutResult, ResolvedScene]:
     raise_for_errors("plan", [*validate_drawing_semantics(drawing), *validate_drawing_grammar(drawing, grammar)])
     layout = _layout_or_error(drawing, None, grammar)
-    raise_for_errors(
-        "layout",
-        [DrawingDiagnostic("ERROR", "LY001", item) for item in layout.warnings],
-    )
+    raise_for_errors("layout", _layout_diagnostics(drawing, layout))
     scene = _scene_or_error(drawing, layout, grammar, theme)
     raise_for_errors("scene", [
         *validate_canvas(scene),

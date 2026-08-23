@@ -12,7 +12,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from diagram_models import load_diagram_spec_file
 from drawing.compiler import DEFAULT_COMPILER_REGISTRY
 from drawing.bundle import bundle_drawing
-from drawing.flowchart import compile_flowchart_payload, semantic_from_flowchart_payload, plan_flowchart, validate_flowchart
+from drawing.flowchart import _depths, compile_flowchart_payload, semantic_from_flowchart_payload, plan_flowchart, validate_flowchart
 from drawing.layout.candidates import rank_layout_candidates, select_layout
 from drawing.models import AnnotationPlan, DrawingPlan, VisualRegionPlan
 from drawing.pipeline import compile_architecture, compile_drawing_plan, drawing_plan_from_spec
@@ -333,6 +333,94 @@ class DrawingDslV2Tests(TestCase):
                 compile_flowchart_payload(payload)
             self.assertEqual("schema", context.exception.stage)
             self.assertIn(code, {item.code for item in context.exception.diagnostics})
+
+    def test_flowchart_loop_layout_is_independent_of_node_id_naming(self) -> None:
+        """Depth relaxation must find back edges structurally, not by node-id luck.
+
+        ``_longest_path`` breaks equal-length ties by comparing node-id tuples, so the spine
+        used to flip between the loop branch and the exit branch purely on how nodes were
+        named. When the spine missed the loop node, the cycle saturated every depth to the
+        node-count ceiling and the layout collapsed into a single row.
+        """
+        template = json.loads((ROOT / "references" / "fixtures" / "flowchart" / "loop.json").read_text())
+        original = ["start", "run", "ok", "retry", "end"]
+        renamings = (
+            original,
+            ["a", "b", "c", "d", "e"],
+            ["e", "d", "c", "b", "a"],
+            ["submit", "review", "gate", "revise", "ship"],
+            ["n1", "n2", "n3", "n4", "n5"],
+        )
+        baseline: dict[int, int] | None = None
+        for renaming in renamings:
+            mapping = dict(zip(original, renaming))
+            payload = json.loads(json.dumps(template))
+            for node in payload["nodes"]:
+                node["id"] = mapping[node["id"]]
+            for edge in payload["edges"]:
+                edge["source"] = mapping[edge["source"]]
+                edge["target"] = mapping[edge["target"]]
+            with self.subTest(renaming=renaming):
+                _, plan, _, scene = compile_flowchart_payload(payload)
+                depths = _depths(plan)
+                # Renaming is an isomorphism, so the shape of the depth histogram is invariant.
+                histogram = {depth: 0 for depth in set(depths.values())}
+                for depth in depths.values():
+                    histogram[depth] += 1
+                self.assertEqual({0: 1, 1: 1, 2: 1, 3: 2}, histogram)
+                self.assertEqual(len(payload["nodes"]), len(scene.nodes))
+                if baseline is None:
+                    baseline = histogram
+                self.assertEqual(baseline, histogram)
+
+    def test_flowchart_sibling_branches_leave_room_for_their_arrowheads(self) -> None:
+        """Two branches off one decision must mirror each other, arrowheads included.
+
+        The fan-out offset used to shift the connector lane as well as the attach point, so on a
+        short corridor one sibling's lane landed 8 units above its target -- exactly the height
+        of an arrowhead, which then filled the whole stub and read as a kink at the corner.
+        """
+        payload = json.loads((ROOT / "references" / "fixtures" / "flowchart" / "loop.json").read_text())
+        _, plan, _, scene = compile_flowchart_payload(payload)
+        branches = [edge for edge in scene.edges if edge.source == "ok"]
+        self.assertEqual(2, len(branches))
+        finals = []
+        for edge in branches:
+            last, previous = edge.points[-1], edge.points[-2]
+            span = abs(last[1] - previous[1]) if last[0] == previous[0] else abs(last[0] - previous[0])
+            arrow_height = max(point[1] for point in edge.arrow.points) - min(point[1] for point in edge.arrow.points)
+            with self.subTest(edge=edge.id):
+                self.assertGreater(span, arrow_height, "final run must be longer than the arrowhead")
+            finals.append(span)
+        self.assertEqual(finals[0], finals[1], "sibling branches must approach their targets alike")
+
+    def test_flowchart_row_skipping_edge_avoids_the_nodes_between(self) -> None:
+        """A long shortcut must not run along an intermediate node's border.
+
+        Rows are evenly spaced, so the midpoint lane of a multi-row jump coincides with the edge
+        of the row in between: the connector then merged with that node's outline and read as a
+        third branch leaving it. Such edges take an outer channel instead.
+        """
+        payload = json.loads((ROOT / "references" / "fixtures" / "flowchart" / "dense.json").read_text())
+        result = DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
+        self.assertEqual(0, result.metrics.crossings)
+        self.assertNotIn("DG136", {item.code for item in result.diagnostics})
+        boxes = {node.id: node.box for node in result.scene.nodes}
+        for edge in result.scene.edges:
+            for start, end in zip(edge.points, edge.points[1:]):
+                for node_id, box in boxes.items():
+                    if node_id in {edge.source, edge.target}:
+                        continue
+                    horizontal = start[1] == end[1]
+                    low, high = sorted((start[0], end[0]) if horizontal else (start[1], end[1]))
+                    if horizontal and start[1] in {box.y, box.y + box.h}:
+                        overlap = min(high, box.x + box.w) - max(low, box.x)
+                    elif not horizontal and start[0] in {box.x, box.x + box.w}:
+                        overlap = min(high, box.y + box.h) - max(low, box.y)
+                    else:
+                        continue
+                    with self.subTest(edge=edge.id, node=node_id):
+                        self.assertLess(overlap, 16, "connector runs along an unrelated node's border")
 
     def test_flowchart_rejects_duplicate_ids_unknown_focus_and_complex_loops(self) -> None:
         invalid_contract = {
