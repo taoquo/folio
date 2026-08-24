@@ -5,8 +5,9 @@ from dataclasses import asdict, dataclass, replace
 from typing import Any
 
 from .layout.models import LayoutBox
-from .scene import ResolvedScene, SceneBox, SceneRegion, SceneStyle, SceneText, ScenePolyline
+from .scene import ResolvedScene, SceneBox, ScenePolyline, SceneRegion, SceneStyle
 from .theme.folio import DEFAULT_FOLIO_THEME
+from .typography.roles import TextRole, role_text
 from .v3_common import (
     GraphComposition,
     GraphEdgePlan,
@@ -368,7 +369,7 @@ def _layout_swimlane(plan: GraphPlan, lanes: list[dict[str, Any]], focus_lane: s
             box = SceneBox(72, y, plan.width - 112, _grid(lane_height - 8))
             focal = lane["id"] == focus_lane
             regions.append(SceneRegion(
-                lane["id"], "lane", SceneText(lane["label"], 84, y + 20, theme.brand if focal else theme.stone, 9, theme.mono),
+                lane["id"], "lane", role_text(lane["label"], 84, y + 20, TextRole.LANE_LABEL, theme, emphasis="focal" if focal else "normal", tracking=0),
                 box, SceneStyle(theme.brand_tint if focal else "none", theme.muted_stroke if focal else theme.border, 1, radius=6, fill_opacity=0.32 if focal else None),
             ))
     else:
@@ -384,7 +385,7 @@ def _layout_swimlane(plan: GraphPlan, lanes: list[dict[str, Any]], focus_lane: s
             box = SceneBox(x, 72, _grid(lane_width - 8), plan.height - 112)
             focal = lane["id"] == focus_lane
             regions.append(SceneRegion(
-                lane["id"], "lane", SceneText(lane["label"], x + 12, 92, theme.brand if focal else theme.stone, 9, theme.mono),
+                lane["id"], "lane", role_text(lane["label"], x + 12, 92, TextRole.LANE_LABEL, theme, emphasis="focal" if focal else "normal", tracking=0),
                 box, SceneStyle(theme.brand_tint if focal else "none", theme.muted_stroke if focal else theme.border, 1, radius=6, fill_opacity=0.32 if focal else None),
             ))
     # Lane bands are drawn as filled rectangles, so an edge label parked on a band border reads as

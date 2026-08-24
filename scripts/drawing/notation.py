@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass
-from typing import Any, Iterable
+from typing import Any
 
+from .canvas_contract import CANVAS_WIDTH, NOTATION_CANVAS
 from .scene import (
     ResolvedScene,
     SceneBox,
@@ -15,9 +17,8 @@ from .scene import (
     SceneText,
 )
 from .theme.folio import DEFAULT_FOLIO_THEME
-from .canvas_contract import CANVAS_WIDTH, NOTATION_CANVAS
-from .typography.roles import TextRole, resolve_text_style
 from .typography.measure import measure_text
+from .typography.roles import TextRole, role_text
 from .v3_common import (
     common_payload_diagnostics,
     dimensions,
@@ -83,8 +84,7 @@ BOX_NOTATION_HEIGHT_DEFAULT = NOTATION_CANVAS.default
 
 def _title(title: str, width: int) -> SceneText:
     theme = DEFAULT_FOLIO_THEME
-    style = resolve_text_style(TextRole.DIAGRAM_TITLE, theme)
-    return SceneText(title, width // 2, 40, style.color, style.size, style.family, "middle")
+    return role_text(title, width // 2, 40, TextRole.DIAGRAM_TITLE, theme)
 
 
 def _common(payload: dict[str, Any], kind: str, allowed: set[str], required: tuple[str, ...], code: str, height: int) -> list[DrawingDiagnostic]:
@@ -189,8 +189,8 @@ def _resolve_sequence(plan: NotationPlan, focus: str | None) -> tuple[NotationLa
         group_id = f"participant:{item['id']}"
         primitives.append(SceneGroup(group_id, (
             SceneRect(f"participant-box:{item['id']}", boxes[item["id"]], SceneStyle(theme.ivory, color, 1, radius=4)),
-            SceneText(str(item["label"]), x, 98, color, 10, theme.serif, "middle", weight="500"),
-            SceneText(str(item["kind"]).upper(), x, 110, theme.stone, 7, theme.mono, "middle", tracking=0.1),
+            role_text(str(item["label"]), x, 98, TextRole.NODE_TITLE, theme, emphasis="focal" if item["id"] == focus else "normal", anchor="middle", size=10),
+            role_text(str(item["kind"]).upper(), x, 110, TextRole.NODE_EYEBROW, theme, anchor="middle", tracking=0.1),
         )))
         primitives.append(SceneLine(f"lifeline:{item['id']}", (x, 116), (x, lifeline_end), SceneStyle(stroke=theme.muted_stroke, stroke_width=1, dash=(6, 4))))
     x_by_id = {item["id"]: x for item, x in zip(plan.items, positions)}
@@ -204,7 +204,7 @@ def _resolve_sequence(plan: NotationPlan, focus: str | None) -> tuple[NotationLa
         primitives.append(SceneGroup(f"message:{item['id']}", (
             SceneLine(f"message-line:{item['id']}", start, end, SceneStyle(stroke=color, stroke_width=1.2, dash=dash)),
             head,
-            SceneText(str(item["label"]), _grid((start[0] + end[0]) / 2), y - 6, theme.near_black, 8, theme.mono, "middle"),
+            role_text(str(item["label"]), _grid((start[0] + end[0]) / 2), y - 6, TextRole.EDGE_LABEL, theme, anchor="middle"),
         )))
     description = "Sequence " + plan.title + ". Participants: " + ", ".join(str(item["label"]) for item in plan.items) + ". Messages: " + "; ".join(f"{item['source']} to {item['target']}: {item['label']} ({item['kind']})" for item in plan.relations)
     reading = tuple([*(f"participant:{item['id']}" for item in plan.items), *(f"message:{item['id']}" for item in plan.relations)])
@@ -514,7 +514,7 @@ def _resolve_box_notation(plan: NotationPlan, layout: NotationLayout, focus: str
             for field, at_source in (("source_cardinality", True), ("target_cardinality", False)):
                 label = _cardinality(str(relation[field]))
                 x, y, anchor = _place_text(label, _endpoint_slots(route, at_source=at_source), placed, blocked)
-                children.append(SceneText(label, x, y, theme.stone, 8, theme.mono, anchor))
+                children.append(role_text(label, x, y, TextRole.EDGE_LABEL, theme, anchor=anchor))
         else:
             kind = relation["kind"]
             if kind == "association":
@@ -528,11 +528,11 @@ def _resolve_box_notation(plan: NotationPlan, layout: NotationLayout, focus: str
                     continue
                 label = str(relation[field])
                 x, y, anchor = _place_text(label, _endpoint_slots(route, at_source=at_source), placed, blocked)
-                children.append(SceneText(label, x, y, theme.stone, 8, theme.mono, anchor))
+                children.append(role_text(label, x, y, TextRole.EDGE_LABEL, theme, anchor=anchor))
         if relation.get("label"):
             label = str(relation["label"])
             x, y, anchor = _place_text(label, _segment_slots(*_longest_segment(route)), placed, blocked)
-            children.append(SceneText(label, x, y, theme.stone, 8, theme.mono, anchor))
+            children.append(role_text(label, x, y, TextRole.EDGE_LABEL, theme, anchor=anchor))
         primitives.append(SceneGroup(f"relationship:{relation['id']}", tuple(children)))
     for item in plan.items:
         box = layout.boxes[item["id"]]
@@ -540,29 +540,29 @@ def _resolve_box_notation(plan: NotationPlan, layout: NotationLayout, focus: str
         children: list[object] = [
             SceneRect(f"item-box:{item['id']}", box, SceneStyle(theme.ivory, color, 1, radius=4)),
             SceneLine(f"item-header:{item['id']}", (box.x, box.y + 36), (box.x + box.w, box.y + 36), SceneStyle(stroke=theme.border, stroke_width=1)),
-            SceneText(str(item.get("name")), box.x + box.w // 2, box.y + 24, color, 11, theme.serif, "middle", weight="500"),
+            role_text(str(item.get("name")), box.x + box.w // 2, box.y + 24, TextRole.NODE_TITLE, theme, emphasis="focal" if item["id"] == focus else "normal", anchor="middle", size=11),
         ]
         if er:
             for index, field in enumerate(item["fields"]):
                 y = box.y + 58 + index * 24
                 key = "PK" if field.get("primary_key") else "FK" if field.get("foreign_key") else ""
                 nullable = "?" if field.get("nullable") else ""
-                children.append(SceneText(key, box.x + 10, y, theme.brand if key == "PK" else theme.stone, 7, theme.mono))
-                children.append(SceneText(str(field["name"]), box.x + 38, y, theme.near_black, 8, theme.mono))
-                children.append(SceneText(str(field["type"]) + nullable, box.x + box.w - 10, y, theme.stone, 8, theme.mono, "end"))
+                children.append(role_text(key, box.x + 10, y, TextRole.NOTATION_KEY, theme, emphasis="focal" if key == "PK" else "normal", tracking=0))
+                children.append(role_text(str(field["name"]), box.x + 38, y, TextRole.NOTATION_MEMBER, theme))
+                children.append(role_text(str(field["type"]) + nullable, box.x + box.w - 10, y, TextRole.NOTATION_TYPE, theme, anchor="end"))
         else:
             attributes = item.get("attributes", [])
             methods = item.get("methods", [])
-            children.append(SceneText(f"«{item['kind']}»", box.x + box.w // 2, box.y + 12, theme.stone, 7, theme.mono, "middle"))
+            children.append(role_text(f"«{item['kind']}»", box.x + box.w // 2, box.y + 12, TextRole.NODE_EYEBROW, theme, anchor="middle", tracking=0))
             for index, value in enumerate(attributes):
-                children.append(SceneText(str(value), box.x + 10, box.y + 52 + index * 18, theme.olive, 8, theme.mono))
+                children.append(role_text(str(value), box.x + 10, box.y + 52 + index * 18, TextRole.NOTATION_TYPE, theme))
             methods_y = box.y + 52 + len(attributes) * 18
             if attributes and methods:
                 divider = methods_y - 4
                 children.append(SceneLine(f"item-divider:{item['id']}", (box.x, divider), (box.x + box.w, divider), SceneStyle(stroke=theme.border, stroke_width=1)))
                 methods_y += 8
             for index, value in enumerate(methods):
-                children.append(SceneText(str(value), box.x + 10, methods_y + index * 18, theme.near_black, 8, theme.mono))
+                children.append(role_text(str(value), box.x + 10, methods_y + index * 18, TextRole.NOTATION_MEMBER, theme))
         primitives.append(SceneGroup(("entity:" if er else "type:") + str(item["id"]), tuple(children)))
     item_label = "Entities" if er else "Types"
     description = f"{'ER diagram' if er else 'UML class diagram'} {plan.title}. {item_label}: " + "; ".join(_item_description(item, er) for item in plan.items) + ". Relationships: " + "; ".join(_relation_description(item, er) for item in plan.relations)

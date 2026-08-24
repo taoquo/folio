@@ -18,7 +18,7 @@ from .scene import (
     SceneText,
 )
 from .theme.folio import DEFAULT_FOLIO_THEME
-from .typography.roles import TextRole, resolve_text_style
+from .typography.roles import TextRole, role_text
 from .v3_common import (
     common_payload_diagnostics,
     dimensions,
@@ -40,8 +40,7 @@ def _grid(value: float | int) -> int:
 
 def _title(title: str, width: int) -> SceneText:
     theme = DEFAULT_FOLIO_THEME
-    style = resolve_text_style(TextRole.DIAGRAM_TITLE, theme)
-    return SceneText(title, width // 2, 40, style.color, style.size, style.family, "middle")
+    return role_text(title, width // 2, 40, TextRole.DIAGRAM_TITLE, theme)
 
 
 def _focal_ids(items: list[dict[str, Any]], focus: Any) -> tuple[str, ...]:
@@ -201,7 +200,7 @@ def _resolve_pyramid(plan: PyramidPlan, layout: PyramidLayout) -> ResolvedScene:
             ScenePath(f"band:{item_id}", path, SceneStyle(fill, stroke, 1.2 if focal else 1)),
         ]
         label_x, label_y = layout.label_positions[item_id]
-        children.append(SceneText(item["label"], label_x, label_y, theme.brand if focal else theme.near_black, 12, theme.serif, "middle", weight="500"))
+        children.append(role_text(item["label"], label_x, label_y, TextRole.NODE_TITLE, theme, emphasis="focal" if focal else "normal", anchor="middle"))
         detail = item.get("detail")
         if isinstance(detail, str) and detail.strip():
             start, end = layout.leaders[item_id]
@@ -209,7 +208,7 @@ def _resolve_pyramid(plan: PyramidPlan, layout: PyramidLayout) -> ResolvedScene:
             detail_x, detail_y = layout.detail_positions[item_id]
             lines = wrap_text(detail, PYRAMID_DETAIL_WIDTH, 9, theme.serif, max_lines=2)
             for line_index, line in enumerate(lines):
-                children.append(SceneText(line, detail_x, detail_y + line_index * 14, theme.olive, 9, theme.serif))
+                children.append(role_text(line, detail_x, detail_y + line_index * 14, TextRole.CAPTION, theme, size=9))
         primitives.append(SceneGroup(item_id, tuple(children)))
         reading.append(item_id)
     description = ("Funnel " if plan.orientation == "down" else "Pyramid ") + plan.title + ". " + "; ".join(
@@ -402,7 +401,9 @@ def _resolve_loop_flywheel(plan: LoopFlywheelPlan, layout: LoopFlywheelLayout) -
             SceneCircle("hub-disc", LOOP_CENTER_X, center_y, hub_radius, SceneStyle(theme.ivory, theme.border, 1)),
         ]
         for line_index, line in enumerate(hub_lines):
-            hub_children.append(SceneText(line, LOOP_CENTER_X, int(round(center_y + 4 + (line_index - (len(hub_lines) - 1) / 2) * 15)), theme.olive, 11, theme.serif, "middle"))
+            # The hub carries the flywheel's whole proposition, so it reads as content rather than
+            # as the frame's subtitle.
+            hub_children.append(role_text(line, LOOP_CENTER_X, int(round(center_y + 4 + (line_index - (len(hub_lines) - 1) / 2) * 15)), TextRole.HUB_CAPTION, theme, size=11))
         primitives.append(SceneGroup("hub", tuple(hub_children)))
     for index, item in enumerate(plan.stages):
         item_id = str(item["id"])
@@ -415,18 +416,18 @@ def _resolve_loop_flywheel(plan: LoopFlywheelPlan, layout: LoopFlywheelLayout) -
         ]
         lines = wrap_text(str(item["label"]), LOOP_STAGE_RADIUS * 2 - 24, 11, theme.serif, max_lines=2)
         for line_index, line in enumerate(lines):
-            children.append(SceneText(line, cx, int(round(cy + 4 + (line_index - (len(lines) - 1) / 2) * 14)), theme.brand if focal else theme.near_black, 11, theme.serif, "middle", weight="500"))
+            children.append(role_text(line, cx, int(round(cy + 4 + (line_index - (len(lines) - 1) / 2) * 14)), TextRole.NODE_TITLE, theme, emphasis="focal" if focal else "normal", size=11, anchor="middle"))
         primitives.append(SceneGroup(item_id, tuple(children)))
         reading.append(item_id)
         detail = item.get("detail")
         if isinstance(detail, str) and detail.strip():
             detail_x, detail_y = layout.detail_positions[item_id]
             detail_children: list[object] = [
-                SceneText(f"{index + 1}", detail_x, detail_y, theme.stone, 9, theme.mono),
-                SceneText(str(item["label"]), detail_x + 20, detail_y, theme.near_black, 10, theme.serif),
+                role_text(f"{index + 1}", detail_x, detail_y, TextRole.CAPTION_MONO, theme),
+                role_text(str(item["label"]), detail_x + 20, detail_y, TextRole.STEP_TITLE, theme, size=10),
             ]
             for line_index, line in enumerate(wrap_text(detail, LOOP_DETAIL_WIDTH - 20, 9, theme.serif, max_lines=2)):
-                detail_children.append(SceneText(line, detail_x + 20, detail_y + 16 + line_index * 13, theme.olive, 9, theme.serif))
+                detail_children.append(role_text(line, detail_x + 20, detail_y + 16 + line_index * 13, TextRole.CAPTION, theme, size=9))
             primitives.append(SceneGroup(f"note:{item_id}", tuple(detail_children)))
     description = "Flywheel " + plan.title + ". " + (f"Hub: {plan.hub}. " if plan.hub else "") + "; ".join(
         f"{index + 1}. {item['label']}" + (f": {item['detail']}" if isinstance(item.get("detail"), str) else "")
@@ -633,11 +634,11 @@ def _resolve_org_chart(plan: OrgChartPlan, layout: OrgChartLayout) -> ResolvedSc
         lines = wrap_text(str(item["label"]), box.w - 16, 12, theme.serif, max_lines=2)
         label_top = box.y + (26 if len(lines) == 1 and not item.get("role") else 22)
         for line_index, line in enumerate(lines):
-            children.append(SceneText(line, center, label_top + line_index * 15, theme.brand if focal else theme.near_black, 12, theme.serif, "middle", weight="500"))
+            children.append(role_text(line, center, label_top + line_index * 15, TextRole.NODE_TITLE, theme, emphasis="focal" if focal else "normal", anchor="middle"))
         role = item.get("role")
         if isinstance(role, str) and role.strip():
             role_lines = wrap_text(role, box.w - 12, 9, theme.mono, max_lines=1)
-            children.append(SceneText(role_lines[0], center, box.y + box.h - 12, theme.olive, 9, theme.mono, "middle"))
+            children.append(role_text(role_lines[0], center, box.y + box.h - 12, TextRole.NODE_META, theme, anchor="middle"))
         primitives.append(SceneGroup(item_id, tuple(children)))
         reading.append(item_id)
     description = "Org chart " + plan.title + ". " + "; ".join(

@@ -57,13 +57,13 @@
         719
       ],
       "digests": {
-        "png": "4643aad9023c02bbed93268162970daf590638a6b8d99490bface44333c37322",
+        "png": "5b1569c33087374e9c040f1f509a454af5db810643af58e40ab54f6cff4ca0e2",
         "input": "1781e1e5e60fed9bd0f7fcc16559b0a95e3b59ff25cb50d38898e4354661bd4e",
-        "svg": "9c8133c3002c45d73ad00cf9c1c8c1b72ebf00ff92be58509a1877f8f3cb49e9",
-        "pdf": "708050fad6cbae55d57d435a278e3090e927b67eb23f1bb9e9095ac4bf6b4819"
+        "svg": "95e8884fec3a256d2058beb56220873007d9d23913240f8668d363b5acfe2464",
+        "pdf": "3f6c87139747e280f80a04ce03c5b43ebabe8de092730cf7bda108889d94bf7f"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "flowchart",
@@ -94,13 +94,13 @@
         1467
       ],
       "digests": {
-        "png": "a2468d02bc5e6491d4b44327c7a987d2b4d3ced3427c945794b7d3b78e1d97ca",
+        "png": "607f438ca64d45356b5dbb05ccc5f29adae12c03bf5d294642cea0cba9060fbb",
         "input": "716dc64d01f794aeebddd3e178a56c574e8758246e38766997fe85930390ac30",
-        "svg": "435c90656c91b2bac77ecd660844908e9f928fd58c2a6add98a83e94bddb9357",
-        "pdf": "11d9ff812a95e53e49f37bc910ca35fe0d58e3b0afc93e819efa4f640ab165f1"
+        "svg": "aa1e974b3ffae34a836bfc17adce6fa17645bf5af91945e2f9bf7c5ee62ee243",
+        "pdf": "e23d309cb72de0505182b23705b1cf7637228c1bd9a2e16da144c96ee18deafd"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog plus the flowchart connector routing fix: fan-out slots follow target position, lanes sit on the plain midpoint and dodge obstacles, and row-skipping edges take an outer channel into the target side face."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "quadrant",
@@ -134,13 +134,13 @@
         828
       ],
       "digests": {
-        "png": "d4d3ceb5de5a0049a18a4bba558300e4ece5350d27da9b3a0495629c076621b7",
+        "png": "4e9267688799be8ce140989863c6857c58d02b06cddb974847fb6c82f4dbd752",
         "input": "08ae32fee0750b70799c173766c10baaf8d6f6577b18127b4b8362eb14558c49",
-        "svg": "81e46fc752ecf34e97eb09faceccbb153b282ff6d47c16c596037d787f900118",
-        "pdf": "6d48df2f5aa667f0926a5c516f1f4680720e4e5efb5c54a8768403ecb641257f"
+        "svg": "cd36c0ae9d554275142f9be9b970274b41fa9013844f16dc49656444a4872abd",
+        "pdf": "0c84f7f583deab4e0dd5fd7c9e9eaad5832cb42d492ed8b96443041c99e8f3a6"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "bar-chart",
@@ -176,13 +176,13 @@
         600
       ],
       "digests": {
-        "png": "4df315821fbc3926f9ae746a4fec8fd5b0cfb01990413604bdf21b07f055d740",
+        "png": "cb692dbb3ad9358e964b18333d8eb041b34ce4a968a052702bdac14337763725",
         "input": "4a5786ce21b169abbc7de552392a8ed630e428e8157ba936ea3da805ec0a23b7",
-        "svg": "98239bef50ba8dbd4cdd964a0f1e376be738377e4595879a9a2321efe2675953",
-        "pdf": "30978f4f25f7007d625efeaf9783f6472b055063d89a26855434beba793ce8cc"
+        "svg": "f837a1fe957a8a499036e6bd594ae86d0fa0cf96f1ce3b528e650f624e072d9a",
+        "pdf": "c2c74ccedaf9cd23a015fd8809a18909d88db70422f2d169d22dcb4a00a02ee5"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "line-chart",
@@ -218,13 +218,13 @@
         611
       ],
       "digests": {
-        "png": "1ef4231c7154de4d615286d407fde64d0fac5bd36cad922cf0a847e06cda6bd5",
+        "png": "969ac894ccfa92d6cce0bbee74d83aa6a70f135a1e3b1994276c3743f33f59dd",
         "input": "eaf755963f9771e6b886ba93ee7e1433f0dc98a8bde9e25bf07aed3807db598e",
-        "svg": "291c5838781b8390fab985d919ee5b66dabae8dca3e73199bb4d4a9d3e7e90f6",
-        "pdf": "01f61ff76927703a4aefba5236680c01a2d6ac3710636a139613f47e56c51b45"
+        "svg": "5ff9d8df4faea61cf4e0b3303faf72b9bb1074ce9999b1743efe49f792d05847",
+        "pdf": "0c0cd5023b896ff0e4f053b6e25be271f805e65beb1d8fca31369a8b44ae4e25"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "donut-chart",
@@ -254,13 +254,13 @@
         811
       ],
       "digests": {
-        "png": "64503db319911ccea01f8e2c7a5403db9c84cf130ee0e09db03a014016e294f2",
+        "png": "ef9c8209a5b0078c7cdeeb0c0130f32246c5d66cc70aa73e4bf571a22a2b7004",
         "input": "2c8032f1a83022985f6190d9b1e290ad774011e33bc541e3559a873cd5d45d2d",
-        "svg": "19feb39d40ef4281dc483ec18658d90dbe2abbf2e313caa4d4af91a0493b4e38",
-        "pdf": "be1af43e22c4f7375386baf114078e0e53319657a8a7d37f2e745172a64b6313"
+        "svg": "faeef9dc0b322a78e552450265a78a94ea5ecec40d932a5cfed40b6099a41092",
+        "pdf": "3c7eafc57ed7a8511b2182cd594f7c857df5fd32ea98a078cb553994bb836212"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "state-machine",
@@ -292,13 +292,13 @@
         341
       ],
       "digests": {
-        "png": "013d6c1bd234a41eeda0370edca974daaa70771231bfbfb1cb3c5e907bdfc35f",
+        "png": "30d4995a4936661b03e9f4134be997e06e325d214d5362ffb4a82cf46a30b0d3",
         "input": "6ccb3ef7d231e6df6bca9e5142f9cf5805a7daf2c0007a2b9ecd006bc30d1553",
-        "svg": "dc05772a005366c75ecd700b65fbb9c35414f6f37d7e9d0efe8ce4d52221a1d7",
-        "pdf": "a7d2556861b353ae23b8bd3779801d83b0919a5fc4c93e3f8d2a1bf028c20305"
+        "svg": "1796801eee501201f0e1da2443d67a6704b467514ea41d8acd7e91503f4eff98",
+        "pdf": "aa975d943569acb7f960b815d3d5f8b832882a2ddb5f7ae6774275a8ced803cf"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "timeline",
@@ -331,13 +331,13 @@
         503
       ],
       "digests": {
-        "png": "3be0916374243d81e8809ce7f9f4d329bbebc69763d19dd31daf1ed4ef318ca0",
+        "png": "55b8dadf174c9885eb2b1167ea45808355219f39badc6d213f4f6af4212de4a0",
         "input": "9f1281022dc468dd817017df2a04beddff4a5eb02ed8f5f2c598f733d1879cfc",
-        "svg": "624e529e6f7809dd1a95e248a8014110f83a62df3f54c8e174e6b37a374ccdf8",
-        "pdf": "a329c3d1890b1824c543db6de3a67d60192db6a88e1e20507ee732238ce3dff4"
+        "svg": "d85ea63996141fb09020b8d22824cd5c68a44ef4dc43c503bf669b265bc94611",
+        "pdf": "50cf0caccef90f1392ba14f383cab380fef7fdb1aba55a08764e435617a8a9b1"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "swimlane",
@@ -368,13 +368,13 @@
         675
       ],
       "digests": {
-        "png": "ee97c6e35f25b710c78021e05d89324a4fb226406a6a97433529d79e9331d8e6",
+        "png": "896e9123ba6f99e68addde207fd7028579c3a1efea87baefba3afa7734ab94e4",
         "input": "cf6892927660612aceb0a04354d5844c1d0649d9f54785b87de97602577edf64",
-        "svg": "d063d9a092ec4b51f4dff04272ab5938701f63478c2fcf8a07b1fc1ae61b9c4f",
-        "pdf": "635bb535826c351bd544b5fbcd9433645728242e82f7c4ca537b0cfa2d599409"
+        "svg": "9d0f689b31affdda151f13601d9720c18b61e6b71c016201c93b372afc375d86",
+        "pdf": "088549e6b37aa6bbaf61bfc55e4249b2e59fbc663c59a9f90c50885eb1114017"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "tree",
@@ -414,7 +414,7 @@
         "pdf": "4173546a51b050bb159655ebfa3d58420089c9135d165af97bf2ae31cfc8fd5a"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "layer-stack",
@@ -451,7 +451,7 @@
         "pdf": "b8203baff7e4fccd47be5ab7153ad37585b0652677d2f2a047ce7887d472956f"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "venn",
@@ -486,7 +486,7 @@
         "pdf": "54455a0d149c988939ae563011b85d37575e358c64835fbdb96a31ae709bead6"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "pyramid",
@@ -522,7 +522,7 @@
         "pdf": "0e454473d9f7374fd1eb3e4104d693f085b757110fe78868b6a74ee8df24d041"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "org-chart",
@@ -561,7 +561,7 @@
         "pdf": "55b7dda7c13d8e4912fc1f25bebafdfd932baac9c3ed0075481df2b4325da8b1"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "loop-flywheel",
@@ -591,13 +591,13 @@
         810
       ],
       "digests": {
-        "png": "ba9a1f573e989213e5f7a87a6af56ce839cca960b61d3c58c35a149e1679b921",
+        "png": "3d711d28529afccf695ad21344fa77d38550e3037d920e3cb5b1a79ec4cd598e",
         "input": "8390f9f0ae5eb0db1e498983dfbf0576bded33c1eca9278c791769f543ad0306",
-        "svg": "55cbcc8bed3f185081a585c200636d14c62efcaa859fd34e27d0224bb4f0ee94",
-        "pdf": "a4d27ddffb8c57ef102cdbe81015dafb02063c7b42f2d15fe41ca60179a1366f"
+        "svg": "ec9b112b6fdc43d365722f0674e07d522661711377f2098803bae2e335e58c72",
+        "pdf": "560a7142e045df12aa22899b976c0edde3e3e5100931591e5aa6c87bc6ccbf75"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "candlestick",
@@ -630,13 +630,13 @@
         675
       ],
       "digests": {
-        "png": "327153e50f131758f77949c8f138014638628544d29a453542d3aedc87c1be85",
+        "png": "93fe52f22ff573bda51e2412f1b31ca4c8eea6fe044d6b0dffd00197cec7c9ee",
         "input": "c64f5470f87e592ba4c2134ec35c150fb17d71e3857421810d42ee7f20deb2cb",
-        "svg": "99eb685518ef15e612a010bb4fd14785476854b81bd5e1876e909c14ef291736",
-        "pdf": "3986f502d741b01c02b686370752bdea349ddee6ba608ee5ab7bf208870fa024"
+        "svg": "3a60c272a80fff06ba515c4671656bfe406c2c8ea664ee4857f18947df043e63",
+        "pdf": "2e0e3c567a420a302b8a816af8b82c33a27aa0d14547e895e6f3d04cdc4026a3"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "waterfall",
@@ -669,13 +669,13 @@
         660
       ],
       "digests": {
-        "png": "c23124e945f085418fbed7d2ef3de56ab6288d0c38d9659f7f8deb5ff030f670",
+        "png": "638c192357ffed775669be508849d86be3ed164ee076d1dfb25c516973f97f95",
         "input": "c9bb7dc6e9c0fde400db24fa0038e5548ae723297110f22b51f12c856265c699",
-        "svg": "bf18b797de3da17648f8cc8a670c1600e25e55e5eb67cba80934bca5b296e7b8",
-        "pdf": "e454cf044b24666231e1365b4905d1581e3a0aa49e724a9e17edc9373531cc80"
+        "svg": "7d8bf85c69aeaaffd0b48e45a788c94bc2ce1205044a5249b69861fb81454dcb",
+        "pdf": "1872a4fdee9c4b962e2beb85e965466aa94d71003034b0d678750e48f81a7b2a"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "scatter",
@@ -707,13 +707,13 @@
         832
       ],
       "digests": {
-        "png": "ba600006889221cfc50c7a47eb66a5098bede461701d6415bf909a2798aaf97b",
+        "png": "2edb0bc22b642bc9d0bad59792fd4079b183ff18b7c560479eec3b3183c2aa37",
         "input": "710b880ef2b0cc6d129367a9b2ed16acc9100d76a14362d169446dd95effee35",
-        "svg": "d2c76f0aacd702ad1722bef77539b2891e5a7d031ac310166c795e498e3b7562",
-        "pdf": "8660f6d547684883c03d31997fe573649010557cf27afc578153a0afc3d74351"
+        "svg": "948f7626c1155d2fb621ab0bc742d36421d31b93100f82bc5d4df313845fe38d",
+        "pdf": "3ca5be938dba72402337e171612548629fb0c58594f4da9b904c3dff5c6f3ff8"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "gantt",
@@ -745,13 +745,13 @@
         689
       ],
       "digests": {
-        "png": "cc503403230edefe730232519b38b5c61655be8dc992b027c11decf1887aa884",
+        "png": "1584ea897fed3b9532e92d26a93effa2ab40146c6dd1d497edb913ddb5a2499b",
         "input": "7c02e652342dfd497b4bb17829e03e28682efd014dbe30cf5966b36aa910f371",
-        "svg": "0e617eccb4c2813983fbbd4bc244dd6db76d51616795da04301e9a9998d19776",
-        "pdf": "fcef4df41dc3d68f093dbfa6c93c05ab82cb0eb6b98e06ee4b1355369fd5b04e"
+        "svg": "14a923368b7a43b5312267062e32c5de5dfc06e6e63e4b9c6c2a57364c1af014",
+        "pdf": "5a954359e88d0fff14ad56afd93b37b8f6b6591758718dfa3616f55c28bfc468"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "sequence",
@@ -784,13 +784,13 @@
         507
       ],
       "digests": {
-        "png": "b980d2b7603fcb640614ac75bcd1b60749da3b6603cf6ecf2eebc33539dda32a",
+        "png": "029bd8eb5b8525f50a5daec9078496c200046f9cd15ede919365cef8b9341a8d",
         "input": "2272355bef0e001578ea9e1e61c91aaf70963ec8a7b07957f902f0a7777db81c",
-        "svg": "e1c0442c9d9bdbe85bd314a3f899f73cf48e6aae622fa4ef80ef29b19810fe17",
-        "pdf": "f9a231402c60131e4c40e92e0a6a520ec4221702d7c198d8849f320b58d9a075"
+        "svg": "5c9bc4348771f6938b451e4c780746887f4b4cae39d30a9d0e81f72e95f49d4c",
+        "pdf": "ff20a1e5f18b56e91f1fb5debb623fd1c2c15295c9c14dd71506abc5a20b0057"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "uml-class",
@@ -823,13 +823,13 @@
         686
       ],
       "digests": {
-        "png": "d7ad1b78c7d180a834485fdc06f1d81440640c9b9d6b0ff3d7fcd4936ca6c517",
+        "png": "2cd359edd2819d28cfb343a125723a8a7dbaba33fcd4d3903948237df98f9cfc",
         "input": "d72321f3a09ac556aa4ecc86b518bb2313f007f4d3d4da5178c406d005aedceb",
-        "svg": "8ce9f7fc487088e2b0692ac90e78b825fb9b27567dbe3b3968b3ef68267db489",
-        "pdf": "8ea85055e315def13de9e80ca71c7a3a183282eabb094e72edfdb9058295e669"
+        "svg": "5d22e128dba004418ee7d2b77babb946e453033f4444dd4f04b9e07911d1a577",
+        "pdf": "76d485bb05761794528c6b5ce85bb40ae92fd52fe7be2e5e4ec15973498281ea"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "er-diagram",
@@ -860,13 +860,13 @@
         705
       ],
       "digests": {
-        "png": "a80fb63e8293399211a579ccd93623d0f9934666c03acea4e31e8f2e34eb672c",
+        "png": "1dc6c36d683cb48d9d83994ec87cfc5c69d9c15eb2d120852195ebce30ea9f75",
         "input": "a34e03b91012df934dcdde1fb58b365bf8d1ac49bdf3cef822882666047449d2",
-        "svg": "17faf7e140db83e1dff154b253ac59b290cb091f433bcb2bd900870182fe34f0",
-        "pdf": "6a67628e0d60566d1104b5d35773430f5724cecbbe818449d5e179f15dfbc7db"
+        "svg": "879e4ae2c89c3eab0e5c7258be9c7af9d7dffb131bc1ec2d3a1a7275eb11a504",
+        "pdf": "4582aa3774e1717c1eb4db936ee7d8cb8982e7cb3837d39c5c600ced8e7616a5"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     },
     {
       "kind": "heatmap",
@@ -897,13 +897,13 @@
         720
       ],
       "digests": {
-        "png": "5e8e1561a76c0efe8d99a111e60e2d702db77f09ddf77eec6b9dc70faaf3dede",
+        "png": "a82e735422005a974f8aebfa479754ff41da79aa1d52272942930203d32d09ab",
         "input": "ad464d3d548838319037749ac2b69b2698eed5e49548368488af149f689ed3b2",
-        "svg": "f629a1658647423908e066d03286765ce9ced2fd4e02257c1d6bd9d182cd89b5",
-        "pdf": "75cff8693cf4847a79774ea5d83bfeda833709429086396ce948cb2009b08337"
+        "svg": "2f35769d8359e7fdcdffbd4110c4c33b190c8148601cd9206c60ba550dc1b34b",
+        "pdf": "d0941f27ffc166e265b2ec59365e17a00e9e586ed79417c5b7a940d476276605"
       },
       "approval_state": "approved",
-      "approval_reason": "Approved V6.1 catalog including bar value label knockout, notation route label avoidance, and the VQ108 text collision gate."
+      "approval_reason": "Approved after routing the last 12 percent of diagram text through the role table: small labels now carry the higher-contrast token because contrast has to rise as size falls, and brand accent resolves from one focal axis instead of thirteen local decisions."
     }
   ]
 }

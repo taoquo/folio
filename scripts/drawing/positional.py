@@ -16,7 +16,7 @@ from .scene import (
 )
 from .theme.folio import DEFAULT_FOLIO_THEME
 from .typography.measure import measure_text
-from .typography.roles import TextRole, resolve_text_style
+from .typography.roles import TextRole, role_text
 from .v3_common import (
     common_payload_diagnostics,
     dimensions,
@@ -24,8 +24,8 @@ from .v3_common import (
     infer_language,
     object_list,
     require_no_errors,
-    validate_object_fields,
     validate_item_strings,
+    validate_object_fields,
     validate_resolved_scene,
     validate_unique_ids,
     wrap_text,
@@ -157,8 +157,7 @@ def _grid(value: float | int) -> int:
 
 def _title(title: str, width: int) -> SceneText:
     theme = DEFAULT_FOLIO_THEME
-    style = resolve_text_style(TextRole.DIAGRAM_TITLE, theme)
-    return SceneText(title, width // 2, 40, style.color, style.size, style.family, "middle")
+    return role_text(title, width // 2, 40, TextRole.DIAGRAM_TITLE, theme)
 
 
 def compile_timeline_payload(payload: dict[str, Any]):
@@ -232,7 +231,7 @@ def _resolve_timeline(plan: TimelinePlan, layout: TimelineLayout) -> ResolvedSce
     theme = DEFAULT_FOLIO_THEME
     primitives: list[object] = [SceneLine("timeline-axis", *layout.axis, SceneStyle(stroke=theme.border, stroke_width=1))]
     reading_order: list[str] = []
-    for index, item in enumerate(plan.events):
+    for item in plan.events:
         item_id = item["id"]
         x, y = layout.positions[item_id]
         box = layout.label_boxes[item_id]
@@ -242,10 +241,10 @@ def _resolve_timeline(plan: TimelinePlan, layout: TimelineLayout) -> ResolvedSce
             SceneLine(f"tick:{item_id}", (x, y - 8), (x, y + 8), SceneStyle(stroke=theme.brand if focal else theme.stone, stroke_width=1.2)),
             SceneLine(f"leader:{item_id}", (x, y + direction * 8), (x, box.y if direction > 0 else box.y + box.h), SceneStyle(stroke=theme.border, stroke_width=1)),
             SceneCircle(f"mark:{item_id}", x, y, 5 if focal else 4, SceneStyle(theme.brand if focal else theme.ivory, theme.brand if focal else theme.olive, 1.2)),
-            SceneText(item["date"], x, box.y + 16, theme.brand if focal else theme.stone, 8, theme.mono, "middle"),
+            role_text(item["date"], x, box.y + 16, TextRole.AXIS_LABEL, theme, emphasis="focal" if focal else "normal", anchor="middle"),
         ]
         label_lines = wrap_text(item["label"], 120, 11, theme.serif, 2)
-        children.extend(SceneText(line, x, box.y + 36 + line_index * 16, theme.near_black, 11, theme.serif, "middle", weight="500") for line_index, line in enumerate(label_lines))
+        children.extend(role_text(line, x, box.y + 36 + line_index * 16, TextRole.NODE_TITLE, theme, anchor="middle", size=11) for line_index, line in enumerate(label_lines))
         primitives.append(SceneGroup(item_id, tuple(children)))
         reading_order.append(item_id)
     scene = ResolvedScene(
@@ -346,11 +345,11 @@ def _resolve_quadrant(plan: QuadrantPlan, layout: QuadrantLayout) -> ResolvedSce
         SceneRect("quadrant-frame", plot, SceneStyle("none", theme.border, 1)),
         SceneLine("quadrant-x-mid", (plot.x, plot.y + plot.h // 2), (plot.x + plot.w, plot.y + plot.h // 2), SceneStyle(stroke=theme.border, stroke_width=1)),
         SceneLine("quadrant-y-mid", (plot.x + plot.w // 2, plot.y), (plot.x + plot.w // 2, plot.y + plot.h), SceneStyle(stroke=theme.border, stroke_width=1)),
-        SceneText(plan.axes["x"]["low"], plot.x, plot.y + plot.h + 24, theme.stone, 8, theme.mono),
-        SceneText(plan.axes["x"]["high"], plot.x + plot.w, plot.y + plot.h + 24, theme.stone, 8, theme.mono, "end"),
-        SceneText(plan.axes["x"]["label"], plot.x + plot.w // 2, plot.y + plot.h + 44, theme.olive, 9, theme.serif, "middle"),
-        SceneText(plan.axes["y"]["high"], plot.x - 12, plot.y + 8, theme.stone, 8, theme.mono, "end"),
-        SceneText(plan.axes["y"]["low"], plot.x - 12, plot.y + plot.h, theme.stone, 8, theme.mono, "end"),
+        role_text(plan.axes["x"]["low"], plot.x, plot.y + plot.h + 24, TextRole.AXIS_LABEL, theme),
+        role_text(plan.axes["x"]["high"], plot.x + plot.w, plot.y + plot.h + 24, TextRole.AXIS_LABEL, theme, anchor="end"),
+        role_text(plan.axes["x"]["label"], plot.x + plot.w // 2, plot.y + plot.h + 44, TextRole.CAPTION, theme, anchor="middle", size=9),
+        role_text(plan.axes["y"]["high"], plot.x - 12, plot.y + 8, TextRole.AXIS_LABEL, theme, anchor="end"),
+        role_text(plan.axes["y"]["low"], plot.x - 12, plot.y + plot.h, TextRole.AXIS_LABEL, theme, anchor="end"),
     ])
     fallback_index = {item_id: index + 1 for index, item_id in enumerate(layout.legend_items)}
     for item in plan.items:
@@ -362,13 +361,13 @@ def _resolve_quadrant(plan: QuadrantPlan, layout: QuadrantLayout) -> ResolvedSce
         label = str(fallback_index[item_id]) if fallback else item["label"]
         children = (
             SceneCircle(f"point:{item_id}", x, y, 8 if fallback else 6 if focal else 4, SceneStyle(theme.brand if focal else theme.ivory, theme.brand if focal else theme.olive, 1.2)),
-            SceneText(label, x, y + 3, theme.parchment, 7, theme.mono, "middle") if fallback else
-            SceneText(label, box.x + 4, box.y + 14, theme.brand if focal else theme.near_black, 9, theme.serif),
+            role_text(label, x, y + 3, TextRole.KNOCKOUT, theme, emphasis="focal" if focal else "normal", anchor="middle") if fallback else
+            role_text(label, box.x + 4, box.y + 14, TextRole.POINT_LABEL, theme, emphasis="focal" if focal else "normal", size=9),
         )
         primitives.append(SceneGroup(item_id, children))
     for index, item_id in enumerate(layout.legend_items):
         item = next(value for value in plan.items if value["id"] == item_id)
-        primitives.append(SceneText(f"{index + 1}. {item['label']}", 780, 112 + index * 24, theme.olive, 9, theme.serif))
+        primitives.append(role_text(f"{index + 1}. {item['label']}", 780, 112 + index * 24, TextRole.CAPTION, theme, size=9))
     scene = ResolvedScene(
         plan.width, plan.height, theme.parchment, _title(plan.title, plan.width), (), (), (),
         description="Quadrant " + plan.title + ". " + "; ".join(f"{item['label']}: x {item['x']}, y {item['y']}" for item in plan.items),
@@ -467,19 +466,19 @@ def _resolve_venn(plan: VennPlan, layout: VennLayout) -> ResolvedScene:
         x, y = layout.text_positions[item["id"]]
         children: list[object] = [
             SceneCircle(f"circle:{item['id']}", cx, cy, radius, SceneStyle(fill, stroke, 1.2, fill_opacity=0.58)),
-            SceneText(item["label"], cx, cy - radius + 24, theme.brand if focal else theme.near_black, 11, theme.serif, "middle", weight="500"),
+            role_text(item["label"], cx, cy - radius + 24, TextRole.NODE_TITLE, theme, emphasis="focal" if focal else "normal", anchor="middle", size=11),
         ]
         for line_index, value in enumerate(item["exclusive"][:2]):
-            children.append(SceneText(value, x, y + line_index * 16, theme.olive, 9, theme.serif, "middle"))
+            children.append(role_text(value, x, y + line_index * 16, TextRole.CAPTION, theme, anchor="middle", size=9))
         primitives.append(SceneGroup(f"set:{item['id']}", tuple(children)))
         reading.append(f"set:{item['id']}")
     for item in plan.intersections:
         x, y = layout.text_positions[item["id"]]
-        children = tuple(SceneText(value, x, y + index * 16, theme.brand, 9, theme.serif, "middle") for index, value in enumerate(item["items"][:2]))
+        children = tuple(role_text(value, x, y + index * 16, TextRole.CAPTION, theme, emphasis="focal", anchor="middle", size=9) for index, value in enumerate(item["items"][:2]))
         primitives.append(SceneGroup(f"intersection:{item['id']}", children))
         reading.append(f"intersection:{item['id']}")
     for index, value in enumerate(layout.legend):
-        primitives.append(SceneText(value, 120 + (index % 2) * 360, 480 + (index // 2) * 16, theme.olive, 8, theme.serif))
+        primitives.append(role_text(value, 120 + (index % 2) * 360, 480 + (index // 2) * 16, TextRole.ANNOTATION, theme))
     description = "Venn " + plan.title + ". " + "; ".join(
         [*(f"{item['label']} exclusive: {', '.join(item['exclusive']) or 'empty'}" for item in plan.sets), *(f"intersection {','.join(item['sets'])}: {', '.join(item['items']) or 'empty'}" for item in plan.intersections)]
     )

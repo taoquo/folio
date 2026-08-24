@@ -1,17 +1,19 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass
 from datetime import date
 from hashlib import sha256
 from math import ceil, cos, floor, log10, pi, sin
-from typing import Any, Iterable
+from typing import Any
 
+from .canvas_contract import CANVAS_WIDTH, CHART_CANVAS
 from .scene import (
     ResolvedScene,
+    SceneAnnotation,
     SceneBox,
     SceneCircle,
     SceneGroup,
-    SceneAnnotation,
     SceneLine,
     ScenePath,
     ScenePolyline,
@@ -20,9 +22,8 @@ from .scene import (
     SceneText,
 )
 from .theme.folio import DEFAULT_FOLIO_THEME
-from .canvas_contract import CANVAS_WIDTH, CHART_CANVAS
-from .typography.roles import TextRole, resolve_text_style
 from .typography.measure import measure_text
+from .typography.roles import TextRole, role_text
 from .v3_common import (
     common_payload_diagnostics,
     dimensions,
@@ -30,14 +31,13 @@ from .v3_common import (
     infer_language,
     object_list,
     require_no_errors,
-    validate_object_fields,
     validate_item_strings,
+    validate_object_fields,
     validate_resolved_scene,
     validate_unique_ids,
     wrap_text,
 )
 from .validation import DrawingDiagnostic
-
 
 SUPPORTED_LOCALES = {"en-US", "en-GB", "zh-CN", "zh-TW"}
 
@@ -95,11 +95,15 @@ def _donut_geometry(height: int, segments: int) -> DonutGeometry:
     return DonutGeometry(DONUT_CENTER_X, center, outer, _grid(outer * DONUT_INNER_RATIO), legend_top, legend_step)
 
 
-def _series_key_primitives(label: str, top: int, color: str, theme) -> list[object]:
-    """Right-gutter series key, wrapped so long labels never overflow the canvas."""
+def _series_key_primitives(label: str, top: int, emphasis: str, theme) -> list[object]:
+    """Right-gutter series key, wrapped so long labels never overflow the canvas.
+
+    The caller passes ``emphasis`` rather than a colour: which series is focal is a data
+    decision, and how focal looks is this module's.
+    """
     lines = wrap_text(str(label), SERIES_KEY_WIDTH, 9, theme.serif, max_lines=2)
     return [
-        SceneText(line, SERIES_KEY_X, top + index * 11, color, 9, theme.serif)
+        role_text(line, SERIES_KEY_X, top + index * 11, TextRole.SERIES_KEY, theme, emphasis=emphasis, size=9)
         for index, line in enumerate(lines)
     ]
 
@@ -263,8 +267,7 @@ def _point_id(series_id: str, category: str) -> str:
 
 def _title(title: str, width: int) -> SceneText:
     theme = DEFAULT_FOLIO_THEME
-    style = resolve_text_style(TextRole.DIAGRAM_TITLE, theme)
-    return SceneText(title, width // 2, 40, style.color, style.size, style.family, "middle")
+    return role_text(title, width // 2, 40, TextRole.DIAGRAM_TITLE, theme)
 
 
 def nice_scale(values: Iterable[float], *, include_zero: bool, unit: str | None = None, tick_count: int = 5) -> ScalePlan:
@@ -343,7 +346,7 @@ def _axes(
     for index, tick in enumerate(scale.ticks):
         y = _y(tick, scale, plot)
         result.append(SceneLine(f"grid:{index}", (plot.x, y), (plot.x + plot.w, y), SceneStyle(stroke=theme.border, stroke_width=0.8)))
-        result.append(SceneText(_format(tick, scale.unit, locale, value_format), plot.x - 12, y + 4, theme.stone, 8, theme.mono, "end"))
+        result.append(role_text(_format(tick, scale.unit, locale, value_format), plot.x - 12, y + 4, TextRole.AXIS_LABEL, theme, anchor="end"))
     result.append(SceneLine("axis:y", (plot.x, plot.y), (plot.x, plot.y + plot.h), SceneStyle(stroke=theme.olive, stroke_width=1)))
     result.append(SceneLine("axis:x", (plot.x, plot.y + plot.h), (plot.x + plot.w, plot.y + plot.h), SceneStyle(stroke=theme.olive, stroke_width=1)))
     if categories:
@@ -351,7 +354,7 @@ def _axes(
             raise ValueError("category positions must match category count")
         for index, label in enumerate(categories):
             x = category_positions[index] if category_positions else _grid(plot.x + (index + 0.5) * plot.w / len(categories))
-            result.append(SceneText(label, x, plot.y + plot.h + 24, theme.olive, 8, theme.mono, "middle"))
+            result.append(role_text(label, x, plot.y + plot.h + 24, TextRole.AXIS_LABEL, theme, anchor="middle"))
     return result
 
 
@@ -511,7 +514,7 @@ def _reference_primitives(items: tuple[dict[str, Any], ...], plot: SceneBox, sca
             _grid(y + 16),
         )
         used.append(label_y)
-        primitives.append(SceneText(str(item["label"]), plot.x + plot.w - 8, label_y, theme.stone, 8, theme.mono, "end"))
+        primitives.append(role_text(str(item["label"]), plot.x + plot.w - 8, label_y, TextRole.AXIS_LABEL, theme, anchor="end"))
         reading.append(item_id)
     return primitives, reading
 
@@ -566,7 +569,7 @@ def _scene_annotations(
         placed.append(SceneAnnotation(
             f"annotation:{item['id']}", box,
             SceneStyle(theme.ivory, theme.brand, 1, radius=4),
-            SceneText(str(item["text"]), box.x + 8, box.y + 24, theme.near_black, 8, theme.serif),
+            role_text(str(item["text"]), box.x + 8, box.y + 24, TextRole.ANNOTATION, theme),
             ((anchor_x, anchor_y), (end_x, anchor_y), (end_x, end_y)),
         ))
     return tuple(placed)
@@ -768,12 +771,12 @@ def _resolve_bars(plan: BarPlan, layout: ChartLayout, source: str | None) -> Res
                 pending_labels.append((mark_id, text_value, label_x, label_y, label_w))
                 value_label_boxes.append(SceneBox(label_x - label_w // 2, label_y - 10, label_w, 14))
             reading.append(mark_id)
-        primitives.extend(_series_key_primitives(item["label"], 112 + series_index * 24, theme.brand if color == theme.brand else theme.near_black, theme))
+        primitives.extend(_series_key_primitives(item["label"], 112 + series_index * 24, "focal" if color == theme.brand else "normal", theme))
     for mark_id, text_value, label_x, label_y, label_w in pending_labels:
         pad = _knockout(label_x, label_y, label_w)
         if pad is not None:
             primitives.append(SceneRect(f"{mark_id}:label-knockout", pad.box, pad.style))
-        primitives.append(SceneText(text_value, label_x, label_y, theme.near_black, 8, theme.mono, "middle"))
+        primitives.append(role_text(text_value, label_x, label_y, TextRole.VALUE_LABEL, theme, anchor="middle"))
     if plan.mode == "stacked":
         group_width = layout.plot.w / len(plan.categories)
         for category_index in range(len(plan.categories)):
@@ -793,7 +796,7 @@ def _resolve_bars(plan: BarPlan, layout: ChartLayout, source: str | None) -> Res
                 pad = _knockout(x, label_y, label_w)
                 if pad is not None:
                     primitives.append(pad)
-                primitives.append(SceneText(text_value, x, label_y, theme.near_black, 8, theme.mono, "middle"))
+                primitives.append(role_text(text_value, x, label_y, TextRole.VALUE_LABEL, theme, anchor="middle"))
     anchors = {
         mark_id: (box.x + box.w // 2, box.y if next(float(value) for item in plan.series for index, value in enumerate(item["values"]) if _bar_id(item["id"], plan.categories[index]) == mark_id) >= 0 else box.y + box.h)
         for mark_id, box in layout.marks.items()
@@ -958,7 +961,7 @@ def _resolve_lines(plan: LinePlan, layout: ChartLayout, source: str | None) -> R
             reading.append(mark_id)
         if len(run) >= 2:
             primitives.append(ScenePolyline(f"line:{item['id']}:{run_index}", tuple(run), SceneStyle("none", color, 1.6, dash=dash)))
-        primitives.extend(_series_key_primitives(item["label"], 112 + series_index * 24, theme.brand if color == theme.brand else theme.near_black, theme))
+        primitives.extend(_series_key_primitives(item["label"], 112 + series_index * 24, "focal" if color == theme.brand else "normal", theme))
     # Reference rules span the plot, so a callout box that lands on one gets a line through its
     # middle. Treat each rule and each plotted point as an obstacle.
     rule_bands = tuple(
@@ -1060,15 +1063,15 @@ def _resolve_donut(plan: DonutPlan, layout: ChartLayout, source: str | None) -> 
         percent = float(item["value"]) / plan.total * 100
         row = legend_top + index * legend_step
         primitives.append(SceneRect(f"legend-mark:{item['id']}", SceneBox(596, row, 12, 12), SceneStyle(color, "none", radius=2)))
-        primitives.append(SceneText(item["label"], 624, row + 12, theme.near_black, 11, theme.serif))
+        primitives.append(role_text(item["label"], 624, row + 12, TextRole.SEGMENT_LABEL, theme, size=11))
         value_text = _format(float(item['value']), plan.unit, plan.locale, plan.value_format)
         # When the unit is already a percentage the formatted value and the computed share say the
         # same thing, so only append the share for non-percentage units.
         legend_text = value_text if (plan.unit or "").strip() == "%" else f"{value_text} · {percent:.1f}%"
-        primitives.append(SceneText(legend_text, 624, row + 30, theme.stone, 9, theme.mono))
+        primitives.append(role_text(legend_text, 624, row + 30, TextRole.CAPTION_MONO, theme))
         reading.append(mark_id)
-    primitives.append(SceneText(_format(plan.total, plan.unit, plan.locale, plan.value_format), cx, cy - 2, theme.brand, 22, theme.serif, "middle", weight="500"))
-    primitives.append(SceneText("TOTAL", cx, cy + 26, theme.stone, 9, theme.mono, "middle", tracking=0.16))
+    primitives.append(role_text(_format(plan.total, plan.unit, plan.locale, plan.value_format), cx, cy - 2, TextRole.VALUE_HERO, theme, emphasis="focal"))
+    primitives.append(role_text("TOTAL", cx, cy + 26, TextRole.CAPTION_MONO, theme, anchor="middle", tracking=0.16))
     description = "Donut " + plan.title + ". " + "; ".join(f"{item['label']}: {item['value']}" for item in plan.segments) + (f". Source: {source}" if source else "")
     return ResolvedScene(plan.width, plan.height, theme.parchment, _title(plan.title, plan.width), (), (), (), description=description, language=plan.language, reading_order=tuple(reading), primitives=tuple(primitives))
 
@@ -1173,7 +1176,7 @@ def _resolve_candles(plan: CandlestickPlan, layout: ChartLayout, source: str | N
         )
         primitives.append(SceneGroup(mark_id, children))
         if index % label_every == 0 or index == len(plan.periods) - 1:
-            primitives.append(SceneText(item["date"], mark["x"], layout.plot.y + layout.plot.h + 24, theme.stone, 8, theme.mono, "middle"))
+            primitives.append(role_text(item["date"], mark["x"], layout.plot.y + layout.plot.h + 24, TextRole.AXIS_LABEL, theme, anchor="middle"))
         reading.append(mark_id)
     period_by_id = {str(item["id"]): item for item in plan.periods}
     anchors = {
@@ -1306,8 +1309,8 @@ def _resolve_waterfall(plan: WaterfallPlan, layout: ChartLayout, source: str | N
         # phrases such as "Invited a teammate" collide with their neighbours.
         center = mark["box"].x + mark["box"].w // 2
         for line_index, line in enumerate(wrap_text(label, max(48, int(step_width) - 8), 8, theme.mono, max_lines=2)):
-            primitives.append(SceneText(line, center, layout.plot.y + layout.plot.h + 24 + line_index * 12, theme.olive, 8, theme.mono, "middle"))
-        primitives.append(SceneText(_format(value, plan.scale.unit, plan.locale, plan.value_format), mark["box"].x + mark["box"].w // 2, max(72, mark["box"].y - 8), theme.near_black, 8, theme.mono, "middle"))
+            primitives.append(role_text(line, center, layout.plot.y + layout.plot.h + 24 + line_index * 12, TextRole.AXIS_LABEL, theme, anchor="middle"))
+        primitives.append(role_text(_format(value, plan.scale.unit, plan.locale, plan.value_format), mark["box"].x + mark["box"].w // 2, max(72, mark["box"].y - 8), TextRole.VALUE_LABEL, theme, anchor="middle"))
         if index < len(entries) - 1:
             next_mark = layout.marks[entries[index + 1][0]]
             level_y = _y(mark["to"], plan.scale, layout.plot)
@@ -1457,11 +1460,11 @@ def _resolve_scatter(plan: ScatterPlan, layout: ChartLayout, source: str | None)
     theme = DEFAULT_FOLIO_THEME
     plot = layout.plot
     primitives: list[object] = _axes(plot, plan.y_scale, (), plan.locale, (), plan.value_format)
-    for index, tick in enumerate(plan.x_scale.ticks):
+    for tick in plan.x_scale.ticks:
         x = _x(tick, plan.x_scale, plot)
-        primitives.append(SceneText(_format(tick, plan.x_scale.unit, plan.locale, plan.value_format), x, plot.y + plot.h + 20, theme.stone, 8, theme.mono, "middle"))
-    primitives.append(SceneText(str(plan.x_axis["label"]), plot.x + plot.w // 2, plot.y + plot.h + 44, theme.olive, 9, theme.serif, "middle"))
-    primitives.append(SceneText(str(plan.y_axis["label"]), plot.x, plot.y - 16, theme.olive, 9, theme.serif))
+        primitives.append(role_text(_format(tick, plan.x_scale.unit, plan.locale, plan.value_format), x, plot.y + plot.h + 20, TextRole.AXIS_LABEL, theme, anchor="middle"))
+    primitives.append(role_text(str(plan.x_axis["label"]), plot.x + plot.w // 2, plot.y + plot.h + 44, TextRole.CAPTION, theme, anchor="middle", size=9))
+    primitives.append(role_text(str(plan.y_axis["label"]), plot.x, plot.y - 16, TextRole.CAPTION, theme, size=9))
     legend: list[str] = []
     reading: list[str] = []
     for item in plan.points:
@@ -1475,20 +1478,20 @@ def _resolve_scatter(plan: ScatterPlan, layout: ChartLayout, source: str | None)
         placement = mark["placement"]
         if placement is not None:
             _box, anchor, text_x, text_y = placement
-            children.append(SceneText(str(item["label"]), text_x, text_y, theme.brand if focal else theme.near_black, 8, theme.serif, anchor))
+            children.append(role_text(str(item["label"]), text_x, text_y, TextRole.POINT_LABEL, theme, emphasis="focal" if focal else "normal", anchor=anchor))
         else:
             legend.append(f"{len(legend) + 1}. {item['label']}")
-            children.append(SceneText(str(len(legend)), mark["cx"], mark["cy"] + 3, theme.parchment if focal else theme.near_black, 7, theme.mono, "middle"))
+            children.append(role_text(str(len(legend)), mark["cx"], mark["cy"] + 3, TextRole.KNOCKOUT, theme, emphasis="focal" if focal else "normal", anchor="middle"))
         primitives.append(SceneGroup(mark_id, tuple(children)))
         reading.append(mark_id)
     for index, entry in enumerate(legend):
         for line_index, line in enumerate(wrap_text(entry, SCATTER_LEGEND_WIDTH, 8, theme.serif, max_lines=2)):
-            primitives.append(SceneText(line, SCATTER_LEGEND_X, 112 + index * 26 + line_index * 11, theme.olive, 8, theme.serif))
+            primitives.append(role_text(line, SCATTER_LEGEND_X, 112 + index * 26 + line_index * 11, TextRole.ANNOTATION, theme))
     description = f"Scatter {plan.title}. " + "; ".join(
         f"{item['label']}: {plan.x_axis['label']} {item['x']}, {plan.y_axis['label']} {item['y']}" for item in plan.points
     ) + (f". Source: {source}" if source else "")
     if source:
-        primitives.append(SceneText(f"Source: {source}", plot.x, _source_y(plan.height), theme.stone, 8, theme.mono))
+        primitives.append(role_text(f"Source: {source}", plot.x, _source_y(plan.height), TextRole.AXIS_LABEL, theme))
     return ResolvedScene(
         plan.width, plan.height, theme.parchment, _title(plan.title, plan.width), (), (), (),
         description=description, language=plan.language, reading_order=tuple(reading), primitives=tuple(primitives),
@@ -1615,7 +1618,7 @@ def _resolve_gantt(plan: GanttPlan, layout: ChartLayout, source: str | None) -> 
         primitives.append(SceneLine(f"gridline:{index}", (x, plot.y), (x, plot.y + plot.h), SceneStyle(stroke=theme.border, stroke_width=0.8)))
     primitives.append(SceneLine("axis:x", (plot.x, plot.y), (plot.x + plot.w, plot.y), SceneStyle(stroke=theme.olive, stroke_width=1)))
     for index, label in enumerate(plan.periods):
-        primitives.append(SceneText(label, layout.x_positions[index], plot.y - 12, theme.stone, 8, theme.mono, "middle"))
+        primitives.append(role_text(label, layout.x_positions[index], plot.y - 12, TextRole.AXIS_LABEL, theme, anchor="middle"))
     reading: list[str] = []
     for item in plan.tasks:
         item_id = str(item["id"])
@@ -1626,19 +1629,19 @@ def _resolve_gantt(plan: GanttPlan, layout: ChartLayout, source: str | None) -> 
             SceneRect(f"bar:{item_id}", box, SceneStyle(theme.brand if focal else theme.ivory, theme.brand if focal else theme.muted_stroke, 1, radius=3)),
         ]
         label_lines = wrap_text(str(item["label"]), GANTT_LABEL_WIDTH, 10, theme.serif, max_lines=1)
-        children.append(SceneText(label_lines[0], GANTT_LABEL_X, mark["row_center"] + 4, theme.brand if focal else theme.near_black, 10, theme.serif))
+        children.append(role_text(label_lines[0], GANTT_LABEL_X, mark["row_center"] + 4, TextRole.POINT_LABEL, theme, emphasis="focal" if focal else "normal", size=10))
         track = item.get("track")
         if isinstance(track, str) and track.strip():
-            children.append(SceneText(wrap_text(track, GANTT_TRACK_WIDTH, 8, theme.mono, max_lines=1)[0], plot.x + plot.w + 12, mark["row_center"] + 4, theme.stone, 8, theme.mono))
+            children.append(role_text(wrap_text(track, GANTT_TRACK_WIDTH, 8, theme.mono, max_lines=1)[0], plot.x + plot.w + 12, mark["row_center"] + 4, TextRole.AXIS_LABEL, theme))
         primitives.append(SceneGroup(item_id, tuple(children)))
         reading.append(item_id)
     for item in plan.milestones:
         x = _grid(plot.x + int(item["at"]) * column)
         primitives.append(SceneLine(f"milestone-line:{item['id']}", (x, plot.y), (x, plot.y + plot.h), SceneStyle(stroke=theme.olive, stroke_width=1, dash=(4, 3))))
         primitives.append(ScenePath(f"milestone-mark:{item['id']}", f"M {x} {plot.y + plot.h + 4} L {x + 6} {plot.y + plot.h + 12} L {x} {plot.y + plot.h + 20} L {x - 6} {plot.y + plot.h + 12} Z", SceneStyle(theme.olive, "none", 0)))
-        primitives.append(SceneText(str(item["label"]), x + 10, plot.y + plot.h + 16, theme.olive, 8, theme.serif))
+        primitives.append(role_text(str(item["label"]), x + 10, plot.y + plot.h + 16, TextRole.ANNOTATION, theme))
     if source:
-        primitives.append(SceneText(f"Source: {source}", GANTT_LABEL_X, _source_y(plan.height), theme.stone, 8, theme.mono))
+        primitives.append(role_text(f"Source: {source}", GANTT_LABEL_X, _source_y(plan.height), TextRole.AXIS_LABEL, theme))
     description = f"Gantt {plan.title}. Periods: " + ", ".join(plan.periods) + ". " + "; ".join(
         f"{item['label']} runs {plan.periods[int(item['start'])]} to {plan.periods[int(item['start']) + int(item['span']) - 1]}" for item in plan.tasks
     ) + ("; " + "; ".join(f"milestone {item['label']}" for item in plan.milestones) if plan.milestones else "") + (f". Source: {source}" if source else "")
@@ -1811,9 +1814,9 @@ def _resolve_heatmap(plan: HeatmapPlan, layout: ChartLayout, source: str | None)
     primitives: list[object] = []
     for index, label in enumerate(plan.columns):
         text = wrap_text(label, max(16, layout.marks[str(plan.rows[0]["id"])]["boxes"][0].w - 4), 8, theme.mono, max_lines=1)[0]
-        primitives.append(SceneText(text, layout.x_positions[index], grid_top - 12, theme.stone, 8, theme.mono, "middle"))
-    primitives.append(SceneText(str(plan.y_axis["label"]), HEATMAP_LABEL_X, grid_top - 32, theme.olive, 9, theme.serif))
-    primitives.append(SceneText(str(plan.x_axis["label"]), (grid_left + grid_right) // 2, grid_bottom + 40, theme.olive, 9, theme.serif, "middle"))
+        primitives.append(role_text(text, layout.x_positions[index], grid_top - 12, TextRole.AXIS_LABEL, theme, anchor="middle"))
+    primitives.append(role_text(str(plan.y_axis["label"]), HEATMAP_LABEL_X, grid_top - 32, TextRole.CAPTION, theme, size=9))
+    primitives.append(role_text(str(plan.x_axis["label"]), (grid_left + grid_right) // 2, grid_bottom + 40, TextRole.CAPTION, theme, anchor="middle", size=9))
     reading: list[str] = []
     for item in plan.rows:
         row_id = str(item["id"])
@@ -1828,26 +1831,26 @@ def _resolve_heatmap(plan: HeatmapPlan, layout: ChartLayout, source: str | None)
             )
             children.append(SceneRect(f"segment:{row_id}:{index}", mark["boxes"][index], style))
         label_lines = wrap_text(str(item["label"]), label_width, 10, theme.serif, max_lines=1)
-        children.append(SceneText(
+        children.append(role_text(
             label_lines[0], mark["label_x"], mark["row_center"] + 4,
-            theme.brand if focal else theme.near_black, 10, theme.serif, "end",
+            TextRole.POINT_LABEL, theme, emphasis="focal" if focal else "normal", size=10, anchor="end",
         ))
         primitives.append(SceneGroup(row_id, tuple(children)))
         reading.append(row_id)
     plot = layout.plot
     legend_top = _grid(plot.y + (plot.h - HEATMAP_RAMP_STEPS * 20 + 4) / 2)
-    primitives.append(SceneText("INTENSITY", HEATMAP_LEGEND_X, legend_top - 12, theme.stone, 8, theme.mono))
+    primitives.append(role_text("INTENSITY", HEATMAP_LEGEND_X, legend_top - 12, TextRole.AXIS_LABEL, theme))
     for index in range(HEATMAP_RAMP_STEPS):
         top = legend_top + (HEATMAP_RAMP_STEPS - 1 - index) * 20
         primitives.append(SceneRect(f"legend-step:{index}", SceneBox(HEATMAP_LEGEND_X, top, 16, 16), SceneStyle(ramp[index], theme.parchment, 1)))
         if index in (0, HEATMAP_RAMP_STEPS - 1):
             bound = plan.scale.domain_max if index == HEATMAP_RAMP_STEPS - 1 else plan.scale.domain_min
-            primitives.append(SceneText(
+            primitives.append(role_text(
                 _format(bound, plan.scale.unit, plan.locale, plan.value_format),
-                HEATMAP_LEGEND_VALUE_X, top + 12, theme.stone, 8, theme.mono,
+                HEATMAP_LEGEND_VALUE_X, top + 12, TextRole.AXIS_LABEL, theme,
             ))
     if source:
-        primitives.append(SceneText(f"Source: {source}", HEATMAP_LABEL_X, _source_y(plan.height), theme.stone, 8, theme.mono))
+        primitives.append(role_text(f"Source: {source}", HEATMAP_LABEL_X, _source_y(plan.height), TextRole.AXIS_LABEL, theme))
     description = f"Heatmap {plan.title}. {plan.x_axis['label']}: " + ", ".join(plan.columns) + ". " + "; ".join(
         f"{item['label']}: " + ", ".join(
             f"{plan.columns[index]} {_format(float(value), plan.scale.unit, plan.locale, plan.value_format)}"
