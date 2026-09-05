@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from copy import deepcopy
 from collections import Counter
+from copy import deepcopy
 from typing import Any
 
 from .canvas_contract import GRAPH_CANVAS, NODES_PER_ROW, canvas_issues, height_for_rows
-
 
 SCHEMA_VERSION = "2.0"
 

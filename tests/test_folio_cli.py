@@ -6,7 +6,6 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import TestCase, mock
 
-
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS_DIR = ROOT / "scripts"
 sys.path.insert(0, str(SCRIPTS_DIR))
@@ -179,15 +178,15 @@ class FolioCliTests(TestCase):
         with TemporaryDirectory() as temp:
             output = Path(temp) / "tree.png"
             with mock.patch.object(folio, "_render_compilation", side_effect=folio.DrawingDependencyError()):
-                stdout = io.StringIO()
-                with mock.patch("sys.stdout", stdout):
+                stderr = io.StringIO()
+                with mock.patch("sys.stderr", stderr):
                     code = folio.main([
                         "folio.py", "render-drawing", str(fixture),
                         "--format", "png", "--output", str(output),
                     ])
         self.assertEqual(2, code)
         self.assertFalse(output.exists())
-        self.assertIn("dependency", stdout.getvalue())
+        self.assertIn("dependency", stderr.getvalue())
 
     def test_v41_list_embed_and_verify_html_host_workflow(self) -> None:
         stdout = io.StringIO()
@@ -332,12 +331,12 @@ class FolioCliTests(TestCase):
             fixture = Path(temp) / "invalid.json"
             output = Path(temp) / "invalid.svg"
             fixture.write_text(json.dumps(payload), encoding="utf-8")
-            stdout = io.StringIO()
-            with mock.patch("sys.stdout", stdout):
+            stderr = io.StringIO()
+            with mock.patch("sys.stderr", stderr):
                 code = folio.main(["folio.py", "render-drawing", str(fixture), "--output", str(output)])
             self.assertEqual(1, code)
             self.assertFalse(output.exists())
-            self.assertIn("ERROR", stdout.getvalue())
+            self.assertIn("ERROR", stderr.getvalue())
 
     def test_render_drawing_propagates_embed_profile(self) -> None:
         fixture = ROOT / "references" / "fixtures" / "flowchart" / "linear.json"

@@ -11,13 +11,12 @@ from typing import Any
 
 from ..connectors import route_orthogonal
 from ..connectors.labels import place_edge_labels
-from ..grammar.architecture import ArchitectureGrammar, DEFAULT_ARCHITECTURE_GRAMMAR
+from ..grammar.architecture import DEFAULT_ARCHITECTURE_GRAMMAR, ArchitectureGrammar
 from ..models import DrawingPlan, VisualEdgePlan
 from ..semantics.models import SemanticDiagram
 from ..validation.layout import validate_layout
 from .constraints import compile_layout_constraints
 from .models import LayoutBox, LayoutConstraintSet, LayoutEdge, LayoutResult, PortPreference
-
 
 ROOT = Path(__file__).resolve().parents[3]
 ELK_RUNNER = ROOT / "scripts" / "diagram_elk_runner.js"

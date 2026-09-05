@@ -1,22 +1,21 @@
 from __future__ import annotations
 
+import json
+import os
+import re
 from dataclasses import asdict, dataclass
 from hashlib import sha256
 from html import escape
 from html.parser import HTMLParser
-import json
 from math import isfinite
-import os
 from pathlib import Path
-import re
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 from typing import Any
 from xml.etree import ElementTree
 
-from .compiler import CompilationResult
 from .canvas_contract import canvas_mode
+from .compiler import CompilationResult
 from .output import normalize_output_variant, placement_advisory
-
 
 MANIFEST_PREFIX = "FOLIO_DIAGRAM_MANIFEST:"
 DATA_KINDS = {"bar-chart", "line-chart", "donut-chart", "candlestick", "waterfall"}
@@ -452,6 +451,7 @@ def embed_pptx_slot(
     from pptx.dml.color import RGBColor
     from pptx.enum.text import PP_ALIGN
     from pptx.util import Inches, Pt
+
     from renderers.svg import render_svg
 
     contract = host_contract("slide-16x9")

@@ -1,7 +1,7 @@
 import builtins
 import contextlib
-import io
 import importlib.util
+import io
 import os
 import subprocess
 import sys
@@ -10,7 +10,6 @@ from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 from unittest import TestCase, mock
 from zipfile import ZipFile
-
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS_DIR = ROOT / "scripts"
@@ -176,6 +175,8 @@ class BuildScriptTests(TestCase):
             "scripts/diagram_render_svg.py",
             "scripts/diagram_semantic_planning.py",
             "scripts/diagram_catalog.py",
+            "scripts/pdf_metadata.py",
+            "scripts/drawing/chart_values.py",
             "scripts/drawing/compiler.py",
             "scripts/drawing/structural.py",
             "scripts/drawing/positional.py",
@@ -240,6 +241,10 @@ class BuildScriptTests(TestCase):
             "CHANGELOG.md",
         }
         excluded = {
+            "scripts/repair_evidence.py",
+            "scripts/build_repair_report.py",
+            "scripts/templates/repair-comparison.html",
+            "docs/audits/repair-comparison/index.html",
             "assets/fonts/LXGWWenKai-Regular.ttf",
             "assets/fonts/LXGWWenKai-Medium.ttf",
             "assets/demos/demo-tesla.pdf",
@@ -248,6 +253,7 @@ class BuildScriptTests(TestCase):
         }
 
         self.assertTrue(required.issubset(names), required - names)
+        self.assertFalse(any(name.startswith("docs/audits/") for name in names))
         self.assertTrue(excluded.isdisjoint(names), excluded & names)
 
     def test_page_count_issue_allows_values_inside_range(self) -> None:

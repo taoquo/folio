@@ -150,6 +150,8 @@ python3 scripts/folio.py diagram-catalog --baseline references/fixtures/drawing/
 
 **CLI**
 
+需要 Python 3.10 或更高版本；`requirements-ci.txt` 固定了验证使用的 Python 依赖。
+
 使用 `scripts/folio.py` 作为稳定的项目入口：
 
 ```bash

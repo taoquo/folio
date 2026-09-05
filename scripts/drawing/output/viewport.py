@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Output viewport contract.
 
 The scene keeps one logical canvas. Output profiles decide how much of that
@@ -8,6 +6,8 @@ so existing hosts and fixed aspect ratios stay stable. The page-preview profile
 frames the ink bounds with a uniform safety margin, so a diagram placed on an A4
 page is not shrunk by empty scene padding.
 """
+
+from __future__ import annotations
 
 from ..scene import ResolvedScene
 from .profiles import normalize_output_profile

@@ -6,10 +6,9 @@ reintroduce its own floor.
 """
 
 import json
-from pathlib import Path
 import sys
+from pathlib import Path
 from unittest import TestCase
-
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -24,7 +23,6 @@ from drawing.canvas_contract import (
 )
 from drawing.compiler import DEFAULT_COMPILER_REGISTRY
 from drawing.validation import DrawingCompilationError
-
 
 GRAPH_KINDS = (
     "architecture", "flowchart", "state-machine", "swimlane", "tree", "layer-stack",

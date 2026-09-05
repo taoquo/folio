@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Deterministic semantic-pattern routing for Drawing DSL V5.
 
 The router sits in front of the compiler registry. It turns a short authoring
@@ -10,6 +8,8 @@ reads or writes geometry, so the semantic and visual layers stay separate.
 Routing is pure and deterministic: the same brief always yields the same
 decision, alternatives, trace, and diagnostics.
 """
+
+from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any
@@ -24,7 +24,6 @@ from .patterns import (
     normalize_pattern,
     pattern_of_kind,
 )
-
 
 KEYWORD_WEIGHT = 3
 SHAPE_WEIGHT = 2

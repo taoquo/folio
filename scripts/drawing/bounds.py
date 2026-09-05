@@ -1,13 +1,13 @@
-from __future__ import annotations
-
 """Pure geometry helpers for measuring resolved scene content.
 
 These helpers are shared by the visual quality gate and the output viewport.
 They never inspect diagram semantics, so they stay safe for every compiler.
 """
 
+from __future__ import annotations
+
+from collections.abc import Iterable
 from math import isfinite
-from typing import Iterable
 
 from .scene import (
     ResolvedScene,

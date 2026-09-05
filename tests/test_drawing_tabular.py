@@ -1,17 +1,15 @@
 import codecs
 import json
-from pathlib import Path
 import sys
+from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import TestCase
-
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from drawing.compiler import DEFAULT_COMPILER_REGISTRY
 from drawing.tabular import MAX_ROWS, load_tabular_chart
-
 
 BASE_INPUT = {
     "format": "csv",
@@ -39,7 +37,7 @@ class DrawingTabularTests(TestCase):
     def test_utf8_bom_headerless_and_explicit_column_indexes(self) -> None:
         with TemporaryDirectory() as temp:
             root = Path(temp)
-            (root / "data.csv").write_bytes(codecs.BOM_UTF8 + "A,1\nB,2\n".encode("utf-8"))
+            (root / "data.csv").write_bytes(codecs.BOM_UTF8 + b"A,1\nB,2\n")
             config = self._bar_config("data.csv")
             config["input"].update(encoding="utf-8-sig", header=False)
             config["mapping"] = {

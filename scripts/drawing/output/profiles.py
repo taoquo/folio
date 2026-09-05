@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 OUTPUT_PROFILE_NAMES = ("artifact", "embed", "page-preview")
 
 

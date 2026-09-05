@@ -30,6 +30,7 @@ trap 'rm -f "$MANIFEST" "$FILTERED_MANIFEST" "$ZIP_MANIFEST" "$MISSING_MANIFEST"
     scripts/drawing \
     scripts/renderers \
     scripts/diagram_catalog.py \
+    scripts/pdf_metadata.py \
     scripts/drawing_host_integration.py \
     CHANGELOG.md \
     references/decisions \
@@ -54,6 +55,9 @@ awk '
   /^assets\/examples\// { next }
   /^assets\/illustrations\// { next }
   /^dist\// { next }
+  /^docs\/audits\// { next }
+  /^scripts\/(repair_evidence|build_repair_report)\.py$/ { next }
+  /^scripts\/templates\/repair-comparison\.html$/ { next }
   /^\.vercel\// { next }
   /(^|\/)__pycache__\// { next }
   /\.pyc$/ { next }

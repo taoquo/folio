@@ -1,24 +1,23 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from dataclasses import replace
 
 from .connectors.contract import assign_bridges
 from .connectors.grammar import resolve_connector_style
 from .connectors.postprocess import clean_polyline
-from .grammar.architecture import ArchitectureGrammar, DEFAULT_ARCHITECTURE_GRAMMAR
+from .grammar.architecture import DEFAULT_ARCHITECTURE_GRAMMAR, ArchitectureGrammar
 from .layout.models import LayoutResult
 from .models import DrawingPlan
 from .scene import (
     ArrowGeometry,
     ResolvedScene,
+    SceneAnnotation,
     SceneBox,
     SceneEdge,
     SceneLegend,
     SceneLegendItem,
     SceneNode,
     ScenePictogram,
-    SceneAnnotation,
     SceneRegion,
     SceneStyle,
     SceneText,

@@ -7,11 +7,11 @@ from unittest import TestCase
 from PIL import Image
 from pypdf import PdfReader
 
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from diagram_export import export_pdf, export_png
+
 from drawing.compiler import DEFAULT_COMPILER_REGISTRY
 from renderers.svg import render_svg
 

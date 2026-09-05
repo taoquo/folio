@@ -14,11 +14,11 @@ from pathlib import Path
 from typing import Any
 
 from diagram_models import ArchitectureDiagramSpec, DiagramSpec, UmlClassDiagramSpec
+
 from drawing.grammar.architecture import DEFAULT_ARCHITECTURE_GRAMMAR
 from drawing.layout.elk import ELK_RUNNER, elk_available
 from drawing.layout.models import LayoutBox, LayoutEdge, LayoutResult
 from drawing.validation.layout import validate_layout
-
 
 ROOT = Path(__file__).resolve().parents[1]
 _ARCH_GRAMMAR = DEFAULT_ARCHITECTURE_GRAMMAR.geometry
@@ -34,8 +34,8 @@ def layout_diagram(spec: DiagramSpec) -> LayoutResult:
 
 
 def layout_architecture(spec: ArchitectureDiagramSpec) -> LayoutResult:
-    from drawing.pipeline import drawing_plan_from_spec
     from drawing.layout.elk import layout_drawing
+    from drawing.pipeline import drawing_plan_from_spec
 
     return layout_drawing(drawing_plan_from_spec(spec))
 

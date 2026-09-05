@@ -1,19 +1,19 @@
 import json
+import sys
 from copy import deepcopy
 from pathlib import Path
-import sys
 from tempfile import TemporaryDirectory
 from unittest import TestCase
 
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
+
+from diagram_export import export_pdf, export_png
 
 from drawing.compiler import DEFAULT_COMPILER_REGISTRY
 from drawing.hosting import accessible_data
 from drawing.scene import SceneText
 from drawing.validation import DrawingCompilationError
-from diagram_export import export_pdf, export_png
 from renderers.svg import render_svg
 
 

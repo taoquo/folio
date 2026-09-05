@@ -150,6 +150,8 @@ python3 scripts/folio.py diagram-catalog --baseline references/fixtures/drawing/
 
 **CLI**
 
+Requires Python 3.10 or newer. `requirements-ci.txt` pins the Python dependencies used for validation.
+
 Use `scripts/folio.py` as the stable project entrypoint:
 
 ```bash

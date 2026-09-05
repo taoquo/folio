@@ -5,7 +5,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from xml.etree import ElementTree
 
-
 SVG_NS = "{http://www.w3.org/2000/svg}"
 
 
@@ -32,7 +31,7 @@ def validate_diagram_html(path: Path) -> list[str]:
         return issues
 
     width, height = _svg_size(svg)
-    for index, rect in enumerate(svg.iter(f"{SVG_NS}rect")):
+    for _index, rect in enumerate(svg.iter(f"{SVG_NS}rect")):
         box = _rect_box(rect)
         if box is None or box.w <= 0 or box.h <= 0:
             continue

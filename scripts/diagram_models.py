@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Union
+from typing import Any
 
 from drawing.canvas_contract import (
     GRAPH_CANVAS,
@@ -153,7 +153,7 @@ class UmlClassDiagramSpec:
     relationships: list[UmlRelationshipSpec] = field(default_factory=list)
 
 
-DiagramSpec = Union[ArchitectureDiagramSpec, UmlClassDiagramSpec]
+DiagramSpec = ArchitectureDiagramSpec | UmlClassDiagramSpec
 
 
 def _require(value: Any, message: str) -> Any:

@@ -667,3 +667,19 @@ Chevron templates (tip at endpoint, 8px arm length):
 /* Slide eyebrow */
 .slide .eyebrow { letter-spacing: 3px; }   /* halved */
 ```
+
+## Reliability and diagnostics
+
+The supported interpreter floor is Python 3.10, matching the pinned WeasyPrint 68.1 dependency.
+CI exercises both Python 3.10 and 3.12. Install `requirements-ci.txt` before running the full suite
+so JSON Schema tests are not silently skipped.
+
+- `python3 scripts/folio.py --debug render-drawing input.json --output output.svg` includes the
+  exception chain on stderr. Place the global `--debug` flag before the command.
+- `import-diagram` writes one chart JSON document to stdout. Import fidelity records go to stderr
+  unless `--ledger-output` is provided.
+- A baseline comparison without `--output-dir` uses temporary artifacts and preserves the approved
+  PNGs. To retain generated artifacts, choose an independent output directory. Explicit paths that
+  would overwrite approved reference images or contact sheets are rejected before rendering.
+- PDF metadata updates preserve the document catalog, including outlines, named destinations and
+  attachments. Replacement is atomic; failed writes leave the previous document intact.

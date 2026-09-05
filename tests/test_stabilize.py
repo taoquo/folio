@@ -2,7 +2,6 @@ import sys
 from pathlib import Path
 from unittest import TestCase
 
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
@@ -15,7 +14,7 @@ class StabilizeNormalizationTests(TestCase):
 
         self.assertEqual(1, changed)
         self.assertNotIn("rgba(", css)
-        self.assertIn("#7A7A76", css)
+        self.assertIn("#7B7875", css)
 
     def test_rgba_flattening_is_a_no_op_for_solid_hex(self) -> None:
         css, changed = stabilize.normalize_rgba("a { background: #F5F4ED; }")

@@ -4,7 +4,7 @@ from collections.abc import Iterable
 from dataclasses import asdict, dataclass
 from datetime import date
 from hashlib import sha256
-from math import ceil, cos, floor, log10, pi, sin
+from math import ceil, cos, pi, sin
 from typing import Any
 
 from .canvas_contract import (
@@ -14,6 +14,8 @@ from .canvas_contract import (
     height_for_row_capacity,
     row_capacity,
 )
+from .chart_values import ScalePlan, ValueFormatPlan, nice_scale
+from .chart_values import format_value as _format
 from .scene import (
     ResolvedScene,
     SceneAnnotation,
@@ -112,23 +114,6 @@ def _series_key_primitives(label: str, top: int, emphasis: str, theme) -> list[o
         role_text(line, SERIES_KEY_X, top + index * 11, TextRole.SERIES_KEY, theme, emphasis=emphasis, size=9)
         for index, line in enumerate(lines)
     ]
-
-
-@dataclass(frozen=True)
-class ScalePlan:
-    domain_min: float
-    domain_max: float
-    ticks: tuple[float, ...]
-    include_zero: bool
-    unit: str | None = None
-
-
-@dataclass(frozen=True)
-class ValueFormatPlan:
-    precision: int | None = None
-    compact: bool = True
-    grouping: bool = False
-    unit_position: str = "auto"
 
 
 @dataclass(frozen=True)
@@ -276,67 +261,9 @@ def _title(title: str, width: int) -> SceneText:
     return role_text(title, width // 2, 40, TextRole.DIAGRAM_TITLE, theme)
 
 
-def nice_scale(values: Iterable[float], *, include_zero: bool, unit: str | None = None, tick_count: int = 5) -> ScalePlan:
-    numbers = [float(value) for value in values]
-    if not numbers:
-        numbers = [0.0, 1.0]
-    low, high = min(numbers), max(numbers)
-    if include_zero:
-        low, high = min(0.0, low), max(0.0, high)
-    if low == high:
-        padding = abs(low) * 0.1 or 1.0
-        low -= padding
-        high += padding
-    rough = (high - low) / max(2, tick_count - 1)
-    magnitude = 10 ** floor(log10(abs(rough)))
-    normalized = rough / magnitude
-    step = (1 if normalized <= 1 else 2 if normalized <= 2 else 5 if normalized <= 5 else 10) * magnitude
-    domain_min = floor(low / step) * step
-    domain_max = ceil(high / step) * step
-    ticks: list[float] = []
-    value = domain_min
-    while value <= domain_max + step * 0.01 and len(ticks) < 12:
-        ticks.append(round(value, 10))
-        value += step
-    return ScalePlan(domain_min, domain_max, tuple(ticks), include_zero, unit)
-
-
 def _y(value: float, scale: ScalePlan, plot: SceneBox) -> int:
     ratio = (float(value) - scale.domain_min) / (scale.domain_max - scale.domain_min)
     return _grid(plot.y + plot.h - ratio * plot.h)
-
-
-def _format(
-    value: float,
-    unit: str | None = None,
-    locale: str = "en-US",
-    value_format: ValueFormatPlan | None = None,
-) -> str:
-    formatting = value_format or ValueFormatPlan()
-    precision = formatting.precision
-    if formatting.compact:
-        digits = 1 if precision is None else precision
-        if locale.startswith("zh") and abs(value) >= 100_000_000:
-            text = f"{value / 100_000_000:.{digits}f}亿"
-        elif locale.startswith("zh") and abs(value) >= 10_000:
-            text = f"{value / 10_000:.{digits}f}万"
-        elif abs(value) >= 1_000_000:
-            text = f"{value / 1_000_000:.{digits}f}M"
-        elif abs(value) >= 1_000:
-            text = f"{value / 1_000:.{digits}f}K"
-        elif precision is not None:
-            text = f"{value:.{precision}f}"
-        elif float(value).is_integer():
-            text = str(int(value))
-        else:
-            text = f"{value:.2f}".rstrip("0").rstrip(".")
-    else:
-        digits = precision if precision is not None else (0 if float(value).is_integer() else 2)
-        text = f"{value:,.{digits}f}" if formatting.grouping else f"{value:.{digits}f}"
-    position = formatting.unit_position
-    if position == "prefix" or (position == "auto" and unit in {"$", "¥", "€", "£"}):
-        return f"{unit or ''}{text}"
-    return f"{text}{unit or ''}"
 
 
 def _axes(

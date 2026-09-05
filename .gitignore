@@ -32,3 +32,9 @@ docs/superpowers/
 
 # Local render scratch space for showcase review
 /build/
+
+# Local reliability audit records and comparison tooling
+/docs/audits/
+/scripts/repair_evidence.py
+/scripts/build_repair_report.py
+/scripts/templates/repair-comparison.html

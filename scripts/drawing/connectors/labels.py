@@ -6,7 +6,6 @@ from ..layout.models import LayoutBox, LayoutEdge
 from ..theme.folio import DEFAULT_FOLIO_THEME
 from ..typography.measure import measure_text
 
-
 LABEL_GAP = 8
 LABEL_HEIGHT = 16
 CANVAS_MARGIN = 8

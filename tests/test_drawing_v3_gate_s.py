@@ -7,21 +7,30 @@ from unittest import TestCase, mock
 
 from PIL import Image
 
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from diagram_models import load_diagram_spec_file
-from drawing.models import DrawingPlan, LegendItemPlan, LegendPlan
+
 from drawing.layout.models import LayoutBox, LayoutEdge, LayoutResult
+from drawing.models import DrawingPlan, LegendItemPlan, LegendPlan
+from drawing.output import apply_html_output_profile
 from drawing.pipeline import compile_drawing_plan, drawing_plan_from_spec
-from drawing.review import write_review_bundle
-from drawing.review import _visual_diff
+from drawing.review import _visual_diff, write_review_bundle
+from drawing.scene import (
+    ResolvedScene,
+    SceneBox,
+    SceneCircle,
+    SceneClip,
+    SceneGroup,
+    ScenePath,
+    SceneRect,
+    SceneStyle,
+    SceneText,
+)
 from drawing.schema import validate_plan_payload
 from drawing.validation import DrawingCompilationError, validate_scene_accessibility, validate_scene_primitives
 from drawing.validation.layout import validate_layout
-from drawing.output import apply_html_output_profile
-from drawing.scene import ResolvedScene, SceneBox, SceneCircle, SceneClip, SceneGroup, ScenePath, SceneRect, SceneStyle, SceneText
 from renderers.svg import render_svg
 
 

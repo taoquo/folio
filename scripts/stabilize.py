@@ -60,7 +60,6 @@ PAGE_MARGIN_MM_RE = re.compile(
     re.IGNORECASE,
 )
 
-PARCHMENT_RGB = (245, 244, 237)
 
 
 @dataclass
@@ -157,10 +156,11 @@ def rgb_to_hex(rgb: tuple[int, int, int]) -> str:
 
 def blend_rgba_on_parchment(r: int, g: int, b: int, alpha: float) -> str:
     a = clamp(alpha, 0.0, 1.0)
+    parchment = parse_hex(load_json(TOKENS_FILE)["--parchment"])
     out = (
-        round(PARCHMENT_RGB[0] + (r - PARCHMENT_RGB[0]) * a),
-        round(PARCHMENT_RGB[1] + (g - PARCHMENT_RGB[1]) * a),
-        round(PARCHMENT_RGB[2] + (b - PARCHMENT_RGB[2]) * a),
+        round(parchment[0] + (r - parchment[0]) * a),
+        round(parchment[1] + (g - parchment[1]) * a),
+        round(parchment[2] + (b - parchment[2]) * a),
     )
     return rgb_to_hex(out)
 
@@ -176,7 +176,7 @@ def normalize_tokens(css: str, canonical_tokens: dict[str, str]) -> tuple[str, i
         token_name = token if token.startswith("--") else f"--{token}"
         token_re = re.compile(rf"({re.escape(token_name)}\s*:\s*)([^;]+)(;)", re.IGNORECASE)
 
-        def token_repl(m: re.Match[str]) -> str:
+        def token_repl(m: re.Match[str], expected: str = expected) -> str:
             nonlocal changed
             actual = m.group(2).strip()
             if actual.lower() == expected.lower():
@@ -395,8 +395,8 @@ def tighten_page_margin(
 
 def count_pages(html: str, base_dir: Path) -> int:
     try:
-        from weasyprint import HTML
         from pypdf import PdfReader
+        from weasyprint import HTML
     except ImportError as exc:
         raise RuntimeError("missing deps: pip install weasyprint pypdf --break-system-packages") from exc
 

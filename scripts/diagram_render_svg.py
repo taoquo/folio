@@ -10,12 +10,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from xml.sax.saxutils import escape
 
-from diagram_models import ArchitectureDiagramSpec, DiagramSpec, UmlClassDiagramSpec
 from diagram_layout import LayoutBox, layout_diagram
+from diagram_models import ArchitectureDiagramSpec, DiagramSpec, UmlClassDiagramSpec
+
 from drawing.compiler import DEFAULT_COMPILER_REGISTRY
 from drawing.theme.folio import DEFAULT_FOLIO_THEME
 from renderers.svg import render_svg
-
 
 PARCHMENT = DEFAULT_FOLIO_THEME.parchment
 IVORY = DEFAULT_FOLIO_THEME.ivory

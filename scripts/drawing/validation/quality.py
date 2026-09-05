@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 from math import isfinite
-from typing import Iterable
 
 from ..scene import (
     ResolvedScene,
@@ -21,8 +21,12 @@ from ..theme.contrast import (
     GRAPHIC_MINIMUM,
     LARGE_TEXT_MINIMUM,
     NORMAL_TEXT_MINIMUM,
-    composite as _composite,
     contrast_ratio,
+)
+from ..theme.contrast import (
+    composite as _composite,
+)
+from ..theme.contrast import (
     parse_hex as _parse_hex,
 )
 from ..theme.folio import DEFAULT_FOLIO_THEME, FolioTheme

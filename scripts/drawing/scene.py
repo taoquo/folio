@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
-from typing import Any, Union
+from typing import Any
 
 
 @dataclass(frozen=True)
@@ -160,12 +160,12 @@ class SceneClip:
 @dataclass(frozen=True)
 class SceneGroup:
     id: str
-    children: tuple["ScenePrimitive", ...]
+    children: tuple[ScenePrimitive, ...]
     clip_id: str | None = None
     klass: str | None = None
 
 
-ScenePrimitive = Union[SceneRect, SceneLine, ScenePolyline, ScenePath, SceneCircle, SceneText, SceneClip, SceneGroup]
+ScenePrimitive = SceneRect | SceneLine | ScenePolyline | ScenePath | SceneCircle | SceneText | SceneClip | SceneGroup
 
 
 @dataclass(frozen=True)

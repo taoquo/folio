@@ -12,13 +12,14 @@ gen_slides.py - parchment design system slide deck generator
 这是一个模板脚本 - 填充自己的内容后直接运行。
 """
 
+import sys
+from pathlib import Path
+
 from pptx import Presentation
-from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
-from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
-from pathlib import Path
-import sys
+from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
+from pptx.util import Inches, Pt
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
 from drawing.hosting import add_fitted_picture

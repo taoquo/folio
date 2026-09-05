@@ -10,17 +10,16 @@ from unittest import TestCase
 from PIL import Image
 from pypdf import PdfReader
 
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from diagram_catalog import load_catalog
 from diagram_export import export_pdf, export_png
+
 from drawing.compiler import DEFAULT_COMPILER_REGISTRY
 from drawing.scene import ScenePolyline
 from drawing.validation import DrawingCompilationError
 from renderers.svg import render_svg
-
 
 NEW_KINDS = {
     "state-machine", "swimlane", "tree", "layer-stack", "timeline", "quadrant",

@@ -6,9 +6,9 @@ authoring path for Architecture artifacts, not a legacy shim.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, replace
 from typing import Any
-import re
 
 from drawing.adapters import drawing_to_legacy
 from drawing.layout.constraints import compile_layout_constraints
@@ -459,7 +459,7 @@ def collect_architecture_evidence(text: str) -> dict[str, dict[str, Any]]:
 
 def select_architecture_nodes(evidence: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
     nodes = []
-    for node_id, item in evidence.items():
+    for item in evidence.values():
         rule: NodeRule = item["node_rule"]
         score = item["score"]
         if score < rule.min_score:

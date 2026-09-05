@@ -12,13 +12,14 @@ Output:
 This is a template. Fill in your content and run it directly.
 """
 
+import sys
+from pathlib import Path
+
 from pptx import Presentation
-from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
-from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
-from pathlib import Path
-import sys
+from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
+from pptx.util import Inches, Pt
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
 from drawing.hosting import add_fitted_picture

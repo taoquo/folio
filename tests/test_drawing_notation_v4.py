@@ -5,14 +5,14 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import TestCase
 
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-import build
 from diagram_layout import layout_diagram
 from diagram_models import load_diagram_spec_file
 from diagram_render_svg import render_diagram_svg
+
+import build
 from drawing.compiler import DEFAULT_COMPILER_REGISTRY
 from drawing.hosting import embed_html_figure, verify_hosted_html
 from drawing.scene import SceneText

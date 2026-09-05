@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 
-from ..grammar.architecture import ArchitectureGrammar, DEFAULT_ARCHITECTURE_GRAMMAR
+from ..grammar.architecture import DEFAULT_ARCHITECTURE_GRAMMAR, ArchitectureGrammar
 from ..models import DrawingPlan
 from ..semantics.models import SemanticDiagram
 from .elk import layout_drawing

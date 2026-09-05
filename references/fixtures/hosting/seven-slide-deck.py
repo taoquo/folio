@@ -9,7 +9,6 @@ from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
 from pptx.util import Inches, Pt
 
-
 PARCHMENT = RGBColor(0xF6, 0xF0, 0xEA)
 NEAR_BLACK = RGBColor(0x19, 0x15, 0x14)
 BORDER = RGBColor(0xE9, 0xDE, 0xD4)

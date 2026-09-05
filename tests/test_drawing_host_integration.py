@@ -7,17 +7,16 @@ from tempfile import TemporaryDirectory
 from unittest import TestCase
 
 from PIL import Image, ImageChops
-from pypdf import PdfReader
 from pptx import Presentation
-
+from pypdf import PdfReader
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = ROOT / "scripts"
 sys.path.insert(0, str(SCRIPTS))
 
-from drawing.hosting import host_contract, verify_hosted_html, verify_hosted_pptx
 from drawing_host_integration import build_host_integration_sources
 
+from drawing.hosting import host_contract, verify_hosted_html, verify_hosted_pptx
 
 BUILD_SPEC = importlib.util.spec_from_file_location("folio_host_build", SCRIPTS / "build.py")
 build = importlib.util.module_from_spec(BUILD_SPEC)

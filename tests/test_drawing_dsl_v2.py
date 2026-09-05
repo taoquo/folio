@@ -5,14 +5,20 @@ from dataclasses import replace
 from pathlib import Path
 from unittest import TestCase
 
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from diagram_models import load_diagram_spec_file
-from drawing.compiler import DEFAULT_COMPILER_REGISTRY
+
 from drawing.bundle import bundle_drawing
-from drawing.flowchart import _depths, compile_flowchart_payload, semantic_from_flowchart_payload, plan_flowchart, validate_flowchart
+from drawing.compiler import DEFAULT_COMPILER_REGISTRY
+from drawing.flowchart import (
+    _depths,
+    compile_flowchart_payload,
+    plan_flowchart,
+    semantic_from_flowchart_payload,
+    validate_flowchart,
+)
 from drawing.layout.candidates import rank_layout_candidates, select_layout
 from drawing.models import AnnotationPlan, DrawingPlan, VisualRegionPlan
 from drawing.pipeline import compile_architecture, compile_drawing_plan, drawing_plan_from_spec

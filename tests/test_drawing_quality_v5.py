@@ -3,7 +3,6 @@ import sys
 from pathlib import Path
 from unittest import TestCase, mock
 
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
@@ -20,7 +19,6 @@ from drawing.scene import (
 )
 from drawing.theme.folio import DEFAULT_FOLIO_THEME
 from drawing.validation import DrawingDiagnostic, contrast_ratio, validate_scene_quality
-
 
 PARCHMENT = "#F6F0EA"
 INK = "#191514"

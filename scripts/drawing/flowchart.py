@@ -1,22 +1,25 @@
 from __future__ import annotations
 
-from collections import defaultdict
-from collections import Counter
+from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass
 from typing import Any
 
-from .connectors.postprocess import clean_polyline
+from .connectors.contract import assign_bridges, route_is_clear
 from .connectors.labels import place_edge_labels
+from .connectors.postprocess import clean_polyline
 from .layout.models import LayoutBox, LayoutEdge, LayoutResult
-from .connectors.contract import assign_bridges, blocks_lane, route_is_clear, run_hits_segment
 from .scene import ArrowGeometry, ResolvedScene, SceneBox, SceneEdge, SceneNode, SceneStyle, SceneText
+from .schema import flowchart_payload_issues
 from .theme.folio import DEFAULT_FOLIO_THEME, FolioTheme
 from .typography.measure import measure_text
 from .typography.roles import TextRole, resolve_text_style
-from .schema import flowchart_payload_issues
-from .validation import validate_canvas, validate_scene_accessibility, validate_scene_geometry, validate_scene_primitives
+from .validation import (
+    validate_canvas,
+    validate_scene_accessibility,
+    validate_scene_geometry,
+    validate_scene_primitives,
+)
 from .validation.models import DrawingDiagnostic, raise_for_errors
-
 
 FLOW_NODE_TYPES = {"step", "decision", "terminal", "data", "subprocess"}
 FLOW_EDGE_TYPES = {"sequence-flow", "conditional-flow", "exception-flow"}

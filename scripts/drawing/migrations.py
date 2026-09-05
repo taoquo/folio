@@ -3,7 +3,6 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any
 
-
 LATEST_INPUT_VERSIONS = {
     "architecture": "3.0",
     "flowchart": "2.0",

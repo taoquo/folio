@@ -1,15 +1,14 @@
+import hashlib
 import json
-from copy import deepcopy
 import sys
+from copy import deepcopy
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import TestCase
 
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from drawing.compiler import DEFAULT_COMPILER_REGISTRY
 from diagram_catalog import (
     PLACEHOLDER_RE,
     compare_visual_baseline,
@@ -18,6 +17,8 @@ from diagram_catalog import (
     load_catalog,
     render_catalog,
 )
+
+from drawing.compiler import DEFAULT_COMPILER_REGISTRY
 
 
 class DiagramCatalogTests(TestCase):
@@ -110,7 +111,7 @@ class DiagramCatalogTests(TestCase):
                 "semantic_ids": ["start", "finish"],
                 "dimensions": {"source": [960, 540], "output": [20, 12]},
                 "content_bounds": [2, 2, 18, 10],
-                "digests": {"input": "input", "svg": "svg", "pdf": "pdf", "png": "png"},
+                "digests": {"input": "input", "svg": "svg", "pdf": "pdf", "png": hashlib.sha256(baseline_png.read_bytes()).hexdigest()},
             }
             manifest = {
                 "schema_version": "3.0",

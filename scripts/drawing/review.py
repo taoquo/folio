@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-import json
 import hashlib
+import json
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
 from diagram_export import export_pdf, export_png
+
 from renderers.svg import render_svg
 
 from .output import normalize_output_variant
@@ -100,9 +101,9 @@ def _visual_diff(baseline_path: Path, current_path: Path, diff_path: Path) -> di
         baseline, current = baseline_canvas, current_canvas
     diff = ImageChops.difference(baseline, current)
     diff.save(diff_path)
-    histogram = diff.convert("RGB").histogram()
+    histogram = diff.histogram()
     changed = sum(value for index, value in enumerate(histogram) if index % 256 != 0)
-    pixels = max(1, current.width * current.height * 3)
+    pixels = max(1, current.width * current.height * 4)
     return {
         "baseline": str(baseline_path),
         "method": "exact-rgba-no-resize",

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import subprocess
 import re
 import shutil
+import subprocess
 import tempfile
 from html import escape as html_escape
 from pathlib import Path
@@ -129,17 +129,15 @@ def export_pdf(
         "base_url = sys.argv[3]\n"
         "HTML(string=html_path.read_text(encoding='utf-8'), base_url=base_url).write_pdf(str(pdf_path))\n"
     )
-    html_path = pdf.with_suffix(".html")
-    html_path.write_text(html, encoding="utf-8")
-    try:
+    with tempfile.TemporaryDirectory(prefix="folio-pdf-") as temp_dir:
+        html_path = Path(temp_dir) / "source.html"
+        html_path.write_text(html, encoding="utf-8")
         result = subprocess.run(
             [str(fallback), "-c", script, str(html_path), str(pdf), str(svg.parent)],
             capture_output=True,
             text=True,
             check=False,
         )
-    finally:
-        html_path.unlink(missing_ok=True)
     if result.returncode != 0:
         raise RuntimeError(result.stderr.strip() or "weasyprint fallback failed")
 

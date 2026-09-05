@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from hashlib import sha256
 import json
 import re
+from hashlib import sha256
 from xml.sax.saxutils import escape
 
+from drawing.output import scene_viewport, svg_root_attributes, variant_defs
 from drawing.scene import (
     ArrowGeometry,
     ResolvedScene,
@@ -18,7 +19,6 @@ from drawing.scene import (
     SceneStyle,
     SceneText,
 )
-from drawing.output import scene_viewport, svg_root_attributes, variant_defs
 
 
 def _attribute(value: str) -> str:

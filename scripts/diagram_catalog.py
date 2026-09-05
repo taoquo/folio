@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-from html import escape as html_escape
 import json
 import math
 import re
@@ -12,9 +11,11 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from contextlib import nullcontext
+from copy import deepcopy
+from html import escape as html_escape
 from pathlib import Path
 from typing import Any
-
 
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS = ROOT / "scripts"
@@ -196,9 +197,9 @@ def create_visual_baseline(
                 "registry_key": record["registry_key"],
                 "png": record["png"],
                 "semantic_ids": list(record.get("semantic_ids", [])),
-                "dimensions": record["dimensions"],
-                "content_bounds": record["content_bounds"],
-                "digests": record["digests"],
+                "dimensions": deepcopy(record["dimensions"]),
+                "content_bounds": list(record["content_bounds"]),
+                "digests": deepcopy(record["digests"]),
                 "approval_state": "approved",
                 "approval_reason": reason,
             }
@@ -207,11 +208,32 @@ def create_visual_baseline(
     }
 
 
+def _baseline_png_issues(baseline: dict[str, Any]) -> list[str]:
+    """The reference file itself must still match the approved digest."""
+    issues = []
+    for record in baseline.get("diagrams", []):
+        path = _record_path(str(record.get("png", "")))
+        if not path.is_file():
+            issues.append(f"{record['kind']}: baseline PNG is missing: {path}")
+        elif _sha256(path) != record.get("digests", {}).get("png"):
+            issues.append(f"{record['kind']}: baseline PNG digest does not match the approved reference")
+    return issues
+
+
+def _baseline_output_overlap(baseline: dict[str, Any], payload: dict[str, Any],
+                             output: Path, contact: Path, supported: Path) -> bool:
+    references = {_record_path(item["png"]).resolve() for item in baseline.get("diagrams", [])}
+    references.update(_record_path(item["path"]).resolve() for item in baseline.get("contact_sheets", []))
+    outputs = {(output / "png" / f"{item['kind']}.png").resolve() for item in payload["diagrams"]}
+    outputs.update((contact.resolve(), supported.resolve()))
+    return bool(references & outputs)
+
+
 def compare_visual_baseline(
     manifest: dict[str, Any],
     baseline: dict[str, Any],
 ) -> dict[str, Any]:
-    issues: list[str] = []
+    issues: list[str] = _baseline_png_issues(baseline)
     comparisons: list[dict[str, Any]] = []
     if baseline.get("schema_version") != VISUAL_BASELINE_SCHEMA_VERSION:
         issues.append("baseline schema_version must be 1.0")
@@ -308,6 +330,7 @@ def _render_dsl_fixture(
 ) -> tuple[list[int], dict[str, Any]]:
     sys.path.insert(0, str(SCRIPTS))
     from diagram_export import export_pdf
+
     from drawing.compiler import DEFAULT_COMPILER_REGISTRY
     from renderers.svg import render_svg
 
@@ -553,10 +576,10 @@ def _record_path(value: str) -> Path:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--fixture", type=Path, default=FIXTURE)
-    parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--output-dir", type=Path, help="Output directory; baseline comparisons default to an isolated temporary directory.")
     parser.add_argument("--skip-dsl-build", action="store_true", help="Reuse legacy previews; registered fixtures always compile.")
-    parser.add_argument("--contact-sheet", type=Path, default=DEFAULT_CONTACT_SHEET)
-    parser.add_argument("--supported-sheet", type=Path, default=DEFAULT_SUPPORTED_SHEET)
+    parser.add_argument("--contact-sheet", type=Path)
+    parser.add_argument("--supported-sheet", type=Path)
     baseline_group = parser.add_mutually_exclusive_group()
     baseline_group.add_argument("--baseline", type=Path, help="Compare the rendered catalog with an approved visual baseline.")
     baseline_group.add_argument("--write-baseline", type=Path, help="Write an approved visual baseline from this render.")
@@ -568,13 +591,30 @@ def main(argv: list[str] | None = None) -> int:
     if args.baseline_report and not args.baseline:
         parser.error("--baseline-report requires --baseline")
     payload = load_catalog(args.fixture)
+    baseline = json.loads(args.baseline.read_text(encoding="utf-8")) if args.baseline else None
+    if baseline is not None:
+        issues = _baseline_png_issues(baseline)
+        if issues:
+            for issue in issues:
+                print(f"ERROR: visual baseline: {issue}")
+            return 1
+    context = tempfile.TemporaryDirectory(prefix="folio-baseline-") if baseline is not None else nullcontext(None)
+    with context as temporary:
+        isolated = Path(temporary) if temporary else None
+        output = args.output_dir or (isolated / "catalog" if isolated else DEFAULT_OUTPUT)
+        contact = args.contact_sheet or (isolated / "all.png" if isolated else DEFAULT_CONTACT_SHEET)
+        supported = args.supported_sheet or (isolated / "supported.png" if isolated else DEFAULT_SUPPORTED_SHEET)
+        if baseline is not None and _baseline_output_overlap(baseline, payload, output, contact, supported):
+            print("ERROR: baseline output overlaps an approved reference; choose a separate output directory and contact sheets")
+            return 1
+        return _run_catalog(args, payload, baseline, output, contact, supported)
+
+
+def _run_catalog(args: argparse.Namespace, payload: dict[str, Any], baseline: dict[str, Any] | None,
+                 output: Path, contact: Path, supported: Path) -> int:
     manifest = render_catalog(
-        payload,
-        args.output_dir,
-        build_dsl=not args.skip_dsl_build,
-        contact_sheet=args.contact_sheet,
-        supported_sheet=args.supported_sheet,
-        catalog_fixture=args.fixture,
+        payload, output, build_dsl=not args.skip_dsl_build,
+        contact_sheet=contact, supported_sheet=supported, catalog_fixture=args.fixture,
     )
     if args.write_baseline:
         baseline = create_visual_baseline(manifest, args.approval_reason)
@@ -584,8 +624,7 @@ def main(argv: list[str] | None = None) -> int:
             encoding="utf-8",
         )
         print(f"OK: wrote approved visual baseline to {args.write_baseline}")
-    if args.baseline:
-        baseline = json.loads(args.baseline.read_text(encoding="utf-8"))
+    if baseline is not None:
         report = compare_visual_baseline(manifest, baseline)
         if args.baseline_report:
             args.baseline_report.parent.mkdir(parents=True, exist_ok=True)

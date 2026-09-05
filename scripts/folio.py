@@ -3,17 +3,17 @@
 from __future__ import annotations
 
 import argparse
-from hashlib import sha256
 import json
 import re
 import subprocess
 import sys
+import traceback
 from dataclasses import asdict
+from hashlib import sha256
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from build import DIAGRAM_ARTIFACT_TARGETS, DIAGRAM_TARGETS, HOST_INTEGRATION_TARGETS, HTML_TARGETS, PPTX_TARGETS
-
 
 ROOT = Path(__file__).resolve().parents[1]
 BUILD_SCRIPT = ROOT / "scripts" / "build.py"
@@ -199,7 +199,7 @@ def _import_diagram(source: str, dialect: str, output: str | None, ledger_output
     if ledger_output:
         _write_json(ledger.to_dict(), ledger_output)
     elif not output:
-        print(json.dumps(ledger.to_dict(), ensure_ascii=False, indent=2))
+        print(json.dumps(ledger.to_dict(), ensure_ascii=False, indent=2), file=sys.stderr)
     return _write_json(payload, output)
 
 
@@ -209,7 +209,7 @@ def _safe_kind(path: str) -> str | None:
         return "architecture"
     try:
         payload = json.loads(source.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
+    except (OSError, UnicodeError, json.JSONDecodeError):
         return None
     return payload.get("kind") if isinstance(payload, dict) and isinstance(payload.get("kind"), str) else None
 
@@ -268,6 +268,7 @@ def _render_compilation(
     result, output: Path, output_format: str, width: int = 1920, variant: str = "plain"
 ) -> None:
     from diagram_export import export_pdf, export_png
+
     from renderers.svg import render_svg
 
     try:
@@ -292,7 +293,7 @@ def _render_compilation(
                 )
             artifact.replace(output)
     except (OSError, RuntimeError) as exc:
-        raise DrawingDependencyError("drawing export dependency or file operation failed") from exc
+        raise DrawingDependencyError(f"export {output}: {type(exc).__name__}: {exc}") from exc
 
 
 def _batch_sources(input_path: Path, output_dir: Path) -> list[tuple[str, Path]]:
@@ -348,8 +349,8 @@ def _batch_render_drawings(
     audience: str = "general",
     variant: str = "plain",
 ) -> int:
-    from drawing.validation import DrawingCompilationError, DrawingDiagnostic
     from drawing.output import size_export_width
+    from drawing.validation import DrawingCompilationError, DrawingDiagnostic
 
     width = size_export_width(size)
     destination = Path(output_dir)
@@ -364,47 +365,49 @@ def _batch_render_drawings(
         report = {"status": "invalid", "items": [], "diagnostics": _diagnostic_payload((item,), stage="input", kind=None)}
         return _write_batch_report(report, report_format, report_output, EXIT_INVALID_INPUT)
 
-    destination.mkdir(parents=True, exist_ok=True)
     records: list[dict[str, object]] = []
     exit_code = EXIT_VALID
     for relative, source in sources:
         kind = _safe_kind(str(source))
         output_name = _batch_output_name(relative, output_format)
         output = destination / output_name
+        diagnostics = None
+        status = "invalid"
+        failure_code = EXIT_INVALID_INPUT
         try:
             result = _compile_drawing_input(
                 str(source), profile=profile, theme=theme, detail=detail, audience=audience
             )
             _render_compilation(result, output, output_format, width, variant)
         except DrawingCompilationError as exc:
-            output.unlink(missing_ok=True)
-            records.append({
-                "input": relative, "output": None, "kind": kind, "status": "invalid",
-                "diagnostics": _diagnostic_payload(exc.diagnostics, stage=exc.stage, kind=kind),
-            })
-            exit_code = max(exit_code, EXIT_INVALID_INPUT)
-        except (json.JSONDecodeError, ValueError):
-            output.unlink(missing_ok=True)
+            diagnostics = _diagnostic_payload(exc.diagnostics, stage=exc.stage, kind=kind)
+        except ValueError as exc:
             item = DrawingDiagnostic(
-                "ERROR", "CLI012", "invalid drawing input",
+                "ERROR", "CLI012", f"{relative}: {type(exc).__name__}: {exc}",
                 hint="Run validate-drawing on this input for detailed diagnostics.",
             )
-            records.append({
-                "input": relative, "output": None, "kind": kind, "status": "invalid",
-                "diagnostics": _diagnostic_payload((item,), stage="input", kind=kind),
-            })
-            exit_code = max(exit_code, EXIT_INVALID_INPUT)
-        except DrawingDependencyError:
-            output.unlink(missing_ok=True)
+            diagnostics = _diagnostic_payload((item,), stage="input", kind=kind)
+        except (OSError, RuntimeError) as exc:
+            status, failure_code = "dependency-error", EXIT_DEPENDENCY
             item = DrawingDiagnostic(
-                "ERROR", "CLI013", "drawing dependency or output operation failed",
-                hint="Run folio doctor and confirm that the output directory is writable.",
+                "ERROR", "CLI013", f"{relative}: {type(exc).__name__}: {exc}",
+                hint="Check the source, export dependencies, and output permissions.",
             )
-            records.append({
-                "input": relative, "output": None, "kind": kind, "status": "dependency-error",
-                "diagnostics": _diagnostic_payload((item,), stage="export", kind=kind),
-            })
-            exit_code = EXIT_DEPENDENCY
+            diagnostics = _diagnostic_payload((item,), stage="input/export", kind=kind)
+        if diagnostics is not None:
+            # Invalidate an old artifact, but do not let failed cleanup swallow the report.
+            try:
+                output.unlink(missing_ok=True)
+            except OSError as exc:
+                status, failure_code = "dependency-error", EXIT_DEPENDENCY
+                item = DrawingDiagnostic(
+                    "ERROR", "CLI014", f"Cannot remove stale output {output.name}: {exc}",
+                    hint="Remove this stale artifact before consuming the output directory.",
+                )
+                diagnostics.extend(_diagnostic_payload((item,), stage="cleanup", kind=kind))
+            records.append({"input": relative, "output": None, "kind": kind,
+                            "status": status, "diagnostics": diagnostics})
+            exit_code = max(exit_code, failure_code)
         else:
             records.append({
                 "input": relative, "output": output_name, "kind": result.kind, "status": "rendered",
@@ -610,6 +613,7 @@ def list_targets() -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Build, verify, package, and diagnose Folio.")
+    parser.add_argument("--debug", action="store_true", help="Include exception tracebacks on stderr.")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     build_cmd = subparsers.add_parser("build", help="Build all targets or one named target.")
@@ -915,21 +919,27 @@ def _main(argv: list[str]) -> int:
 def main(argv: list[str]) -> int:
     from drawing.validation import DrawingCompilationError
 
+    debug = len(argv) > 1 and argv[1] == "--debug"
+    command = argv[2] if debug and len(argv) > 2 else (argv[1] if len(argv) > 1 else "folio")
     try:
         return _main(argv)
     except DrawingCompilationError as exc:
         for item in exc.diagnostics:
-            print(str(item))
-        return 1
-    except ValueError as exc:
-        print(f"ERROR: {exc}")
+            print(f"{command}: {item}", file=sys.stderr)
+        if debug:
+            traceback.print_exc()
         return EXIT_INVALID_INPUT
-    except (DrawingDependencyError, OSError):
-        print("ERROR: drawing dependency or file operation failed")
-        return EXIT_DEPENDENCY
-    except Exception:
-        print("ERROR: internal Folio command failure")
-        return EXIT_INTERNAL
+    except Exception as exc:
+        if isinstance(exc, ValueError):
+            code, category = EXIT_INVALID_INPUT, "invalid input"
+        elif isinstance(exc, (DrawingDependencyError, OSError)):
+            code, category = EXIT_DEPENDENCY, "dependency or file operation"
+        else:
+            code, category = EXIT_INTERNAL, "internal failure"
+        print(f"ERROR: {command}: {category}: {type(exc).__name__}: {exc}", file=sys.stderr)
+        if debug:
+            traceback.print_exc()
+        return code
 
 
 if __name__ == "__main__":

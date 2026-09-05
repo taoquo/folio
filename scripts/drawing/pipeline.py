@@ -6,7 +6,7 @@ from diagram_models import ArchitectureDiagramSpec
 
 from .adapters import semantic_from_legacy
 from .canvas_contract import CANVAS_WIDTH
-from .grammar.architecture import ArchitectureGrammar, DEFAULT_ARCHITECTURE_GRAMMAR
+from .grammar.architecture import DEFAULT_ARCHITECTURE_GRAMMAR, ArchitectureGrammar
 from .layout.candidates import select_layout
 from .layout.models import LayoutResult
 from .models import DrawingPlan, LegendItemPlan, LegendPlan

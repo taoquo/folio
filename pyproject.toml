@@ -6,11 +6,11 @@ name = "folio"
 version = "6.1.0"
 description = "Folio document design system: templates, diagram DSL, and build tooling"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 [tool.ruff]
 line-length = 120
-target-version = "py39"
+target-version = "py310"
 extend-exclude = [
     ".font-libs",
     ".venv-weasy",
@@ -22,7 +22,7 @@ extend-exclude = [
 select = ["E", "F", "W", "I", "UP", "B"]
 # Long lines are intentional in the SVG renderers and layout tables, where
 # wrapping coordinate math hurts readability more than it helps.
-# B905 needs zip(strict=), which is 3.10+; the interpreter floor here is 3.9.
+# Existing bounded zip calls are intentionally non-strict.
 ignore = ["E501", "B905"]
 
 [tool.ruff.lint.per-file-ignores]

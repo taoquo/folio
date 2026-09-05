@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from math import isfinite
 from collections import Counter
+from math import isfinite
 
 from ..scene import (
     ResolvedScene,

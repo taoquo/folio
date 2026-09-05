@@ -20,27 +20,27 @@ Usage:
 """
 from __future__ import annotations
 
+import contextlib
+import io
 import json
 import os
 import re
 import shutil
 import subprocess
 import sys
-import contextlib
-import io
-from html import escape
 from dataclasses import dataclass
+from html import escape
 from pathlib import Path
 from typing import Any
 
 from diagram_geometry import validate_diagram_html
 from diagram_render_svg import render_diagram_svg
 from diagram_semantic_planning import plan_architecture_from_text
-from drawing.layout.elk import elk_available
+from pdf_metadata import set_pdf_metadata  # Re-export for existing build callers.
 from shared import (
     COOL_GRAY_BLOCKLIST,
-    DIAGRAMS,
     DEMOS,
+    DIAGRAMS,
     EXAMPLES,
     GENERATED_DIAGRAM_PDF,
     GENERATED_DIAGRAM_PNG,
@@ -49,6 +49,8 @@ from shared import (
     TEMPLATES,
     TOKENS_FILE,
 )
+
+from drawing.layout.elk import elk_available
 
 
 @dataclass(frozen=True)
@@ -230,53 +232,6 @@ def infer_author() -> str:
     return "Folio"
 
 
-def set_pdf_metadata(pdf_path: Path, author: str | None = None) -> None:
-    """Set PDF metadata using pypdf, only if placeholders are still present."""
-    try:
-        from pypdf import PdfReader, PdfWriter
-    except ImportError:
-        return
-
-    if not pdf_path.exists():
-        return
-
-    reader = PdfReader(str(pdf_path))
-
-    # Read existing metadata from WeasyPrint
-    existing = reader.metadata or {}
-
-    # Check if we need to update anything
-    needs_update = False
-    metadata = dict(existing)  # Copy all existing metadata
-
-    # Only override author if it's still a placeholder
-    if author and existing.get("/Author"):
-        author_value = str(existing["/Author"])
-        if "{{" in author_value and "}}" in author_value:
-            metadata["/Author"] = author
-            needs_update = True
-
-    # Always set Producer and Creator to Folio
-    if metadata.get("/Producer") != "Folio":
-        metadata["/Producer"] = "Folio"
-        needs_update = True
-    if metadata.get("/Creator") != "Folio":
-        metadata["/Creator"] = "Folio"
-        needs_update = True
-
-    if not needs_update:
-        return
-
-    writer = PdfWriter()
-    for page in reader.pages:
-        writer.add_page(page)
-
-    writer.add_metadata(metadata)
-
-    with open(pdf_path, "wb") as f:
-        writer.write(f)
-
-
 def _fallback_weasy_html():
     fallback = ROOT / ".venv-weasy" / "bin" / "python"
     if not fallback.exists():
@@ -325,8 +280,8 @@ def _load_pdf_build_deps() -> tuple[Any | None, Any | None, str | None]:
     if _PDF_BUILD_DEPS is not None:
         return _PDF_BUILD_DEPS
     try:
-        from weasyprint import HTML
         from pypdf import PdfReader
+        from weasyprint import HTML
     except ImportError:
         _PDF_BUILD_DEPS = (None, None, "missing deps: pip install weasyprint pypdf --break-system-packages")
         return _PDF_BUILD_DEPS

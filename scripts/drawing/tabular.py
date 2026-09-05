@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 import csv
-from dataclasses import dataclass
 import json
-from pathlib import Path
 import re
+from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
-
 
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ROWS = 1000

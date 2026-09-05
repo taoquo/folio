@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Named theme profiles.
 
 A theme profile is a full palette swap. Every color a compiler can emit comes
@@ -11,6 +9,8 @@ the family after layout would invalidate every measured box.
 Every profile must pass WCAG contrast for the token pairs the compilers actually
 use, so a theme override can never ship an unreadable diagram.
 """
+
+from __future__ import annotations
 
 from dataclasses import asdict, replace
 

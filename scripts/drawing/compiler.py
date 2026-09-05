@@ -1,15 +1,15 @@
 from __future__ import annotations
 
+import json
+from collections.abc import Callable
 from copy import deepcopy
 from dataclasses import asdict, dataclass, replace
 from hashlib import sha256
-import json
-from typing import Any, Callable
+from typing import Any
 
 from diagram_models import ArchitectureDiagramSpec, load_diagram_spec
 
 from .connectors.contract import check_contract
-from .flowchart import compile_flowchart_payload, validate_flowchart
 from .dataviz import (
     compile_bar_payload,
     compile_candlestick_payload,
@@ -20,14 +20,14 @@ from .dataviz import (
     compile_scatter_payload,
     compile_waterfall_payload,
 )
-from .models import DrawingPlan
+from .flowchart import compile_flowchart_payload, validate_flowchart
 from .migrations import migrate_authoring_payload
+from .models import DrawingPlan
 from .notation import compile_er_payload, compile_sequence_payload, compile_uml_class_payload
-from .pipeline import compile_architecture, compile_drawing_plan
 from .output import apply_output_knobs, normalize_output_audience, normalize_output_detail, normalize_output_profile
+from .pipeline import compile_architecture, compile_drawing_plan
 from .positional import compile_quadrant_payload, compile_timeline_payload, compile_venn_payload
 from .scene import ScenePolyline
-from .theme import DEFAULT_FOLIO_THEME, normalize_theme_profile, resolve_theme, retheme_scene
 from .schematic import (
     compile_loop_flywheel_payload,
     compile_org_chart_payload,
@@ -39,6 +39,7 @@ from .structural import (
     compile_swimlane_payload,
     compile_tree_payload,
 )
+from .theme import DEFAULT_FOLIO_THEME, normalize_theme_profile, resolve_theme, retheme_scene
 from .validation import (
     DrawingCompilationError,
     DrawingDiagnostic,
@@ -46,6 +47,7 @@ from .validation import (
     collect_metrics,
     collect_scene_metrics,
     diagnose_taste,
+    raise_for_errors,
     validate_canvas,
     validate_drawing_grammar,
     validate_drawing_semantics,
@@ -53,7 +55,6 @@ from .validation import (
     validate_scene_geometry,
     validate_scene_primitives,
     validate_scene_quality,
-    raise_for_errors,
 )
 
 

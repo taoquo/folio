@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Deterministic palette swap on a resolved scene.
 
 Compilers always paint with FolioTheme tokens, so a theme profile change is a
@@ -7,6 +5,8 @@ value substitution on the color-bearing fields of the scene tree. Layout,
 geometry, text measurement and reading order are untouched, which keeps every
 geometry and accessibility assertion valid across profiles.
 """
+
+from __future__ import annotations
 
 from dataclasses import fields, is_dataclass, replace
 from typing import Any

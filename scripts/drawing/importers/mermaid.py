@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from .ledger import ImportError_, Ledger, MAX_EDGES, MAX_NODES, _clean_label, _slug, local_source
+from .ledger import MAX_EDGES, MAX_NODES, ImportError_, Ledger, _clean_label, _slug, local_source
 
 HEADER_RE = re.compile(r"^(flowchart|graph|sequenceDiagram|stateDiagram(?:-v2)?|erDiagram|classDiagram)\b(.*)$")
 COMMENT_RE = re.compile(r"^\s*%%")

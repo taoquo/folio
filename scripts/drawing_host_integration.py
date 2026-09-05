@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 import subprocess
 import sys
+from pathlib import Path
 from typing import Any
 
 from drawing.compiler import DEFAULT_COMPILER_REGISTRY
 from drawing.hosting import embed_html_figure, embed_pptx_slot, verify_host
-
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "references" / "fixtures"

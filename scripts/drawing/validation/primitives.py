@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+import re
 from collections import Counter
 from math import atan2, cos, isfinite, pi, radians, sin, sqrt
-import re
 
 from ..scene import (
     ResolvedScene,
@@ -17,7 +17,6 @@ from ..scene import (
     SceneText,
 )
 from .models import DrawingDiagnostic
-
 
 PATH_DATA_RE = re.compile(r"^[MmZzLlHhVvCcSsQqTtAa0-9eE+.,\-\s]+$")
 PATH_TOKEN_RE = re.compile(r"[A-Za-z]|[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?")
@@ -118,7 +117,7 @@ def path_geometry_points(path_data: str) -> tuple[tuple[float, float], ...]:
         index += count
         relative = command.islower()
 
-        def point(x: float, y: float) -> tuple[float, float]:
+        def point(x: float, y: float, current: tuple[float, float] = current, relative: bool = relative) -> tuple[float, float]:
             return (x + current[0], y + current[1]) if relative else (x, y)
 
         kind = command.upper()

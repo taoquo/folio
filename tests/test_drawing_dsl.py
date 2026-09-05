@@ -5,13 +5,13 @@ from dataclasses import replace
 from pathlib import Path
 from unittest import TestCase
 
-
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS_DIR = ROOT / "scripts"
 sys.path.insert(0, str(SCRIPTS_DIR))
 
 from diagram_models import load_diagram_spec_file
 from diagram_semantic_planning import plan_architecture_from_text
+
 from drawing.connectors.postprocess import clean_polyline
 from drawing.grammar.architecture import DEFAULT_ARCHITECTURE_GRAMMAR
 from drawing.layout.constraints import compile_layout_constraints
@@ -21,7 +21,13 @@ from drawing.planner import plan_drawing
 from drawing.semantics.models import SemanticDiagram, SemanticEdge, SemanticNode
 from drawing.typography.fit import fit_node_content
 from drawing.typography.measure import measure_text
-from drawing.validation import collect_metrics, diagnose_taste, validate_drawing_grammar, validate_drawing_semantics, validate_scene_geometry
+from drawing.validation import (
+    collect_metrics,
+    diagnose_taste,
+    validate_drawing_grammar,
+    validate_drawing_semantics,
+    validate_scene_geometry,
+)
 from renderers import svg as svg_renderer
 
 
