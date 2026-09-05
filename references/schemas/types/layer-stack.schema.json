@@ -5,14 +5,16 @@
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "kind", "title", "layers", "flows"],
+  "allOf": [{"if":{"properties":{"canvas":{"const":"poster"}},"required":["canvas"]},"else":{"properties":{"height":{"maximum":800}}}}],
   "properties": {
     "schema_version": {"const": "3.0"},
     "kind": {"const": "layer-stack"},
     "title": {"$ref": "#/$defs/non-empty-string"},
     "layers": {"type": "array", "minItems": 3, "maxItems": 7, "items": {"$ref": "#/$defs/layer"}},
     "flows": {"type": "array", "items": {"$ref": "#/$defs/flow"}},
+    "canvas": {"enum": ["figure", "poster"]},
     "width": {"const": 960},
-    "height": {"type": "integer", "minimum": 500, "maximum": 800, "multipleOf": 4},
+    "height": {"type": "integer", "minimum": 500, "maximum": 4000, "multipleOf": 4},
     "language": {"$ref": "#/$defs/nullable-string"}
   },
   "$defs": {

@@ -10,6 +10,7 @@
     "title",
     "levels"
   ],
+  "allOf": [{"if":{"properties":{"canvas":{"const":"poster"}},"required":["canvas"]},"else":{"properties":{"height":{"maximum":800}}}}],
   "properties": {
     "schema_version": {
       "const": "3.0"
@@ -35,13 +36,14 @@
       }
     },
     "focus": {"$ref": "#/$defs/nullable-string"},
+    "canvas": {"enum": ["figure", "poster"]},
     "width": {
       "const": 960
     },
     "height": {
       "type": "integer",
       "minimum": 500,
-      "maximum": 800,
+      "maximum": 4000,
       "multipleOf": 4
     },
     "language": {"$ref": "#/$defs/nullable-string"}

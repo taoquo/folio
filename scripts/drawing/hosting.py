@@ -5,14 +5,17 @@ from hashlib import sha256
 from html import escape
 from html.parser import HTMLParser
 import json
+from math import isfinite
 import os
 from pathlib import Path
 import re
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 from typing import Any
+from xml.etree import ElementTree
 
 from .compiler import CompilationResult
-from .output import normalize_output_variant
+from .canvas_contract import canvas_mode
+from .output import normalize_output_variant, placement_advisory
 
 
 MANIFEST_PREFIX = "FOLIO_DIAGRAM_MANIFEST:"
@@ -82,6 +85,59 @@ def host_contract(key: str) -> HostContract:
 
 def list_host_contracts() -> tuple[HostContract, ...]:
     return tuple(HOST_CONTRACTS[key] for key in sorted(HOST_CONTRACTS))
+
+
+def _result_canvas_mode(result: CompilationResult) -> str:
+    payload = result.normalized_input if isinstance(result.normalized_input, dict) else {}
+    declared = payload.get("canvas", getattr(result.plan, "canvas", "figure"))
+    return canvas_mode({"canvas": declared})
+
+
+def _require_embeddable_canvas(result: CompilationResult, contract: HostContract) -> None:
+    if _result_canvas_mode(result) == "poster":
+        raise ValueError(
+            f'canvas "poster" is a standalone artifact and cannot be embedded into '
+            f"{contract.key}; use a figure canvas or split the diagram"
+        )
+
+
+def svg_min_font_size(svg: str) -> float:
+    """Read emitted SVG user units, not typographic points before physical scaling."""
+    sizes = [float(item.attrib["font-size"]) for item in ElementTree.fromstring(svg).iter()
+             if item.tag.rsplit("}", 1)[-1] == "text" and "".join(item.itertext()).strip()]
+    return min(sizes, default=0.0)
+
+
+def host_fit_report(
+    width: float, height: float, min_font: float,
+    box_width: float, box_height: float, contract: HostContract,
+) -> dict[str, Any]:
+    """Predict contain fit and enforce a floor on additional height-driven shrinking.
+
+    Existing figure typography already scales below print recommendations in some
+    hosts. Report that honestly rather than claiming that geometry certifies readability.
+    The 75% floor prevents a tall figure losing over a quarter of its width-fit scale.
+    """
+    values = (width, height, min_font, box_width, box_height)
+    if any(not isinstance(value, (int, float)) or isinstance(value, bool)
+           or not isfinite(value) or value <= 0 for value in values):
+        raise ValueError("host fit dimensions and source font size must be positive finite numbers")
+    scale = min(box_width / width, box_height / height)
+    retained = scale / (box_width / width)
+    if retained < 0.75 - 1e-6:
+        raise ValueError(
+            f"{contract.key} retains only {retained:.0%} of width-fit text size (minimum 75%); "
+            "use a shorter figure, enlarge the slot, or split the diagram"
+        )
+    physical = min_font * scale * {"mm": 72 / 25.4, "in": 72, "px": 1}[contract.unit]
+    unit = "px" if contract.unit == "px" else "pt"
+    recommended = 12 if contract.medium in {"pptx", "html-responsive"} else 6
+    warnings = []
+    if physical < recommended:
+        warnings.append(f"smallest text is {physical:.1f}{unit}; preferred >= {recommended}{unit}; review at final size")
+    return {"width": round(width * scale, 6), "height": round(height * scale, 6),
+            "retained_scale": round(retained, 6), "min_font_size": round(physical, 3),
+            "font_unit": unit, "warnings": warnings}
 
 
 def fit_contain(
@@ -203,6 +259,7 @@ def _manifest(
     data: AccessibleData | None,
     placement: dict[str, Any] | None = None,
     variant: str = "plain",
+    advisory: str | None = None,
 ) -> dict[str, Any]:
     return {
         "schema_version": "1.1",
@@ -223,6 +280,9 @@ def _manifest(
         "registry_key": result.metadata.registry_key if result.metadata else None,
         "data": data.to_dict() if data else None,
         "placement": placement,
+        "canvas": _result_canvas_mode(result),
+        # Present only when the canvas outgrows the slot, so a clean embed stays quiet.
+        "advisory": advisory,
     }
 
 
@@ -242,6 +302,7 @@ def embed_html_figure(
     from renderers.svg import render_svg
 
     contract = host_contract(contract_key)
+    _require_embeddable_canvas(result, contract)
     if contract.medium not in {"html-print", "html-responsive"}:
         raise ValueError(f"{contract.key} is not an HTML host contract")
     profile = profile or contract.default_profile
@@ -261,22 +322,29 @@ def embed_html_figure(
     if len(matches) != 1:
         raise ValueError(f"HTML host must contain exactly one figure slot named {slot}")
 
-    artifact_root = Path(artifact_dir)
-    artifact_root.mkdir(parents=True, exist_ok=True)
     token = _digest(fixture_path)[:10]
     svg = render_svg(result.scene, profile, namespace=f"host-{slot}-{token}", variant=variant)
+    max_height = contract.safe_height if contract.medium == "html-responsive" else round(contract.safe_height * 0.55, 3)
+    min_font = svg_min_font_size(svg)
+    fit = host_fit_report(result.scene.width, result.scene.height, min_font, contract.safe_width, max_height, contract)
+    artifact_root = Path(artifact_dir)
+    artifact_root.mkdir(parents=True, exist_ok=True)
     artifact = artifact_root / f"{result.kind}-{slot}-{token}-{_digest_text(svg)[:12]}.svg"
     _atomic_text(artifact, svg)
     data = accessible_data(result)
-    max_height = contract.safe_height if contract.medium == "html-responsive" else round(contract.safe_height * 0.55, 3)
     placement = {
         "unit": contract.unit,
         "safe_area": [contract.safe_left, contract.safe_top, contract.safe_width, contract.safe_height],
         "max_artifact": [contract.safe_width, max_height],
+        "source_min_font": min_font,
+        "fit": fit,
     }
     manifest = _manifest(
         result, fixture_path, artifact, output_path, contract, profile, slot, caption, data, placement,
         variant=variant,
+        advisory=placement_advisory(
+            result.scene.width, result.scene.height, contract.safe_width, max_height,
+        ),
     )
     figure = _html_figure(result, svg, manifest, caption, data, contract)
     output = source[:matches[0].start()] + figure + source[matches[0].end():]
@@ -321,7 +389,8 @@ def _html_figure(
     max_width, max_height = manifest["placement"]["max_artifact"]
     host_style = (
         f"--folio-host-max-width:{max_width}{contract.unit};"
-        f"--folio-host-max-height:{max_height}{contract.unit}"
+        f"--folio-host-max-height:{max_height}{contract.unit};"
+        f"--folio-host-fit-width:{manifest['placement']['fit']['width']}{contract.unit}"
     )
     parts = [
         f"<figure {encoded_attrs}>",
@@ -347,7 +416,7 @@ def _html_figure(
 
 HOST_STYLES = """<style id="folio-diagram-host-styles">
   .folio-diagram-artifact { display: flex; justify-content: center; width: 100%; max-width: var(--folio-host-max-width, 100%); overflow: hidden; }
-  .folio-diagram-artifact svg { display: block; width: auto; max-width: 100%; height: auto; max-height: var(--folio-host-max-height, none); min-width: 0 !important; }
+  .folio-diagram-artifact svg { display: block; width: 100% !important; max-width: var(--folio-host-fit-width, 100%); height: auto; max-height: var(--folio-host-max-height, none); min-width: 0 !important; }
   .folio-data-fallback { margin-top: 8pt; break-inside: avoid; }
   .folio-data-summary { margin: 0 0 4pt; color: #5A4A43; font-size: 8.5pt; }
   .folio-data-fallback table { width: 100%; border-collapse: collapse; font-size: 7.5pt; }
@@ -358,7 +427,8 @@ HOST_STYLES = """<style id="folio-diagram-host-styles">
 
 def _ensure_host_styles(source: str) -> str:
     if 'id="folio-diagram-host-styles"' in source:
-        return source
+        return re.sub(r'<style\b[^>]*id="folio-diagram-host-styles"[^>]*>.*?</style>',
+                      lambda _match: HOST_STYLES, source, count=1, flags=re.DOTALL)
     if "</head>" not in source:
         raise ValueError("HTML host must contain a head element")
     return source.replace("</head>", HOST_STYLES + "\n</head>", 1)
@@ -385,6 +455,7 @@ def embed_pptx_slot(
     from renderers.svg import render_svg
 
     contract = host_contract("slide-16x9")
+    _require_embeddable_canvas(result, contract)
     profile = profile or contract.default_profile
     if profile not in contract.allowed_profiles:
         raise ValueError(f"profile {profile} is not allowed for {contract.key}")
@@ -414,6 +485,10 @@ def embed_pptx_slot(
         result.scene.width, result.scene.height,
         float(left), float(top), float(width), float(image_height),
     )
+    svg = render_svg(result.scene, profile, variant=variant)
+    min_font = svg_min_font_size(svg)
+    fit = host_fit_report(result.scene.width, result.scene.height, min_font,
+                          float(width) / 914400, float(image_height) / 914400, contract)
     placeholder._element.getparent().remove(placeholder._element)
 
     artifact_root = Path(artifact_dir)
@@ -422,7 +497,7 @@ def embed_pptx_slot(
     target_width = int(round(contract.safe_width * int(contract.target_ppi or 144)))
     with TemporaryDirectory(prefix="folio-host-slide-", dir=artifact_root) as temp:
         svg_path = Path(temp) / "drawing.svg"
-        svg_path.write_text(render_svg(result.scene, profile, variant=variant), encoding="utf-8")
+        svg_path.write_text(svg, encoding="utf-8")
         temporary_artifact = Path(temp) / "drawing.png"
         export_png(svg_path, temporary_artifact, width=target_width, profile=profile, title=result.plan.title, language=result.plan.language)
         artifact = artifact_root / f"{result.kind}-{slot}-{token}-{profile}-{_digest(temporary_artifact)[:12]}.png"
@@ -452,6 +527,8 @@ def embed_pptx_slot(
         "unit": "in",
         "slot": [_emu_to_in(value) for value in (left, top, width, height)],
         "image": [_emu_to_in(value) for value in placement],
+        "source_min_font": min_font,
+        "fit": fit,
     }
     manifest = _manifest(
         result, fixture_path, artifact, output_path, contract, profile, slot, caption, data, placement_manifest,
@@ -533,6 +610,14 @@ def verify_hosted_html(path: str | Path) -> list[dict[str, Any]]:
         raise ValueError("HTML host contains no Folio diagram manifest")
     for manifest in manifests:
         _verify_manifest_files(manifest, host_file)
+        placement = manifest.get("placement") or {}
+        max_artifact = placement.get("max_artifact")
+        if isinstance(max_artifact, list) and len(max_artifact) == 2:
+            expected_advisory = placement_advisory(
+                *manifest["source_dimensions"], *max_artifact,
+            )
+            if manifest.get("advisory") != expected_advisory:
+                raise ValueError(f"HTML host diagram {manifest['slot']} placement advisory is stale")
         slot = re.escape(str(manifest["slot"]))
         caption_match = re.search(
             rf"<figcaption\b[^>]*id=['\"]folio-caption-{slot}['\"][^>]*>(.*?)</figcaption>",
@@ -557,6 +642,17 @@ def verify_hosted_html(path: str | Path) -> list[dict[str, Any]]:
         )
         if not svg_match or _digest_text(svg_match.group(1)) != manifest["artifact_sha256"]:
             raise ValueError(f"HTML host diagram {manifest['slot']} embedded SVG is stale")
+        contract = host_contract(manifest["host_contract"])
+        max_height = contract.safe_height if contract.medium == "html-responsive" else round(contract.safe_height * 0.55, 3)
+        minimum = svg_min_font_size(svg_match.group(1))
+        fit = host_fit_report(*manifest["source_dimensions"], minimum, contract.safe_width, max_height, contract)
+        if "fit" in placement:
+            if placement.get("fit") != fit or placement.get("source_min_font") != minimum:
+                raise ValueError(f"HTML host diagram {manifest['slot']} fit metadata is stale")
+            for declaration in (f"--folio-host-fit-width:{fit['width']}{contract.unit}",
+                                f"--folio-host-max-height:{max_height}{contract.unit}"):
+                if declaration not in figure_match.group(1):
+                    raise ValueError(f"HTML host diagram {manifest['slot']} fit styles are stale")
         if f'lang="{escape(str(manifest["language"]), quote=True)}"' not in svg_match.group(1):
             raise ValueError(f"HTML host diagram {manifest['slot']} language metadata is stale")
         if escape(str(manifest["description"])) not in svg_match.group(1):
@@ -682,6 +778,23 @@ def verify_hosted_pptx(path: str | Path) -> list[dict[str, Any]]:
         if len(shapes) != 1:
             raise ValueError(f"PPTX host diagram {manifest['slot']} image is missing or duplicated")
         shape = shapes[0]
+        contract = host_contract(manifest["host_contract"])
+        _validate_slide_slot(shape.left, shape.top, shape.width, shape.height, contract)
+        placement = manifest.get("placement") or {}
+        if "slot" in placement:
+            slot_width = placement["slot"][2]
+            if slot_width <= 0 or _emu_to_in(shape.width) / slot_width < 0.75 - 1e-6:
+                raise ValueError(f"PPTX host diagram {manifest['slot']} retains less than 75% of width-fit scale")
+        if "fit" in placement:
+            x, y, w, h = placement["slot"]
+            fit = host_fit_report(*manifest["source_dimensions"], placement["source_min_font"],
+                                  w, h - 0.36 - contract.caption_gap, contract)
+            actual = [_emu_to_in(value) for value in (shape.left, shape.top, shape.width, shape.height)]
+            expected = fit_contain(*manifest["source_dimensions"], x, y, w, h - 0.36 - contract.caption_gap)
+            if any(abs(a - b) > 0.002 for a, b in zip(actual, expected)):
+                raise ValueError(f"PPTX host diagram {manifest['slot']} placement is stale")
+            if any(abs(fit[key] - placement["fit"][key]) > 0.002 for key in ("width", "height", "min_font_size", "retained_scale")):
+                raise ValueError(f"PPTX host diagram {manifest['slot']} fit metadata is stale")
         properties = shape._element.xpath(".//p:cNvPr")
         if not properties or properties[0].get("descr") != manifest.get("description"):
             raise ValueError(f"PPTX host diagram {manifest['slot']} alt text is missing or stale")
@@ -729,6 +842,10 @@ def _verify_manifest_files(manifest: dict[str, Any], host_file: Path) -> None:
             raise ValueError(f"hosted diagram {label} is missing")
         if _digest(file) != manifest[digest_key]:
             raise ValueError(f"hosted diagram {label} is stale")
+    # Recheck the source, including pre-policy manifests with no canvas field.
+    payload = json.loads(fixture.read_text(encoding="utf-8")) if fixture.suffix.lower() == ".json" else {}
+    if canvas_mode(payload) == "poster" or manifest.get("canvas") == "poster":
+        raise ValueError('canvas "poster" cannot be embedded; use a standalone artifact or split the diagram')
 
 
 def verify_host(path: str | Path) -> list[dict[str, Any]]:

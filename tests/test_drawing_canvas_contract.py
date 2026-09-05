@@ -39,7 +39,7 @@ BANDS = {"graph": GRAPH_CANVAS, "chart": CHART_CANVAS, "notation": NOTATION_CANV
 
 def band_schema(band: CanvasBand) -> dict:
     """The JSON Schema fragment a published schema must publish for this band."""
-    return {"type": "integer", "minimum": band.minimum, "maximum": band.maximum, "multipleOf": 4}
+    return {"type": "integer", "minimum": band.minimum, "maximum": band.poster_maximum, "multipleOf": 4}
 
 
 def showcase_fixture(kind: str) -> dict:
@@ -64,7 +64,24 @@ class CanvasBandTests(TestCase):
         payload = {"height": 4000}
         self.assertEqual(GRAPH_CANVAS.default, GRAPH_CANVAS.resolve(payload))
         self.assertEqual(640, GRAPH_CANVAS.resolve(payload, 640))
-        self.assertEqual(1, len(canvas_issues(payload, kind="tree", band=GRAPH_CANVAS)))
+        issues = canvas_issues(payload, kind="tree", band=GRAPH_CANVAS)
+        # A height past the figure ceiling is reported with the mode that would accept it,
+        # because "too tall" and "too tall for a figure" call for different fixes.
+        self.assertEqual(2, len(issues))
+        self.assertIn("must be a multiple of 4 from 500 to 800", issues[0])
+        self.assertIn('"canvas": "poster"', issues[1])
+
+    def test_out_of_band_height_only_names_poster_when_poster_would_accept_it(self) -> None:
+        # Off-grid and below-floor heights are wrong in either mode, so pointing at poster
+        # would send an author to change modes when they need to change the number.
+        for height in (542, 400, 4001):
+            with self.subTest(height=height):
+                issues = canvas_issues({"height": height}, kind="tree", band=GRAPH_CANVAS)
+                self.assertEqual(1, len(issues))
+        # In poster mode the ceiling has already moved, so there is nothing left to suggest.
+        issues = canvas_issues({"height": 5000, "canvas": "poster"}, kind="tree", band=GRAPH_CANVAS)
+        self.assertEqual(1, len(issues))
+        self.assertIn("from 500 to 4000", issues[0])
 
     def test_canvas_issues_reports_width_and_height_independently(self) -> None:
         self.assertEqual([], canvas_issues({}, kind="tree", band=GRAPH_CANVAS))
@@ -175,3 +192,28 @@ class PublishedSchemaContractTests(TestCase):
                 properties = self._schema(name)["properties"]
                 self.assertEqual({"const": CANVAS_WIDTH}, properties["width"])
                 self.assertEqual(band_schema(GRAPH_CANVAS), properties["height"])
+
+    def test_schemas_preserve_figure_limits_and_accept_poster_heights(self) -> None:
+        try:
+            from jsonschema import Draft202012Validator
+        except ImportError:
+            self.skipTest("jsonschema is installed by requirements-ci.txt")
+
+        from drawing.schema_registry import list_schema_contracts
+
+        aggregate = Draft202012Validator(self._schema("drawing-payload-v3.schema.json"))
+        for contract in list_schema_contracts():
+            payload = contract.load_minimal_payload()
+            band = CHART_CANVAS if contract.kind in CHART_KINDS else NOTATION_CANVAS if contract.kind in NOTATION_KINDS else GRAPH_CANVAS
+            validators = [Draft202012Validator(contract.load_schema())]
+            if contract.kind not in {"architecture", "flowchart"}:
+                validators.append(aggregate)
+            for validator in validators:
+                with self.subTest(kind=contract.kind, schema=validator.schema["title"]):
+                    payload.pop("canvas", None)
+                    payload["height"] = band.maximum + 4
+                    self.assertTrue(list(validator.iter_errors(payload)))
+                    payload["canvas"] = "poster"
+                    self.assertFalse(list(validator.iter_errors(payload)))
+                    payload["height"] = band.poster_maximum + 4
+                    self.assertTrue(list(validator.iter_errors(payload)))

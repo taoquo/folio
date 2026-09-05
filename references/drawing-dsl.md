@@ -144,12 +144,123 @@ python3 scripts/folio.py batch-render-drawings references/fixtures/v5 \
 - Architecture generator geometry comes from `scripts/drawing/grammar/architecture.py`; later structural, positional, and data grammars live in their matching type modules.
 - Folio palette and font families come from `scripts/drawing/theme/folio.py`.
 - Geometry is compiler-owned and snapped to the type's deterministic layout grid.
-- Information budgets and focal limits are type-specific and fail closed when exceeded.
+- Information budgets and focal limits are type-specific and fail closed when exceeded. What the budget is measured against depends on the canvas mode -- see [Canvas modes](#canvas-modes).
 - Connectors use orthogonal segments, 8-unit rounded elbows, distinct attach points, opaque label masks, and bridge hops at unavoidable crossings.
 - Folio keeps one accent color.
 - Architecture SVG, PNG, and PDF artifact entrypoints remain compatible.
 - The coordinate-bearing UML loader in `scripts/diagram_models.py` plus `scripts/diagram_layout.py:layout_uml_class` remain available only as a compatibility facade; production UML artifacts use the coordinate-free registry contract.
 - `scripts/diagram_models.py` is the Architecture spec contract shared by the registry compiler and `scripts/diagram_semantic_planning.py`; the latter is the supported text-to-Architecture planner, not a legacy path.
+
+## Canvas modes
+
+Run `python3 scripts/build_canvas_review.py` to regenerate the offline comparison at
+`build/canvas/index.html`. It includes host placement illustrations, compiler-generated
+artifacts, full-size viewing, and executable rejection cases.
+
+Every payload declares a 960-unit-wide stage. Architecture keeps that width; existing
+adaptive families such as Flowchart can resize the resolved scene. Height is a declared
+knob, and `canvas` says which rules govern it.
+
+| | `"canvas": "figure"` (default) | `"canvas": "poster"` |
+|---|---|---|
+| Width | 960 | 960 |
+| Height, graph families | 500-800 | 500-4000 |
+| Height, notation families | 480-800 | 480-4000 |
+| Height, chart families | 400-720 | 400-2400 |
+| Height when omitted | existing family default/layout behavior | derived for Architecture, Gantt, Heatmap; existing behavior for others |
+| Architecture node budget | editorial, 9 | canvas capacity, at most 265 |
+| Gantt/Heatmap row budget | editorial, 10 | proportional to height, at most 44 |
+| Intended use | a figure inside a document | the diagram is the artifact |
+
+A figure is an illustration sitting in a column of text, so it keeps the deletion-first
+budget: nine architecture nodes, ten gantt tasks. That budget is a position about what
+belongs in a figure, and extra height does not change the answer.
+
+A poster is the artifact itself. It may grow downward until its content is placed, and its
+budget follows the canvas:
+
+```json
+{
+  "kind": "architecture",
+  "canvas": "poster",
+  "layers": [ /* twelve tiers */ ],
+  "nodes": [ /* sixty nodes, five to a tier */ ]
+}
+```
+
+Omitting `height` is the normal case: asking an author to both add nodes and compute the
+canvas that holds them is asking them to do the layout's job. The example above resolves to
+1020 units.
+
+### Two kinds of capacity
+
+The rule differs by whether content is placed at a fixed size or compressed to fit.
+
+**Fixed-size content** -- regular architecture node boxes stay 144x64 and their type stays 7/11/12 SVG user units
+at every count, so what bounds them is the pitch below which the layout reports an overlap.
+Measured at 72 units, giving `(height - 228) // 72 + 1` rows of five. Sixty nodes need 1020
+units; two hundred need 3036.
+This is an estimate for layered regular nodes, not an automatic wrapping algorithm or a
+guarantee for wide nodes, sidecars, hub layouts, labels, or densely crossed connectors.
+All geometry and routing checks still run. SVG user units become physical points only
+after placement scaling; they are not a promise of final print type size.
+
+**Elastic content** -- chart rows compress, so forty gantt tasks fit inside 668 units and are
+unreadable there. Their ceiling protects density instead: a poster carries proportionally
+more rows because it has proportionally more room, and each row keeps the height it had in a
+figure. Ten rows at 540 and forty rows at 2160 both sit at roughly 54 units per row.
+This is a conservative full-canvas ratio; fixed chart chrome means the plot-row pitch is
+not exactly constant. Gantt and Heatmap derive this height before validating the 2400 ceiling.
+
+### Failing closed is preserved
+
+A poster is still a bounded canvas. `DG002` fires when a payload exceeds what its canvas
+places; only the number it compares against becomes honest. Both modes name the remedy:
+
+```
+ERROR DG002: 10 nodes exceed budget 9
+  hint: set "canvas": "poster" to grow the canvas, or split the diagram
+
+ERROR DG002: 40 nodes exceed budget 25
+  hint: raise height to 732 or split the diagram
+```
+
+### Posters and embedding
+
+`embed-drawing` rejects posters for every current host: A4, Letter, 16:9 slides, and ordinary
+responsive HTML slots. The check runs before writing an artifact. Verification also reads
+the fixture's mode, so an older manifest cannot bypass the restriction. Use standalone
+`artifact` SVG/PNG/PDF, or an explicitly scrollable web viewer with full-size access. There
+is no implicit splitting, content deletion, or override that silently shrinks a poster.
+
+Figures contain-fit the host slot. A height-driven fit must retain at least 75% of its
+width-fit scale; otherwise embedding fails and asks for a shorter figure, a larger slot, or
+linked details. This is a geometric safeguard, not a legibility certificate. The manifest
+records the predicted physical minimum font size and emits warnings below 6pt in print,
+12pt in slides, or 12px in the nominal responsive slot. Existing small labels may trigger
+these warnings. CLI output surfaces them; HTML verification checks the emitted fit styles
+and SVG type sizes, and PPTX verification checks actual image placement. Browser zoom,
+overriding host CSS, page pagination, and a responsive viewport narrower than the declared
+slot still require final visual review.
+
+### Independent complexity limits
+
+Architecture posters have absolute safety ceilings of 265 nodes and 530 edges; their
+4000 height ceiling also applies to automatically derived heights and direct plan inputs.
+These are operational limits, not recommended diagram sizes. `DG203` requests an overview
+and linked details at 30 nodes, and `DG205` warns above 45 edges, independently of canvas
+height. Figures keep their existing complexity thresholds. Focus, crossing, and label
+checks remain active in both modes.
+
+### What poster mode does not change
+
+- **Five nodes to a row.** That is the width constraint, and width is fixed in both modes.
+- **Height floors.** Below 500 a graph's radial and quadrant label rings collide, in any mode.
+- **Semantic caps.** `donut requires 2-6 segments` and `venn supports exactly two or three
+  sets` are claims about the chart, not about the room. A nine-slice donut is a worse chart,
+  not a bigger one, so those ceilings do not move.
+- **Crossing connectors.** Fully crossed layers report `LY001` at ten nodes just as at forty;
+  that is a routing limit, independent of canvas size.
 
 ## Diagnostics
 

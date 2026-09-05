@@ -5,6 +5,7 @@
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "kind", "title", "lanes", "steps", "flows"],
+  "allOf": [{"if":{"properties":{"canvas":{"const":"poster"}},"required":["canvas"]},"else":{"properties":{"height":{"maximum":800}}}}],
   "properties": {
     "schema_version": {"const": "3.0"},
     "kind": {"const": "swimlane"},
@@ -16,8 +17,9 @@
     "parallel_starts": {"type": "boolean"},
     "focus_lane": {"type": ["string", "null"]},
     "focus_path": {"type": "array", "items": {"$ref": "#/$defs/non-empty-string"}, "uniqueItems": true},
+    "canvas": {"enum": ["figure", "poster"]},
     "width": {"const": 960},
-    "height": {"type": "integer", "minimum": 500, "maximum": 800, "multipleOf": 4},
+    "height": {"type": "integer", "minimum": 500, "maximum": 4000, "multipleOf": 4},
     "language": {"$ref": "#/$defs/nullable-string"}
   },
   "$defs": {

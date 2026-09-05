@@ -113,7 +113,11 @@ A missing required field is rejected by both sides as well, with one deliberate 
 
 ### Canvas contract
 
-Every payload declares the same 960-unit stage width, and `height` is the only canvas knob. The bounds come from one shared module, `scripts/drawing/canvas_contract.py`, so a family cannot quietly introduce its own floor.
+Every payload declares the same 960-unit stage width. The table below describes default
+`canvas: figure` bounds. `canvas: poster` raises graph/notation height ceilings to 4000 and
+chart ceilings to 2400. Architecture, Gantt, and Heatmap can derive poster height when it
+is omitted; other families retain their existing behavior. See the complete canvas and
+embedding policy in `drawing-dsl.md`. Bounds come from `scripts/drawing/canvas_contract.py`.
 
 | Family | Kinds | Width | Height band | Default |
 |---|---|---|---|---|

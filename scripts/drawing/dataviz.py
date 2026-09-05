@@ -7,7 +7,13 @@ from hashlib import sha256
 from math import ceil, cos, floor, log10, pi, sin
 from typing import Any
 
-from .canvas_contract import CANVAS_WIDTH, CHART_CANVAS
+from .canvas_contract import (
+    CANVAS_WIDTH,
+    CHART_CANVAS,
+    canvas_mode,
+    height_for_row_capacity,
+    row_capacity,
+)
 from .scene import (
     ResolvedScene,
     SceneAnnotation,
@@ -396,6 +402,16 @@ def _common_chart(
     else:
         _validate_value_format(payload.get("value_format"), diagnostics, code)
     return diagnostics
+
+
+def _derive_stacked_chart_height(payload: dict[str, Any], field: str) -> dict[str, Any]:
+    """Derive poster height for charts whose primary content is a vertical row stack."""
+    items = payload.get(field)
+    if canvas_mode(payload) != "poster" or "height" in payload or not isinstance(items, list):
+        return payload
+    resolved = dict(payload)
+    resolved["height"] = height_for_row_capacity(len(items), figure_ceiling=10, band=CHART_CANVAS)
+    return resolved
 
 
 def _validate_value_format(value: Any, diagnostics: list[DrawingDiagnostic], code: str) -> None:
@@ -1528,6 +1544,7 @@ class GanttPlan:
 
 
 def compile_gantt_payload(payload: dict[str, Any]):
+    payload = _derive_stacked_chart_height(payload, "tasks")
     code = "GA000"
     diagnostics = _common_chart(
         payload, kind="gantt",
@@ -1545,8 +1562,14 @@ def compile_gantt_payload(payload: dict[str, Any]):
     validate_item_strings(tasks, ("label", "track"), diagnostics=diagnostics, code=code)
     task_ids = validate_unique_ids(tasks, name="gantt task", diagnostics=diagnostics, code=code)
     _validate_text_budget(tasks, ("label",), diagnostics, code)
-    if not 3 <= len(tasks) <= 10:
-        diagnostics.append(DrawingDiagnostic("ERROR", "GA003", "gantt requires between three and ten tasks"))
+    # A gantt is a stack of rows, so what caps it is the canvas rather than the count: ten is
+    # the editorial budget for a figure, and a poster is measured against the rows it places.
+    task_ceiling = row_capacity(payload, figure_ceiling=10)
+    if not 3 <= len(tasks) <= task_ceiling:
+        diagnostics.append(DrawingDiagnostic(
+            "ERROR", "GA003", f"gantt requires between three and {task_ceiling} tasks",
+            hint=None if canvas_mode(payload) == "poster" else 'set "canvas": "poster" for a taller stack',
+        ))
     for item in tasks:
         start, span = item.get("start"), item.get("span")
         valid = isinstance(start, int) and not isinstance(start, bool) and isinstance(span, int) and not isinstance(span, bool)
@@ -1706,6 +1729,7 @@ class HeatmapPlan:
 
 
 def compile_heatmap_payload(payload: dict[str, Any]):
+    payload = _derive_stacked_chart_height(payload, "rows")
     code = "HM000"
     diagnostics = _common_chart(
         payload, kind="heatmap",
@@ -1726,8 +1750,13 @@ def compile_heatmap_payload(payload: dict[str, Any]):
     validate_item_strings(rows, ("label",), diagnostics=diagnostics, code=code)
     row_ids = validate_unique_ids(rows, name="heatmap row", diagnostics=diagnostics, code=code)
     _validate_text_budget(rows, ("label",), diagnostics, code)
-    if not 3 <= len(rows) <= 10:
-        diagnostics.append(DrawingDiagnostic("ERROR", "HM004", "heatmap requires between three and ten rows"))
+    # Same shape as the gantt: rows stack downward, so the canvas is the real ceiling.
+    row_ceiling = row_capacity(payload, figure_ceiling=10)
+    if not 3 <= len(rows) <= row_ceiling:
+        diagnostics.append(DrawingDiagnostic(
+            "ERROR", "HM004", f"heatmap requires between three and {row_ceiling} rows",
+            hint=None if canvas_mode(payload) == "poster" else 'set "canvas": "poster" for a taller stack',
+        ))
     for item in rows:
         values = item.get("values")
         if not isinstance(values, list) or (columns and len(values) != len(columns)) or any(not finite_number(value) for value in values or []):

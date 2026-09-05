@@ -49,6 +49,9 @@ class SemanticDiagram:
     narrative: str | None = None
     width: int = 960
     height: int = 540
+    # Carried from the payload so the planner can budget against the canvas the diagram
+    # actually claims rather than against a figure's column.
+    canvas: str = "figure"
     subtitle: str | None = None
     caption: str | None = None
     layer_order: tuple[str, ...] = ()

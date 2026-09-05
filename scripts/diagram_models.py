@@ -12,8 +12,13 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Union
 
-from drawing.canvas_contract import GRAPH_CANVAS, canvas_issues
-
+from drawing.canvas_contract import (
+    GRAPH_CANVAS,
+    NODES_PER_ROW,
+    canvas_issues,
+    canvas_mode,
+    height_for_rows,
+)
 
 ARCHITECTURE_LAYOUTS = {"horizontal-layers", "vertical-stack", "hub-and-spoke"}
 ARCHITECTURE_NODE_KINDS = {"external", "service", "store", "cloud"}
@@ -92,6 +97,10 @@ class ArchitectureDiagramSpec:
     layout: str
     width: int = 960
     height: int = 540
+    # "figure" keeps the tight height band and the editorial node budget; "poster" lets the
+    # canvas grow downward so a system with more parts than a figure holds can still be one
+    # diagram. Width is fixed in both.
+    canvas: str = "figure"
     schema_version: str = "3.0"
     language: str | None = None
     subtitle: str | None = None
@@ -176,10 +185,30 @@ def _require_object(value: Any, context: str, allowed: set[str]) -> dict[str, An
     return value
 
 
+def _poster_height(payload: dict[str, Any], mode: str, band_default: int) -> int:
+    """Return the canvas height for one payload, deriving it for a poster that omits one.
+
+    Asking an author to both add nodes and compute the canvas that holds them is asking them
+    to do the layout's job, so a poster without an explicit height gets the shortest canvas
+    that places its rows. An explicit height is always honoured: it has already passed the
+    band check, and a taller stage than the minimum is a legitimate choice.
+    """
+    if "height" in payload:
+        return int(payload["height"])
+    if mode != "poster":
+        return band_default
+    layers = payload.get("layers") or []
+    nodes = payload.get("nodes") or []
+    # Estimate the necessary height only. Authors must still declare layers and node
+    # assignments: the layout does not automatically wrap an unlayered payload.
+    rows = max(len(layers), -(-len(nodes) // NODES_PER_ROW), 1)
+    return max(band_default, height_for_rows(rows))
+
+
 def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
     _require_object(payload, "architecture", {
-        "schema_version", "kind", "title", "layout", "width", "height", "language", "subtitle", "caption", "focus",
-        "focus_path", "focus_reason", "layers", "groups", "nodes", "edges", "legend",
+        "schema_version", "kind", "title", "layout", "width", "height", "canvas", "language", "subtitle",
+        "caption", "focus", "focus_path", "focus_reason", "layers", "groups", "nodes", "edges", "legend",
     })
     if payload.get("schema_version", "3.0") != "3.0":
         raise ValueError("architecture semantic schema_version must be 3.0")
@@ -190,8 +219,10 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
     if layout not in ARCHITECTURE_LAYOUTS:
         raise ValueError(f"unsupported architecture layout: {layout}")
 
-    for issue in canvas_issues(payload, kind="architecture", band=GRAPH_CANVAS):
-        raise ValueError(issue)
+    issues = canvas_issues(payload, kind="architecture", band=GRAPH_CANVAS)
+    if issues:
+        raise ValueError("; ".join(issues))
+    mode = canvas_mode(payload)
     language = payload.get("language")
     if language is not None and (not isinstance(language, str) or not language.strip()):
         raise ValueError("architecture language must be a non-empty string")
@@ -305,12 +336,19 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
                 )
             )
 
+    height = _poster_height(payload, mode, 540)
+    if not GRAPH_CANVAS.accepts(height, mode):
+        raise ValueError(
+            f"architecture derived canvas height {height} exceeds poster maximum "
+            f"{GRAPH_CANVAS.poster_maximum}; split the diagram"
+        )
     return ArchitectureDiagramSpec(
         kind="architecture",
         title=_require_text(payload.get("title"), "diagram title is required"),
         layout=layout,
         width=int(payload.get("width", 960)),
-        height=int(payload.get("height", 540)),
+        height=height,
+        canvas=mode,
         schema_version="3.0",
         language=language,
         subtitle=payload.get("subtitle"),

@@ -65,7 +65,7 @@
       "state_owner": true,
       "lifecycle_phase": "background",
       "domain": "data",
-      "metadata": "logs \u00b7 traces"
+      "metadata": "logs · traces"
     }
   ],
   "edges": [
@@ -134,6 +134,7 @@
   "narrative": "Processor is the transformation hinge between ingest and warehouse state.",
   "width": 960,
   "height": 540,
+  "canvas": "figure",
   "subtitle": null,
   "caption": null,
   "layer_order": [

@@ -190,7 +190,8 @@ class DrawingV3GateSTests(TestCase):
         with self.assertRaises(DrawingCompilationError) as context:
             compile_drawing_plan(drawing)
 
-        self.assertEqual("layout", context.exception.stage)
+        self.assertEqual("plan", context.exception.stage)
+        self.assertIn("DG044", str(context.exception))
 
     def test_aud_015_layout_endpoint_must_touch_target_boundary(self) -> None:
         boxes = {

@@ -2,12 +2,20 @@ from __future__ import annotations
 
 from collections import Counter
 
+from ..canvas_contract import GRAPH_CANVAS, NODES_PER_ROW, POSTER_MAX_EDGES, canvas_issues, height_for_rows
 from ..models import DrawingPlan, InformationBudget
 from .models import DrawingDiagnostic
 
 
-def validate_drawing_semantics(drawing: DrawingPlan, budget: InformationBudget = InformationBudget()) -> list[DrawingDiagnostic]:
-    diagnostics: list[DrawingDiagnostic] = []
+def validate_drawing_semantics(drawing: DrawingPlan, budget: InformationBudget | None = None) -> list[DrawingDiagnostic]:
+    # A figure is budgeted editorially and a poster by what its canvas places, so the budget
+    # is derived from the plan rather than fixed at nine for every canvas.
+    if budget is None:
+        budget = InformationBudget.for_canvas(drawing.height, drawing.canvas)
+    diagnostics = [DrawingDiagnostic("ERROR", "DG044", issue) for issue in canvas_issues(
+        {"width": drawing.width, "height": drawing.height, "canvas": drawing.canvas},
+        kind=drawing.kind, band=GRAPH_CANVAS,
+    )]
     node_ids = [node.id for node in drawing.nodes]
     duplicates = [node_id for node_id, count in Counter(node_ids).items() if count > 1]
     diagnostics.extend(DrawingDiagnostic("ERROR", "DG001", "duplicate node id", item) for item in duplicates)
@@ -19,9 +27,24 @@ def validate_drawing_semantics(drawing: DrawingPlan, budget: InformationBudget =
     diagnostics.extend(DrawingDiagnostic("ERROR", "DG019", "duplicate region id", item) for item, count in Counter(region_ids).items() if count > 1)
     diagnostics.extend(DrawingDiagnostic("ERROR", "DG031", "duplicate annotation id", item) for item, count in Counter(annotation_ids).items() if count > 1)
     if len(node_ids) > budget.max_nodes:
-        diagnostics.append(DrawingDiagnostic("ERROR", "DG002", f"{len(node_ids)} nodes exceed budget {budget.max_nodes}; split the diagram"))
+        # Failing closed is the point of the budget; what changes with a poster is only the
+        # number, and the remedy differs by mode: a figure can become a poster, while a
+        # poster that is already full needs a taller canvas or fewer nodes.
+        if drawing.canvas == "poster":
+            needed = height_for_rows(-(-len(node_ids) // NODES_PER_ROW))
+            hint = (f"raise height to {needed} or split the diagram"
+                    if needed <= GRAPH_CANVAS.poster_maximum else "split the diagram; the poster limit is reached")
+        else:
+            hint = 'set "canvas": "poster" to grow the canvas, or split the diagram'
+        diagnostics.append(DrawingDiagnostic(
+            "ERROR", "DG002",
+            f"{len(node_ids)} nodes exceed budget {budget.max_nodes}",
+            hint=hint,
+        ))
     if len(drawing.edges) > budget.max_edges:
         diagnostics.append(DrawingDiagnostic("WARNING", "DG014", f"{len(drawing.edges)} edges exceed preferred budget {budget.max_edges}; reduce or split the diagram"))
+    if drawing.canvas == "poster" and len(drawing.edges) > POSTER_MAX_EDGES:
+        diagnostics.append(DrawingDiagnostic("ERROR", "DG045", f"poster exceeds the routing safety limit of {POSTER_MAX_EDGES} edges; split the diagram"))
     focal = [node.id for node in drawing.nodes if node.emphasis == "focal"]
     if len(focal) > budget.max_focal_objects:
         diagnostics.append(DrawingDiagnostic("ERROR", "DG003", f"{len(focal)} focal objects exceed budget {budget.max_focal_objects}"))

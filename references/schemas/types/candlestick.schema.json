@@ -5,6 +5,7 @@
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "kind", "title", "periods"],
+  "allOf": [{"if":{"properties":{"canvas":{"const":"poster"}},"required":["canvas"]},"else":{"properties":{"height":{"maximum":720}}}}],
   "properties": {
     "schema_version": {"const": "3.0"},
     "kind": {"const": "candlestick"},
@@ -15,8 +16,9 @@
     "value_format": {"$ref": "#/$defs/value-format"},
     "periods": {"type": "array", "minItems": 1, "maxItems": 30, "items": {"$ref": "#/$defs/period"}},
     "annotations": {"type": "array", "maxItems": 3, "items": {"$ref": "#/$defs/annotation"}},
+    "canvas": {"enum": ["figure", "poster"]},
     "width": {"const": 960},
-    "height": {"type": "integer", "minimum": 400, "maximum": 720, "multipleOf": 4},
+    "height": {"type": "integer", "minimum": 400, "maximum": 2400, "multipleOf": 4},
     "language": {"$ref": "#/$defs/nullable-string"}
   },
   "$defs": {

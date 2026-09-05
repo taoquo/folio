@@ -155,7 +155,7 @@
       "content": {
         "eyebrow": "cloud",
         "title": "Observability",
-        "metadata": "logs \u00b7 traces",
+        "metadata": "logs · traces",
         "description": null,
         "metadata_required": false
       },
@@ -235,6 +235,7 @@
   },
   "width": 960,
   "height": 540,
+  "canvas": "figure",
   "subtitle": null,
   "caption": null,
   "explanation": [

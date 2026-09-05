@@ -127,8 +127,9 @@ def plan_drawing(
     semantic: SemanticDiagram,
     grammar: ArchitectureGrammar = DEFAULT_ARCHITECTURE_GRAMMAR,
     overrides: DrawingOverrides | None = None,
-    budget: InformationBudget = InformationBudget(),
+    budget: InformationBudget | None = None,
 ) -> DrawingPlan:
+    budget = budget or InformationBudget.for_canvas(semantic.height, semantic.canvas)
     pattern, axis, reason = _composition(semantic)
     focus = semantic.focus_candidates[0] if semantic.focus_candidates else (semantic.focus_path[0] if semantic.focus_path else None)
     if overrides and overrides.composition:
@@ -249,9 +250,13 @@ def plan_drawing(
         reason = f"edge-label budget is {label_ceiling}"
         reductions.append(ReductionDecision("drop", dropped_ids, reason, True))
         explanation.append(f"reduction: drop {dropped_labels} secondary edge labels; reason: {reason}")
-    if len(nodes) > 9:
-        reductions.append(ReductionDecision("split", tuple(node.id for node in nodes), "visual node budget is 9", False))
-        explanation.append(f"reduction: split recommended; reason: {len(nodes)} visual nodes exceed budget 9")
+    # Capacity advice follows the declared mode. Independent taste diagnostics still
+    # recommend an overview or linked details when a valid poster becomes complex.
+    node_ceiling = budget.max_nodes
+    if len(nodes) > node_ceiling:
+        remedy = "split into linked diagrams" if semantic.canvas == "poster" else 'raise the canvas to "poster" or split'
+        reductions.append(ReductionDecision("split", tuple(node.id for node in nodes), f"visual node budget is {node_ceiling}", False))
+        explanation.append(f"reduction: split recommended; reason: {len(nodes)} visual nodes exceed budget {node_ceiling}; {remedy}")
     if background:
         reductions.append(ReductionDecision("background", background, "supporting concern outside primary narrative", True))
         explanation.append(f"reduction: background {len(background)} supporting nodes; reason: preserve context without competing with focus")
@@ -269,6 +274,7 @@ def plan_drawing(
         legend=legend,
         width=semantic.width,
         height=semantic.height,
+        canvas=semantic.canvas,
         subtitle=semantic.subtitle,
         caption=semantic.caption,
         explanation=tuple(explanation),

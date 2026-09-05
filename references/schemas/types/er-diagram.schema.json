@@ -5,6 +5,7 @@
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "kind", "title", "entities", "relationships"],
+  "allOf": [{"if":{"properties":{"canvas":{"const":"poster"}},"required":["canvas"]},"else":{"properties":{"height":{"maximum":800}}}}],
   "properties": {
     "schema_version": {"const": "3.0"},
     "kind": {"const": "er-diagram"},
@@ -12,8 +13,9 @@
     "entities": {"type": "array", "minItems": 2, "maxItems": 8, "items": {"$ref": "#/$defs/entity"}},
     "relationships": {"type": "array", "minItems": 1, "maxItems": 12, "items": {"$ref": "#/$defs/relationship"}},
     "focus_entity": {"type": ["string", "null"]},
+    "canvas": {"enum": ["figure", "poster"]},
     "width": {"const": 960},
-    "height": {"type": "integer", "minimum": 480, "maximum": 800, "multipleOf": 4},
+    "height": {"type": "integer", "minimum": 480, "maximum": 4000, "multipleOf": 4},
     "language": {"$ref": "#/$defs/nullable-text"}
   },
   "$defs": {

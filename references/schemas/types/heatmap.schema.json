@@ -13,6 +13,7 @@
     "x_axis",
     "y_axis"
   ],
+  "allOf": [{"if":{"properties":{"canvas":{"const":"poster"}},"required":["canvas"]},"else":{"properties":{"height":{"maximum":720},"rows":{"maxItems":10}}}}],
   "properties": {
     "schema_version": {
       "const": "3.0"
@@ -36,7 +37,7 @@
     "rows": {
       "type": "array",
       "minItems": 3,
-      "maxItems": 10,
+      "maxItems": 44,
       "items": {
         "$ref": "#/$defs/row"
       }
@@ -75,10 +76,11 @@
         }
       }
     },
+    "canvas": {"enum": ["figure", "poster"]},
     "width": {
       "const": 960
     },
-    "height": {"type": "integer", "minimum": 400, "maximum": 720, "multipleOf": 4},
+    "height": {"type": "integer", "minimum": 400, "maximum": 2400, "multipleOf": 4},
     "language": {"$ref": "#/$defs/nullable-string"}
   },
   "$defs": {

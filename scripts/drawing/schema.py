@@ -4,7 +4,7 @@ from copy import deepcopy
 from collections import Counter
 from typing import Any
 
-from .canvas_contract import GRAPH_CANVAS, canvas_issues
+from .canvas_contract import GRAPH_CANVAS, NODES_PER_ROW, canvas_issues, height_for_rows
 
 
 SCHEMA_VERSION = "2.0"
@@ -53,7 +53,8 @@ def validate_plan_payload(payload: dict[str, Any]) -> list[str]:
         return [message for _code, message in flowchart_payload_issues(payload)]
     allowed = {
         "schema_version", "kind", "title", "composition", "hierarchy", "regions", "nodes", "edges",
-        "annotations", "legend", "width", "height", "subtitle", "caption", "explanation", "reductions", "language",
+        "annotations", "legend", "width", "height", "canvas", "subtitle", "caption", "explanation", "reductions",
+        "language",
     }
     unknown = sorted(set(payload) - allowed)
     issues.extend(f"unknown field: {name}" for name in unknown)
@@ -162,7 +163,8 @@ def flowchart_payload_issues(payload: dict[str, Any]) -> list[tuple[str, str]]:
 
 def _flowchart_body_issues(payload: dict[str, Any]) -> list[tuple[str, str]]:
     issues: list[tuple[str, str]] = []
-    allowed = {"schema_version", "kind", "title", "focus", "nodes", "edges", "width", "height", "language", "axis"}
+    # "canvas" is part of the canvas contract, like width and height, not flowchart vocabulary.
+    allowed = {"schema_version", "kind", "title", "focus", "nodes", "edges", "width", "height", "canvas", "language", "axis"}
     issues.extend(("FC000", f"unknown field: {name}") for name in sorted(set(payload) - allowed))
     if payload.get("axis", "top-down") not in {"top-down", "left-right"}:
         issues.append(("FC009", "axis must be top-down or left-right"))
@@ -364,6 +366,12 @@ def _validate_reductions(payload: dict[str, Any], issues: list[str]) -> None:
 
 def normalize_plan_payload(payload: dict[str, Any]) -> dict[str, Any]:
     migrated = migrate_v1_payload(payload)
+    if migrated.get("canvas") == "poster" and "height" not in migrated and migrated.get("kind") == "architecture":
+        nodes, regions = migrated.get("nodes", []), migrated.get("regions", [])
+        if isinstance(nodes, list) and isinstance(regions, list):
+            rows = max(sum(isinstance(r, dict) and r.get("treatment") == "layer-band" for r in regions),
+                       -(-len(nodes) // NODES_PER_ROW), 1)
+            migrated["height"] = max(GRAPH_CANVAS.default, height_for_rows(rows))
     issues = validate_plan_payload(migrated)
     if issues:
         raise ValueError("invalid DrawingPlan: " + "; ".join(issues))

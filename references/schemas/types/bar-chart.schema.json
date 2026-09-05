@@ -28,11 +28,13 @@
         {"type": "array", "minItems": 1, "maxItems": 8, "uniqueItems": true, "items": {"$ref": "#/$defs/non-empty-string"}}
       ]
     },
+    "canvas": {"enum": ["figure", "poster"]},
     "width": {"const": 960},
-    "height": {"type": "integer", "minimum": 400, "maximum": 720, "multipleOf": 4},
+    "height": {"type": "integer", "minimum": 400, "maximum": 2400, "multipleOf": 4},
     "language": {"$ref": "#/$defs/nullable-string"}
   },
   "allOf": [
+    {"if":{"properties":{"canvas":{"const":"poster"}},"required":["canvas"]},"else":{"properties":{"height":{"maximum":720}}}},
     {
       "if": {"properties": {"order": {"const": "value"}}, "required": ["order"]},
       "then": {"properties": {"series": {"maxItems": 1}}}

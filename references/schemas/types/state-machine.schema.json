@@ -5,6 +5,7 @@
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "kind", "title", "states", "transitions"],
+  "allOf": [{"if":{"properties":{"canvas":{"const":"poster"}},"required":["canvas"]},"else":{"properties":{"height":{"maximum":800}}}}],
   "properties": {
     "schema_version": {"const": "3.0"},
     "kind": {"const": "state-machine"},
@@ -15,8 +16,9 @@
     "submachine": {"type": "boolean"},
     "axis": {"enum": ["left-right", "top-down"]},
     "focus": {"type": ["string", "null"]},
+    "canvas": {"enum": ["figure", "poster"]},
     "width": {"const": 960},
-    "height": {"type": "integer", "minimum": 500, "maximum": 800, "multipleOf": 4},
+    "height": {"type": "integer", "minimum": 500, "maximum": 4000, "multipleOf": 4},
     "language": {"$ref": "#/$defs/nullable-string"}
   },
   "$defs": {

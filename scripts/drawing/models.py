@@ -3,15 +3,47 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
+from .canvas_contract import NODES_PER_ROW, POSTER_MAX_NODES, rows_for_height
+
 
 @dataclass(frozen=True)
 class InformationBudget:
+    """What one canvas may hold.
+
+    The defaults are the editorial budget for a figure sitting in a column of text: nine
+    nodes, deletion first. They are a position, not a capability ceiling -- the layout
+    engine places forty nodes on a tall canvas at constant 144x64 boxes and constant type
+    sizes. :meth:`for_canvas` is what a poster uses instead, so the number a payload is
+    measured against describes its actual canvas rather than a figure's column.
+    """
+
     target_density: int = 4
     max_nodes: int = 9
     max_focal_objects: int = 2
     max_edge_labels: int = 6
     max_regions: int = 4
     max_edges: int = 12
+
+    @classmethod
+    def for_canvas(cls, height: int, mode: str = "figure") -> InformationBudget:
+        """Return the budget a canvas of this height can actually place.
+
+        A figure keeps the editorial defaults whatever its height: that budget is a claim
+        about what belongs in a figure, and extra air does not change the answer.
+        """
+        if mode != "poster":
+            return cls()
+        rows = rows_for_height(height)
+        capacity = min(POSTER_MAX_NODES, rows * NODES_PER_ROW)
+        return cls(
+            max_nodes=capacity,
+            # Regions band the rows, so a poster may name as many layers as it has rows.
+            max_regions=max(4, rows),
+            # Edges stay proportional to nodes rather than unbounded: a poster earns room
+            # for more structure, not permission to draw every possible pair.
+            max_edges=max(12, capacity * 2),
+            max_edge_labels=max(6, capacity),
+        )
 
 
 @dataclass(frozen=True)
@@ -122,6 +154,7 @@ class DrawingPlan:
     legend: LegendPlan | None = None
     width: int = 960
     height: int = 540
+    canvas: str = "figure"
     subtitle: str | None = None
     caption: str | None = None
     explanation: tuple[str, ...] = ()
@@ -133,7 +166,7 @@ class DrawingPlan:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, payload: dict[str, Any]) -> "DrawingPlan":
+    def from_dict(cls, payload: dict[str, Any]) -> DrawingPlan:
         from .schema import normalize_plan_payload
 
         payload = normalize_plan_payload(payload)
@@ -199,6 +232,7 @@ class DrawingPlan:
             legend=_legend_from_payload(payload.get("legend")),
             width=int(payload.get("width", 960)),
             height=int(payload.get("height", 540)),
+            canvas=str(payload.get("canvas", "figure")),
             subtitle=payload.get("subtitle"),
             caption=payload.get("caption"),
             explanation=tuple(payload.get("explanation", ())),

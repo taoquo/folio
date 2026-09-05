@@ -5,6 +5,7 @@
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "kind", "title", "segments"],
+  "allOf": [{"if":{"properties":{"canvas":{"const":"poster"}},"required":["canvas"]},"else":{"properties":{"height":{"maximum":720}}}}],
   "properties": {
     "schema_version": {"const": "3.0"},
     "kind": {"const": "donut-chart"},
@@ -17,8 +18,9 @@
     "focus_segment": {"type": ["string", "null"]},
     "percent_total": {"type": ["boolean", "null"]},
     "tolerance": {"type": "number", "minimum": 0},
+    "canvas": {"enum": ["figure", "poster"]},
     "width": {"const": 960},
-    "height": {"type": "integer", "minimum": 400, "maximum": 720, "multipleOf": 4},
+    "height": {"type": "integer", "minimum": 400, "maximum": 2400, "multipleOf": 4},
     "language": {"$ref": "#/$defs/nullable-string"}
   },
   "$defs": {

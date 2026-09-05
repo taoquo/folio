@@ -5,13 +5,15 @@
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "kind", "title", "composition", "hierarchy", "nodes", "edges"],
+  "allOf": [{"if":{"properties":{"canvas":{"const":"poster"}},"required":["canvas"]},"else":{"properties":{"height":{"maximum":800},"nodes":{"maxItems":9}}}}],
   "properties": {
     "schema_version": {"const": "2.0"},
     "kind": {"const": "architecture"},
     "title": {"type": "string", "minLength": 1},
     "language": {"type": "string", "minLength": 2},
+    "canvas": {"enum": ["figure", "poster"]},
     "width": {"const": 960},
-    "height": {"type": "integer", "minimum": 500, "maximum": 800, "multipleOf": 4},
+    "height": {"type": "integer", "minimum": 500, "maximum": 4000, "multipleOf": 4},
     "subtitle": {"type": ["string", "null"]},
     "caption": {"type": ["string", "null"]},
     "composition": {
@@ -59,7 +61,7 @@
     },
     "nodes": {
       "type": "array",
-      "maxItems": 9,
+      "maxItems": 265,
       "items": {
         "type": "object",
         "additionalProperties": false,

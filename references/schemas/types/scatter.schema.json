@@ -12,6 +12,7 @@
     "y_axis",
     "points"
   ],
+  "allOf": [{"if":{"properties":{"canvas":{"const":"poster"}},"required":["canvas"]},"else":{"properties":{"height":{"maximum":720}}}}],
   "properties": {
     "schema_version": {
       "const": "3.0"
@@ -64,10 +65,11 @@
         }
       }
     },
+    "canvas": {"enum": ["figure", "poster"]},
     "width": {
       "const": 960
     },
-    "height": {"type": "integer", "minimum": 400, "maximum": 720, "multipleOf": 4},
+    "height": {"type": "integer", "minimum": 400, "maximum": 2400, "multipleOf": 4},
     "language": {"$ref": "#/$defs/nullable-string"}
   },
   "$defs": {

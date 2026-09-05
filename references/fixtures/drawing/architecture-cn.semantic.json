@@ -124,6 +124,7 @@
   "narrative": "模型运行时连接规划、工具与记忆。",
   "width": 960,
   "height": 540,
+  "canvas": "figure",
   "subtitle": null,
   "caption": null,
   "layer_order": [

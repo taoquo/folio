@@ -5,6 +5,7 @@
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "kind", "title", "axes", "items"],
+  "allOf": [{"if":{"properties":{"canvas":{"const":"poster"}},"required":["canvas"]},"else":{"properties":{"height":{"maximum":800}}}}],
   "properties": {
     "schema_version": {"const": "3.0"}, "kind": {"const": "quadrant"},
     "title": {"$ref": "#/$defs/non-empty-string"},
@@ -14,7 +15,8 @@
     },
     "items": {"type": "array", "minItems": 4, "maxItems": 12, "items": {"$ref": "#/$defs/item"}},
     "preferred_region": {"enum": ["top-left", "top-right", "bottom-left", "bottom-right", null]},
-    "width": {"const": 960}, "height": {"type": "integer", "minimum": 500, "maximum": 800, "multipleOf": 4},
+    "canvas": {"enum": ["figure", "poster"]},
+    "width": {"const": 960}, "height": {"type": "integer", "minimum": 500, "maximum": 4000, "multipleOf": 4},
     "language": {"$ref": "#/$defs/nullable-string"}
   },
   "$defs": {

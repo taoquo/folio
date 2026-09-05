@@ -8,7 +8,13 @@ from .knobs import (
     normalize_output_size,
     size_export_width,
 )
-from .profiles import OUTPUT_PROFILE_NAMES, apply_html_output_profile, normalize_output_profile, svg_root_attributes
+from .profiles import (
+    OUTPUT_PROFILE_NAMES,
+    apply_html_output_profile,
+    normalize_output_profile,
+    placement_advisory,
+    svg_root_attributes,
+)
 from .variants import OUTPUT_VARIANT_NAMES, normalize_output_variant, variant_defs
 from .viewport import PAGE_PREVIEW_MARGIN, scene_viewport
 
@@ -26,6 +32,7 @@ __all__ = [
     "normalize_output_profile",
     "normalize_output_size",
     "normalize_output_variant",
+    "placement_advisory",
     "scene_viewport",
     "size_export_width",
     "svg_root_attributes",

@@ -31,10 +31,14 @@ def diagnose_taste(drawing: DrawingPlan, scene: ResolvedScene) -> list[DrawingDi
     crossings = crossing_count(scene)
     if crossings:
         diagnostics.append(DrawingDiagnostic("TASTE", "DG204", f"diagram contains {crossings} connector crossings"))
-    if len(drawing.nodes) >= 8:
-        diagnostics.append(DrawingDiagnostic("TASTE", "DG203", f"diagram density is high at {len(drawing.nodes)} nodes"))
-    if len(drawing.edges) > 12:
-        diagnostics.append(DrawingDiagnostic("TASTE", "DG205", f"diagram contains {len(drawing.edges)} edges; preferred <= 12"))
+    poster = getattr(drawing, "canvas", "figure") == "poster"
+    # Editorial complexity stays independent of the canvas's physical capacity.
+    node_threshold, edge_threshold = (30, 45) if poster else (8, 12)
+    if len(drawing.nodes) >= node_threshold:
+        diagnostics.append(DrawingDiagnostic("TASTE", "DG203", f"diagram contains {len(drawing.nodes)} nodes; review threshold is {node_threshold}",
+            hint="Add a small overview and linked detail diagrams; a larger canvas does not reduce cognitive load."))
+    if len(drawing.edges) > edge_threshold:
+        diagnostics.append(DrawingDiagnostic("TASTE", "DG205", f"diagram contains {len(drawing.edges)} edges; preferred <= {edge_threshold}"))
     focal = sum(1 for node in drawing.nodes if node.emphasis == "focal")
     if focal == 0:
         diagnostics.append(DrawingDiagnostic("TASTE", "DG206", "diagram has no focal object"))

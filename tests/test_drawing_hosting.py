@@ -21,6 +21,7 @@ from drawing.hosting import (
     embed_pptx_slot,
     fit_contain,
     host_contract,
+    host_fit_report,
     list_host_contracts,
     verify_hosted_html,
     verify_hosted_pptx,
@@ -39,7 +40,22 @@ def compile_minimal_themed(kind: str, theme: str):
     return path, DEFAULT_COMPILER_REGISTRY.compile_payload(payload, "embed", theme)
 
 
+def compile_poster():
+    fixture = ROOT / "references" / "fixtures" / "architecture-demo.json"
+    payload = json.loads(fixture.read_text(encoding="utf-8"))
+    payload["canvas"] = "poster"
+    return fixture, DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
+
+
 class DrawingHostingTests(TestCase):
+    def test_height_driven_shrinking_is_bounded_and_physical_text_size_is_reported(self) -> None:
+        contract = host_contract("a4-portrait")
+        fit = host_fit_report(960, 540, 7, 166, 140.25, contract)
+        self.assertAlmostEqual(3.431, fit["min_font_size"], places=3)
+        self.assertTrue(fit["warnings"])
+        with self.assertRaisesRegex(ValueError, "minimum 75%"):
+            host_fit_report(960, 1600, 7, 166, 140.25, contract)
+
     def test_four_explicit_host_contracts_have_bounded_safe_areas(self) -> None:
         contracts = list_host_contracts()
 
@@ -104,6 +120,9 @@ class DrawingHostingTests(TestCase):
             chart = next(item for item in manifests if item["kind"] == "bar-chart")
             artifact = output.parent / chart["artifact"]
             original = output.read_text(encoding="utf-8")
+            output.write_text(original.replace("--folio-host-fit-width:166.0mm", "--folio-host-fit-width:80mm", 1), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "fit styles are stale"):
+                verify_hosted_html(output)
             output.write_text(original.replace("Root", "Changed root", 1), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "embedded SVG is stale"):
                 verify_hosted_html(output)
@@ -133,6 +152,26 @@ class DrawingHostingTests(TestCase):
                     )
             self.assertEqual("previous valid output", output.read_text(encoding="utf-8"))
 
+    def test_host_verifier_rejects_poster_even_with_updated_source_digest(self) -> None:
+        from hashlib import sha256
+
+        fixture, result = compile_minimal("tree")
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            source, output, local_fixture = root / "source.html", root / "out.html", root / "tree.json"
+            local_fixture.write_bytes(fixture.read_bytes())
+            source.write_text('<html><head></head><body><figure data-folio-diagram-slot="main"></figure></body></html>')
+            manifest = embed_html_figure(result, fixture=local_fixture, host_file=source, output_host=output,
+                artifact_dir=root / "assets", contract_key="a4-portrait", slot="main",
+                caption="The source must remain an embeddable figure after it is updated.")
+            payload = json.loads(local_fixture.read_text())
+            payload["canvas"] = "poster"
+            local_fixture.write_text(json.dumps(payload))
+            changed = output.read_text().replace(manifest["fixture_sha256"], sha256(local_fixture.read_bytes()).hexdigest())
+            output.write_text(changed)
+            with self.assertRaisesRegex(ValueError, "poster.*cannot be embedded"):
+                verify_hosted_html(output)
+
     def test_letter_and_responsive_html_contracts_embed_without_static_min_width(self) -> None:
         tree_path, tree = compile_minimal("tree")
         host = "<!DOCTYPE html><html><head></head><body><figure data-folio-diagram-slot=\"main\"></figure></body></html>"
@@ -152,6 +191,21 @@ class DrawingHostingTests(TestCase):
                     text = output.read_text(encoding="utf-8")
                     self.assertIn("min-width: 0 !important", text)
                     self.assertEqual(contract, verify_hosted_html(output)[0]["host_contract"])
+
+    def test_poster_is_rejected_by_every_html_host_contract(self) -> None:
+        fixture, result = compile_poster()
+        host = '<!DOCTYPE html><html><head></head><body><figure data-folio-diagram-slot="main"></figure></body></html>'
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "source.html"
+            source.write_text(host, encoding="utf-8")
+            for contract in ("a4-portrait", "letter-portrait", "responsive-html"):
+                with self.subTest(contract=contract), self.assertRaisesRegex(ValueError, "standalone artifact"):
+                    embed_html_figure(
+                        result, fixture=fixture, host_file=source, output_host=root / f"{contract}.html",
+                        artifact_dir=root / "artifacts", contract_key=contract, slot="main",
+                        caption="The standalone poster must be split before it enters a bounded host slot.",
+                    )
 
     def test_pptx_slot_embedding_preserves_ratio_alt_text_notes_and_stale_gate(self) -> None:
         fixture, result = compile_minimal("line-chart")
@@ -191,10 +245,35 @@ class DrawingHostingTests(TestCase):
             with self.assertRaisesRegex(ValueError, "accessible data notes are stale"):
                 verify_hosted_pptx(tampered)
 
+            picture.width = int(picture.width * 0.5)
+            picture.height = int(picture.height * 0.5)
+            saved.save(tampered)
+            with self.assertRaisesRegex(ValueError, "retains less than 75%"):
+                verify_hosted_pptx(tampered)
+
             artifact = output.parent / manifest["artifact"]
             artifact.write_bytes(b"stale")
             with self.assertRaisesRegex(ValueError, "artifact is stale"):
                 verify_hosted_pptx(output)
+
+    def test_poster_is_rejected_by_the_slide_host(self) -> None:
+        fixture, result = compile_poster()
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "host.pptx"
+            prs = Presentation()
+            slide = prs.slides.add_slide(prs.slide_layouts[6])
+            slot = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(1), Inches(1), Inches(11), Inches(5.5))
+            slot.name = "folio-diagram-slot:main"
+            prs.save(source)
+
+            with self.assertRaisesRegex(ValueError, "standalone artifact"):
+                embed_pptx_slot(
+                    result, fixture=fixture, host_file=source, output_host=root / "output.pptx",
+                    artifact_dir=root / "artifacts", slot="main",
+                    caption="The standalone poster must not be shrunk into an unreadable slide image.",
+                    slide_index=1,
+                )
 
     def test_slide_template_picture_helper_never_distorts(self) -> None:
         with TemporaryDirectory() as temp:

@@ -129,7 +129,7 @@ class DrawingSchemaRegistryTests(TestCase):
                 self.assertEqual([], list(validator.iter_errors(contract.load_minimal_payload())))
 
                 unknown = deepcopy(payload)
-                unknown[collection][0]["x"] = 24
+                unknown[collection][0]["unknown_field"] = 24
                 self.assertTrue(list(validator.iter_errors(unknown)))
 
                 missing = deepcopy(payload)

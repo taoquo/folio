@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Folio · 画布模式对比</title>
+<style>
+:root{color-scheme:light;--paper:#f6f0ea;--ink:#191514;--muted:#65574f;--line:#dfd3c9;--accent:#b83d2e;--surface:#fbf7f3}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}button,a,select{touch-action:manipulation}a{color:inherit;text-underline-offset:4px}button,select{font:inherit;color:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+header{padding:24px 4vw 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:20px}header strong{font:32px/1 Georgia,serif;letter-spacing:-1px}header span{color:var(--muted);margin-left:18px;font-size:13px}header a{font-size:13px}main{max-width:1500px;margin:auto;padding:26px 4vw 80px}h1{font-size:27px;letter-spacing:-.5px;line-height:1.35;margin:0 0 8px}h2{font-size:19px;margin:0 0 8px}h3{font-size:16px;margin:0}p{margin:8px 0;color:var(--muted)}.intro{max-width:830px;margin-bottom:22px}.tabs{display:flex;gap:24px;border-bottom:1px solid var(--line);overflow:auto;margin-bottom:26px}.tabs button{border:0;background:none;padding:12px 0;white-space:nowrap;border-bottom:2px solid transparent;color:var(--muted);transition:color .15s,border-color .15s}.tabs button[aria-selected=true]{color:var(--accent);border-bottom-color:var(--accent)}.panel[hidden]{display:none}.panel{animation:arrive .22s ease-out}.comparison{display:grid;grid-template-columns:1fr 1fr;gap:30px}.label{font-size:12px;letter-spacing:.06em;color:var(--muted);margin-bottom:8px}.label.new{color:var(--accent)}.pane-header{min-height:96px}figure{margin:0}.stage{height:380px;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;padding:26px;overflow:hidden}.stage img{max-width:100%;max-height:100%;object-fit:contain;display:block}.stage.old{position:relative}.stage.old::after{content:"A4 插图区域 · 等比例缩放示意";position:absolute;bottom:10px;left:16px;color:var(--muted);font-size:11px}.stage.old img{height:100%;width:auto}.stage.new{height:248px}.status{padding:16px 0 18px;border-bottom:1px solid var(--line);margin-bottom:16px;min-height:116px}.status strong{color:var(--accent)}.status p{font-size:13px;line-height:1.7}.note{font-size:12px;margin-top:12px}.metric{font-size:25px;color:var(--ink);font-variant-numeric:tabular-nums;margin-right:6px}.footer-links{display:flex;flex-wrap:wrap;gap:12px 22px;margin-top:18px;font-size:13px}.toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:16px 0}.toolbar button,.toolbar select{border:1px solid var(--line);background:var(--surface);padding:7px 13px;border-radius:3px;transition:background .15s}.toolbar button[aria-pressed=true]{background:var(--ink);color:var(--paper)}.viewer{overflow:auto;max-height:650px;border:1px solid var(--line);background:var(--surface);overscroll-behavior:contain}.viewer img{display:block;width:960px;max-width:none;margin:auto}.viewer.fit img{width:100%;max-width:960px}.viewer:focus-visible{outline:2px solid var(--accent)}.diagnostics{margin-top:20px;border-top:1px solid var(--line);padding-top:16px}details summary{cursor:pointer;font-weight:500}pre,code{font:12px/1.6 ui-monospace,SFMono-Regular,monospace;white-space:pre-wrap;overflow-wrap:anywhere}pre{color:var(--muted);max-height:240px;overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:14px 14px 14px 0;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted);font-weight:500}td:nth-child(2){color:var(--accent);white-space:nowrap}td:first-child{min-width:150px}.chart-stack{display:grid;grid-template-columns:1fr 1fr;gap:26px}.chart-stack .viewer{max-height:520px}.policy{margin-top:32px;border-top:1px solid var(--line);padding-top:22px;display:grid;grid-template-columns:repeat(3,1fr);gap:28px}.policy p{font-size:13px}.evidence{display:flex;flex-wrap:wrap;gap:12px 24px;color:var(--muted);font-size:12px;margin-top:26px;padding-top:14px;border-top:1px solid var(--line)}@keyframes arrive{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}@media(max-width:760px){header{padding:20px}header span{display:none}main{padding:24px 20px 48px}.comparison,.chart-stack,.policy{grid-template-columns:1fr;gap:24px}.tabs{gap:22px}.stage{height:310px}.pane-header{min-height:0;margin-bottom:14px}h1{font-size:24px}.table-scroll{overflow:auto}.viewer{max-height:520px}}@media print{.tabs,.toolbar,header a{display:none}.panel{display:block!important;break-before:page}.panel:first-of-type{break-before:auto}.viewer{max-height:none;overflow:visible}.viewer img{width:100%;max-width:100%}}
+</style>
+</head>
+<body>
+<header><div><strong>Folio</strong><span>画布模式 · 实施验收</span></div>@@OLD_LINK@@</header>
+<main>
+<div class="intro"><h1>同一张图，交付场景不同，限制也不同。</h1><p>对照文档插图、独立长图和多行数据图，检查这次改动是否符合预期。所有新版图稿和拒绝原因均由当前编译器生成。</p></div>
+<nav class="tabs" role="tablist" aria-label="对比场景">
+<button role="tab" id="tab-host" aria-selected="true" aria-controls="host">A4 / PDF 内嵌</button>
+<button role="tab" id="tab-poster" aria-selected="false" aria-controls="poster" tabindex="-1">独立图稿</button>
+<button role="tab" id="tab-charts" aria-selected="false" aria-controls="charts" tabindex="-1">图表行数</button>
+<button role="tab" id="tab-checks" aria-selected="false" aria-controls="checks" tabindex="-1">边界校验</button>
+</nav>
+<section class="panel" id="host" role="tabpanel" aria-labelledby="tab-host">
+<div class="comparison">
+<div><div class="pane-header"><div class="label">修复前 · 宽松内嵌</div><h2>完整长图被缩进有限的插槽</h2><p>100 节点的长图完整保留，但缩小后很难阅读。</p></div>
+<figure><div class="stage old"><img src="review/poster-100.svg" alt="100 个节点等比例缩入 A4 插图区域的风险示意"></div><figcaption class="note"><span class="metric">@@OLD_FONT@@ pt</span>按 166 × 140.25 mm 插槽计算的最小字号。此处为旧策略的尺寸示意，不是历史 PDF 截图。</figcaption></figure></div>
+<div><div class="pane-header"><div class="label new">实施后 · 宿主强制校验</div><h2>拒绝 poster 内嵌，使用概览与独立详图</h2><p>A4、Letter、幻灯片和普通网页插槽均执行这条规则。</p></div>
+<div class="status"><strong>已阻止长图内嵌</strong><p>@@POSTER_ERROR@@</p></div>
+<figure><div class="stage new"><img src="review/overview.svg" alt="6 个节点的 Agent 平台概览示例"></div><figcaption class="note">6 节点概览是单独编写的示例，系统不会自动删除或概括原图节点。实际宿主最小字号约 @@FIGURE_FONT@@ pt，仍会提示按最终尺寸审阅。</figcaption></figure>
+<div class="footer-links"><a href="review/a4-overview.html" target="_blank" rel="noopener">打开真实 A4 宿主 HTML</a><a href="review/poster-100.svg" target="_blank" rel="noopener">打开 100 节点原图</a></div></div>
+</div>
+<div class="policy"><div><h3>图的容量</h3><p>架构图的 figure 保持 9 节点预算；poster 按高度扩展，仍受几何和路由校验约束。</p></div><div><h3>放入宿主后的尺寸</h3><p>高度限制导致字号缩小到宽度适配值的 75% 以下时拒绝。物理字号低于建议值时显示警告。</p></div><div><h3>最终阅读效果</h3><p>不越界不代表可读。字体、真实分页和移动端显示还需要结合成品判断。</p></div></div>
+</section>
+<section class="panel" id="poster" role="tabpanel" aria-labelledby="tab-poster" hidden>
+<h2>长画布保留节点尺寸，完整图稿独立交付</h2><p>60 节点自动推导为 960 × 1020；100 节点为 960 × 1596。达到 30 节点仍会提示补充概览和分图。</p>
+<div class="toolbar"><label for="node-count">节点数</label><select id="node-count"><option value="60">60 个节点</option><option value="100">100 个节点</option></select><button type="button" data-fit="poster-view" aria-pressed="false">适应宽度</button><a id="poster-link" href="review/poster-60.svg" target="_blank" rel="noopener">原始 SVG</a></div>
+<div class="viewer" id="poster-view" tabindex="0" aria-label="完整架构图，支持水平与垂直滚动"><img id="poster-image" src="review/poster-60.svg" alt="60 节点的完整 Agent 平台架构图"></div>
+<details class="diagnostics"><summary>查看 60 节点图的实际诊断</summary><pre>@@POSTER_WARNINGS@@</pre></details>
+</section>
+<section class="panel" id="charts" role="tabpanel" aria-labelledby="tab-charts" hidden>
+<h2>行数增加时，画布先增长，再进行校验</h2><p>Gantt 与 Heatmap 的 20 行 poster 都自动推导为 1080 高度。figure 仍最多 10 行，poster 超过 44 行会被拒绝。</p>
+<div class="chart-stack"><div><div class="toolbar"><h3>10 行 figure</h3><a href="review/gantt-10.svg" target="_blank" rel="noopener">原图</a></div><div class="viewer fit" tabindex="0"><img src="review/gantt-10.svg" alt="10 行的 Gantt figure 基准"></div><p class="note">960 × 540 · 既有图表预算</p></div><div><div class="toolbar"><h3>20 行 poster</h3><button type="button" data-fit="gantt-view" aria-pressed="true">适应宽度</button><a href="review/gantt-20.svg" target="_blank" rel="noopener">原图</a></div><div class="viewer fit" id="gantt-view" tabindex="0"><img src="review/gantt-20.svg" alt="20 行的 Gantt poster，画布同步增长"></div><p class="note">960 × 1080 · 自动高度；按整张画布比例保护行密度</p></div></div>
+<details class="diagnostics"><summary>查看 20 行 Heatmap</summary><div class="toolbar"><button type="button" data-fit="heatmap-view" aria-pressed="true">适应宽度</button><a href="review/heatmap-20.svg" target="_blank" rel="noopener">原图</a></div><div class="viewer fit" id="heatmap-view" tabindex="0"><img src="review/heatmap-20.svg" alt="20 行 Heatmap poster"></div></details>
+</section>
+<section class="panel" id="checks" role="tabpanel" aria-labelledby="tab-checks" hidden>
+<h2>边界条件来自实际执行</h2><p>以下输入都调用了当前编译器或宿主校验。任何一项意外通过，对比页生成都会失败。</p><div class="table-scroll"><table><thead><tr><th>场景</th><th>结果</th><th>原始诊断</th></tr></thead><tbody>@@CHECK_ROWS@@</tbody></table></div>
+<div class="footer-links"><a href="review/results.json">查看全部验证数据</a><a href="review/poster-60.json">60 节点输入 JSON</a><a href="review/gantt-20.json">20 行输入 JSON</a></div>
+</section>
+<footer class="evidence"><span>离线可用 · 当前编译器生成</span><span>比较范围：画布容量、宿主准入、缩放与字号</span><span>构建：python3 scripts/build_canvas_review.py</span></footer>
+</main>
+<script>
+const tabs=[...document.querySelectorAll('[role=tab]')];
+function activate(tab){tabs.forEach(item=>{const active=item===tab;item.setAttribute('aria-selected',String(active));item.tabIndex=active?0:-1;document.getElementById(item.getAttribute('aria-controls')).hidden=!active});}
+tabs.forEach((tab,index)=>{tab.addEventListener('click',()=>activate(tab));tab.addEventListener('keydown',event=>{let target=null;if(event.key==='ArrowRight')target=tabs[(index+1)%tabs.length];if(event.key==='ArrowLeft')target=tabs[(index+tabs.length-1)%tabs.length];if(event.key==='Home')target=tabs[0];if(event.key==='End')target=tabs.at(-1);if(target){event.preventDefault();activate(target);target.focus()}})});
+document.querySelectorAll('[data-fit]').forEach(button=>button.addEventListener('click',()=>{const viewer=document.getElementById(button.dataset.fit);button.setAttribute('aria-pressed',String(viewer.classList.toggle('fit')))}));
+document.getElementById('node-count').addEventListener('change',event=>{const count=event.target.value;const image=document.getElementById('poster-image');image.src=`review/poster-${count}.svg`;image.alt=`${count} 节点的完整 Agent 平台架构图`;document.getElementById('poster-link').href=image.src});
+</script>
+</body>
+</html>

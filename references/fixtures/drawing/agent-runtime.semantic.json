@@ -65,7 +65,7 @@
       "state_owner": true,
       "lifecycle_phase": "background",
       "domain": "data",
-      "metadata": "logs \u00b7 traces"
+      "metadata": "logs · traces"
     }
   ],
   "edges": [
@@ -145,6 +145,7 @@
   "narrative": "Planner coordinates request flow and hands execution to the runtime.",
   "width": 960,
   "height": 540,
+  "canvas": "figure",
   "subtitle": null,
   "caption": null,
   "layer_order": [

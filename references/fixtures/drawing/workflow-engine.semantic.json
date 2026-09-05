@@ -54,7 +54,7 @@
       "state_owner": true,
       "lifecycle_phase": "background",
       "domain": "data",
-      "metadata": "retries \u00b7 continuations"
+      "metadata": "retries · continuations"
     }
   ],
   "edges": [
@@ -123,6 +123,7 @@
   "narrative": "Orchestrator coordinates long-running workflow state and worker execution.",
   "width": 960,
   "height": 540,
+  "canvas": "figure",
   "subtitle": null,
   "caption": null,
   "layer_order": [

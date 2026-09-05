@@ -5,13 +5,15 @@
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "kind", "title", "sets", "intersections"],
+  "allOf": [{"if":{"properties":{"canvas":{"const":"poster"}},"required":["canvas"]},"else":{"properties":{"height":{"maximum":800}}}}],
   "properties": {
     "schema_version": {"const": "3.0"}, "kind": {"const": "venn"},
     "title": {"$ref": "#/$defs/non-empty-string"},
     "sets": {"type": "array", "minItems": 2, "maxItems": 3, "items": {"$ref": "#/$defs/set"}},
     "intersections": {"type": "array", "items": {"$ref": "#/$defs/intersection"}},
     "focus": {"type": "array", "maxItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/non-empty-string"}},
-    "width": {"const": 960}, "height": {"type": "integer", "minimum": 500, "maximum": 800, "multipleOf": 4},
+    "canvas": {"enum": ["figure", "poster"]},
+    "width": {"const": 960}, "height": {"type": "integer", "minimum": 500, "maximum": 4000, "multipleOf": 4},
     "language": {"$ref": "#/$defs/nullable-string"}
   },
   "$defs": {

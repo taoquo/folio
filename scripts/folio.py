@@ -484,7 +484,15 @@ def _embed_drawing_host(args: argparse.Namespace) -> int:
     if args.format == "json":
         return _write_json(manifest, None)
     print(f"OK: embedded {result.kind} into {args.output_host} slot {args.slot}")
+    _print_host_warnings(manifest)
     return EXIT_VALID
+
+
+def _print_host_warnings(manifest: dict) -> None:
+    if manifest.get("advisory"):
+        print(f"WARNING: {manifest['advisory']}")
+    for warning in (manifest.get("placement") or {}).get("fit", {}).get("warnings", []):
+        print(f"WARNING: {warning}")
 
 
 def _verify_drawing_host(path: str, output_format: str) -> int:
@@ -495,6 +503,8 @@ def _verify_drawing_host(path: str, output_format: str) -> int:
     if output_format == "json":
         return _write_json(payload, None)
     print(f"OK: {Path(path).name}: {len(manifests)} hosted diagram(s) verified")
+    for manifest in manifests:
+        _print_host_warnings(manifest)
     return EXIT_VALID
 
 

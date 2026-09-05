@@ -40,7 +40,9 @@ def common_payload_diagnostics(
     for name in required:
         if name not in payload:
             diagnostics.append(DrawingDiagnostic("ERROR", code, f"missing required field: {name}"))
-    for name in sorted(set(payload) - allowed):
+    # "canvas" belongs to the canvas contract rather than to any one family's vocabulary, the
+    # same way "width" and "height" do, so it is allowed here instead of in 23 separate lists.
+    for name in sorted(set(payload) - allowed - {"canvas"}):
         diagnostics.append(DrawingDiagnostic("ERROR", code, f"unknown field: {name}"))
     if not isinstance(payload.get("title"), str) or not payload.get("title", "").strip():
         diagnostics.append(DrawingDiagnostic("ERROR", code, "title must be a non-empty string"))

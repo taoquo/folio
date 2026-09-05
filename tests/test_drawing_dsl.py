@@ -79,6 +79,16 @@ class DrawingDslTests(TestCase):
         self.assertFalse(validate_drawing_grammar(drawing))
         self.assertFalse(validate_scene_geometry(scene))
 
+    def test_handwritten_poster_plan_preserves_its_canvas_mode(self) -> None:
+        payload = json.loads((ROOT / "references" / "fixtures" / "drawing" / "agent-runtime.drawing.json").read_text())
+        payload["canvas"] = "poster"
+        payload["height"] = 1000
+
+        drawing = DrawingPlan.from_dict(payload)
+
+        self.assertEqual("poster", drawing.canvas)
+        self.assertEqual(1000, drawing.height)
+
     def test_validators_report_actionable_levels_without_a_score(self) -> None:
         _semantic, drawing, _layout, scene = compile_architecture(self.spec)
         diagnostics = [

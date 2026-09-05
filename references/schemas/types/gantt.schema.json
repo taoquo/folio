@@ -11,6 +11,7 @@
     "periods",
     "tasks"
   ],
+  "allOf": [{"if":{"properties":{"canvas":{"const":"poster"}},"required":["canvas"]},"else":{"properties":{"height":{"maximum":720},"tasks":{"maxItems":10}}}}],
   "properties": {
     "schema_version": {
       "const": "3.0"
@@ -32,7 +33,7 @@
     "tasks": {
       "type": "array",
       "minItems": 3,
-      "maxItems": 10,
+      "maxItems": 44,
       "items": {
         "$ref": "#/$defs/task"
       }
@@ -72,10 +73,11 @@
         }
       }
     },
+    "canvas": {"enum": ["figure", "poster"]},
     "width": {
       "const": 960
     },
-    "height": {"type": "integer", "minimum": 400, "maximum": 720, "multipleOf": 4},
+    "height": {"type": "integer", "minimum": 400, "maximum": 2400, "multipleOf": 4},
     "language": {"$ref": "#/$defs/nullable-string"}
   },
   "$defs": {

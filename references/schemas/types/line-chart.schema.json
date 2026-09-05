@@ -5,6 +5,7 @@
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "kind", "title", "categories", "series"],
+  "allOf": [{"if":{"properties":{"canvas":{"const":"poster"}},"required":["canvas"]},"else":{"properties":{"height":{"maximum":720}}}}],
   "properties": {
     "schema_version": {"const": "3.0"},
     "kind": {"const": "line-chart"},
@@ -23,8 +24,9 @@
     "x_scale": {"enum": ["ordinal", "time"]},
     "reference_lines": {"type": "array", "maxItems": 3, "items": {"$ref": "#/$defs/reference-line"}},
     "annotations": {"type": "array", "maxItems": 3, "items": {"$ref": "#/$defs/annotation"}},
+    "canvas": {"enum": ["figure", "poster"]},
     "width": {"const": 960},
-    "height": {"type": "integer", "minimum": 400, "maximum": 720, "multipleOf": 4},
+    "height": {"type": "integer", "minimum": 400, "maximum": 2400, "multipleOf": 4},
     "language": {"$ref": "#/$defs/nullable-string"}
   },
   "$defs": {
