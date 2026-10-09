@@ -1,0 +1,119 @@
+{
+  "commit": "5c0b0f0",
+  "generated": "2026-10-09",
+  "targets": [
+    {
+      "target": "changelog",
+      "template": "changelog.html",
+      "pages_min": 1,
+      "pages_max": 2,
+      "prod_path": "template",
+      "ir_path": "skeleton writer (unused by build)"
+    },
+    {
+      "target": "changelog-en",
+      "template": "changelog-en.html",
+      "pages_min": 1,
+      "pages_max": 2,
+      "prod_path": "template",
+      "ir_path": "skeleton writer (unused by build)"
+    },
+    {
+      "target": "equity-report",
+      "template": "equity-report.html",
+      "pages_min": 2,
+      "pages_max": 3,
+      "prod_path": "template",
+      "ir_path": "skeleton writer (unused by build)"
+    },
+    {
+      "target": "equity-report-en",
+      "template": "equity-report-en.html",
+      "pages_min": 2,
+      "pages_max": 3,
+      "prod_path": "template",
+      "ir_path": "skeleton writer (unused by build)"
+    },
+    {
+      "target": "letter",
+      "template": "letter.html",
+      "pages_min": 1,
+      "pages_max": 1,
+      "prod_path": "template",
+      "ir_path": "skeleton writer (unused by build)"
+    },
+    {
+      "target": "letter-en",
+      "template": "letter-en.html",
+      "pages_min": 1,
+      "pages_max": 1,
+      "prod_path": "template",
+      "ir_path": "skeleton writer (unused by build)"
+    },
+    {
+      "target": "long-doc",
+      "template": "long-doc.html",
+      "pages_min": 5,
+      "pages_max": 9,
+      "prod_path": "template",
+      "ir_path": "skeleton writer (unused by build)"
+    },
+    {
+      "target": "long-doc-en",
+      "template": "long-doc-en.html",
+      "pages_min": 5,
+      "pages_max": 9,
+      "prod_path": "template",
+      "ir_path": "skeleton writer (unused by build)"
+    },
+    {
+      "target": "one-pager",
+      "template": "one-pager.html",
+      "pages_min": 1,
+      "pages_max": 1,
+      "prod_path": "template",
+      "ir_path": "skeleton writer (unused by build)"
+    },
+    {
+      "target": "one-pager-en",
+      "template": "one-pager-en.html",
+      "pages_min": 1,
+      "pages_max": 1,
+      "prod_path": "template",
+      "ir_path": "skeleton writer (unused by build)"
+    },
+    {
+      "target": "portfolio",
+      "template": "portfolio.html",
+      "pages_min": 4,
+      "pages_max": 8,
+      "prod_path": "template",
+      "ir_path": "skeleton writer (unused by build)"
+    },
+    {
+      "target": "portfolio-en",
+      "template": "portfolio-en.html",
+      "pages_min": 4,
+      "pages_max": 8,
+      "prod_path": "template",
+      "ir_path": "skeleton writer (unused by build)"
+    },
+    {
+      "target": "resume",
+      "template": "resume.html",
+      "pages_min": 2,
+      "pages_max": 2,
+      "prod_path": "template",
+      "ir_path": "skeleton writer (unused by build)"
+    },
+    {
+      "target": "resume-en",
+      "template": "resume-en.html",
+      "pages_min": 2,
+      "pages_max": 2,
+      "prod_path": "template",
+      "ir_path": "skeleton writer (unused by build)"
+    }
+  ],
+  "note": "Production path is the template for every target; FOLIO_PIPELINE has no consumer."
+}

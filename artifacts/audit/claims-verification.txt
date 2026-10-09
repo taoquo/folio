@@ -1,0 +1,69 @@
+命令: 复核时间 2026-10-09T15:43:13Z
+commit: 5c0b0f0f866502abf9fd43dd03eb1a5a0bb37ace
+python: Python 3.14.5
+
+--- 1. 测试总数 ---
+OK: minimal contract floor. For a worked example run 'init-drawing bar-chart --example' or read references/fixtures/v3/bar-chart.json
+OK: minimal contract floor. For a worked example run 'init-drawing candlestick --example' or read references/fixtures/v3/candlestick.json
+OK: minimal contract floor. For a worked example run 'init-drawing donut-chart --example' or read references/fixtures/v3/donut-chart.json
+
+--- 2. 语料 fixture ---
+OK: 128 fixture(s) valid
+
+--- 3. IR fixture ---
+  文件数: 14
+
+--- 4. profiles ---
+  profile 总数: 36
+    language: 3
+    page: 8
+    taste: 8
+    theme: 1
+    typography: 16
+OK: wrote drawing review bundle to /var/folders/vz/265mw8357q1gplt37jmb_cqc0000gn/T/tmp9hbwai1m
+OK: wrote drawing review bundle to /var/folders/vz/265mw8357q1gplt37jmb_cqc0000gn/T/tmp_9imiz7q
+OK: embedded bar-chart into /var/folders/vz/265mw8357q1gplt37jmb_cqc0000gn/T/tmp3s813uua/output.html slot chart
+WARNING: smallest text is 8.0px; preferred >= 12px; review at final size
+----------------------------------------------------------------------
+Ran 729 tests in 136.072s
+
+OK
+
+--- 5. 保真度（7/7 声明）---
+  genre            filled  miss     ssim   changed  verdict
+  changelog            36     0   1.0000     0.00%  matches
+  equity-report        73     0   1.0000     0.00%  matches
+  letter               20     3   1.0000     0.00%  matches, slots unfilled
+  long-doc             50     3   1.0000     0.00%  matches, slots unfilled
+  one-pager            46     0   1.0000     0.00%  matches
+  portfolio            57     1   1.0000     0.00%  matches, slots unfilled
+  resume              138     0   1.0000     0.00%  matches
+  average SSIM  1.0000
+  best          changelog 1.0000
+  worst         changelog 1.0000
+  renders identically     7/7
+  every slot filled       4/7
+  other's template leaves slots unfilled and still matches the page.
+  and to where a line wraps, so it cannot by itself decide acceptability.
+
+--- 6. 基线状态 ---
+OK: documents match the approved baseline
+
+--- 7. pipeline 默认值 ---
+  mode       ir
+  primary    ir
+
+--- 8. 迁移就绪 ---
+  7/8 type(s) can be produced from the IR today
+
+--- 9. FOLIO_PIPELINE 实际接入检查 ---
+  pipeline.py 读取环境变量: 2 处（仅自身）
+  build.py 引用 document_ir: 0
+0 处
+  build.py 读取 FOLIO_PIPELINE: 0
+0 处
+  fidelity.py 读取 pipeline: 0
+0 处
+
+--- 10. build.py --verify 工作区副作用 ---
+  verify 前 tracked 改动: 1

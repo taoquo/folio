@@ -1,0 +1,29 @@
+# build.py --verify 工作区副作用审计
+# commit 5c0b0f0, 2026-10-09
+
+## 观测到的写入
+
+1. assets/diagrams/generated/png/*.png  (5 个文件被重写)
+   - agent-runtime-demo.png
+   - data-platform-demo.png
+   - flowchart-v2-demo.png
+   - uml-class-demo.png
+   - workflow-engine-demo.png
+   影响: tracked 文件被修改, git status 出现非预期 diff
+
+2. assets/demos/*.png  (5 个文件被重写, 前序会话观测)
+   - demo-architecture.png
+   - demo-data-platform.png
+   - demo-flowchart-v2.png
+   - demo-uml-class.png
+   - demo-workflow-engine.png
+
+3. assets/examples/  (该目录被 .gitignore 忽略)
+   - 全部 31 个 PDF + 3 个 PPTX 被重写
+   - 因被忽略, 不产生 git diff
+
+## 判定
+
+- 违反方案 §4.2 要求「verify 必须只读」
+- 属 Phase 1 必须修复项
+- tracked 文件（1、2）的副作用优先级最高
