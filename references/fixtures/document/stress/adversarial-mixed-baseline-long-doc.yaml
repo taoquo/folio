@@ -1,0 +1,68 @@
+id: adversarial-mixed-baseline-long-doc
+genre: long-doc
+language: zh-Hans-CN
+script_profile: han-latin-digits
+template: long-doc.html
+adversarial: true
+purpose:
+  - mixed-script-baseline
+  - font-fallback
+content:
+  "{{文档标题}}": "边界测试 Boundary"
+  "{{作者}}": "边界样本"
+  "{{摘要}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{关键词}}": "边界, 禁则, 1,024"
+  "{{文档主标题<br>可以两行}}": "边界测试 Boundary"
+  "{{副标题，一句话说清这份文档是什么 / 为谁而写}}": "边界测试 Boundary"
+  "{{作者 / 团队}}": "边界样本"
+  "{{版本 V1.0}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{日期 2026.04}}": "2026-10-03"
+  "{{发布方 / 机构}}": "示例机构"
+  "{{Takeaway 1：一句话，可量化的结论}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{Takeaway 2：有数据的洞察}}": "1,024"
+  "{{Takeaway 3：对未来的判断}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{用疑问句列出 3 个本文档的核心问题。让读者立刻 get 到是否需要读完。}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{章节导语：这一章要解决什么问题，为什么重要。1-2 句。}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{边注：定义本章关键词、样本范围或读者需要记住的限定条件。}}": "边界, 禁则, 1,024"
+  "{{陈述具体的核心问题。可以用 callout 突出关键观察：}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{一段重要引用或核心观察。和正文语气略有不同，给读者呼吸节奏。}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{维度 1}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{数据}}": "1,024"
+  "{{差距}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{维度 2}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{章节导语}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{描述方法论。可以用代码 / 公式示例：}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{标题}}": "边界测试 Boundary"
+  "{{一段论述。}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{一段引用，可以是用户访谈、专家观点、文献引用}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{来源 / 人物}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{日期}}": "2026-10-03"
+  "{{脚注：补充数据口径、引用出处或方法限制。}}": "1,024"
+  "{{章节导语：一句话总结结论，下面展开建议。}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{结论 1}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{结论 2}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{结论 3}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{基于结论的具体可执行建议。}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{如果读者要做一件事，是什么？具体到可以周一早上就开始行动。}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{参考文献 1}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{参考文献 2}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{术语}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{定义}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{致谢段落}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 20
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    forbidden_break: 0
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Boundary content for mixed-baseline: mixed-script-baseline; font-fallback.
+    It exists to fail loudly if line breaking or alignment regresses.
+review:
+  expert_required: true
+  note: Inspect by eye; automated checks cannot judge every boundary case.

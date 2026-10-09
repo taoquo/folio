@@ -1,0 +1,40 @@
+id: balanced-en-changelog-21
+genre: changelog
+language: en-US
+script_profile: latin-only
+template: changelog-en.html
+purpose:
+  - composition-balance
+  - latin-only
+content:
+  "{{PROJECT_NAME}}": "Corpus coverage fixture"
+  "{{VERSION}}": "2026-10-03"
+  "{{AUTHOR}}": "Corpus sample"
+  "{{DESCRIPTION}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{KEYWORDS}}": "corpus, baseline"
+  "{{RELEASE_NAME}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{One-line release highlight.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{RELEASE_DATE}}": "2026-10-03"
+  "{{Breaking change description.}}": "1,024"
+  "{{New feature 1: one-line description.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{New feature 2: one-line description.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{New feature 3: one-line description.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Fix 1: one-line description.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Fix 2: one-line description.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Fix 3: one-line description.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{One-line project description.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{PROJECT_URL}}": "https://github.com/taoquo/folio"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    composition: latin-only
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Added so latin-only coverage matches the other compositions;
+    an uneven corpus under-tests one writing system while appearing complete.

@@ -1,0 +1,58 @@
+id: stress-mixed-longdoc
+genre: long-doc
+language: zh-Hans-CN
+script_profile: han-latin-digits
+adversarial: true
+purpose:
+  - pagination-pressure
+  - mixed-script-baseline
+  - cjk-line-break
+  - long-paragraph
+  - heading-keep
+content:
+  "{{EYEBROW · 如 \"技术报告\" / \"年度总结\" / \"白皮书\"}}": 技术报告 Technical report
+  "{{文档主标题<br>可以两行}}": 混排长文档的分页压力测试<br>Pagination pressure in mixed scripts
+  "{{文档标题}}": 混排长文档的分页压力测试
+  "{{副标题，一句话说清这份文档是什么 / 为谁而写}}": 1,024 页规模下的 baseline 对齐、禁则与孤行控制
+  "{{作者 / 团队}}": Folio 排版工程 team
+  "{{作者}}": Folio
+  "{{日期 2026.04}}": "2026.10"
+  "{{日期}}": "2026-10-03"
+  "{{发布方 / 机构}}": Folio
+  "{{关键词}}": CJK, mixed-script, 1,024, p95, 禁则
+  "{{摘要}}": 本文用连续长段落制造分页压力。Chinese text 与 Latin words 交替出现，数字 0.001 与 1,234,567 需要在同一列内保持 tabular 对齐。段落长度刻意超过一屏，用于触发孤行与寡行控制。42 runs 与 1,024 pages 是构造值，不代表真实基准。
+  "{{术语}}": 混排 mixed-script
+  "{{定义}}": 同一段落内同时包含汉字、Latin 字母与阿拉伯数字的排版情形。
+  "{{标题}}": 分页压力与基线对齐
+  "{{数据}}": 1,024 pages · 42 runs · 99.95%
+  "{{来源 / 人物}}": Folio 排版工程
+  "{{一段论述。}}": 混排文档的分页行为比单文字系统更复杂。当一段文字同时包含汉字与 Latin 时，行末的断行机会既取决于汉字的禁则规则，也取决于 Latin 单词的连字符策略。Source Serif 4 处理 Latin 与数字，LXGW WenKai 处理汉字，两者的 baseline 必须在同一行内对齐。若字体的 ascent 与 descent 差异过大，行高会被撑开，进而改变每页容纳的行数，最终影响页数合同。
+  "{{一段论述。包含数据：<span class=\"hl\">具体数字 / 具体比例</span>。}}": 在 1,024 页的样本中，混排段落的平均行长比纯中文段落长 12.5%，比纯英文段落短 8.25%。p95 延迟 18.25 ms，中位数 12.50 ms。0.001 的容差在 1,000,000 次测量中保持稳定。当字号落在 9.0–12.0 pt 区间、行高落在 1.35–1.55 区间时，1,234 个测试用例全部通过。
+  "{{一段重要引用或核心观察。和正文语气略有不同，给读者呼吸节奏。}}": 混排真正的难点不是字形是否存在，而是 baseline 是否对齐；不对齐的排版不会报错，只会让读者觉得哪里不对。
+  "{{一段引用，可以是用户访谈、专家观点、文献引用}}": 排版质量的可测量性来自重复渲染与逐项比对，而不是来自一次目检。
+  "{{3-5 行段落，铺陈当前状况。用 <span class=\"hl\">具体数据</span> 而不是形容词。}}": 当前文档路径的验证只覆盖页数与字体名。页数合同曾分散在三个位置定义，字体依赖构建机的系统环境，重复渲染的判定长期使用压缩后的字节。这些缺口不会产生报错，只会让回归难以被发现。1,024 与 42 这样的数字在混排文本中还需要额外注意列对齐。
+  "{{Takeaway 1：一句话，可量化的结论}}": 混排段落在 1,024 页样本中保持 99.95% 的渲染一致性
+  "{{Takeaway 2：有数据的洞察}}": p95 从 18.25 ms 降到 12.50 ms，覆盖 1,234 个用例
+  "{{Takeaway 3：对未来的判断}}": 数字排版需要 tabular figures，否则 1,234 与 1,234,567 的列会抖动
+  "{{描述方法论。可以用代码 / 公式示例：}}": 方法分三步：先冻结基线，再把隐式规则提升为契约，最后让每次改动都可判定。第一步不改变生产架构，只记录现状；第二步把散落的规则收敛到单一来源；第三步建立质量向量，避免用单一总分掩盖权衡。
+  "{{差距}}": 当前只有页数与字体名两层保障。
+  "{{基于结论的具体可执行建议。}}": 优先完成基线与契约两个阶段，再评估是否需要自研排版算法。
+  "{{如果读者要做一件事，是什么？具体到可以周一早上就开始行动。}}": 先把页数合同收敛为单一来源，再记录字体清单与渲染环境。
+  "{{参考文献 1}}": Folio 文档排版引擎实施计划，2026。
+  "{{参考文献 2}}": Folio Drawing DSL 三阶段 IR 架构决策记录，2026。
+expected:
+  hard:
+    pages_min: 5
+    pages_max: 12
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    max_consecutive_hyphens: 2
+    heading_keep: true
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: Long paragraphs are deliberate; numbers are constructed to exercise digit widths.
+review:
+  expert_required: true
+  note: Check CJK line-start prohibitions and mixed-script baseline alignment by eye.

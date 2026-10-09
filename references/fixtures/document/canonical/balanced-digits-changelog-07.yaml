@@ -1,0 +1,40 @@
+id: balanced-digits-changelog-07
+genre: changelog
+language: en-US
+script_profile: digits-heavy
+template: changelog-en.html
+purpose:
+  - composition-balance
+  - digits-heavy
+content:
+  "{{PROJECT_NAME}}": "Corpus coverage fixture"
+  "{{VERSION}}": "2026-10-03"
+  "{{AUTHOR}}": "Corpus sample"
+  "{{DESCRIPTION}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{KEYWORDS}}": "corpus, baseline, 1,024"
+  "{{RELEASE_NAME}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{One-line release highlight.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{RELEASE_DATE}}": "2026-10-03"
+  "{{Breaking change description.}}": "1,024"
+  "{{New feature 1: one-line description.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{New feature 2: one-line description.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{New feature 3: one-line description.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{Fix 1: one-line description.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{Fix 2: one-line description.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{Fix 3: one-line description.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{One-line project description.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{PROJECT_URL}}": "https://github.com/taoquo/folio"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    composition: digits-heavy
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Added so digits-heavy coverage matches the other compositions;
+    an uneven corpus under-tests one writing system while appearing complete.

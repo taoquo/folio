@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.dev/schema/page-profile-1.0.json",
+  "title": "Folio Page Profile",
+  "description": "Page geometry and the page-count contract. The contract is a policy with a mode, so a genre can state whether its page count is a requirement or a preference.",
+  "type": "object",
+  "required": ["version", "profiles"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {"const": 1},
+    "profiles": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["page_count"],
+        "additionalProperties": false,
+        "properties": {
+          "genre": {"type": "string"},
+          "page": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "size": {"type": "string"},
+              "orientation": {"enum": ["portrait", "landscape"]}
+            }
+          },
+          "margins_mm": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "top": {"type": "number", "minimum": 0},
+              "right": {"type": "number", "minimum": 0},
+              "bottom": {"type": "number", "minimum": 0},
+              "left": {"type": "number", "minimum": 0}
+            }
+          },
+          "columns": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {"count": {"type": "integer", "minimum": 1}}
+          },
+          "regions": {"type": "object", "additionalProperties": true},
+          "pagination": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heading_keep": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "enabled": {"type": "boolean"},
+                  "minimum_following_lines": {"type": "integer", "minimum": 1}
+                }
+              },
+              "widow_lines": {"type": "integer", "minimum": 0},
+              "orphan_lines": {"type": "integer", "minimum": 0}
+            }
+          },
+          "page_count": {"$ref": "#/$defs/pageCount"}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "pageCount": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["mode", "exact"],
+          "additionalProperties": false,
+          "properties": {
+            "mode": {"const": "hard"},
+            "exact": {"type": "integer", "minimum": 1}
+          }
+        },
+        {
+          "type": "object",
+          "required": ["mode", "target"],
+          "additionalProperties": false,
+          "properties": {
+            "mode": {"const": "soft"},
+            "target": {"type": "integer", "minimum": 1},
+            "tolerance_pages": {"type": "integer", "minimum": 0}
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,91 @@
+id: balanced-en-resume-05
+genre: resume
+language: en-US
+script_profile: latin-only
+template: resume-en.html
+purpose:
+  - composition-balance
+  - latin-only
+content:
+  "{{NAME}}": "Corpus sample"
+  "{{DESCRIPTION}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{KEYWORDS}}": "corpus, baseline"
+  "{{VAR}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{ALIAS_OR_PREFERRED_NAME}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{ROLE_TITLE - e.g. AI / Agent Engineer}}": "Corpus coverage fixture"
+  "{{GITHUB_URL}}": "https://github.com/taoquo/folio"
+  "{{GITHUB_ID}}": "https://github.com/taoquo/folio"
+  "{{X_URL}}": "https://github.com/taoquo/folio"
+  "{{X_ID}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{EMAIL}}": "corpus@example.org"
+  "{{CITY}}": "Example"
+  "{{COUNTRY_OR_REGION}}": "Example"
+  "{{NUMBER}}": "1,024"
+  "{{UNIT}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{LABEL}}": "corpus, baseline"
+  "{{~50 words. Structure: current role + seniority + tenure. Team composition (size, seniority mix, cross-functional collaborators). Long-term direction. Three to five core areas of depth.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{START_DATE}}": "2026-10-03"
+  "{{KEY_MILESTONE}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{YEAR}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{STAGE_TITLE}}": "Corpus coverage fixture"
+  "{{One sentence on what this stage meant.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{PROJECT_NAME}}": "Corpus coverage fixture"
+  "{{PROJECT_TYPE}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{ROLE - e.g. tech lead}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{~40 words: what the project is, why it existed, what your seat at the table was.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{~55 words: technical approach, key decisions, execution path.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{ROLE}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{~40 words.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{~55 words.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Project context and your seat.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Execution path.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{TIME_RANGE}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{SUBTITLE}}": "Corpus coverage fixture"
+  "{{One-line positioning statement.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Short sketch of your indie developer identity: design instinct, solo end-to-end delivery, cross-language range, user reception.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{STARS_TOTAL}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{FORKS_TOTAL}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{FOLLOWERS_TOTAL}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{URL}}": "https://github.com/taoquo/folio"
+  "{{PROJECT}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Stack + core positioning + platform.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{STARS}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Description.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{HIGHLIGHT}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{A single anecdote that sets your work apart: the moment it went viral, the notable person who shared it, the community that formed around it.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{DATE}}": "2026-10-03"
+  "{{EVENT_TITLE}}": "Corpus coverage fixture"
+  "{{Specific call you made or action you took, and the downstream evidence that the judgment was right.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Specific call or action.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{PLATFORM}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{HANDLE}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{FOLLOWERS}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Blog / newsletter / other content product.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{ARTICLE_TITLE}}": "Corpus coverage fixture"
+  "{{Views / likes / impact metric.}}": "1,024"
+  "{{Views / likes.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{TALK_TITLE}}": "Corpus coverage fixture"
+  "{{HOST / VENUE}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{SKILL_LABEL_1}}": "corpus, baseline"
+  "{{SKILL_LABEL_2}}": "corpus, baseline"
+  "{{SKILL_LABEL_3}}": "corpus, baseline"
+  "{{SKILL_LABEL_4}}": "corpus, baseline"
+  "{{SKILL_LABEL_5}}": "corpus, baseline"
+  "{{SCHOOL}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{COLLEGE}}": "Example"
+  "{{MAJOR}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{DATE_RANGE}}": "2026-10-03"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    composition: latin-only
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Added so latin-only coverage matches the other compositions;
+    an uneven corpus under-tests one writing system while appearing complete.

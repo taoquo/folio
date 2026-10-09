@@ -1,0 +1,43 @@
+id: balanced-digits-letter-18
+genre: letter
+language: en-US
+script_profile: digits-heavy
+template: letter-en.html
+purpose:
+  - composition-balance
+  - digits-heavy
+content:
+  "{{LETTER_SUBJECT}}": "Corpus coverage fixture"
+  "{{AUTHOR}}": "Corpus sample"
+  "{{DESCRIPTION}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{KEYWORDS}}": "corpus, baseline, 1,024"
+  "{{SENDER_NAME}}": "Example"
+  "{{SENDER_ADDRESS / DEPARTMENT / ORGANIZATION}}": "Example"
+  "{{PHONE}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{EMAIL}}": "corpus@example.org"
+  "{{DATE, e.g. April 18, 2026}}": "2026-10-03"
+  "{{RECIPIENT_NAME_OR_TITLE}}": "Corpus coverage fixture"
+  "{{RECIPIENT_ORG / DEPARTMENT}}": "Example"
+  "{{One-sentence subject line: what this letter is about.}}": "Corpus coverage fixture"
+  "{{NAME}}": "Corpus sample"
+  "{{Paragraph 1: state the purpose. Why you are writing and the core intent. No preamble. Two sentences at most so the reader knows what you want from this letter.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{Paragraph 3: be specific. What you want the reader to do, by when, and how to reach you. Give the action a clear exit.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{Paragraph 4 (optional): close. Express anticipation, gratitude, or a courteous sign-off line.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{HANDWRITTEN_NAME_OR_SIGNATURE}}": "Corpus sample"
+  "{{TITLE · DEPARTMENT}}": "Corpus coverage fixture"
+  "{{DATE (optional restatement)}}": "2026-10-03"
+  "{{List - ① Attachment 1 · ② Attachment 2}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    composition: digits-heavy
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Added so digits-heavy coverage matches the other compositions;
+    an uneven corpus under-tests one writing system while appearing complete.

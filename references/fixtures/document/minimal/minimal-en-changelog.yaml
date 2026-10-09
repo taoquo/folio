@@ -1,0 +1,41 @@
+id: minimal-en-changelog
+genre: changelog
+language: en-US
+script_profile: latin-only
+purpose:
+  - baseline
+  - latin-line-break
+content:
+  "{{VERSION}}": v9.0.0
+  "{{RELEASE_NAME}}": Baseline
+  "{{RELEASE_DATE}}": 2026-10-03
+  "{{PROJECT_NAME}}": Folio
+  "{{PROJECT_URL}}": https://github.com/taoquo/folio
+  "{{One-line project description.}}": A document design system and diagram compiler
+  "{{AUTHOR}}": Folio maintainers
+  "{{KEYWORDS}}": typography, baseline, reproducibility
+  "{{One-line release highlight.}}": Establish a measurable document baseline
+  "{{DESCRIPTION}}": This release freezes the current rendering behaviour so later changes can be judged as fixes, improvements or regressions rather than opinions.
+  "{{New feature 1: one-line description.}}": Page contracts have a single source
+  "{{对应中文描述}}": The build and the stabilizer read the same contract table
+  "{{New feature 2: one-line description.}}": Fonts are build inputs
+  "{{同上对应的中文描述}}": English body text uses the bundled Source Serif 4
+  "{{New feature 3: one-line description.}}": The render environment is recorded
+  "{{Fix 1: one-line description.}}": Solver decisions are no longer silent
+  "{{Fix 2: one-line description.}}": Repeat-render checks compare content, not bytes
+  "{{Fix 3: one-line description.}}": Paragraph rules moved from declared to enforced
+  "{{Breaking change description.}}": None
+  "{{感谢贡献者，格式如：\"感谢 @user1、@user2 的贡献。\"}}": Thanks to everyone who filed issues and reviewed the changes.
+  "{{Thank contributors, e.g. "Thanks to @user1, @user2 for their contributions."}}": Thanks to everyone who contributed.
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 2
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    entry_rhythm: consistent
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: Written to exercise the render path; no real release is described.

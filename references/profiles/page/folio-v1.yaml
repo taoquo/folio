@@ -1,0 +1,100 @@
+# Page profiles
+#
+# Page geometry and the page-count contract. The contract is the part that
+# matters most: "Resume is two pages" used to live as a constant in two scripts
+# and a sentence in AGENTS.md. Here it is a policy with a mode, so a genre can
+# say whether its page count is a hard requirement or a preference.
+#
+#   mode: hard   the rendered count must equal `exact`
+#   mode: soft   the count may drift within `tolerance_pages` of `target`
+#
+# `exact` and `target` are duplicated from scripts/page_contracts.py on purpose:
+# that module is what the build enforces, this file is what a reviewer reads.
+# `scripts/profile_check.py` fails if the two disagree.
+#
+# Margins are the values the templates render with today.
+
+version: 1
+
+profiles:
+  a4-one-pager-v1:
+    genre: one-pager
+    page: {size: A4, orientation: portrait}
+    margins_mm: {top: 15, right: 18, bottom: 15, left: 18}
+    columns: {count: 1}
+    page_count: {mode: hard, exact: 1}
+    regions:
+      header: {height_mm: 8}
+      main: {flow: document}
+      footer: {height_mm: 8}
+
+  a4-letter-v1:
+    genre: letter
+    page: {size: A4, orientation: portrait}
+    margins_mm: {top: 26, right: 25, bottom: 24, left: 25}
+    columns: {count: 1}
+    page_count: {mode: hard, exact: 1}
+    regions:
+      header: {height_mm: 8}
+      main: {flow: document}
+      footer: {height_mm: 8}
+
+  a4-long-doc-v1:
+    genre: long-doc
+    page: {size: A4, orientation: portrait}
+    margins_mm: {top: 20, right: 22, bottom: 22, left: 22}
+    columns: {count: 1}
+    page_count: {mode: soft, target: 7, tolerance_pages: 2}
+    regions:
+      header: {height_mm: 8}
+      main: {flow: document}
+      footer: {height_mm: 8}
+    pagination:
+      heading_keep: {enabled: true, minimum_following_lines: 2}
+      widow_lines: 2
+      orphan_lines: 2
+
+  a4-portfolio-v1:
+    genre: portfolio
+    page: {size: A4, orientation: portrait}
+    margins_mm: {top: 12, right: 15, bottom: 12, left: 15}
+    columns: {count: 1}
+    page_count: {mode: soft, target: 6, tolerance_pages: 2}
+    pagination:
+      heading_keep: {enabled: true, minimum_following_lines: 2}
+      widow_lines: 2
+      orphan_lines: 2
+
+  a4-resume-v1:
+    genre: resume
+    page: {size: A4, orientation: portrait}
+    margins_mm: {top: 9, right: 13, bottom: 9, left: 13}
+    columns: {count: 1}
+    # The strictest contract in the set. The stabilizer may tighten section gap,
+    # leading, font size and margins to hold it, within the bounds recorded in
+    # references/stabilizer_profiles.json.
+    page_count: {mode: hard, exact: 2}
+    pagination:
+      heading_keep: {enabled: true, minimum_following_lines: 2}
+      widow_lines: 2
+      orphan_lines: 2
+
+  a4-equity-report-v1:
+    genre: equity-report
+    page: {size: A4, orientation: portrait}
+    margins_mm: {top: 16, right: 18, bottom: 18, left: 18}
+    columns: {count: 1}
+    page_count: {mode: soft, target: 3, tolerance_pages: 1}
+
+  a4-changelog-v1:
+    genre: changelog
+    page: {size: A4, orientation: portrait}
+    margins_mm: {top: 20, right: 22, bottom: 22, left: 22}
+    columns: {count: 1}
+    page_count: {mode: soft, target: 2, tolerance_pages: 1}
+
+  slide-16x9-v1:
+    genre: slides
+    page: {size: 16:9, orientation: landscape}
+    # Contract is 4-10 slides. Target 7 with tolerance 3 spans exactly that.
+    page_count: {mode: soft, target: 7, tolerance_pages: 3}

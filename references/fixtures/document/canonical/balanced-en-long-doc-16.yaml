@@ -1,0 +1,65 @@
+id: balanced-en-long-doc-16
+genre: long-doc
+language: en-US
+script_profile: latin-only
+template: long-doc-en.html
+purpose:
+  - composition-balance
+  - latin-only
+content:
+  "{{DOC_TITLE}}": "Corpus coverage fixture"
+  "{{AUTHOR}}": "Corpus sample"
+  "{{DESCRIPTION}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{KEYWORDS}}": "corpus, baseline"
+  "{{EYEBROW - e.g. Technical Report / Annual Review / White Paper}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Document title<br>can span two lines}}": "Corpus coverage fixture"
+  "{{One-line subtitle - what this is and who it's for.}}": "Corpus coverage fixture"
+  "{{AUTHOR / TEAM}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Version 1.0}}": "internal"
+  "{{YYYY.MM}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{PUBLISHER / ORGANIZATION}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Takeaway 1 - a quantified conclusion in one line.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Takeaway 2 - an insight backed by data.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Takeaway 3 - a forward-looking judgment.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{List the three core questions as actual questions - so the reader can decide in ten seconds whether to read on.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Chapter intro - what this chapter is solving, why it matters. One or two sentences.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Sidenote: define a key term, sample boundary, or constraint the reader should keep in mind.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{State the problem specifically. Use a callout to emphasize a key observation:}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{A short quoted line or key observation. Different in tone from the body so the reader gets a breath.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{DIMENSION_1}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{VAL}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{GAP}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{DIMENSION_2}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Chapter intro.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Describe the methodology. Code or formula examples welcome:}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{TITLE}}": "Corpus coverage fixture"
+  "{{A paragraph.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{A quoted passage - user interview, expert perspective, or cited source.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{SOURCE / PERSON}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{DATE}}": "2026-10-03"
+  "{{Footnote: data definition, citation detail, or methodological limitation.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Chapter intro - a one-line summary of the conclusion, then the recommendations below.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Conclusion 1.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Conclusion 2.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Conclusion 3.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Concrete, executable recommendations tied to the conclusions.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{If the reader does one thing, what is it? Specific enough to start Monday morning.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Reference 1}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Reference 2}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{TERM}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{definition}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Acknowledgement paragraph.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    composition: latin-only
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Added so latin-only coverage matches the other compositions;
+    an uneven corpus under-tests one writing system while appearing complete.

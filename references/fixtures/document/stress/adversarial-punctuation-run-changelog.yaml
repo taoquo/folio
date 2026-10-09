@@ -1,0 +1,46 @@
+id: adversarial-punctuation-run-changelog
+genre: changelog
+language: zh-Hans-CN
+script_profile: han-only
+template: changelog.html
+adversarial: true
+purpose:
+  - punctuation-width
+  - cjk-line-break
+content:
+  "{{项目名}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{版本号}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{作者}}": "边界样本"
+  "{{摘要}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{关键词}}": "边界, 禁则, 1,024"
+  "{{版本名称}}": "边界测试 Boundary"
+  "{{一句话版本亮点}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{发布日期}}": "2026-10-03"
+  "{{破坏性变更描述}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{新功能 1：一句话描述}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{新功能 2：一句话描述}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{新功能 3：一句话描述}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{修复 1：一句话描述}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{修复 2：一句话描述}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{修复 3：一句话描述}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{同上对应的中文描述}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{对应中文描述}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{项目一句话描述}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{项目 URL}}": "https://example.org/boundary"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 20
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    forbidden_break: 0
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Boundary content for punctuation-run: punctuation-width; cjk-line-break.
+    It exists to fail loudly if line breaking or alignment regresses.
+review:
+  expert_required: true
+  note: Inspect by eye; automated checks cannot judge every boundary case.

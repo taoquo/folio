@@ -1,0 +1,43 @@
+id: minimal-mixed-changelog
+genre: changelog
+language: zh-Hans-CN
+script_profile: han-latin-digits
+purpose:
+  - baseline
+  - mixed-script-baseline
+  - font-fallback
+  - cjk-line-break
+content:
+  "{{版本号}}": v9.0.0-rc.1
+  "{{版本名称}}": 混排基线 Mixed baseline
+  "{{发布日期}}": 2026-10-03
+  "{{项目名}}": Folio 排版引擎
+  "{{项目 URL}}": https://github.com/taoquo/folio
+  "{{项目一句话描述}}": 支持 8 类文档模板与 23 种图表类型的 document design system
+  "{{作者}}": Folio 维护者 team
+  "{{关键词}}": CJK, Latin, 数字 1,234, p95, 0.001
+  "{{一句话版本亮点}}": 混排文档在 1,024 页规模下保持 99.95% 的渲染一致性
+  "{{摘要}}": 本版本验证中英文与数字混排时的基线对齐。Chinese text 与 Latin words 共享同一行时，Source Serif 4 负责 Latin，LXGW WenKai 负责汉字，数字 0.001 与 1,234,567 则依赖 tabular figures 保持列对齐。测试覆盖 42 runs、1,024 pages 与 99.9% 的还原度。
+  "{{新功能 1：一句话描述}}": 支持 23 种 diagram types 与 8 类 documents
+  "{{对应中文描述}}": 图表与文档共用同一套 semantic IR，覆盖 1,024 个测试用例
+  "{{新功能 2：一句话描述}}": p95 延迟从 18.25 ms 降到 12.5 ms
+  "{{同上对应的中文描述}}": 在 1,000,000 次调用中，0.001% 的误差被消除
+  "{{新功能 3：一句话描述}}": Font manifest 覆盖 Charter、Georgia 与 Source Serif 4
+  "{{修复 1：一句话描述}}": 修复 CJK 与 Latin 混排时的 0.5pt 基线偏移
+  "{{修复 2：一句话描述}}": 数字 9.0–12.0 pt 范围内保持 tabular 对齐
+  "{{修复 3：一句话描述}}": 消除 1,234 与 1,234,567 之间的宽度抖动
+  "{{破坏性变更描述}}": English body font 从 Charter 改为 Source Serif 4
+  "{{感谢贡献者，格式如：\"感谢 @user1、@user2 的贡献。\"}}": 感谢 @alice、@bob 与 12 位贡献者的 42 个 pull requests。
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 2
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    mixed_script_baseline: stable
+    table_numerals: tabular
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: 混排内容用于验证字体回退与基线对齐，数字为构造值。

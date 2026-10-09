@@ -15,6 +15,7 @@
 <style>
   @font-face { font-family: "JetBrains Mono"; src: url("../fonts/JetBrainsMono.woff2") format("woff2"); font-weight: 400; font-style: normal; }
   @font-face { font-family: "JetBrains Mono"; src: url("../fonts/JetBrainsMono.woff2") format("woff2"); font-weight: 500; font-style: normal; }
+  @font-face { font-family: "Source Serif 4"; src: url("../fonts/SourceSerif4Variable-Roman.ttf") format("truetype"); font-weight: 200 900; font-style: normal; }
 
   @page {
     size: A4;
@@ -23,7 +24,7 @@
 
     @bottom-center {
       content: counter(page) "  ·  {{COMPANY_NAME}} Report";
-      font-family: Charter, Georgia, Palatino, serif;
+      font-family: var(--serif);
       font-size: 9pt;
       color: #85776F;
     }
@@ -45,7 +46,7 @@
     --positive:  #B83D2E;
     --negative:  #85776F;
 
-    --serif: Charter, Georgia,
+    --serif: "Source Serif 4", Charter, Georgia,
              Palatino, "Times New Roman", serif;
     --sans: var(--serif);
     --mono:  "JetBrains Mono", "SF Mono", "Fira Code",
@@ -63,6 +64,10 @@
     font-family: var(--serif);
     font-size: 9.8pt;
     line-height: 1.45;
+    /* Paragraph flow; declared in references/profiles/typography/folio-v1.yaml. */
+    widows: 2;
+    orphans: 2;
+    hyphens: manual;
   }
 
   strong { font-weight: 500; }

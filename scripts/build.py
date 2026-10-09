@@ -36,6 +36,7 @@ from typing import Any
 from diagram_geometry import validate_diagram_html
 from diagram_render_svg import render_diagram_svg
 from diagram_semantic_planning import plan_architecture_from_text
+from page_contracts import HTML_TARGETS, PPTX_TARGETS  # Re-export for existing callers.
 from pdf_metadata import set_pdf_metadata  # Re-export for existing build callers.
 from shared import (
     COOL_GRAY_BLOCKLIST,
@@ -52,39 +53,6 @@ from shared import (
 
 from drawing.layout.elk import elk_available
 
-
-@dataclass(frozen=True)
-class PageSpec:
-    source: str
-    min_pages: int
-    max_pages: int
-
-
-# name -> page spec
-HTML_TARGETS: dict[str, PageSpec] = {
-    # Chinese
-    "one-pager":    PageSpec("one-pager.html", 1, 1),
-    "letter":       PageSpec("letter.html", 1, 1),
-    "long-doc":     PageSpec("long-doc.html", 5, 9),
-    "portfolio":    PageSpec("portfolio.html", 4, 8),
-    "resume":       PageSpec("resume.html", 2, 2),
-    # English
-    "one-pager-en": PageSpec("one-pager-en.html", 1, 1),
-    "letter-en":    PageSpec("letter-en.html", 1, 1),
-    "long-doc-en":  PageSpec("long-doc-en.html", 5, 9),
-    "portfolio-en": PageSpec("portfolio-en.html", 4, 8),
-    "resume-en":    PageSpec("resume-en.html", 2, 2),
-    # Equity Report
-    "equity-report":    PageSpec("equity-report.html", 2, 3),
-    "equity-report-en": PageSpec("equity-report-en.html", 2, 3),
-    # Changelog
-    "changelog":    PageSpec("changelog.html", 1, 2),
-    "changelog-en": PageSpec("changelog-en.html", 1, 2),
-}
-PPTX_TARGETS: dict[str, PageSpec] = {
-    "slides":    PageSpec("slides.py", 4, 10),
-    "slides-en": PageSpec("slides-en.py", 4, 10),
-}
 HOST_INTEGRATION_TARGETS = (
     "host-a4-long-doc",
     "host-letter-document",
@@ -301,6 +269,61 @@ def _load_pdf_build_deps() -> tuple[Any | None, Any | None, str | None]:
     return _PDF_BUILD_DEPS
 
 
+
+def render_html_to_pdf(source_html, base_url: Path, output: Path) -> None:
+    """Render HTML to PDF through the renderer boundary.
+
+    Every PDF this repository produces goes through here, so the engine is
+    reached in exactly one place. That is what makes the adapter a boundary
+    rather than a suggestion: a second engine becomes a change to this
+    function, not a search across four call sites.
+
+    `source_html` is either a path to an HTML file or the HTML itself, which
+    mirrors the two forms the build already used.
+    """
+    from renderers.base import CapabilityRequirement, RenderRequest
+    from renderers.weasy import WeasyPrintRenderer, available
+
+    if not available():
+        # The subprocess fallback exists for hosts where WeasyPrint's native
+        # libraries are missing from this interpreter; it predates the adapter
+        # and is kept so that path is not lost.
+        fallback = _fallback_weasy_html()
+        if fallback is None:
+            raise RuntimeError("no usable PDF renderer")
+        if Path(source_html).exists():
+            fallback(source_html, base_url=str(base_url)).write_pdf(str(output))
+        else:
+            fallback(string=source_html, base_url=str(base_url)).write_pdf(str(output))
+        return
+
+    # Structural labels that a template promotes to placeholders keep their
+    # previous wording when the author supplies nothing. Without this the build
+    # would print `{{SECTION_CHANGELOG}}` onto the page.
+    #
+    # Both input forms need it: a path is read and rewritten, a string is
+    # rewritten in place. Handling only one would leave the other printing a
+    # placeholder, which is how this was first got wrong.
+    from section_defaults import apply_section_defaults
+
+    source_path = Path(source_html)
+    if source_path.exists():
+        source_html = apply_section_defaults(source_path.read_text(encoding="utf-8"))
+    else:
+        source_html = apply_section_defaults(str(source_html))
+
+    renderer = WeasyPrintRenderer()
+    request = RenderRequest(
+        source=str(source_html),
+        base_url=base_url,
+        output=output,
+        # Paged media is the one capability every document here depends on, so
+        # it is declared hard: a renderer without it cannot produce a document.
+        requirements=(CapabilityRequirement("paged_media", "hard", "paged document"),),
+    )
+    renderer.render(request)
+
+
 def page_count_issue(name: str, count: int, min_pages: int, max_pages: int) -> str | None:
     expected = str(min_pages) if min_pages == max_pages else f"{min_pages}-{max_pages}"
     if count < min_pages:
@@ -335,9 +358,9 @@ def build_html(name: str, source: str, min_pages: int, max_pages: int,
             from drawing.output import apply_html_output_profile
 
             source_html = apply_html_output_profile(src.read_text(encoding="utf-8"), "page-preview")
-            HTML(string=source_html, base_url=str(src.parent)).write_pdf(str(out))
+            render_html_to_pdf(source_html, src.parent, out)
         else:
-            HTML(str(src), base_url=str(src.parent)).write_pdf(str(out))
+            render_html_to_pdf(src, src.parent, out)
     except Exception as exc:
         print(f"ERROR: {name}: render failed ({exc})")
         return False
@@ -415,7 +438,7 @@ def build_host_integration(name: str) -> bool:
         if dep_error:
             raise RuntimeError(dep_error)
         target = EXAMPLES / f"{name}.pdf"
-        HTML(str(source), base_url=str(source.parent)).write_pdf(str(target))
+        render_html_to_pdf(source, source.parent, target)
         reader = PdfReader(str(target))
         minimum, maximum = product["pages"]
         issue = page_count_issue(name, len(reader.pages), minimum, maximum)
@@ -880,9 +903,123 @@ def sync_check(verbose: bool = False) -> int:
 
 PLACEHOLDER = re.compile(r"\{\{[^}]+\}\}")
 
-# Primary fonts expected in embedded PDF font names
+# Primary fonts expected in embedded PDF font names. English moved from
+# Charter (host-provided) to the bundled Source Serif 4, so the check no longer
+# depends on the build machine carrying a particular font.
 CN_PRIMARY_FONTS = {"LXGWWenKai"}
-EN_PRIMARY_FONTS = {"Charter"}
+EN_PRIMARY_FONTS = {"SourceSerif4", "Source Serif 4"}
+
+FONT_MANIFEST = ROOT / "references" / "manifests" / "fonts-v1.yaml"
+
+
+def load_font_manifest(path: Path | None = None) -> dict[str, Any]:
+    """Read the font manifest.
+
+    PyYAML is not a build dependency, so the small subset this file uses is
+    parsed directly: `family:` entries, `acceptable_substitutes` grouped by
+    `en:` / `zh:`, and `known_unsanctioned` family names. Anything else is
+    ignored rather than guessed at.
+    """
+    manifest_path = path or FONT_MANIFEST
+    if not manifest_path.is_file():
+        return {}
+
+    text = manifest_path.read_text(encoding="utf-8")
+    section = ""
+    nested = ""
+    lang = "en"
+    families: list[str] = []
+    acceptable: dict[str, list[str]] = {"en": [], "zh": [], "diagram": []}
+    unsanctioned: list[str] = []
+
+    for raw in text.splitlines():
+        line = raw.split("#", 1)[0].rstrip()
+        if not line.strip():
+            continue
+        indent = len(line) - len(line.lstrip())
+        stripped = line.strip()
+
+        if indent == 0 and stripped.endswith(":"):
+            section, nested = stripped[:-1], ""
+            continue
+        if indent == 2 and stripped.endswith(":") and not stripped.startswith("- "):
+            nested = stripped[:-1]
+            continue
+
+        if section == "fonts" and stripped.startswith("family:"):
+            families.append(stripped.split(":", 1)[1].strip().strip('"'))
+        elif section == "fallback_policy" and nested == "acceptable_substitutes":
+            if stripped in {"en:", "zh:", "diagram:"}:
+                lang = stripped[:-1]
+            elif stripped.startswith("- "):
+                acceptable.setdefault(lang, []).append(stripped[2:].strip().strip('"'))
+        elif section == "fallback_policy" and nested == "known_unsanctioned":
+            if stripped.startswith("- family:"):
+                unsanctioned.append(stripped.split(":", 1)[1].strip().strip('"'))
+            elif stripped.startswith("family:"):
+                unsanctioned.append(stripped.split(":", 1)[1].strip().strip('"'))
+
+    return {
+        "families": families,
+        "acceptable_substitutes": acceptable,
+        "known_unsanctioned": unsanctioned,
+    }
+
+
+def _manifest_font_patterns(manifest: dict[str, Any], group: str | None = None) -> set[str]:
+    patterns: set[str] = set()
+    for family in manifest.get("families", []):
+        for part in str(family).split(","):
+            name = part.strip()
+            if name:
+                patterns.add(name)
+    substitutes = manifest.get("acceptable_substitutes", {})
+    if group is None:
+        for items in substitutes.values():
+            patterns.update(str(item).strip() for item in items if str(item).strip())
+    else:
+        patterns.update(str(item).strip() for item in substitutes.get(group, []) if str(item).strip())
+    return patterns
+
+
+def find_unsanctioned_fonts(
+    embedded: set[str],
+    manifest: dict[str, Any],
+    group: str | None = None,
+) -> list[str]:
+    """Embedded fonts that neither the manifest nor its approved fallbacks name.
+
+    A font here means the design's declared stack was exhausted and something
+    unchosen was substituted. Registered known defects are reported too: they
+    are debt to burn down, not an exemption, so they stay visible in the gate
+    output while remaining distinguishable from a freshly introduced
+    substitution.
+    """
+    patterns = _manifest_font_patterns(manifest, group=group)
+    if not patterns:
+        return []
+    out = []
+    for font in sorted(embedded):
+        subsetless = font.split("+", 1)[-1]
+        if _font_name_contains(subsetless, patterns):
+            continue
+        out.append(subsetless)
+    return out
+
+
+def known_unsanctioned_fonts(
+    embedded: set[str],
+    manifest: dict[str, Any],
+    group: str | None = None,
+) -> list[str]:
+    """Subset of `find_unsanctioned_fonts` already registered as known debt."""
+    registered = set(manifest.get("known_unsanctioned", []))
+    if not registered:
+        return []
+    return [
+        font for font in find_unsanctioned_fonts(embedded, manifest, group=group)
+        if font.split("+", 1)[-1] in registered
+    ]
 
 
 def _font_name_contains(font_name: str, expected: set[str]) -> bool:
@@ -967,9 +1104,9 @@ def verify_target(name: str, source: str, min_pages: int, max_pages: int, src_di
             from drawing.output import apply_html_output_profile
 
             source_html = apply_html_output_profile(src.read_text(encoding="utf-8"), "page-preview")
-            HTML(string=source_html, base_url=str(src.parent)).write_pdf(str(out))
+            render_html_to_pdf(source_html, src.parent, out)
         else:
-            HTML(str(src), base_url=str(src.parent)).write_pdf(str(out))
+            render_html_to_pdf(src, src.parent, out)
     except Exception as exc:
         issues.append(f"render failed: {exc}")
         return issues
@@ -994,6 +1131,22 @@ def verify_target(name: str, source: str, min_pages: int, max_pages: int, src_di
     # Diagram templates are language-neutral and often rely on fallback stacks,
     # so only enforce that at least one recognizable serif/sans fallback exists.
     is_diagram = src_dir == DIAGRAMS
+
+    # Fonts no declared stack names. Reported separately from the primary-font
+    # check so a substitution stays visible even when a recognizable font is
+    # present. Diagrams are judged against their own group: a Latin serif stack
+    # resolved on a host that lacks Charter is expected, not a document defect.
+    manifest = load_font_manifest()
+    group = "diagram" if is_diagram else ("en" if name.endswith("-en") else "zh")
+    unsanctioned = find_unsanctioned_fonts(embedded, manifest, group=group)
+    if unsanctioned:
+        known = set(known_unsanctioned_fonts(embedded, manifest, group=group))
+        for font in unsanctioned:
+            if font in known:
+                issues.append(f"registered font substitution in {out.name}: {font}")
+            else:
+                issues.append(f"unapproved font substitution in {out.name}: {font}")
+
     if is_diagram:
         issues.extend(validate_diagram_html(src))
         if not fallback_present:

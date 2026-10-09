@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "id": "ir-technical",
+  "lang": "en-US",
+  "metadata": {
+    "title": "Code and math",
+    "genre": "one-pager",
+    "author": "Folio"
+  },
+  "profiles": {
+    "typography": "folio-one-pager-en-v1",
+    "page": "a4-one-pager-v1",
+    "theme": "folio-classic-v1"
+  },
+  "blocks": [
+    {
+      "type": "heading",
+      "id": "h-1",
+      "level": 1,
+      "content": [
+        {
+          "type": "text",
+          "value": "Technical"
+        }
+      ]
+    },
+    {
+      "type": "code_block",
+      "id": "code-1",
+      "language": "python",
+      "value": "def render(document):\n    return document"
+    },
+    {
+      "type": "math_block",
+      "id": "math-1",
+      "value": "E = mc^2",
+      "description": "Mass-energy equivalence"
+    },
+    {
+      "type": "paragraph",
+      "id": "p-1",
+      "content": [
+        {
+          "type": "text",
+          "value": "Inline "
+        },
+        {
+          "type": "math_inline",
+          "value": "x^2",
+          "description": "x squared"
+        },
+        {
+          "type": "text",
+          "value": " and "
+        },
+        {
+          "type": "code",
+          "value": "render()"
+        },
+        {
+          "type": "text",
+          "value": "."
+        }
+      ]
+    }
+  ]
+}

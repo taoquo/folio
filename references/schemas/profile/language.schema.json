@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.dev/schema/language-profile-1.0.json",
+  "title": "Folio Language Profile",
+  "description": "What Folio guarantees about a language. Shaping and line breaking stay with the renderer; this records the business-level contract a document must satisfy.",
+  "type": "object",
+  "required": ["version", "profiles"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {"const": 1},
+    "profiles": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["tag"],
+        "additionalProperties": false,
+        "properties": {
+          "tag": {"type": "string", "minLength": 2},
+          "script": {"type": "string"},
+          "direction": {"enum": ["ltr", "rtl"]},
+          "notes": {"type": "string"},
+          "font_fallback": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {"type": "string", "minLength": 1},
+              "minItems": 1
+            }
+          },
+          "hyphenation": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {"enabled": {"type": "boolean"}}
+          },
+          "line_break": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "mode": {"enum": ["strict", "normal", "loose"]},
+              "forbids_line_start": {"type": "array", "items": {"type": "string"}},
+              "forbids_line_end": {"type": "array", "items": {"type": "string"}}
+            }
+          },
+          "punctuation": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "hanging": {"enum": ["conservative", "aggressive", "none"]},
+              "quote_style": {"type": "string"}
+            }
+          },
+          "tracking": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {"body_pt": {"type": "number", "minimum": 0}}
+          }
+        }
+      }
+    }
+  }
+}

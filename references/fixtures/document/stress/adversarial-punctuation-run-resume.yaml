@@ -1,0 +1,96 @@
+id: adversarial-punctuation-run-resume
+genre: resume
+language: zh-Hans-CN
+script_profile: han-only
+template: resume.html
+adversarial: true
+purpose:
+  - punctuation-width
+  - cjk-line-break
+content:
+  "{{姓名}}": "边界样本"
+  "{{摘要}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{关键词}}": "边界, 禁则, 1,024"
+  "{{变量}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{别名/英文名}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{GITHUB_URL}}": "https://example.org/boundary"
+  "{{GITHUB_ID}}": "https://example.org/boundary"
+  "{{X_URL}}": "https://example.org/boundary"
+  "{{X_ID}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{PHONE}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{EMAIL}}": "boundary@example.org"
+  "{{年龄}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{城市}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{数字}}": "1,024"
+  "{{单位}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{标签}}": "边界, 禁则, 1,024"
+  "{{80 字以内。建议结构：现任职位 + 级别 + 时长。团队构成（人数、梯队、协作方）。长期演进方向。核心沉淀领域（4-6 个方向）。}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{起始时间}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{关键里程碑}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{年份}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{阶段标题}}": "边界测试 Boundary"
+  "{{一句解释这一步的意义}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{项目名}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{项目类型}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{~60 字：项目是什么 + 为什么做 + 你的位置}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{~80 字：技术方案 / 关键决策 / 执行路径}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{角色定位}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{~60 字}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{~80 字}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{角色}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{项目背景和定位}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{执行路径}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{时间跨度}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{一句副标题}}": "边界测试 Boundary"
+  "{{一句自我定位}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{简述开发者身份：设计审美 / 独立完成流程 / 跨语言实战 / 用户反馈}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{STARS_TOTAL}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{FORKS_TOTAL}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{FOLLOWERS_TOTAL}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{URL}}": "https://example.org/boundary"
+  "{{语言 + 核心定位 + 平台}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{STARS}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{描述}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{亮点 TAG}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{这个项目的独特故事：开源时机 / 传播范围 / 知名人物推荐等}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{时间}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{事件标题}}": "边界测试 Boundary"
+  "{{具体做了什么判断或行动，为什么证明判断力}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{具体做了什么判断或行动}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{平台}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{HANDLE}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{粉丝数}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{博客 / 周刊 / 其他内容产品简介}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{副标题}}": "边界测试 Boundary"
+  "{{文章标题}}": "边界测试 Boundary"
+  "{{日期}}": "2026-10-03"
+  "{{浏览量 / 赞数 / 影响力指标}}": "1,024"
+  "{{浏览量 / 赞数}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{演讲标题}}": "边界测试 Boundary"
+  "{{主办方 / 地点}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{能力 1<br>标签}}": "边界, 禁则, 1,024"
+  "{{能力 2<br>标签}}": "边界, 禁则, 1,024"
+  "{{能力 3<br>标签}}": "边界, 禁则, 1,024"
+  "{{能力 4<br>标签}}": "边界, 禁则, 1,024"
+  "{{能力 5<br>标签}}": "边界, 禁则, 1,024"
+  "{{学校}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{学院}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{专业}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+  "{{起止时间}}": "连续标点测试：。。。。！？；：、，以及中英混排的 punctuation — dash … ellipsis “ quote ”。"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 20
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    forbidden_break: 0
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Boundary content for punctuation-run: punctuation-width; cjk-line-break.
+    It exists to fail loudly if line breaking or alignment regresses.
+review:
+  expert_required: true
+  note: Inspect by eye; automated checks cannot judge every boundary case.

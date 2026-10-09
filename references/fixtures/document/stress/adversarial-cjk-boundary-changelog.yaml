@@ -1,0 +1,46 @@
+id: adversarial-cjk-boundary-changelog
+genre: changelog
+language: zh-Hans-CN
+script_profile: han-only
+adversarial: true
+purpose:
+  - cjk-line-break
+  - kinsoku
+  - punctuation-boundary
+  - long-unbreakable-run
+content:
+  "{{版本号}}": v0.0.1
+  "{{版本名称}}": 边界样本
+  "{{发布日期}}": "2026-10-03"
+  "{{项目名}}": Folio
+  "{{项目 URL}}": https://github.com/taoquo/folio
+  "{{项目一句话描述}}": 用于触发禁则与断行边界的样本
+  "{{作者}}": Folio
+  "{{关键词}}": 禁则, 标点, 边界
+  "{{一句话版本亮点}}": 连续标点与不可断长串的断行边界
+  "{{摘要}}": 本样本刻意在行首与行尾放置禁则标点。它包含连续标点：，。、；：！？以及嵌套括号（【《「测试」》】）。同时包含不可断开的超长串：AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA，用于观察溢出行为。中文标点不应出现在行首，前括号不应出现在行尾。
+  "{{新功能 1：一句话描述}}": 行首禁则：，。、；：！？）】》」
+  "{{对应中文描述}}": 上述标点出现在行首即视为违规
+  "{{新功能 2：一句话描述}}": 行尾禁则：（【《「
+  "{{同上对应的中文描述}}": 上述标点出现在行尾即视为违规
+  "{{新功能 3：一句话描述}}": 连续标点 ，。、；：！？ 的压缩与悬挂
+  "{{修复 1：一句话描述}}": 超长不可断串导致的溢出
+  "{{修复 2：一句话描述}}": 全角与半角混用的宽度差异
+  "{{修复 3：一句话描述}}": 标点挤压后的对齐偏移
+  "{{破坏性变更描述}}": 无
+  "{{感谢贡献者，格式如：\"感谢 @user1、@user2 的贡献。\"}}": 感谢边界样本的贡献者。
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 2
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    forbidden_break: 0
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: Punctuation and long runs are deliberate; this fixture exists to fail loudly if line breaking regresses.
+review:
+  expert_required: true
+  note: Inspect line starts and ends for prohibited punctuation.

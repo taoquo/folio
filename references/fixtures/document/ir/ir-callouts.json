@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "id": "ir-callouts",
+  "lang": "zh-Hans-CN",
+  "metadata": {
+    "title": "引用与提示",
+    "genre": "one-pager",
+    "author": "Folio"
+  },
+  "profiles": {
+    "typography": "folio-one-pager-zh-v1",
+    "page": "a4-one-pager-v1",
+    "theme": "folio-classic-v1"
+  },
+  "blocks": [
+    {
+      "type": "quote",
+      "id": "q-1",
+      "content": [
+        {
+          "type": "text",
+          "value": "没有确定性基线，就无法判断改动是修复还是回归。"
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "id": "c-1",
+      "kind": "decision",
+      "title": [
+        {
+          "type": "text",
+          "value": "结论"
+        }
+      ],
+      "content": [
+        {
+          "type": "text",
+          "value": "IR 可被现有模板 CSS 消费。"
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "id": "c-2",
+      "kind": "warning",
+      "content": [
+        {
+          "type": "text",
+          "value": "此路径尚未接管生产。"
+        }
+      ]
+    }
+  ]
+}

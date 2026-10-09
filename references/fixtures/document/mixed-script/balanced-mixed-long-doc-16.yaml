@@ -1,0 +1,64 @@
+id: balanced-mixed-long-doc-16
+genre: long-doc
+language: zh-Hans-CN
+script_profile: han-latin-digits
+template: long-doc.html
+purpose:
+  - composition-balance
+  - mixed-script-baseline
+  - font-fallback
+content:
+  "{{文档标题}}": "中英混排 Mixed-script fixture"
+  "{{作者}}": "Folio 维护者 team"
+  "{{摘要}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{关键词}}": "混排, 基线, 1,024"
+  "{{文档主标题<br>可以两行}}": "中英混排 Mixed-script fixture"
+  "{{副标题，一句话说清这份文档是什么 / 为谁而写}}": "中英混排 Mixed-script fixture"
+  "{{作者 / 团队}}": "Folio 维护者 team"
+  "{{版本 V1.0}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{日期 2026.04}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{发布方 / 机构}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{Takeaway 1：一句话，可量化的结论}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{Takeaway 2：有数据的洞察}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{Takeaway 3：对未来的判断}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{用疑问句列出 3 个本文档的核心问题。让读者立刻 get 到是否需要读完。}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{章节导语：这一章要解决什么问题，为什么重要。1-2 句。}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{边注：定义本章关键词、样本范围或读者需要记住的限定条件。}}": "混排, 基线, 1,024"
+  "{{陈述具体的核心问题。可以用 callout 突出关键观察：}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{一段重要引用或核心观察。和正文语气略有不同，给读者呼吸节奏。}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{维度 1}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{数据}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{差距}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{维度 2}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{章节导语}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{描述方法论。可以用代码 / 公式示例：}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{标题}}": "中英混排 Mixed-script fixture"
+  "{{一段论述。}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{一段引用，可以是用户访谈、专家观点、文献引用}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{来源 / 人物}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{日期}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{脚注：补充数据口径、引用出处或方法限制。}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{章节导语：一句话总结结论，下面展开建议。}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{结论 1}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{结论 2}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{结论 3}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{基于结论的具体可执行建议。}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{如果读者要做一件事，是什么？具体到可以周一早上就开始行动。}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{参考文献 1}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{参考文献 2}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{术语}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{定义}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+  "{{致谢段落}}": "中英混排段落：Chinese text 与 Latin words 共享 baseline，数字 1,234 与 99.95% 需要 tabular figures 保持列对齐。Source Serif 4 负责 Latin，LXGW WenKai 负责汉字。"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    mixed_script_baseline: stable
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Added so mixed-script coverage matches the other compositions.

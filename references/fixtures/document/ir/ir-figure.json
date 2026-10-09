@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "id": "ir-figure",
+  "lang": "en-US",
+  "metadata": {
+    "title": "Figure",
+    "genre": "one-pager",
+    "author": "Folio"
+  },
+  "profiles": {
+    "typography": "folio-one-pager-en-v1",
+    "page": "a4-one-pager-v1",
+    "theme": "folio-classic-v1"
+  },
+  "blocks": [
+    {
+      "type": "heading",
+      "id": "h-1",
+      "level": 1,
+      "content": [
+        {
+          "type": "text",
+          "value": "Diagram"
+        }
+      ]
+    },
+    {
+      "type": "figure",
+      "id": "fig-1",
+      "asset": {
+        "uri": "assets/fixture.png",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "alt": "A described fixture image.",
+      "caption": [
+        {
+          "type": "text",
+          "value": "Figure 1. A described fixture."
+        }
+      ],
+      "placement": {
+        "mode": "float",
+        "preferred": [
+          "top",
+          "bottom"
+        ],
+        "max_defer_pages": 1
+      }
+    },
+    {
+      "type": "paragraph",
+      "id": "p-1",
+      "content": [
+        {
+          "type": "text",
+          "value": "See "
+        },
+        {
+          "type": "cross_ref",
+          "target": "fig-1"
+        },
+        {
+          "type": "text",
+          "value": " for the detail."
+        }
+      ]
+    }
+  ]
+}

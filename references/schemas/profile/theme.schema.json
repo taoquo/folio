@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.dev/schema/theme-profile-1.0.json",
+  "title": "Folio Theme Profile",
+  "description": "Appearance only: colour and strokes. Deliberately carries no type size, leading or page rule, so switching a theme cannot reflow a document.",
+  "type": "object",
+  "required": ["version", "profiles"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {"const": 1},
+    "invariants": {"type": "object", "additionalProperties": true},
+    "profiles": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["colors"],
+        "additionalProperties": false,
+        "properties": {
+          "genre": {"type": "string"},
+          "colors": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {"$ref": "#/$defs/colour"}
+          },
+          "accent": {
+            "type": "object",
+            "additionalProperties": {"$ref": "#/$defs/colour"}
+          },
+          "decoration": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "rule_width_pt": {"type": "number", "minimum": 0},
+              "corner_radius_pt": {"type": "number", "minimum": 0},
+              "hairline": {"$ref": "#/$defs/colour"}
+            }
+          },
+          "overridable": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "colour": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}$"}
+  }
+}

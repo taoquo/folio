@@ -1,0 +1,43 @@
+id: minimal-digits-changelog
+genre: changelog
+language: en-US
+script_profile: digits-heavy
+purpose:
+  - baseline
+  - numeric-alignment
+  - tabular-figures
+content:
+  "{{VERSION}}": v2.10.3
+  "{{RELEASE_NAME}}": Numeric baseline
+  "{{RELEASE_DATE}}": 2026-10-03
+  "{{PROJECT_NAME}}": Folio
+  "{{PROJECT_URL}}": https://github.com/taoquo/folio
+  "{{One-line project description.}}": 8 templates, 23 diagram types, 1,234 tests
+  "{{AUTHOR}}": Folio maintainers
+  "{{KEYWORDS}}": 1240, 98.7%, 0.001, 1,024
+  "{{One-line release highlight.}}": Reduce median render time by 12.5% at 1,024 pages
+  "{{DESCRIPTION}}": Measurements span 0.001 to 1,000,000 across 42 runs. Median 12.5%, p95 18.25%, worst 1,204.75 ms. Font sizes 9.0–12.0 pt and line heights 1.35–1.55 keep 1,024 tokens aligned in 24 columns.
+  "{{New feature 1: one-line description.}}": 3,000 fixtures at 99.95% pass rate
+  "{{对应中文描述}}": 1,024 pages, 0.001 tolerance, 42 runs
+  "{{New feature 2: one-line description.}}": 12.5% faster at p95 18.25 ms
+  "{{同上对应的中文描述}}": 1,234 tests, 0 failures, 0.000% drift
+  "{{New feature 3: one-line description.}}": 8 templates, 23 types, 2026-10-03
+  "{{Fix 1: one-line description.}}": 0.001 rounding error at 1,000,000 scale
+  "{{Fix 2: one-line description.}}": 4,096 byte limit raised to 5,242,880
+  "{{Fix 3: one-line description.}}": 99.9% of 10,000 samples within 0.25 ms
+  "{{Breaking change description.}}": None
+  "{{感谢贡献者，格式如：\"感谢 @user1、@user2 的贡献。\"}}": Thanks to 12 contributors across 42 pull requests.
+  "{{Thank contributors, e.g. "Thanks to @user1, @user2 for their contributions."}}": Thanks to everyone who contributed.
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 2
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    table_numerals: tabular
+    entry_rhythm: consistent
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: Numbers are invented to exercise digit widths and separators.

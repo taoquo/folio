@@ -47,7 +47,7 @@
     /* Slide-scale spacing */
     --slide-pad:    80px;
 
-    --serif: Charter, Georgia, "LXGW WenKai", "Source Han Serif SC", "Noto Serif CJK SC", "Songti SC", Palatino, serif;
+    --serif: "Source Serif 4", Charter, Georgia, "LXGW WenKai", "Source Han Serif SC", "Noto Serif CJK SC", "Songti SC", Palatino, serif;
     --sans: var(--serif);
     --mono: "JetBrains Mono", "Fira Code", "SF Mono", Consolas, Monaco,
             "LXGW WenKai", "Source Han Serif SC", monospace;

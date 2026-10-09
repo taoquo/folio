@@ -1,0 +1,40 @@
+id: minimal-zh-changelog
+genre: changelog
+language: zh-Hans-CN
+script_profile: han-only
+purpose:
+  - baseline
+  - cjk-line-break
+content:
+  "{{版本号}}": v9.0.0
+  "{{版本名称}}": 基线版本
+  "{{发布日期}}": 2026-10-03
+  "{{项目名}}": Folio
+  "{{项目 URL}}": https://github.com/taoquo/folio
+  "{{项目一句话描述}}": 文档设计系统与图表编译器
+  "{{作者}}": Folio 维护者
+  "{{关键词}}": 排版, 中文, 基线
+  "{{一句话版本亮点}}": 建立可测量的文档基线
+  "{{摘要}}": 本版本冻结现有渲染行为，使后续改动可以被判定为修复、优化或回归。
+  "{{新功能 1：一句话描述}}": 页数合同收敛为单一来源
+  "{{对应中文描述}}": 构建与稳定器读取同一份合同表
+  "{{新功能 2：一句话描述}}": 字体成为构建输入
+  "{{同上对应的中文描述}}": 英文正文改用仓库内置的 Source Serif 4
+  "{{新功能 3：一句话描述}}": 渲染环境可记录与比对
+  "{{修复 1：一句话描述}}": 稳定器求解决策不再无声进行
+  "{{修复 2：一句话描述}}": 重复渲染的判定改用内容层
+  "{{修复 3：一句话描述}}": 段落规则从声明变为实际生效
+  "{{破坏性变更描述}}": 无
+  "{{感谢贡献者，格式如：\"感谢 @user1、@user2 的贡献。\"}}": 感谢所有提交问题与建议的贡献者。
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 2
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    entry_rhythm: consistent
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: 内容为验证渲染链而编写，不含真实发布信息。

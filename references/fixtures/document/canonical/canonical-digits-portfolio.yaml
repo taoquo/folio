@@ -1,0 +1,62 @@
+id: canonical-digits-portfolio
+genre: portfolio
+language: zh-Hans-CN
+script_profile: digits-heavy
+template: portfolio.html
+purpose:
+  - canonical
+  - multi-page-layout
+content:
+  "{{名字}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{摘要}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{关键词}}": "2026-10-03"
+  "{{年份 或 领域标签 · 如 "Selected Works 2023–2026"}}": "2026-10-03"
+  "{{名字<br>作品集}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{一句自我描述 / 作品集主题}}": "12.5% faster at p95 18.25 ms"
+  "{{专业 / 角色}}": "2026-10-03"
+  "{{所在地}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{EMAIL}}": "1024@example.org"
+  "{{网站 / 社交链接}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{一句自我定位的 headline}}": "12.5% faster at p95 18.25 ms"
+  "{{2-3 行的自我介绍引言。serif 字体，斜体感，不写太 sales。
+    用自己的语言描述你关心什么、擅长什么。}}": "Measurements span 0.001 through 9,999,999,999,999. Percentages run 0.0001% to 100.0000%. Font sizes stay in 9.0-12.0 pt and line heights in 1.35-1.55, keeping 1,234 tests within 0.25 ms of the median."
+  "{{一段关于你过往经历的概述。}}": "Measurements span 0.001 through 9,999,999,999,999. Percentages run 0.0001% to 100.0000%. Font sizes stay in 9.0-12.0 pt and line heights in 1.35-1.55, keeping 1,234 tests within 0.25 ms of the median."
+  "{{一段关于你当前的关注点 / 方法论。}}": "Measurements span 0.001 through 9,999,999,999,999. Percentages run 0.0001% to 100.0000%. Font sizes stay in 9.0-12.0 pt and line heights in 1.35-1.55, keeping 1,234 tests within 0.25 ms of the median."
+  "{{项目类型 · 如 "Product Design" / "Open Source"}}": "Measurements span 0.001 through 9,999,999,999,999. Percentages run 0.0001% to 100.0000%. Font sizes stay in 9.0-12.0 pt and line heights in 1.35-1.55, keeping 1,234 tests within 0.25 ms of the median."
+  "{{项目名称}}": "12.5% faster at p95 18.25 ms"
+  "{{一句话描述这个项目做了什么}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{时间 · 如 "2025.04 - 2026.02"}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{标签 1}}": "2026-10-03"
+  "{{标签 2}}": "2026-10-03"
+  "{{标签 3}}": "2026-10-03"
+  "{{用一段较少文字说明作品的核心命题：它为什么存在、看见了什么、让什么变得可感知。}}": "Measurements span 0.001 through 9,999,999,999,999. Percentages run 0.0001% to 100.0000%. Font sizes stay in 9.0-12.0 pt and line heights in 1.35-1.55, keeping 1,234 tests within 0.25 ms of the median."
+  "{{媒介、系统、技术或现场条件。}}": "Measurements span 0.001 through 9,999,999,999,999. Percentages run 0.0001% to 100.0000%. Font sizes stay in 9.0-12.0 pt and line heights in 1.35-1.55, keeping 1,234 tests within 0.25 ms of the median."
+  "{{结果是什么？<span class="hl">数据</span>、反馈、影响。}}": "1,024"
+  "{{数字}}": "1,024"
+  "{{标签}}": "2026-10-03"
+  "{{项目类型}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{一句话描述}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{时间}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{项目命题。}}": "Measurements span 0.001 through 9,999,999,999,999. Percentages run 0.0001% to 100.0000%. Font sizes stay in 9.0-12.0 pt and line heights in 1.35-1.55, keeping 1,234 tests within 0.25 ms of the median."
+  "{{媒介 / 技术 / 现场条件。}}": "Measurements span 0.001 through 9,999,999,999,999. Percentages run 0.0001% to 100.0000%. Font sizes stay in 9.0-12.0 pt and line heights in 1.35-1.55, keeping 1,234 tests within 0.25 ms of the median."
+  "{{结果。}}": "Measurements span 0.001 through 9,999,999,999,999. Percentages run 0.0001% to 100.0000%. Font sizes stay in 9.0-12.0 pt and line heights in 1.35-1.55, keeping 1,234 tests within 0.25 ms of the median."
+  "{{作品标题}}": "12.5% faster at p95 18.25 ms"
+  "{{一句描述}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{链接 / 状态}}": "2026-10-03"
+  "{{欢迎联系的一句话 · 如 "期待新的合作机会"}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{电话}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{URL}}": "https://example.org/1024"
+  "{{其他平台}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{ID}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 9
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    density: medium
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: Authored to exercise the portfolio template under the digits-heavy composition.

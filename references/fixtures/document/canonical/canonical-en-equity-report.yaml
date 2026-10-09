@@ -1,0 +1,53 @@
+id: canonical-en-equity-report
+genre: equity-report
+language: en-US
+script_profile: latin-only
+template: equity-report-en.html
+purpose:
+  - canonical
+  - data-dense
+content:
+  "{{COMPANY_NAME}}": "Folio maintainers"
+  "{{AUTHOR}}": "Folio maintainers"
+  "{{DESCRIPTION}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{KEYWORDS}}": "Typography engineering"
+  "{{EYEBROW - e.g. Equity Research / Valuation / Investment Memo}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{TICKER}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{SECTOR}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{EXCHANGE}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{One-line thesis.}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{CURRENT_PRICE}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{CHANGE - e.g. "+12.3%"}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{DATE}}": "2026-10-03"
+  "{{NUMBER}}": "1,024"
+  "{{Two or three sentences laying out the core thesis. Use <span class="hl">key figures</span> to support the argument. This paragraph is the soul of the report.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{RATING}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{TARGET}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{HORIZON}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{One-line verdict: buy / hold / watch, and the single strongest reason.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{Chart title, e.g. "20-day price action showing accumulation phase."}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{VAL}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Chart title.}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Industry landscape overview, one or two paragraphs.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{COMP_A}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{COMP_B}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{COMP_C}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Risk Type 1}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Risk description.}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Risk Type 2}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Risk Type 3}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Risk Type 4}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Three to five sentences summarizing the position. Include target price (if applicable), rating, key catalysts, and core assumptions.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{FIRM / DISCLAIMER}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 9
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    density: medium
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: Authored to exercise the equity-report template under the latin-only composition.

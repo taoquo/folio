@@ -15,6 +15,7 @@
 <style>
   @font-face { font-family: "JetBrains Mono"; src: url("../fonts/JetBrainsMono.woff2") format("woff2"); font-weight: 400; font-style: normal; }
   @font-face { font-family: "JetBrains Mono"; src: url("../fonts/JetBrainsMono.woff2") format("woff2"); font-weight: 500; font-style: normal; }
+  @font-face { font-family: "Source Serif 4"; src: url("../fonts/SourceSerif4Variable-Roman.ttf") format("truetype"); font-weight: 200 900; font-style: normal; }
 
   @page {
     size: A4;
@@ -36,7 +37,7 @@
     --border-soft:#E8DED6;
     --tag-bg:    #F1D2CC;
 
-    --serif: Charter, Georgia,
+    --serif: "Source Serif 4", Charter, Georgia,
              Palatino, "Times New Roman", serif;
     --sans: var(--serif);
     --mono:  "JetBrains Mono", "SF Mono", "Fira Code",
@@ -54,6 +55,10 @@
     font-family: var(--serif);
     font-size: 10.5pt;
     line-height: 1.55;
+    /* Paragraph flow; declared in references/profiles/typography/folio-v1.yaml. */
+    widows: 2;
+    orphans: 2;
+    hyphens: manual;
   }
 
   strong { font-weight: 500; }
@@ -209,21 +214,21 @@
 </div>
 
 <!-- CHANGELOG -->
-<h2>Changelog</h2>
+<h2>{{SECTION_CHANGELOG}}</h2>
 
-<h3>Breaking Changes</h3>
+<h3>{{SECTION_BREAKING}}</h3>
 <ol class="changes">
   <li><span class="tag breaking">Breaking</span> {{Breaking change description.}}</li>
 </ol>
 
-<h3>Features</h3>
+<h3>{{SECTION_FEATURES}}</h3>
 <ol class="changes">
   <li>{{New feature 1: one-line description.}}</li>
   <li>{{New feature 2: one-line description.}}</li>
   <li>{{New feature 3: one-line description.}}</li>
 </ol>
 
-<h3>Fixes</h3>
+<h3>{{SECTION_FIXES}}</h3>
 <ol class="changes">
   <li>{{Fix 1: one-line description.}}</li>
   <li>{{Fix 2: one-line description.}}</li>
@@ -232,7 +237,7 @@
 
 <!-- THANKS (optional) -->
 <div class="thanks">
-  <div class="thanks-label">Acknowledgements</div>
+  <div class="thanks-label">{{SECTION_THANKS}}</div>
   {{Thank contributors, e.g. "Thanks to @user1, @user2 for their contributions."}}
 </div>
 

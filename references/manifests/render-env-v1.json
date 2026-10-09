@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "platform": {
+    "system": "Darwin",
+    "release": "27.0.0",
+    "machine": "arm64"
+  },
+  "python": {
+    "version": "3.14.5",
+    "implementation": "CPython",
+    "declared_floor": "3.10",
+    "ci_matrix": [
+      "3.10",
+      "3.12",
+      "3.14"
+    ]
+  },
+  "packages": {
+    "weasyprint": "68.1",
+    "pypdf": "6.10.2",
+    "pillow": "12.2.0",
+    "jsonschema": "4.23.0",
+    "python-pptx": "1.0.2"
+  },
+  "tools": {
+    "pdftoppm": "26.08.0",
+    "pdffonts": "26.08.0",
+    "pdftotext": "26.08.0",
+    "node": "24.13.0",
+    "rsvg-convert": "2.62.1"
+  },
+  "fonts": {
+    "bundled": [
+      {
+        "name": "JetBrainsMono.woff2",
+        "source": "bundled",
+        "bytes": 55672,
+        "sha256": "66e5c4a8f319a444fa535e757572360a9679f270e8792b153458791cc2678f5c"
+      },
+      {
+        "name": "LXGWWenKai-Medium.ttf",
+        "source": "bundled",
+        "bytes": 25227744,
+        "sha256": "1b74667333612eb05b7a1a70a9b324458251cd81e9a1d6c1bfd22da871734b9c"
+      },
+      {
+        "name": "LXGWWenKai-Regular.ttf",
+        "source": "bundled",
+        "bytes": 25486932,
+        "sha256": "b64b7add297672bf04c54ce229678ddf09b4f9671cb1ece1f24c868f4226edd0"
+      },
+      {
+        "name": "SourceSerif4Variable-Roman.ttf",
+        "source": "bundled",
+        "bytes": 1204208,
+        "sha256": "14d360ee1b76655da9276628b229e11671bc1f5d1083636144db6677d452cf55"
+      }
+    ],
+    "resolved": {
+      "Charter": "/System/Library/Fonts/Supplemental/Charter.ttc",
+      "Georgia": "/System/Library/Fonts/Supplemental/Georgia.ttf",
+      "Palatino": "/System/Library/Fonts/Palatino.ttc",
+      "LXGW WenKai": "/Users/shuke/Library/Fonts/LXGWWenKai-Regular.ttf",
+      "JetBrains Mono": "/Users/shuke/Library/Fonts/JetBrainsMono-Regular.ttf"
+    },
+    "bundled_digest": "6b7627a09849d54ea557945ed7409bbe170a5cf2014e01d973806d4cb9999d48"
+  },
+  "tool_paths": {
+    "pdftoppm": "/opt/homebrew/bin/pdftoppm",
+    "pdffonts": "/opt/homebrew/bin/pdffonts",
+    "pdftotext": "/opt/homebrew/bin/pdftotext",
+    "node": "/Users/shuke/.nvm/versions/node/v24.13.0/bin/node",
+    "rsvg-convert": "/opt/homebrew/bin/rsvg-convert"
+  }
+}

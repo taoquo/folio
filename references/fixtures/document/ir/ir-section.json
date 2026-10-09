@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0",
+  "id": "ir-section",
+  "lang": "zh-Hans-CN",
+  "metadata": {
+    "title": "章节结构",
+    "genre": "one-pager",
+    "author": "Folio"
+  },
+  "profiles": {
+    "typography": "folio-one-pager-zh-v1",
+    "page": "a4-one-pager-v1",
+    "theme": "folio-classic-v1"
+  },
+  "blocks": [
+    {
+      "type": "section",
+      "id": "s-1",
+      "role": "chapter",
+      "title": [
+        {
+          "type": "text",
+          "value": "第一章"
+        }
+      ],
+      "blocks": [
+        {
+          "type": "heading",
+          "id": "h-1",
+          "level": 1,
+          "content": [
+            {
+              "type": "text",
+              "value": "执行摘要"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "id": "p-1",
+          "content": [
+            {
+              "type": "text",
+              "value": "章节内的段落。"
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "id": "s-2",
+          "role": "body",
+          "title": [
+            {
+              "type": "text",
+              "value": "小节"
+            }
+          ],
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "h-2",
+              "level": 2,
+              "content": [
+                {
+                  "type": "text",
+                  "value": "小节标题"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "id": "p-2",
+              "content": [
+                {
+                  "type": "text",
+                  "value": "小节正文。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

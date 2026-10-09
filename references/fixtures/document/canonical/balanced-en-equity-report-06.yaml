@@ -1,0 +1,52 @@
+id: balanced-en-equity-report-06
+genre: equity-report
+language: en-US
+script_profile: latin-only
+template: equity-report-en.html
+purpose:
+  - composition-balance
+  - latin-only
+content:
+  "{{COMPANY_NAME}}": "Corpus coverage fixture"
+  "{{AUTHOR}}": "Corpus sample"
+  "{{DESCRIPTION}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{KEYWORDS}}": "corpus, baseline"
+  "{{EYEBROW - e.g. Equity Research / Valuation / Investment Memo}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{TICKER}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{SECTOR}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{EXCHANGE}}": "1,024"
+  "{{One-line thesis.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{CURRENT_PRICE}}": "1,024"
+  "{{DATE}}": "2026-10-03"
+  "{{NUMBER}}": "1,024"
+  "{{RATING}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{TARGET}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{HORIZON}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{One-line verdict: buy / hold / watch, and the single strongest reason.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{VAL}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Chart title.}}": "Corpus coverage fixture"
+  "{{Industry landscape overview, one or two paragraphs.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{COMP_A}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{COMP_B}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{COMP_C}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Risk Type 1}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Risk description.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Risk Type 2}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Risk Type 3}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Risk Type 4}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Three to five sentences summarizing the position. Include target price (if applicable), rating, key catalysts, and core assumptions.}}": "1,024"
+  "{{FIRM / DISCLAIMER}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    composition: latin-only
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Added so latin-only coverage matches the other compositions;
+    an uneven corpus under-tests one writing system while appearing complete.

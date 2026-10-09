@@ -1,0 +1,47 @@
+id: balanced-en-one-pager-24
+genre: one-pager
+language: en-US
+script_profile: latin-only
+template: one-pager-en.html
+purpose:
+  - composition-balance
+  - latin-only
+content:
+  "{{DOC_TITLE}}": "Corpus coverage fixture"
+  "{{AUTHOR}}": "Corpus sample"
+  "{{DESCRIPTION}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{KEYWORDS}}": "corpus, baseline"
+  "{{EYEBROW - e.g. Proposal / Report / Exec Summary}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Document headline - verb-led, fits in two lines, bookish.}}": "Corpus coverage fixture"
+  "{{One-line subtitle or the single sharpest claim.}}": "Corpus coverage fixture"
+  "{{YYYY.MM.DD}}": "2026-10-03"
+  "{{VERSION / STATUS}}": "internal"
+  "{{NUMBER}}": "1,024"
+  "{{LABEL}}": "corpus, baseline"
+  "{{The single recommended action: approve, pause, fund, or move to the next phase.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Owner / due date}}": "2026-10-03"
+  "{{Section one}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{One or two sentences expanding the claim.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Short bullet: a data point, observation, or judgment.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Short bullet.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Section two}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{One or two sentences.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{STAGE_TITLE}}": "Corpus coverage fixture"
+  "{{One-line explanation.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{Key quote / critical note / the single takeaway that must not be missed.}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+  "{{CONFIDENTIALITY - internal / public / draft}}": "internal"
+  "{{PAGE / CONTACT}}": "This paragraph exercises the template under Latin-only composition, covering line texture, hyphenation policy and paragraph rhythm."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    composition: latin-only
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Added so latin-only coverage matches the other compositions;
+    an uneven corpus under-tests one writing system while appearing complete.

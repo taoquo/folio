@@ -1,0 +1,204 @@
+{
+  "schema_version": "1.0",
+  "id": "ir-slides",
+  "lang": "zh-Hans-CN",
+  "metadata": {
+    "title": "幻灯片结构",
+    "genre": "slides",
+    "author": "Folio"
+  },
+  "profiles": {
+    "typography": "folio-slides-zh-v1",
+    "page": "slides-16-9-v1",
+    "theme": "folio-classic-v1"
+  },
+  "blocks": [
+    {
+      "type": "heading",
+      "id": "eyebrow-1",
+      "content": [
+        {
+          "type": "text",
+          "value": "技术分享"
+        }
+      ],
+      "level": 3
+    },
+    {
+      "type": "heading",
+      "id": "h-1",
+      "level": 1,
+      "content": [
+        {
+          "type": "text",
+          "value": "文档排版引擎"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "sub-1",
+      "content": [
+        {
+          "type": "text",
+          "value": "从模板到语义模型"
+        }
+      ],
+      "role": "lead"
+    },
+    {
+      "type": "heading",
+      "id": "h-2",
+      "level": 1,
+      "content": [
+        {
+          "type": "text",
+          "value": "为什么要 IR"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "p-1",
+      "content": [
+        {
+          "type": "text",
+          "value": "模板把内容与呈现绑在一起，改一处样式要动全部文档。"
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "id": "l-1",
+      "ordered": false,
+      "items": [
+        {
+          "id": "li-1",
+          "content": [
+            {
+              "type": "text",
+              "value": "内容与呈现分离"
+            }
+          ]
+        },
+        {
+          "id": "li-2",
+          "content": [
+            {
+              "type": "text",
+              "value": "第二个渲染器成为可能"
+            }
+          ]
+        },
+        {
+          "id": "li-3",
+          "content": [
+            {
+              "type": "text",
+              "value": "差异可被测量"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "h-3",
+      "level": 1,
+      "content": [
+        {
+          "type": "text",
+          "value": "迁移路径"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "id": "t-1",
+      "columns": [
+        {
+          "id": "c1",
+          "label": [
+            {
+              "type": "text",
+              "value": "阶段"
+            }
+          ]
+        },
+        {
+          "id": "c2",
+          "label": [
+            {
+              "type": "text",
+              "value": "状态"
+            }
+          ]
+        }
+      ],
+      "rows": [
+        {
+          "id": "r1",
+          "cells": [
+            [
+              {
+                "type": "text",
+                "value": "冻结基线"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "value": "完成"
+              }
+            ]
+          ]
+        },
+        {
+          "id": "r2",
+          "cells": [
+            [
+              {
+                "type": "text",
+                "value": "Profile 契约"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "value": "完成"
+              }
+            ]
+          ]
+        },
+        {
+          "id": "r3",
+          "cells": [
+            [
+              {
+                "type": "text",
+                "value": "IR 与 Writer"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "value": "完成"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "id": "c-1",
+      "kind": "decision",
+      "content": [
+        {
+          "type": "text",
+          "value": "排版质量是向量，不是单一分数。"
+        }
+      ]
+    }
+  ]
+}

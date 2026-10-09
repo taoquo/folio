@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0",
+  "id": "ir-inline-rich",
+  "lang": "zh-Hans-CN",
+  "metadata": {
+    "title": "行内结构",
+    "genre": "one-pager",
+    "author": "Folio"
+  },
+  "profiles": {
+    "typography": "folio-one-pager-zh-v1",
+    "page": "a4-one-pager-v1",
+    "theme": "folio-classic-v1"
+  },
+  "blocks": [
+    {
+      "type": "heading",
+      "id": "h-1",
+      "level": 1,
+      "content": [
+        {
+          "type": "text",
+          "value": "行内元素"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "p-1",
+      "content": [
+        {
+          "type": "text",
+          "value": "前文 "
+        },
+        {
+          "type": "text",
+          "value": "重点",
+          "highlight": true
+        },
+        {
+          "type": "text",
+          "value": " 与 "
+        },
+        {
+          "type": "strong",
+          "content": [
+            {
+              "type": "text",
+              "value": "加粗"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "value": " 以及 "
+        },
+        {
+          "type": "emphasis",
+          "content": [
+            {
+              "type": "text",
+              "value": "强调"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "value": " 和 "
+        },
+        {
+          "type": "code",
+          "value": "inline_code"
+        },
+        {
+          "type": "text",
+          "value": "。"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "p-2",
+      "content": [
+        {
+          "type": "text",
+          "value": "参见 "
+        },
+        {
+          "type": "cross_ref",
+          "target": "h-1"
+        },
+        {
+          "type": "text",
+          "value": " 与链接 "
+        },
+        {
+          "type": "link",
+          "target": "https://example.org",
+          "label": [
+            {
+              "type": "text",
+              "value": "示例站点"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+# Taste contracts
+#
+# A taste contract describes what "appropriate" means for one genre, audience
+# and medium. It exists to keep two different questions apart:
+#
+#   hard_requirements  correctness. A violation fails the build.
+#   soft_objectives    craft and preference. A deviation is reported, reviewed,
+#                      and never silently converted into a pass or a failure.
+#
+# The separation is the whole point. `figure_alt: required` is accessibility;
+# `ornament: minimal` is a judgement about this document's audience. Mixing
+# them lets an aesthetic opinion block a correctness gate, or a correctness
+# failure hide behind a taste discussion.
+#
+# Thresholds here are Folio's own starting points, not industry standards. They
+# are calibrated in the quality stage against real renders; a number with no
+# calibration behind it stays marked as provisional.
+
+version: 1
+
+profiles:
+  professional-research-v1:
+    genre: long-doc
+    context:
+      audience: professional
+      media: [screen, print]
+      reading_mode: sustained
+    hard_requirements:
+      missing_glyphs: 0
+      overflow: 0
+      unapproved_font_fallback: 0
+      heading_hierarchy: valid
+      figure_alt: required
+      table_headers: structured
+    soft_objectives:
+      density: medium
+      whitespace_balance: stable
+      line_texture: even
+      decorative_salience: low
+    taste:
+      hierarchy: restrained
+      captions: editorial
+      ornament: minimal
+
+  equity-research-v1:
+    genre: equity-report
+    context:
+      audience: professional-investor
+      media: [screen, print]
+      reading_mode: reference
+    hard_requirements:
+      missing_glyphs: 0
+      overflow: 0
+      unapproved_font_fallback: 0
+      broken_references: 0
+      data_consistency: required
+    soft_objectives:
+      density: compact
+      table_numerals: tabular
+      whitespace_balance: tight
+    taste:
+      heading_personality: restrained
+      ornament: minimal
+
+  resume-v1:
+    genre: resume
+    context:
+      audience: hiring-manager
+      media: [print]
+      reading_mode: scan
+    hard_requirements:
+      # The exact two-page contract is a correctness property here: a resume
+      # that spills to three pages has failed, not merely drifted.
+      page_count: exact
+      missing_glyphs: 0
+      overflow: 0
+      unapproved_font_fallback: 0
+    soft_objectives:
+      density: high
+      section_rhythm: consistent
+      whitespace_balance: tight
+    taste:
+      hierarchy: compact
+      ornament: none
+
+  one-pager-v1:
+    genre: one-pager
+    context:
+      audience: decision-maker
+      media: [screen, print]
+      reading_mode: scan
+    hard_requirements:
+      page_count: exact
+      missing_glyphs: 0
+      overflow: 0
+      unapproved_font_fallback: 0
+    soft_objectives:
+      density: medium
+      single_message_clarity: high
+    taste:
+      hierarchy: assertive
+      ornament: minimal
+
+  letter-v1:
+    genre: letter
+    context:
+      audience: named-recipient
+      media: [print]
+      reading_mode: sustained
+    hard_requirements:
+      page_count: exact
+      missing_glyphs: 0
+      overflow: 0
+      unapproved_font_fallback: 0
+    soft_objectives:
+      whitespace_balance: generous
+      line_texture: even
+    taste:
+      hierarchy: restrained
+      ornament: none
+
+  portfolio-v1:
+    genre: portfolio
+    context:
+      audience: prospective-client
+      media: [screen, print]
+      reading_mode: browse
+    hard_requirements:
+      missing_glyphs: 0
+      overflow: 0
+      unapproved_font_fallback: 0
+      figure_alt: required
+    soft_objectives:
+      density: low
+      figure_prominence: high
+      whitespace_balance: generous
+    taste:
+      hierarchy: editorial
+      ornament: minimal
+
+  changelog-v1:
+    genre: changelog
+    context:
+      audience: existing-user
+      media: [screen]
+      reading_mode: scan
+    hard_requirements:
+      missing_glyphs: 0
+      overflow: 0
+      unapproved_font_fallback: 0
+    soft_objectives:
+      density: medium
+      entry_rhythm: consistent
+    taste:
+      hierarchy: flat
+      ornament: none
+
+  slides-v1:
+    genre: slides
+    context:
+      audience: mixed-room
+      media: [projection]
+      reading_mode: glance
+    hard_requirements:
+      slide_count_within_contract: true
+      missing_glyphs: 0
+      overflow: 0
+    soft_objectives:
+      # Recorded because `--check-rhythm` already enforces a related rule:
+      # no more than five consecutive content slides, and a chapter break in
+      # decks of twelve or more.
+      sequence_variety: required
+      density_variation: required
+    taste:
+      hierarchy: assertive
+      ornament: minimal

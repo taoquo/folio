@@ -425,6 +425,16 @@ python3 scripts/build.py --check            # CSS rule violations only (fast, no
 
 Source templates intentionally keep `{{...}}` fields. Run placeholder checks on completed documents, not on the template library.
 
+Check how a finished document compares with the template it came from, and whether it still matches the approved baseline:
+
+```bash
+python3 scripts/fidelity.py measure          # IR path vs template path, per document type
+python3 scripts/document_baseline.py compare # documents match the approved baseline
+python3 scripts/quality_vector.py <doc.pdf> --genre <genre>   # correctness, typography, pagination
+```
+
+`fidelity.py` reports SSIM and the changed-pixel ratio. All seven document types currently render at SSIM 1.0000 against the template path; a drop means the writer and the template have drifted apart, which is what a template edit can cause.
+
 Visual anomalies (tag double rectangle, font fallback, page break issues) -> `production.md` Part 4.
 
 ## Fonts

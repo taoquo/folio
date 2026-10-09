@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0",
+  "id": "ir-table",
+  "lang": "zh-Hans-CN",
+  "metadata": {
+    "title": "表格",
+    "genre": "one-pager",
+    "author": "Folio"
+  },
+  "profiles": {
+    "typography": "folio-one-pager-zh-v1",
+    "page": "a4-one-pager-v1",
+    "theme": "folio-classic-v1"
+  },
+  "blocks": [
+    {
+      "type": "heading",
+      "id": "h-1",
+      "level": 1,
+      "content": [
+        {
+          "type": "text",
+          "value": "指标对照"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "id": "t-1",
+      "caption": [
+        {
+          "type": "text",
+          "value": "核心指标"
+        }
+      ],
+      "columns": [
+        {
+          "id": "c1",
+          "label": [
+            {
+              "type": "text",
+              "value": "指标"
+            }
+          ]
+        },
+        {
+          "id": "c2",
+          "label": [
+            {
+              "type": "text",
+              "value": "当前"
+            }
+          ],
+          "kind": "number"
+        },
+        {
+          "id": "c3",
+          "label": [
+            {
+              "type": "text",
+              "value": "目标"
+            }
+          ],
+          "kind": "number"
+        }
+      ],
+      "rows": [
+        {
+          "id": "r1",
+          "cells": [
+            [
+              {
+                "type": "text",
+                "value": "页数"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "value": "7"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "value": "5-9"
+              }
+            ]
+          ]
+        },
+        {
+          "id": "r2",
+          "cells": [
+            [
+              {
+                "type": "text",
+                "value": "确定性"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "value": "14"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "value": "14"
+              }
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}

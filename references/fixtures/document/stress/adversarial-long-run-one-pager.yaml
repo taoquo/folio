@@ -1,0 +1,51 @@
+id: adversarial-long-run-one-pager
+genre: one-pager
+language: zh-Hans-CN
+script_profile: han-only
+template: one-pager.html
+adversarial: true
+purpose:
+  - overflow-boundary
+  - unbreakable-run
+content:
+  "{{文档标题}}": "边界测试 Boundary"
+  "{{作者}}": "边界样本"
+  "{{摘要}}": "不可断长串测试：AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 11111111111111111111111111111111111111111111111111111111111111111111111111111111 以及中文长串 测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试 用于观察溢出与强制断行行为。"
+  "{{关键词}}": "边界, 禁则, 1,024"
+  "{{文档主标题（serif，2 行内，动词+名词结构最好）}}": "边界测试 Boundary"
+  "{{一行副标题 / 一句核心论点}}": "边界测试 Boundary"
+  "{{作者名}}": "边界样本"
+  "{{日期 YYYY.MM.DD}}": "2026-10-03"
+  "{{版本号 / 状态}}": "内部"
+  "{{数字}}": "1,024"
+  "{{标签描述}}": "边界, 禁则, 1,024"
+  "{{建议采取的单一动作：批准 / 暂缓 / 追加资源 / 进入下一阶段。}}": "不可断长串测试：AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 11111111111111111111111111111111111111111111111111111111111111111111111111111111 以及中文长串 测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试 用于观察溢出与强制断行行为。"
+  "{{负责人 / 截止日}}": "不可断长串测试：AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 11111111111111111111111111111111111111111111111111111111111111111111111111111111 以及中文长串 测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试 用于观察溢出与强制断行行为。"
+  "{{section 标题 1}}": "边界测试 Boundary"
+  "{{这里写 1-2 句段落，展开论点。}}": "不可断长串测试：AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 11111111111111111111111111111111111111111111111111111111111111111111111111111111 以及中文长串 测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试 用于观察溢出与强制断行行为。"
+  "{{短 bullet：数据/观察/判断}}": "1,024"
+  "{{短 bullet}}": "不可断长串测试：AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 11111111111111111111111111111111111111111111111111111111111111111111111111111111 以及中文长串 测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试 用于观察溢出与强制断行行为。"
+  "{{section 标题 2}}": "边界测试 Boundary"
+  "{{1-2 句段落。}}": "不可断长串测试：AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 11111111111111111111111111111111111111111111111111111111111111111111111111111111 以及中文长串 测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试 用于观察溢出与强制断行行为。"
+  "{{阶段标题}}": "边界测试 Boundary"
+  "{{一句解释}}": "不可断长串测试：AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 11111111111111111111111111111111111111111111111111111111111111111111111111111111 以及中文长串 测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试 用于观察溢出与强制断行行为。"
+  "{{关键引用 / 重要提示 / 核心 takeaway。比正文更需要引起注意的内容放这里。}}": "不可断长串测试：AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 11111111111111111111111111111111111111111111111111111111111111111111111111111111 以及中文长串 测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试 用于观察溢出与强制断行行为。"
+  "{{机密级别 / 内部 / 公开 等}}": "内部"
+  "{{页码 / 联系方式}}": "不可断长串测试：AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 11111111111111111111111111111111111111111111111111111111111111111111111111111111 以及中文长串 测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试 用于观察溢出与强制断行行为。"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 20
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    forbidden_break: 0
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Boundary content for long-run: overflow-boundary; unbreakable-run.
+    It exists to fail loudly if line breaking or alignment regresses.
+review:
+  expert_required: true
+  note: Inspect by eye; automated checks cannot judge every boundary case.

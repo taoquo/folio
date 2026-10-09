@@ -318,6 +318,24 @@ Folio also carries a compact operating reference in [CHEATSHEET.md](CHEATSHEET.m
 - Use `references/production.md` when builds, page counts, or render behavior go wrong
 - Use `references/web-foundation.md`, `references/web-reading.md`, `references/web-workspace.md`, and `references/web-checklist.md` when guiding browser-page design
 
+### Document engine
+
+Documents are produced through a semantic model, and the HTML template is one renderer of it.
+
+- `scripts/document_ir/` holds the model: no font size, colour, margin or coordinate appears in it, so a theme is referenced by name and never inlined
+- The compatibility writer fills the template's own markup rather than rebuilding it, because a template's appearance is its DOM shape, not its class names
+- `FOLIO_PIPELINE` chooses the path: `ir` (default), `ir-shadow`, or `legacy` for rollback
+- PPTX is produced by the same model, so slide decks are no longer a separate code path
+
+Every claim about a document is checkable:
+
+```bash
+python3 scripts/fidelity.py measure          # IR path vs template path, all seven types at SSIM 1.0000
+python3 scripts/corpus.py validate           # 128 fixtures across four writing systems
+python3 scripts/document_baseline.py compare # documents match the approved baseline
+python3 scripts/migration.py status          # IR readiness per document type
+```
+
 ## Layout Rules
 
 These are the minimum rules that matter most.

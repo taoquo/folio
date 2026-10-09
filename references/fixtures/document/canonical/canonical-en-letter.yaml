@@ -1,0 +1,42 @@
+id: canonical-en-letter
+genre: letter
+language: en-US
+script_profile: latin-only
+template: letter-en.html
+purpose:
+  - canonical
+  - one-page-density
+content:
+  "{{LETTER_SUBJECT}}": "This paragraph exercises the letter template's line texture."
+  "{{AUTHOR}}": "Folio maintainers"
+  "{{DESCRIPTION}}": "This paragraph exercises the letter template's line texture."
+  "{{KEYWORDS}}": "信函, 排版"
+  "{{SENDER_NAME}}": "Folio maintainers"
+  "{{SENDER_ADDRESS / DEPARTMENT / ORGANIZATION}}": "This paragraph exercises the letter template's line texture."
+  "{{PHONE}}": "This paragraph exercises the letter template's line texture."
+  "{{EMAIL}}": "folio@example.org"
+  "{{DATE, e.g. April 18, 2026}}": "2026-10-03"
+  "{{RECIPIENT_NAME_OR_TITLE}}": "Folio maintainers"
+  "{{RECIPIENT_ORG / DEPARTMENT}}": "This paragraph exercises the letter template's line texture."
+  "{{One-sentence subject line: what this letter is about.}}": "This paragraph exercises the letter template's line texture."
+  "{{NAME}}": "Folio maintainers"
+  "{{Paragraph 1: state the purpose. Why you are writing and the core intent. No preamble. Two sentences at most so the reader knows what you want from this letter.}}": "This paragraph exercises the letter template's line texture."
+  "{{Paragraph 3: be specific. What you want the reader to do, by when, and how to reach you. Give the action a clear exit.}}": "This paragraph exercises the letter template's line texture."
+  "{{Paragraph 4 (optional): close. Express anticipation, gratitude, or a courteous sign-off line.}}": "This paragraph exercises the letter template's line texture."
+  "{{HANDWRITTEN_NAME_OR_SIGNATURE}}": "Folio maintainers"
+  "{{TITLE · DEPARTMENT}}": "This paragraph exercises the letter template's line texture."
+  "{{DATE (optional restatement)}}": "2026-10-03"
+  "{{List - ① Attachment 1 · ② Attachment 2}}": "This paragraph exercises the letter template's line texture."
+expected:
+  hard:
+    pages: 1
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    density: medium
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: >-
+    Authored for the latin-only composition. Placeholder names that contain
+    quotation marks were skipped; see the placeholder-unification decision.

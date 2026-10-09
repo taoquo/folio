@@ -16,6 +16,7 @@
   /* Palatino is a system font, no @font-face needed */
   @font-face { font-family: "JetBrains Mono"; src: url("../fonts/JetBrainsMono.woff2") format("woff2"); font-weight: 400; font-style: normal; }
   @font-face { font-family: "JetBrains Mono"; src: url("../fonts/JetBrainsMono.woff2") format("woff2"); font-weight: 500; font-style: normal; }
+  @font-face { font-family: "Source Serif 4"; src: url("../fonts/SourceSerif4Variable-Roman.ttf") format("truetype"); font-weight: 200 900; font-style: normal; }
 
   @page {
     size: A4;
@@ -24,14 +25,14 @@
 
     @top-right {
       content: string(section-title);
-      font-family: Charter, Georgia, Palatino, serif;
+      font-family: var(--serif);
       font-size: 8pt;
       color: #85776F;
     }
 
     @bottom-center {
       content: counter(page) "  ·  {{DOC_TITLE}}";
-      font-family: Charter, Georgia, Palatino, serif;
+      font-family: var(--serif);
       font-size: 9pt;
       color: #85776F;
     }
@@ -55,7 +56,7 @@
     --border-soft:#E8DED6;
     --tag-bg:    #F1D2CC;
 
-    --serif: Charter, Georgia,
+    --serif: "Source Serif 4", Charter, Georgia,
              Palatino, "Times New Roman", serif;
     --sans: var(--serif);
     --mono:  "JetBrains Mono", "SF Mono", "Fira Code",
@@ -73,6 +74,10 @@
     font-family: var(--serif);
     font-size: 10.5pt;
     line-height: 1.55;
+    /* Paragraph flow; declared in references/profiles/typography/folio-v1.yaml. */
+    widows: 2;
+    orphans: 2;
+    hyphens: manual;
   }
 
   .sans { font-family: var(--sans); }

@@ -1,0 +1,48 @@
+id: canonical-digits-one-pager
+genre: one-pager
+language: en-US
+script_profile: digits-heavy
+purpose:
+  - canonical
+  - one-page-density
+  - numeric-alignment
+  - tabular-figures
+content:
+  "{{EYEBROW - e.g. Proposal / Report / Exec Summary}}": "2026 · Q3"
+  "{{Document headline - verb-led, fits in two lines, bookish.}}": "12.5% faster at p95 18.25 ms"
+  "{{DOC_TITLE}}": "12.5% faster at p95 18.25 ms"
+  "{{One-line subtitle or the single sharpest claim.}}": "1,024 pages · 42 runs · 99.95% pass rate · 0.001 tolerance"
+  "{{~30-40 words. The one paragraph that sets the whole document's tone. Use <span class="hl">brand-color emphasis</span> on the sharpest claim or number. Everything below is in service of this.}}": "Render time fell from <strong>18.25 ms to 12.50 ms</strong> across 1,024 pages. Median 12.5%, p95 18.25%, worst case 1,204.75 ms. Tolerances stay within 0.001 at 1,000,000 scale, and 8 templates cover 23 diagram types."
+  "{{Section one}}": "Measured results"
+  "{{Section two}}": "Method"
+  "{{One or two sentences expanding the claim.}}": "Across 42 runs and 1,024 pages, 99.95% of renders matched exactly. The remaining 0.05% differed by 0.001 or less. Font sizes stay in 9.0-12.0 pt and line heights in 1.35-1.55, keeping 1,234 tests within 0.25 ms of the median."
+  "{{One or two sentences.}}": "12.5% median, 18.25% p95, 0.001 tolerance."
+  "{{Short bullet: a data point, observation, or judgment.}}": "3,000 fixtures at a 99.95% pass rate over 42 runs"
+  "{{Short bullet with <span class="hl">key figure</span>.}}": "0.001 rounding error eliminated at 1,000,000 scale"
+  "{{Short bullet.}}": "1,024 pages, 24 columns, 4,096 tokens aligned"
+  "{{Key quote / critical note / the single takeaway that must not be missed.}}": "99.9% of 10,000 samples landed within 0.25 ms of the median."
+  "{{The single recommended action: approve, pause, fund, or move to the next phase.}}": "Ship the 12.5% improvement and keep the 0.001 tolerance"
+  "{{Owner / due date}}": "2026-10-03 · 12 contributors · 42 pull requests"
+  "{{STAGE_TITLE}}": "Stage 1 of 3: 1,024 pages measured"
+  "{{One-line explanation.}}": "12.5% median, 18.25% p95, 0.001 tolerance."
+  "{{NUMBER}}": "1,024"
+  "{{LABEL}}": "1240, 98.7%, 0.001, 1,024"
+  "{{DESCRIPTION}}": "12.5% faster median, 99.95% exact renders across 1,024 pages."
+  "{{AUTHOR}}": "Folio"
+  "{{AUTHOR}}": "Folio"
+  "{{YYYY.MM.DD}}": "2026.10.03"
+  "{{VERSION / STATUS}}": "v1.0 · 草案"
+  "{{CONFIDENTIALITY - internal / public / draft}}": "内部"
+  "{{PAGE / CONTACT}}": "1 / folio.dev"
+  "{{KEYWORDS}}": "1240, 98.7%, 0.001, 1,024"
+expected:
+  hard:
+    pages: 1
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    density: medium
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: Authored to exercise the one-pager layout under this script profile.

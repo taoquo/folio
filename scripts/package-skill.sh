@@ -86,13 +86,25 @@ if [ -s "$EXTRA_MANIFEST" ]; then
   exit 1
 fi
 
-if zipinfo -1 "$OUT" | grep -qE 'assets/fonts/LXGWWenKai-(Regular|Medium)\.ttf$'; then
+# The listing is a variable rather than a pipe for every check below: under
+# `set -o pipefail`, `zipinfo | grep -q` is a race between grep exiting early
+# and zipinfo taking SIGPIPE, which makes the result depend on archive size.
+ARCHIVE_LISTING="$(zipinfo -1 "$OUT")"
+
+if grep -qE 'assets/fonts/LXGWWenKai-(Regular|Medium)\.ttf$' <<<"$ARCHIVE_LISTING"; then
   echo "ERROR: bundled LXGWWenKai TTF found in $OUT" >&2
   exit 1
 fi
 
-if zipinfo -1 "$OUT" | grep -qE '^\.font-libs/'; then
+if grep -qE '^\.font-libs/' <<<"$ARCHIVE_LISTING"; then
   echo "ERROR: bundled .font-libs found in $OUT" >&2
+  exit 1
+fi
+
+# English body text renders from this font. A package without it cannot set an
+# English document correctly, and no other step in the pipeline would notice.
+if ! grep -q 'assets/fonts/SourceSerif4Variable-Roman\.ttf' <<<"$ARCHIVE_LISTING"; then
+  echo "ERROR: English body font missing from $OUT (assets/fonts/SourceSerif4Variable-Roman.ttf)" >&2
   exit 1
 fi
 

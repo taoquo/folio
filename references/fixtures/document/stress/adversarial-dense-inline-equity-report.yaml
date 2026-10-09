@@ -1,0 +1,57 @@
+id: adversarial-dense-inline-equity-report
+genre: equity-report
+language: zh-Hans-CN
+script_profile: digits-heavy
+template: equity-report.html
+adversarial: true
+purpose:
+  - inline-structure
+  - spacing-stress
+content:
+  "{{股票名称}}": "边界测试 Boundary"
+  "{{作者}}": "边界样本"
+  "{{摘要}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{关键词}}": "边界, 禁则, 1,024"
+  "{{公司名称}}": "边界测试 Boundary"
+  "{{股票代码}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{行业}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{交易所}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{一句核心判断}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{当前价格}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{日期}}": "2026-10-03"
+  "{{数字}}": "1,024"
+  "{{评级}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{目标价}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{周期}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{一句话总结：买入/持有/观望的核心理由。}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{数据}}": "1,024"
+  "{{图表标题}}": "边界测试 Boundary"
+  "{{行业格局概述，1-2 段。}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{目标公司}}": "边界测试 Boundary"
+  "{{竞品 A}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{竞品 B}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{竞品 C}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{风险类型 1}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{风险描述}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{风险类型 2}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{风险类型 3}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{风险类型 4}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{3-5 句总结。包含目标价（如有）、评级建议、核心催化剂、关键假设。}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{机构名 / 免责声明}}": "示例机构"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 20
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    forbidden_break: 0
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Boundary content for dense-inline: inline-structure; spacing-stress.
+    It exists to fail loudly if line breaking or alignment regresses.
+review:
+  expert_required: true
+  note: Inspect by eye; automated checks cannot judge every boundary case.

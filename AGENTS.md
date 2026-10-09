@@ -18,6 +18,11 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 | `assets/diagrams/generated/catalog/` | 23 generated catalog artifacts per format, SVG / PNG / PDF | Medium |
 | `scripts/build.py` | PDF / PPTX build and verification script, plus placeholder / orphan / rhythm checks | Low |
 | `scripts/folio.py` | Drawing DSL CLI, routing, render, import, catalog | Low |
+| `scripts/page_contracts.py` | Single source for page-count contracts, consumed by every checker | Low |
+| `scripts/document_ir/` | Document IR: model, validator, readers, HTML and PPTX writers | Medium |
+| `scripts/renderers/` | Renderer protocol and the WeasyPrint adapter | Low |
+| `scripts/pipeline.py` | Chooses the render path via `FOLIO_PIPELINE` | Low |
+| `scripts/fidelity.py` | Measures the IR path against the template path, per document type | Medium |
 | `scripts/package-skill.sh` | Codex Desktop ZIP packager, excluding large fonts | Low |
 | `CHANGELOG.md` | Aggregated release highlights linking to full notes | Medium |
 | `docs/releases/` | Archived release notes for superseded versions | Low |
@@ -41,6 +46,18 @@ python3 scripts/build.py --check-orphans [path/to/doc.pdf]  # scan for orphan tr
 python3 scripts/build.py --check-rhythm  # warn on monotonous slide sequences, as CI does
 ```
 
+Document engine checks. These gate the IR path and the measured quality of every document:
+
+```bash
+python3 scripts/corpus.py validate            # every fixture is well formed
+python3 scripts/corpus.py coverage            # composition and adversarial share
+python3 scripts/profile_check.py              # 36 profiles, shape and meaning
+python3 scripts/document_baseline.py compare  # documents match the approved baseline
+python3 scripts/pipeline.py rollback-drill    # every mode can be left by configuration
+python3 scripts/migration.py status           # IR readiness per document type
+python3 scripts/fidelity.py measure           # IR path against the template path
+```
+
 Lint runs from the shared `pyproject.toml` config, so local and CI results match:
 
 ```bash
@@ -49,7 +66,32 @@ ruff check .                      # same rule set the fast-gate CI job enforces
 
 Expected page counts: one-pager 1 / letter 1 / resume 2 strict / long-doc 7 +/- 2 / portfolio 6 +/- 2 / slides 7 +/- 3 / equity-report 2-3 / changelog 1-2
 
+Page contracts live in `scripts/page_contracts.py` and are consumed by both `build.py` (hard gate) and `stabilize.py` (overflow solver). Change them there, never in a consumer.
+
 **PDF metadata**: `build.py` automatically sets `/Author` from `git config user.name` (or `FOLIO_AUTHOR` env var) when the HTML template contains a placeholder like `{{作者}}` or `{{AUTHOR}}`. `/Producer` and `/Creator` are always set to `"Folio"`.
+
+## The IR path
+
+Documents are produced through a semantic model, and the HTML template is one renderer of it.
+
+```bash
+FOLIO_PIPELINE=ir          # the default: the document is built from the IR
+FOLIO_PIPELINE=ir-shadow   # the template output is delivered; the IR runs alongside
+FOLIO_PIPELINE=legacy      # the template path alone, kept for rollback
+```
+
+The compatibility writer fills the template's own markup rather than rebuilding it, because a template's appearance is its DOM shape and not its class names. Two consequences follow, and both matter:
+
+- **A template edit needs the mapping re-checked.** Run `python3 scripts/fidelity.py measure`. All seven document types render at SSIM 1.0000 against the template path; a drop means the writer and the template have drifted apart.
+- **A structural label belongs in a placeholder.** If a template hard-codes wording that the IR should carry — a section heading, a stage label — promote it to a placeholder and give it a default in `scripts/section_defaults.py`, so the template still renders on its own.
+
+IR documents declare no font size, colour, margin or coordinate. A test walks every model field against a banned-vocabulary list, so a theme is referenced by name and never inlined. `references/schemas/document-1.0.schema.json` is the shape; `scripts/document_ir/validate.py` is the gate.
+
+PPTX is produced by `scripts/document_ir/writers/pptx.py`. Slides have no template path, so `fidelity.py` does not measure them.
+
+## Documentation language
+
+Chinese and English documentation must stay in step. `README.md` and `README.zh-CN.md` are a pair, and so are `MANIFESTO.zh-CN.md` and `references/manifesto.md`. A change to one is a change to both; do not leave a translated pair describing different products. `references/design.md`, `references/writing.md` and `references/production.md` are English-only sources and have no Chinese duplicate by design.
 
 ## Demo Screenshots
 

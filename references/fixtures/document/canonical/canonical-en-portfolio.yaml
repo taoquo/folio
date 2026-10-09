@@ -1,0 +1,60 @@
+id: canonical-en-portfolio
+genre: portfolio
+language: en-US
+script_profile: latin-only
+template: portfolio-en.html
+purpose:
+  - canonical
+  - multi-page-layout
+content:
+  "{{NAME}}": "Folio maintainers"
+  "{{DESCRIPTION}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{KEYWORDS}}": "Typography engineering"
+  "{{YEAR_RANGE - e.g. Selected Works 2023–2026}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{One-line self-description or portfolio theme.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{DISCIPLINE / ROLE}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{LOCATION}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{EMAIL}}": "folio@example.org"
+  "{{WEBSITE / SOCIAL}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Single-line positioning headline.}}": "Make document typography measurable"
+  "{{Two or three lines of introduction in serif. Not sales-y. Describe in your own words what you care about and what you do well.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{A paragraph on your past experience.}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{A paragraph on your current focus or methodology.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{PROJECT_TYPE - e.g. Product Design / Open Source}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{PROJECT_NAME}}": "Folio maintainers"
+  "{{One-line description of what this project did.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{DATE - e.g. 2025.04 - 2026.02}}": "2026-10-03"
+  "{{Tag 1}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Tag 2}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Tag 3}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{A short project thesis: why this work exists, what it notices, and what it makes visible.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{Medium, system, technology, or site condition.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{Results - <span class="hl">figures</span>, feedback, impact.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{NUMBER}}": "1,024"
+  "{{LABEL}}": "Typography engineering"
+  "{{PROJECT_TYPE}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{One-line description.}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{DATE}}": "2026-10-03"
+  "{{Tag}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Project thesis.}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Medium / technology / site condition.}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Outcome.}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{WORK_TITLE}}": "Make document typography measurable"
+  "{{LINK / STATUS}}": "2026-10-03"
+  "{{One-line opening - e.g. "Open to new collaborations."}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{PHONE}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{URL}}": "https://github.com/taoquo/folio"
+  "{{PLATFORM}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{HANDLE}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 9
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    density: medium
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: Authored to exercise the portfolio template under the latin-only composition.

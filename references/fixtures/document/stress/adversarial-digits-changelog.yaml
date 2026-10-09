@@ -1,0 +1,44 @@
+id: adversarial-digits-changelog
+genre: changelog
+language: en-US
+script_profile: digits-heavy
+adversarial: true
+purpose:
+  - numeric-alignment
+  - tabular-figures
+  - extreme-values
+  - overflow-boundary
+content:
+  "{{VERSION}}": v999.999.999
+  "{{RELEASE_NAME}}": Extreme numerals
+  "{{RELEASE_DATE}}": "2026-10-03"
+  "{{PROJECT_NAME}}": Folio
+  "{{PROJECT_URL}}": https://github.com/taoquo/folio
+  "{{One-line project description.}}": Extremes from 0.0000001 to 9,999,999,999,999
+  "{{AUTHOR}}": Folio
+  "{{KEYWORDS}}": 9999999999, 0.0000001, 1e-7, 1.7976931348623157e308
+  "{{One-line release highlight.}}": Values spanning 22 orders of magnitude stay aligned
+  "{{DESCRIPTION}}": Widths are tested from 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 and 2.2250738585072014e-308 bound the range. Percentages run 0.0001% to 100.0000%. Timestamps 2026-10-03T00:00:00.000000Z and durations 0:00:00.000001 sit beside integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890.
+  "{{New feature 1: one-line description.}}": 3.14159265358979323846264338327950288 stored without truncation
+  "{{New feature 2: one-line description.}}": 0.1 + 0.2 reported as 0.30000000000000004
+  "{{New feature 3: one-line description.}}": 99.9999999999% uptime over 1,000,000,000 requests
+  "{{Fix 1: one-line description.}}": 9007199254740993 no longer rounded to 9007199254740992
+  "{{Fix 2: one-line description.}}": 0.0000001 no longer rendered as 1e-07
+  "{{Fix 3: one-line description.}}": 1,234.5678 aligned against 9,999,999,999,999.9999
+  "{{Breaking change description.}}": Values beyond 2^53 now render in full
+  "{{Thank contributors, e.g. \"Thanks to @user1, @user2 for their contributions.\"}}": Thanks to 1,024 contributors across 9,999 pull requests.
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 2
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    table_numerals: tabular
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: Extreme values are deliberate; this fixture finds digit-width and overflow regressions.
+review:
+  expert_required: true
+  note: Check that long numerals do not overflow their column.

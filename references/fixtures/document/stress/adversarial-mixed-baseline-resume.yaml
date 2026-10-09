@@ -1,0 +1,96 @@
+id: adversarial-mixed-baseline-resume
+genre: resume
+language: zh-Hans-CN
+script_profile: han-only
+template: resume.html
+adversarial: true
+purpose:
+  - mixed-script-baseline
+  - font-fallback
+content:
+  "{{姓名}}": "边界样本"
+  "{{摘要}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{关键词}}": "边界, 禁则, 1,024"
+  "{{变量}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{别名/英文名}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{GITHUB_URL}}": "https://example.org/boundary"
+  "{{GITHUB_ID}}": "https://example.org/boundary"
+  "{{X_URL}}": "https://example.org/boundary"
+  "{{X_ID}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{PHONE}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{EMAIL}}": "boundary@example.org"
+  "{{年龄}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{城市}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{数字}}": "1,024"
+  "{{单位}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{标签}}": "边界, 禁则, 1,024"
+  "{{80 字以内。建议结构：现任职位 + 级别 + 时长。团队构成（人数、梯队、协作方）。长期演进方向。核心沉淀领域（4-6 个方向）。}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{起始时间}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{关键里程碑}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{年份}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{阶段标题}}": "边界测试 Boundary"
+  "{{一句解释这一步的意义}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{项目名}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{项目类型}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{~60 字：项目是什么 + 为什么做 + 你的位置}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{~80 字：技术方案 / 关键决策 / 执行路径}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{角色定位}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{~60 字}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{~80 字}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{角色}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{项目背景和定位}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{执行路径}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{时间跨度}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{一句副标题}}": "边界测试 Boundary"
+  "{{一句自我定位}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{简述开发者身份：设计审美 / 独立完成流程 / 跨语言实战 / 用户反馈}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{STARS_TOTAL}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{FORKS_TOTAL}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{FOLLOWERS_TOTAL}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{URL}}": "https://example.org/boundary"
+  "{{语言 + 核心定位 + 平台}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{STARS}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{描述}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{亮点 TAG}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{这个项目的独特故事：开源时机 / 传播范围 / 知名人物推荐等}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{时间}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{事件标题}}": "边界测试 Boundary"
+  "{{具体做了什么判断或行动，为什么证明判断力}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{具体做了什么判断或行动}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{平台}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{HANDLE}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{粉丝数}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{博客 / 周刊 / 其他内容产品简介}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{副标题}}": "边界测试 Boundary"
+  "{{文章标题}}": "边界测试 Boundary"
+  "{{日期}}": "2026-10-03"
+  "{{浏览量 / 赞数 / 影响力指标}}": "1,024"
+  "{{浏览量 / 赞数}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{演讲标题}}": "边界测试 Boundary"
+  "{{主办方 / 地点}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{能力 1<br>标签}}": "边界, 禁则, 1,024"
+  "{{能力 2<br>标签}}": "边界, 禁则, 1,024"
+  "{{能力 3<br>标签}}": "边界, 禁则, 1,024"
+  "{{能力 4<br>标签}}": "边界, 禁则, 1,024"
+  "{{能力 5<br>标签}}": "边界, 禁则, 1,024"
+  "{{学校}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{学院}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{专业}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{起止时间}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 20
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    forbidden_break: 0
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Boundary content for mixed-baseline: mixed-script-baseline; font-fallback.
+    It exists to fail loudly if line breaking or alignment regresses.
+review:
+  expert_required: true
+  note: Inspect by eye; automated checks cannot judge every boundary case.

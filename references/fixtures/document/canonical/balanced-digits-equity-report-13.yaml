@@ -1,0 +1,52 @@
+id: balanced-digits-equity-report-13
+genre: equity-report
+language: en-US
+script_profile: digits-heavy
+template: equity-report-en.html
+purpose:
+  - composition-balance
+  - digits-heavy
+content:
+  "{{COMPANY_NAME}}": "Corpus coverage fixture"
+  "{{AUTHOR}}": "Corpus sample"
+  "{{DESCRIPTION}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{KEYWORDS}}": "corpus, baseline, 1,024"
+  "{{EYEBROW - e.g. Equity Research / Valuation / Investment Memo}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{TICKER}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{SECTOR}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{EXCHANGE}}": "1,024"
+  "{{One-line thesis.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{CURRENT_PRICE}}": "1,024"
+  "{{DATE}}": "2026-10-03"
+  "{{NUMBER}}": "1,024"
+  "{{RATING}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{TARGET}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{HORIZON}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{One-line verdict: buy / hold / watch, and the single strongest reason.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{VAL}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{Chart title.}}": "Corpus coverage fixture"
+  "{{Industry landscape overview, one or two paragraphs.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{COMP_A}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{COMP_B}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{COMP_C}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{Risk Type 1}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{Risk description.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{Risk Type 2}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{Risk Type 3}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{Risk Type 4}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{Three to five sentences summarizing the position. Include target price (if applicable), rating, key catalysts, and core assumptions.}}": "1,024"
+  "{{FIRM / DISCLAIMER}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    composition: digits-heavy
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Added so digits-heavy coverage matches the other compositions;
+    an uneven corpus under-tests one writing system while appearing complete.

@@ -1,0 +1,134 @@
+# Typography profiles
+#
+# Typography is how text is set: family, size, leading, tracking, and the
+# paragraph-level rules that decide where lines and pages break. It is separate
+# from Theme (colour, ornament), so changing a theme cannot silently reflow a
+# document.
+#
+# Values are extracted from the templates as they actually render today. They
+# are not aspirational: a profile that disagrees with its template is a bug in
+# the profile until the template is deliberately changed.
+#
+# `widows`, `orphans` and `hyphens` are declared here even though no template
+# sets them today. Naming them is the point: an unset value is a decision that
+# was never made, and the quality stage measures the result of that omission.
+
+version: 1
+
+defaults:
+  # Shared paragraph rules. A document profile may tighten these but should not
+  # silently loosen them without a recorded reason.
+  paragraph:
+    widows: 2
+    orphans: 2
+    max_consecutive_hyphens: 2
+    hyphenation: manual
+    alignment: start
+
+  numbers:
+    # Data tables read as columns; prose reads as text.
+    data_tables: tabular
+    prose: proportional
+
+profiles:
+  folio-editorial-zh-v1:
+    language: zh-hans-cn-v1
+    body:
+      family: [LXGW WenKai, Source Han Serif SC, Noto Serif CJK SC, Songti SC, STSong, Georgia]
+      size_pt: 10.5
+      leading: 1.55
+      weight: 400
+      alignment: start
+    roles:
+      heading_1: {size_pt: 28, leading: 1.15, weight: 500, keep_with_next: true}
+      heading_2: {size_pt: 16, leading: 1.25, weight: 500, keep_with_next: true}
+      caption: {size_pt: 9, leading: 1.4, weight: 400}
+
+  folio-editorial-en-v1:
+    language: en-us-v1
+    body:
+      family: [Source Serif 4, Charter, Georgia, Palatino, Times New Roman]
+      size_pt: 10.5
+      leading: 1.55
+      weight: 400
+      alignment: start
+    roles:
+      heading_1: {size_pt: 28, leading: 1.15, weight: 500, keep_with_next: true}
+      heading_2: {size_pt: 16, leading: 1.25, weight: 500, keep_with_next: true}
+      caption: {size_pt: 9, leading: 1.4, weight: 400}
+
+  # Per-genre refinements. Sizes below are the values the templates render with
+  # today; the profile makes them reviewable rather than buried in CSS.
+  folio-one-pager-zh-v1:
+    extends: folio-editorial-zh-v1
+    genre: one-pager
+    body: {size_pt: 10, leading: 1.45}
+
+  folio-one-pager-en-v1:
+    extends: folio-editorial-en-v1
+    genre: one-pager
+    body: {size_pt: 10, leading: 1.45}
+
+  folio-letter-zh-v1:
+    extends: folio-editorial-zh-v1
+    genre: letter
+    body: {size_pt: 11, leading: 1.5}
+
+  folio-letter-en-v1:
+    extends: folio-editorial-en-v1
+    genre: letter
+    body: {size_pt: 11, leading: 1.5}
+
+  folio-long-doc-zh-v1:
+    extends: folio-editorial-zh-v1
+    genre: long-doc
+
+  folio-long-doc-en-v1:
+    extends: folio-editorial-en-v1
+    genre: long-doc
+
+  folio-portfolio-zh-v1:
+    extends: folio-editorial-zh-v1
+    genre: portfolio
+    body: {size_pt: 10, leading: 1.45}
+
+  folio-portfolio-en-v1:
+    extends: folio-editorial-en-v1
+    genre: portfolio
+    body: {size_pt: 10, leading: 1.45}
+
+  folio-resume-zh-v1:
+    extends: folio-editorial-zh-v1
+    genre: resume
+    body: {size_pt: 9.2, leading: 1.42}
+    paragraph:
+      # The tightest document in the set: its exact two-page contract leaves no
+      # room for a loose paragraph rule.
+      widows: 2
+      orphans: 2
+
+  folio-resume-en-v1:
+    extends: folio-editorial-en-v1
+    genre: resume
+    body: {size_pt: 9.4, leading: 1.42}
+    paragraph:
+      widows: 2
+      orphans: 2
+
+  folio-equity-report-zh-v1:
+    extends: folio-editorial-zh-v1
+    genre: equity-report
+    body: {size_pt: 9.8, leading: 1.45}
+
+  folio-equity-report-en-v1:
+    extends: folio-editorial-en-v1
+    genre: equity-report
+    body: {size_pt: 9.8, leading: 1.45}
+
+  folio-changelog-zh-v1:
+    extends: folio-editorial-zh-v1
+    genre: changelog
+
+  folio-changelog-en-v1:
+    extends: folio-editorial-en-v1
+    genre: changelog

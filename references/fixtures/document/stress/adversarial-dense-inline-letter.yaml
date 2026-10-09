@@ -1,0 +1,46 @@
+id: adversarial-dense-inline-letter
+genre: letter
+language: zh-Hans-CN
+script_profile: han-only
+template: letter.html
+adversarial: true
+purpose:
+  - inline-structure
+  - spacing-stress
+content:
+  "{{信件主题}}": "边界测试 Boundary"
+  "{{作者}}": "边界样本"
+  "{{摘要}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{关键词}}": "边界, 禁则, 1,024"
+  "{{寄件人姓名}}": "边界样本"
+  "{{寄件人地址 / 部门 / 机构}}": "边界样本"
+  "{{电话}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{EMAIL}}": "boundary@example.org"
+  "{{日期 如 2026 年 4 月 18 日}}": "2026-10-03"
+  "{{收件人姓名 / 称谓}}": "边界样本"
+  "{{收件人机构 / 部门}}": "示例机构"
+  "{{信件主题，一句话说清}}": "边界测试 Boundary"
+  "{{第一段：破题。说明写这封信的缘由和核心意图。 不要绕弯，1-2 句话让读者知道你要说什么。}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{第三段：具体。说清楚你希望对方做什么、 何时做、怎么联系。让行动有明确出口。}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{第四段（可选）：收尾。表达期待、致谢或礼貌性结束语。}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+  "{{签名 / 亲笔姓名}}": "边界样本"
+  "{{职位 · 部门}}": "示例机构"
+  "{{日期复写 · 可选}}": "2026-10-03"
+  "{{附件清单：① 附件名 1 · ② 附件名 2}}": "行内结构：普通文本 与 加粗、强调、inline code 交替出现，用于观察行距扰动与断行机会。"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 20
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    forbidden_break: 0
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Boundary content for dense-inline: inline-structure; spacing-stress.
+    It exists to fail loudly if line breaking or alignment regresses.
+review:
+  expert_required: true
+  note: Inspect by eye; automated checks cannot judge every boundary case.

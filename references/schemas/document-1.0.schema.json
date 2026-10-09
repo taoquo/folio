@@ -1,0 +1,574 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.dev/schema/document-1.0.json",
+  "title": "Folio Document IR",
+  "description": "What a document is, not how it is drawn. No node carries coordinates, colours, font sizes, margins or renderer-specific CSS; those belong to a profile or a renderer. This boundary is copied from the Drawing DSL, where the semantic layer is likewise free of geometry and style.",
+  "type": "object",
+  "required": ["schema_version", "id", "lang", "metadata", "blocks"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "description": "Independent of the Folio release version. Only a breaking semantic change raises this."
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "lang": {
+      "type": "string",
+      "minLength": 2,
+      "description": "BCP 47 tag of the document's primary language."
+    },
+    "direction": {
+      "enum": ["ltr", "rtl"],
+      "default": "ltr"
+    },
+    "metadata": {
+      "$ref": "#/$defs/metadata"
+    },
+    "profiles": {
+      "$ref": "#/$defs/profileRefs"
+    },
+    "blocks": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/block"}
+    },
+    "bibliography": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/bibliographyEntry"}
+    }
+  },
+  "$defs": {
+    "metadata": {
+      "type": "object",
+      "required": ["title"],
+      "additionalProperties": false,
+      "properties": {
+        "title": {"type": "string", "minLength": 1},
+        "subtitle": {"type": "string"},
+        "author": {"type": "string"},
+        "publisher": {"type": "string"},
+        "date": {"type": "string"},
+        "genre": {
+          "enum": ["one-pager", "letter", "long-doc", "portfolio", "resume", "equity-report", "changelog", "slides"]
+        },
+        "keywords": {"type": "array", "items": {"type": "string"}},
+        "confidentiality": {"type": "string"},
+        "abstract": {"type": "string"}
+      }
+    },
+    "profileRefs": {
+      "type": "object",
+      "description": "Names of the profiles that decide typography, page geometry, language rules, theme and taste. The IR names them; it never contains their values.",
+      "additionalProperties": false,
+      "properties": {
+        "typography": {"type": "string"},
+        "page": {"type": "string"},
+        "language": {"type": "string"},
+        "theme": {"type": "string"},
+        "taste": {"type": "string"}
+      }
+    },
+    "sourceRef": {
+      "type": "object",
+      "description": "Where this node came from, so a quality finding can point back at an input rather than at a PDF coordinate.",
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {"type": "string"},
+        "locator": {"type": "string"},
+        "line": {"type": "integer", "minimum": 1},
+        "column": {"type": "integer", "minimum": 1},
+        "digest": {"type": "string"}
+      }
+    },
+    "inline": {
+      "oneOf": [
+        {"$ref": "#/$defs/text"},
+        {"$ref": "#/$defs/emphasis"},
+        {"$ref": "#/$defs/strong"},
+        {"$ref": "#/$defs/codeInline"},
+        {"$ref": "#/$defs/link"},
+        {"$ref": "#/$defs/citation"},
+        {"$ref": "#/$defs/crossRef"},
+        {"$ref": "#/$defs/footnoteRef"},
+        {"$ref": "#/$defs/mathInline"},
+        {"$ref": "#/$defs/lineBreak"}
+      ]
+    },
+    "text": {
+      "type": "object",
+      "required": ["type", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {"const": "text"},
+        "value": {"type": "string"},
+        "lang": {"type": "string"},
+        "highlight": {
+          "type": "boolean",
+          "default": false,
+          "description": "The author marked this run as a key claim. How it is emphasised is a theme decision, not a semantic one."
+        }
+      }
+    },
+    "emphasis": {
+      "type": "object",
+      "required": ["type", "content"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {"const": "emphasis"},
+        "content": {"type": "array", "items": {"$ref": "#/$defs/inline"}}
+      }
+    },
+    "strong": {
+      "type": "object",
+      "required": ["type", "content"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {"const": "strong"},
+        "content": {"type": "array", "items": {"$ref": "#/$defs/inline"}}
+      }
+    },
+    "codeInline": {
+      "type": "object",
+      "required": ["type", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {"const": "code"},
+        "value": {"type": "string"}
+      }
+    },
+    "link": {
+      "type": "object",
+      "required": ["type", "target"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {"const": "link"},
+        "target": {"type": "string", "minLength": 1},
+        "label": {"type": "array", "items": {"$ref": "#/$defs/inline"}},
+        "title": {"type": "string"}
+      }
+    },
+    "citation": {
+      "type": "object",
+      "required": ["type", "keys"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {"const": "citation"},
+        "keys": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+      }
+    },
+    "crossRef": {
+      "type": "object",
+      "required": ["type", "target"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {"const": "cross_ref"},
+        "target": {"type": "string", "minLength": 1},
+        "format": {"enum": ["label", "number", "label-and-number"], "default": "label-and-number"}
+      }
+    },
+    "footnoteRef": {
+      "type": "object",
+      "required": ["type", "target"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {"const": "footnote_ref"},
+        "target": {"type": "string", "minLength": 1}
+      }
+    },
+    "mathInline": {
+      "type": "object",
+      "required": ["type", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {"const": "math_inline"},
+        "value": {"type": "string"},
+        "description": {
+          "type": "string",
+          "description": "Plain-language reading of the expression, for accessibility."
+        }
+      }
+    },
+    "lineBreak": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {"type": {"const": "line_break"}}
+    },
+    "block": {
+      "oneOf": [
+        {"$ref": "#/$defs/section"},
+        {"$ref": "#/$defs/heading"},
+        {"$ref": "#/$defs/paragraph"},
+        {"$ref": "#/$defs/listBlock"},
+        {"$ref": "#/$defs/definitionList"},
+        {"$ref": "#/$defs/quote"},
+        {"$ref": "#/$defs/callout"},
+        {"$ref": "#/$defs/codeBlock"},
+        {"$ref": "#/$defs/mathBlock"},
+        {"$ref": "#/$defs/table"},
+        {"$ref": "#/$defs/figure"},
+        {"$ref": "#/$defs/diagram"},
+        {"$ref": "#/$defs/footnoteDefinition"},
+        {"$ref": "#/$defs/thematicBreak"},
+        {"$ref": "#/$defs/pageBreak"},
+        {"$ref": "#/$defs/rawFallback"}
+      ]
+    },
+    "blockBase": {
+      "type": "object",
+      "required": ["type", "id"],
+      "properties": {
+        "type": {"type": "string"},
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "description": "Stable across edits. A renderer must never rename it, because cross-references, anchor diffs and reading order all key on it."
+        },
+        "source": {"$ref": "#/$defs/sourceRef"},
+        "intent": {"$ref": "#/$defs/layoutIntent"}
+      }
+    },
+    "layoutIntent": {
+      "type": "object",
+      "description": "What the author wants to happen, never how a renderer should achieve it.",
+      "additionalProperties": false,
+      "properties": {
+        "keep_with_next": {"type": "boolean"},
+        "keep_together": {"type": "boolean"},
+        "break_before": {"enum": ["auto", "page", "column"]},
+        "importance": {"enum": ["low", "normal", "high"]}
+      }
+    },
+    "section": {
+      "allOf": [
+        {"$ref": "#/$defs/blockBase"},
+        {
+          "type": "object",
+          "required": ["type", "id", "blocks"],
+          "properties": {
+            "type": {"const": "section"},
+            "title": {"type": "array", "items": {"$ref": "#/$defs/inline"}},
+            "role": {"enum": ["cover", "toc", "chapter", "body", "appendix", "footer"]},
+            "blocks": {"type": "array", "items": {"$ref": "#/$defs/block"}}
+          }
+        }
+      ]
+    },
+    "heading": {
+      "allOf": [
+        {"$ref": "#/$defs/blockBase"},
+        {
+          "type": "object",
+          "required": ["type", "id", "level", "content"],
+          "properties": {
+            "type": {"const": "heading"},
+            "level": {"type": "integer", "minimum": 1, "maximum": 6},
+            "content": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/inline"}}
+          }
+        }
+      ]
+    },
+    "paragraph": {
+      "allOf": [
+        {"$ref": "#/$defs/blockBase"},
+        {
+          "type": "object",
+          "required": ["type", "id", "content"],
+          "properties": {
+            "type": {"const": "paragraph"},
+            "content": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/inline"}},
+            "role": {"enum": ["body", "lead", "caption", "annotation", "footer"]}
+          }
+        }
+      ]
+    },
+    "listBlock": {
+      "allOf": [
+        {"$ref": "#/$defs/blockBase"},
+        {
+          "type": "object",
+          "required": ["type", "id", "items"],
+          "properties": {
+            "type": {"const": "list"},
+            "ordered": {"type": "boolean", "default": false},
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["id", "content"],
+                "additionalProperties": false,
+                "properties": {
+                  "id": {"type": "string", "minLength": 1},
+                  "content": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/inline"}},
+                  "detail": {"type": "array", "items": {"$ref": "#/$defs/inline"}}
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "definitionList": {
+      "allOf": [
+        {"$ref": "#/$defs/blockBase"},
+        {
+          "type": "object",
+          "required": ["type", "id", "entries"],
+          "properties": {
+            "type": {"const": "definition_list"},
+            "entries": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["id", "term", "definition"],
+                "additionalProperties": false,
+                "properties": {
+                  "id": {"type": "string", "minLength": 1},
+                  "term": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/inline"}},
+                  "definition": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/inline"}}
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "quote": {
+      "allOf": [
+        {"$ref": "#/$defs/blockBase"},
+        {
+          "type": "object",
+          "required": ["type", "id", "content"],
+          "properties": {
+            "type": {"const": "quote"},
+            "content": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/inline"}},
+            "attribution": {"type": "array", "items": {"$ref": "#/$defs/inline"}}
+          }
+        }
+      ]
+    },
+    "callout": {
+      "allOf": [
+        {"$ref": "#/$defs/blockBase"},
+        {
+          "type": "object",
+          "required": ["type", "id", "content"],
+          "properties": {
+            "type": {"const": "callout"},
+            "kind": {"enum": ["note", "warning", "decision", "evidence", "context", "risk", "action"]},
+            "title": {"type": "array", "items": {"$ref": "#/$defs/inline"}},
+            "content": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/inline"}}
+          }
+        }
+      ]
+    },
+    "codeBlock": {
+      "allOf": [
+        {"$ref": "#/$defs/blockBase"},
+        {
+          "type": "object",
+          "required": ["type", "id", "value"],
+          "properties": {
+            "type": {"const": "code_block"},
+            "language": {"type": "string"},
+            "value": {"type": "string"},
+            "caption": {"type": "array", "items": {"$ref": "#/$defs/inline"}}
+          }
+        }
+      ]
+    },
+    "mathBlock": {
+      "allOf": [
+        {"$ref": "#/$defs/blockBase"},
+        {
+          "type": "object",
+          "required": ["type", "id", "value"],
+          "properties": {
+            "type": {"const": "math_block"},
+            "value": {"type": "string"},
+            "description": {"type": "string"},
+            "label": {"type": "string"}
+          }
+        }
+      ]
+    },
+    "table": {
+      "allOf": [
+        {"$ref": "#/$defs/blockBase"},
+        {
+          "type": "object",
+          "required": ["type", "id", "columns", "rows"],
+          "properties": {
+            "type": {"const": "table"},
+            "caption": {"type": "array", "items": {"$ref": "#/$defs/inline"}},
+            "columns": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["id", "label"],
+                "additionalProperties": false,
+                "properties": {
+                  "id": {"type": "string", "minLength": 1},
+                  "label": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/inline"}},
+                  "kind": {
+                    "enum": ["text", "number", "date", "currency", "percent"],
+                    "description": "Numeric kinds let a profile choose tabular figures without the IR naming a font."
+                  },
+                  "unit": {"type": "string"}
+                }
+              }
+            },
+            "rows": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["id", "cells"],
+                "additionalProperties": false,
+                "properties": {
+                  "id": {"type": "string", "minLength": 1},
+                  "cells": {
+                    "type": "array",
+                    "items": {"type": "array", "items": {"$ref": "#/$defs/inline"}}
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "figure": {
+      "allOf": [
+        {"$ref": "#/$defs/blockBase"},
+        {
+          "type": "object",
+          "required": ["type", "id", "asset", "alt"],
+          "properties": {
+            "type": {"const": "figure"},
+            "asset": {
+              "type": "object",
+              "required": ["uri"],
+              "additionalProperties": false,
+              "properties": {
+                "uri": {"type": "string", "minLength": 1},
+                "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+                "media_type": {"type": "string"}
+              }
+            },
+            "alt": {"type": "string", "minLength": 1},
+            "decorative": {"type": "boolean", "default": false},
+            "caption": {"type": "array", "items": {"$ref": "#/$defs/inline"}},
+            "placement": {"$ref": "#/$defs/placement"}
+          }
+        }
+      ]
+    },
+    "diagram": {
+      "allOf": [
+        {"$ref": "#/$defs/blockBase"},
+        {
+          "type": "object",
+          "required": ["type", "id", "drawing", "alt"],
+          "properties": {
+            "type": {"const": "diagram"},
+            "drawing": {
+              "type": "object",
+              "required": ["uri"],
+              "additionalProperties": false,
+              "properties": {
+                "uri": {"type": "string", "minLength": 1},
+                "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+                "kind": {"type": "string", "description": "Registered Drawing DSL type."}
+              }
+            },
+            "alt": {"type": "string", "minLength": 1},
+            "caption": {"type": "array", "items": {"$ref": "#/$defs/inline"}},
+            "placement": {"$ref": "#/$defs/placement"}
+          }
+        }
+      ]
+    },
+    "placement": {
+      "type": "object",
+      "description": "A preference, not a coordinate. A renderer that cannot honour it must record a downgrade rather than place silently.",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {"enum": ["inline", "float", "full-width"]},
+        "preferred": {"type": "array", "items": {"enum": ["top", "bottom", "inline", "next-page-top"]}},
+        "max_defer_pages": {"type": "integer", "minimum": 0}
+      }
+    },
+    "footnoteDefinition": {
+      "allOf": [
+        {"$ref": "#/$defs/blockBase"},
+        {
+          "type": "object",
+          "required": ["type", "id", "blocks"],
+          "properties": {
+            "type": {"const": "footnote_definition"},
+            "blocks": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/block"}}
+          }
+        }
+      ]
+    },
+    "thematicBreak": {
+      "allOf": [
+        {"$ref": "#/$defs/blockBase"},
+        {"type": "object", "required": ["type", "id"], "properties": {"type": {"const": "thematic_break"}}}
+      ]
+    },
+    "pageBreak": {
+      "allOf": [
+        {"$ref": "#/$defs/blockBase"},
+        {
+          "type": "object",
+          "required": ["type", "id"],
+          "properties": {
+            "type": {"const": "page_break"},
+            "strength": {"enum": ["optional", "required"]}
+          }
+        }
+      ]
+    },
+    "rawFallback": {
+      "allOf": [
+        {"$ref": "#/$defs/blockBase"},
+        {
+          "type": "object",
+          "required": ["type", "id", "value", "reason"],
+          "properties": {
+            "type": {"const": "raw_fallback"},
+            "value": {"type": "string"},
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Why this content could not be expressed semantically. Its growth is the signal that the IR is too narrow."
+            }
+          }
+        }
+      ]
+    },
+    "bibliographyEntry": {
+      "type": "object",
+      "required": ["id"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "type": {"enum": ["article", "book", "web", "report", "dataset", "other"]},
+        "title": {"type": "string"},
+        "author": {"type": "array", "items": {"type": "string"}},
+        "year": {"type": "string"},
+        "url": {"type": "string"},
+        "publisher": {"type": "string"},
+        "note": {"type": "string"}
+      }
+    }
+  }
+}

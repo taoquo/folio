@@ -1,0 +1,113 @@
+name: Document engine nightly
+
+# The nightly tier exists because the release gate is too slow to run on every
+# change and the fast gate is too shallow to catch drift. It runs the full
+# document corpus, repeats renders to prove determinism, and produces the
+# evidence bundle a reviewer reads when something moves.
+
+on:
+  schedule:
+    # 03:20 UTC daily. Off the hour so it does not contend with other projects.
+    - cron: "20 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: document-engine-nightly
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+  XDG_CACHE_HOME: /tmp/folio-cache
+
+jobs:
+  corpus:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install system dependencies
+        run: >-
+          sudo apt-get update && sudo apt-get install -y
+          libcairo2 libgdk-pixbuf-2.0-0 libglib2.0-0
+          libpango-1.0-0 libpangoft2-1.0-0 librsvg2-bin
+          poppler-utils shared-mime-info unzip zip
+      - name: Install Python dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Configure deterministic build identity
+        run: git config user.name "Folio CI"
+
+      - name: Validate the corpus and profiles
+        run: |
+          python scripts/corpus.py validate
+          python scripts/corpus.py coverage
+          python scripts/profile_check.py
+
+      - name: Render the whole corpus at the canonical DPI
+        run: |
+          python scripts/corpus.py render \
+            --format json --output dist/reports/corpus.json --keep dist/corpus
+
+      - name: Prove repeated renders are identical
+        run: >-
+          python scripts/determinism.py
+          --repeat 5 --dpi 300 --format json
+          --keep dist/nightly/determinism
+
+      - name: Compare the legacy and IR paths
+        run: |
+          python scripts/shadow.py compare \
+            --format json --output dist/reports/shadow.json --keep dist/shadow
+
+      - name: Confirm the approved visual baseline still holds
+        run: python scripts/document_baseline.py compare
+
+      - name: Report the quality vector for every document
+        run: |
+          python - <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          sys.path.insert(0, "scripts")
+          from page_contracts import HTML_TARGETS
+
+          entries = [
+              {"path": str(Path("assets/examples") / f"{target}.pdf"), "genre": target}
+              for target in HTML_TARGETS
+              if (Path("assets/examples") / f"{target}.pdf").is_file()
+          ]
+          Path("dist/reports").mkdir(parents=True, exist_ok=True)
+          suite = Path("dist/reports/quality-suite.json")
+          suite.write_text(json.dumps(entries, indent=2))
+          print(f"OK: {len(entries)} document(s) queued")
+          PY
+          python scripts/quality_vector.py \
+            --suite dist/reports/quality-suite.json \
+            --output dist/reports/quality-vector.json
+
+      - name: Check every mode can be left by configuration
+        run: python scripts/pipeline.py rollback-drill --output dist/reports/rollback.json
+
+      - name: Upload the nightly evidence bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: document-engine-nightly
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            dist/reports/*.json
+            dist/corpus/**/*.pdf
+            dist/nightly/determinism/**
+            dist/shadow/**

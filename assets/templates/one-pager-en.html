@@ -16,6 +16,7 @@
 <style>
   @font-face { font-family: "JetBrains Mono"; src: url("../fonts/JetBrainsMono.woff2") format("woff2"); font-weight: 400; font-style: normal; }
   @font-face { font-family: "JetBrains Mono"; src: url("../fonts/JetBrainsMono.woff2") format("woff2"); font-weight: 500; font-style: normal; }
+  @font-face { font-family: "Source Serif 4"; src: url("../fonts/SourceSerif4Variable-Roman.ttf") format("truetype"); font-weight: 200 900; font-style: normal; }
 
   @page {
     size: A4;
@@ -37,7 +38,7 @@
     --border-soft:#E8DED6;
     --tag-bg:    #F1D2CC;
 
-    --serif: Charter, Georgia,
+    --serif: "Source Serif 4", Charter, Georgia,
              Palatino, "Times New Roman", serif;
     --sans: var(--serif);
   }
@@ -53,6 +54,10 @@
     font-family: var(--serif);
     font-size: 10pt;
     line-height: 1.45;
+    /* Paragraph flow; declared in references/profiles/typography/folio-v1.yaml. */
+    widows: 2;
+    orphans: 2;
+    hyphens: manual;
   }
 
   .serif { font-family: var(--serif); }
@@ -353,7 +358,7 @@
 </p>
 
 <div class="decision-strip">
-  <div class="decision-label">Decision</div>
+  <div class="decision-label">{{DECISION_LABEL}}</div>
   <div class="decision-text">{{The single recommended action: approve, pause, fund, or move to the next phase.}}</div>
   <div class="decision-owner">{{Owner / due date}}</div>
 </div>
@@ -381,20 +386,20 @@
 </div>
 
 <section>
-  <h2>Roadmap<span class="sub">three-step arc for proposals</span></h2>
+  <h2>{{ROADMAP_TITLE}}<span class="sub">{{ROADMAP_NOTE}}</span></h2>
   <div class="timeline">
     <div class="tl-step">
-      <div class="tl-year">Phase 1</div>
+      <div class="tl-year">{{STAGE_1_TITLE}}</div>
       <div class="tl-head">{{STAGE_TITLE}}</div>
       <div class="tl-body">{{One-line explanation.}}</div>
     </div>
     <div class="tl-step">
-      <div class="tl-year">Phase 2</div>
+      <div class="tl-year">{{STAGE_2_TITLE}}</div>
       <div class="tl-head">{{STAGE_TITLE}}</div>
       <div class="tl-body">{{One-line explanation.}}</div>
     </div>
     <div class="tl-step">
-      <div class="tl-year">Phase 3</div>
+      <div class="tl-year">{{STAGE_3_TITLE}}</div>
       <div class="tl-head">{{STAGE_TITLE}}</div>
       <div class="tl-body">{{One-line explanation.}}</div>
     </div>

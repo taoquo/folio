@@ -1,0 +1,45 @@
+id: adversarial-mixed-boundary-letter
+genre: letter
+language: zh-Hans-CN
+script_profile: han-latin-digits
+template: letter.html
+adversarial: true
+purpose:
+  - punctuation-boundary
+  - mixed-script-baseline
+  - font-fallback
+content:
+  "{{信件主题}}": "边界测试 Boundary"
+  "{{作者}}": "边界样本"
+  "{{摘要}}": "本段在行首与行尾放置禁则标点：，。、；：！？以及嵌套括号（【《「测试」》】）。同时混入 Latin words 与数字 0.0001、1,234,567,890，以及不可断开的超长串 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA，用于观察溢出行为。中文标点不应出现在行首，前括号不应出现在行尾。"
+  "{{关键词}}": "边界, 禁则, 1,024"
+  "{{寄件人姓名}}": "边界样本"
+  "{{寄件人地址 / 部门 / 机构}}": "边界样本"
+  "{{电话}}": "本段在行首与行尾放置禁则标点：，。、；：！？以及嵌套括号（【《「测试」》】）。同时混入 Latin words 与数字 0.0001、1,234,567,890，以及不可断开的超长串 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA，用于观察溢出行为。中文标点不应出现在行首，前括号不应出现在行尾。"
+  "{{EMAIL}}": "boundary@example.org"
+  "{{日期 如 2026 年 4 月 18 日}}": "2026-10-03"
+  "{{收件人姓名 / 称谓}}": "边界样本"
+  "{{收件人机构 / 部门}}": "示例机构"
+  "{{信件主题，一句话说清}}": "边界测试 Boundary"
+  "{{第一段：破题。说明写这封信的缘由和核心意图。 不要绕弯，1-2 句话让读者知道你要说什么。}}": "本段在行首与行尾放置禁则标点：，。、；：！？以及嵌套括号（【《「测试」》】）。同时混入 Latin words 与数字 0.0001、1,234,567,890，以及不可断开的超长串 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA，用于观察溢出行为。中文标点不应出现在行首，前括号不应出现在行尾。"
+  "{{第三段：具体。说清楚你希望对方做什么、 何时做、怎么联系。让行动有明确出口。}}": "本段在行首与行尾放置禁则标点：，。、；：！？以及嵌套括号（【《「测试」》】）。同时混入 Latin words 与数字 0.0001、1,234,567,890，以及不可断开的超长串 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA，用于观察溢出行为。中文标点不应出现在行首，前括号不应出现在行尾。"
+  "{{第四段（可选）：收尾。表达期待、致谢或礼貌性结束语。}}": "本段在行首与行尾放置禁则标点：，。、；：！？以及嵌套括号（【《「测试」》】）。同时混入 Latin words 与数字 0.0001、1,234,567,890，以及不可断开的超长串 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA，用于观察溢出行为。中文标点不应出现在行首，前括号不应出现在行尾。"
+  "{{签名 / 亲笔姓名}}": "边界样本"
+  "{{职位 · 部门}}": "示例机构"
+  "{{日期复写 · 可选}}": "2026-10-03"
+  "{{附件清单：① 附件名 1 · ② 附件名 2}}": "本段在行首与行尾放置禁则标点：，。、；：！？以及嵌套括号（【《「测试」》】）。同时混入 Latin words 与数字 0.0001、1,234,567,890，以及不可断开的超长串 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA，用于观察溢出行为。中文标点不应出现在行首，前括号不应出现在行尾。"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 3
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    forbidden_break: 0
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: Boundary content is deliberate; this fixture exists to fail loudly.
+review:
+  expert_required: true
+  note: Inspect line starts and column alignment by eye.

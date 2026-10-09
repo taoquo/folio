@@ -1,0 +1,76 @@
+# Language profiles
+#
+# What Folio guarantees about a language, not what the renderer does with it.
+# Shaping and line breaking stay with WeasyPrint; this file records the
+# business-level contract a document in that language must satisfy.
+#
+# `kinsoku` lists are deliberately explicit. "Supports Chinese" must not mean
+# only "a Chinese font is present": line-start and line-end prohibitions are
+# part of the contract, and the M2 quality stage measures violations against
+# these lists.
+
+version: 1
+
+profiles:
+  en-us-v1:
+    tag: en-US
+    script: Latn
+    direction: ltr
+    font_fallback:
+      serif: [Source Serif 4, Charter, Georgia, Palatino, Times New Roman]
+      mono: [JetBrains Mono, SF Mono, Consolas]
+    hyphenation:
+      enabled: false
+      # English prose in Folio is not hyphenated today. Enabling it would change
+      # line breaks and therefore page counts, so it is a recorded decision.
+    line_break:
+      mode: normal
+    punctuation:
+      quote_style: english-curly
+
+  zh-hans-cn-v1:
+    tag: zh-Hans-CN
+    script: Hans
+    direction: ltr
+    font_fallback:
+      serif: [LXGW WenKai, Source Han Serif SC, Noto Serif CJK SC, Songti SC, STSong, Georgia]
+      mono: [JetBrains Mono, SF Mono, Consolas, LXGW WenKai]
+    hyphenation:
+      enabled: false
+    line_break:
+      mode: strict
+      forbids_line_start:
+        - "，"
+        - "。"
+        - "、"
+        - "；"
+        - "："
+        - "！"
+        - "？"
+        - "）"
+        - "】"
+        - "》"
+        - "」"
+      forbids_line_end:
+        - "（"
+        - "【"
+        - "《"
+        - "「"
+    punctuation:
+      # Chinese punctuation occupies a full em; hanging it needs renderer
+      # support that is not verified yet, so the conservative choice stands.
+      hanging: conservative
+      quote_style: chinese-corner
+    tracking:
+      body_pt: 0.3
+
+  # Shared contract for text that mixes scripts. Not a language: it records the
+  # one rule that matters when Latin and CJK share a line.
+  mixed-latin-cjk-v1:
+    tag: und
+    script: Zyyy
+    direction: ltr
+    notes: >-
+      Latin runs resolve through the Latin stack and CJK through the CJK stack.
+      Both stacks must be present or glyphs fall to the host, which is how
+      Times-Roman and STSongti reached earlier builds.

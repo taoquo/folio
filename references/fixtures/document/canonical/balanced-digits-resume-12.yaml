@@ -1,0 +1,91 @@
+id: balanced-digits-resume-12
+genre: resume
+language: en-US
+script_profile: digits-heavy
+template: resume-en.html
+purpose:
+  - composition-balance
+  - digits-heavy
+content:
+  "{{NAME}}": "Corpus sample"
+  "{{DESCRIPTION}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{KEYWORDS}}": "corpus, baseline, 1,024"
+  "{{VAR}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{ALIAS_OR_PREFERRED_NAME}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{ROLE_TITLE - e.g. AI / Agent Engineer}}": "Corpus coverage fixture"
+  "{{GITHUB_URL}}": "https://github.com/taoquo/folio"
+  "{{GITHUB_ID}}": "https://github.com/taoquo/folio"
+  "{{X_URL}}": "https://github.com/taoquo/folio"
+  "{{X_ID}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{EMAIL}}": "corpus@example.org"
+  "{{CITY}}": "Example"
+  "{{COUNTRY_OR_REGION}}": "Example"
+  "{{NUMBER}}": "1,024"
+  "{{UNIT}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{LABEL}}": "corpus, baseline, 1,024"
+  "{{~50 words. Structure: current role + seniority + tenure. Team composition (size, seniority mix, cross-functional collaborators). Long-term direction. Three to five core areas of depth.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{START_DATE}}": "2026-10-03"
+  "{{KEY_MILESTONE}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{YEAR}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{STAGE_TITLE}}": "Corpus coverage fixture"
+  "{{One sentence on what this stage meant.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{PROJECT_NAME}}": "Corpus coverage fixture"
+  "{{PROJECT_TYPE}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{ROLE - e.g. tech lead}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{~40 words: what the project is, why it existed, what your seat at the table was.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{~55 words: technical approach, key decisions, execution path.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{ROLE}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{~40 words.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{~55 words.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{Project context and your seat.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{Execution path.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{TIME_RANGE}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{SUBTITLE}}": "Corpus coverage fixture"
+  "{{One-line positioning statement.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{Short sketch of your indie developer identity: design instinct, solo end-to-end delivery, cross-language range, user reception.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{STARS_TOTAL}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{FORKS_TOTAL}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{FOLLOWERS_TOTAL}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{URL}}": "https://github.com/taoquo/folio"
+  "{{PROJECT}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{Stack + core positioning + platform.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{STARS}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{Description.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{HIGHLIGHT}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{A single anecdote that sets your work apart: the moment it went viral, the notable person who shared it, the community that formed around it.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{DATE}}": "2026-10-03"
+  "{{EVENT_TITLE}}": "Corpus coverage fixture"
+  "{{Specific call you made or action you took, and the downstream evidence that the judgment was right.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{Specific call or action.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{PLATFORM}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{HANDLE}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{FOLLOWERS}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{Blog / newsletter / other content product.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{ARTICLE_TITLE}}": "Corpus coverage fixture"
+  "{{Views / likes / impact metric.}}": "1,024"
+  "{{Views / likes.}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{TALK_TITLE}}": "Corpus coverage fixture"
+  "{{HOST / VENUE}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{SKILL_LABEL_1}}": "corpus, baseline, 1,024"
+  "{{SKILL_LABEL_2}}": "corpus, baseline, 1,024"
+  "{{SKILL_LABEL_3}}": "corpus, baseline, 1,024"
+  "{{SKILL_LABEL_4}}": "corpus, baseline, 1,024"
+  "{{SKILL_LABEL_5}}": "corpus, baseline, 1,024"
+  "{{SCHOOL}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{COLLEGE}}": "Example"
+  "{{MAJOR}}": "Values span 0.001 to 1,000,000 across 42 runs, median 12.50 ms and p95 18.25 ms, with 1,234 test cases and a 99.95% pass rate."
+  "{{DATE_RANGE}}": "2026-10-03"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    composition: digits-heavy
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Added so digits-heavy coverage matches the other compositions;
+    an uneven corpus under-tests one writing system while appearing complete.

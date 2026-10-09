@@ -611,6 +611,53 @@ def list_targets() -> int:
     return 0
 
 
+def _check_profiles(fmt: str, strict: bool) -> int:
+    from profile_check import render_text, run_checks
+
+    report = run_checks()
+    if fmt == "json":
+        print(json.dumps(
+            {
+                "checked": report.checked,
+                "findings": [f.to_dict() for f in report.findings],
+                "errors": len(report.errors),
+                "warnings": len(report.warnings),
+            },
+            indent=2,
+            ensure_ascii=False,
+        ))
+    else:
+        print(render_text(report))
+
+    if report.errors:
+        return 1
+    if strict and report.warnings:
+        return 1
+    return 0
+
+
+def _inspect_profile(name: str, kind: str | None) -> int:
+    from profile_check import _resolve_extends, load_profiles
+
+    profiles = load_profiles()
+    kinds = [kind] if kind else list(profiles)
+
+    for group in kinds:
+        bodies = profiles.get(group, {})
+        if name not in bodies:
+            continue
+        resolved = _resolve_extends(bodies, group)
+        print(f"{group}: {name}")
+        print(json.dumps(resolved[name], indent=2, ensure_ascii=False))
+        return 0
+
+    print(f"ERROR: no profile named '{name}'" + (f" in {kind}" if kind else ""))
+    available = sorted(n for group in kinds for n in profiles.get(group, {}))
+    if available:
+        print("  available: " + ", ".join(available))
+    return 2
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Build, verify, package, and diagnose Folio.")
     parser.add_argument("--debug", action="store_true", help="Include exception tracebacks on stderr.")
@@ -626,6 +673,18 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers.add_parser("doctor", help="Check local PDF/PPTX/diagram dependencies.")
     subparsers.add_parser("package", help="Build dist/folio.zip.")
     subparsers.add_parser("list-targets", help="List known build targets.")
+
+    check_profiles = subparsers.add_parser(
+        "check-profiles", help="Validate typography/page/language/theme/taste profiles."
+    )
+    check_profiles.add_argument("--format", choices=("text", "json"), default="text")
+    check_profiles.add_argument("--strict", action="store_true", help="Treat warnings as failures.")
+
+    inspect_profile = subparsers.add_parser(
+        "inspect-profile", help="Print one resolved profile with its inheritance applied."
+    )
+    inspect_profile.add_argument("name", help="Profile name, for example folio-resume-zh-v1.")
+    inspect_profile.add_argument("--kind", choices=("typography", "page", "language", "theme", "taste"))
 
     list_types = subparsers.add_parser("list-diagram-types", help="List registered authoring contracts.")
     list_types.add_argument("--format", choices=("text", "json"), default="text")
@@ -795,6 +854,10 @@ def _main(argv: list[str]) -> int:
         return _run_package()
     if args.command == "list-targets":
         return list_targets()
+    if args.command == "check-profiles":
+        return _check_profiles(args.format, args.strict)
+    if args.command == "inspect-profile":
+        return _inspect_profile(args.name, args.kind)
     if args.command == "list-diagram-types":
         return _list_diagram_types(args.format)
     if args.command == "init-drawing":

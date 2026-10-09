@@ -1,0 +1,42 @@
+id: canonical-digits-letter
+genre: letter
+language: en-US
+script_profile: digits-heavy
+template: letter-en.html
+purpose:
+  - canonical
+  - one-page-density
+content:
+  "{{LETTER_SUBJECT}}": "Values span 0.001 to 1,000,000 across 42 runs at median 12.50 ms."
+  "{{AUTHOR}}": "Folio 维护者"
+  "{{DESCRIPTION}}": "Values span 0.001 to 1,000,000 across 42 runs at median 12.50 ms."
+  "{{KEYWORDS}}": "信函, 排版"
+  "{{SENDER_NAME}}": "Folio 维护者"
+  "{{SENDER_ADDRESS / DEPARTMENT / ORGANIZATION}}": "Values span 0.001 to 1,000,000 across 42 runs at median 12.50 ms."
+  "{{PHONE}}": "Values span 0.001 to 1,000,000 across 42 runs at median 12.50 ms."
+  "{{EMAIL}}": "folio@example.org"
+  "{{DATE, e.g. April 18, 2026}}": "2026-10-03"
+  "{{RECIPIENT_NAME_OR_TITLE}}": "Folio 维护者"
+  "{{RECIPIENT_ORG / DEPARTMENT}}": "Values span 0.001 to 1,000,000 across 42 runs at median 12.50 ms."
+  "{{One-sentence subject line: what this letter is about.}}": "Values span 0.001 to 1,000,000 across 42 runs at median 12.50 ms."
+  "{{NAME}}": "Folio 维护者"
+  "{{Paragraph 1: state the purpose. Why you are writing and the core intent. No preamble. Two sentences at most so the reader knows what you want from this letter.}}": "Values span 0.001 to 1,000,000 across 42 runs at median 12.50 ms."
+  "{{Paragraph 3: be specific. What you want the reader to do, by when, and how to reach you. Give the action a clear exit.}}": "Values span 0.001 to 1,000,000 across 42 runs at median 12.50 ms."
+  "{{Paragraph 4 (optional): close. Express anticipation, gratitude, or a courteous sign-off line.}}": "Values span 0.001 to 1,000,000 across 42 runs at median 12.50 ms."
+  "{{HANDWRITTEN_NAME_OR_SIGNATURE}}": "Folio 维护者"
+  "{{TITLE · DEPARTMENT}}": "Values span 0.001 to 1,000,000 across 42 runs at median 12.50 ms."
+  "{{DATE (optional restatement)}}": "2026-10-03"
+  "{{List - ① Attachment 1 · ② Attachment 2}}": "Values span 0.001 to 1,000,000 across 42 runs at median 12.50 ms."
+expected:
+  hard:
+    pages: 1
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    density: medium
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: >-
+    Authored for the digits-heavy composition. Placeholder names that contain
+    quotation marks were skipped; see the placeholder-unification decision.

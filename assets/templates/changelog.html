@@ -69,6 +69,10 @@
     font-size: 10.5pt;
     line-height: 1.55;
     letter-spacing: 0.3pt;
+    /* Paragraph flow; declared in references/profiles/typography/folio-v1.yaml. */
+    widows: 2;
+    orphans: 2;
+    hyphens: manual;
   }
 
   strong { font-weight: 500; }
@@ -216,21 +220,21 @@
 </div>
 
 <!-- ========== CHANGELOG (英文) ========== -->
-<h2>Changelog</h2>
+<h2>{{SECTION_CHANGELOG}}</h2>
 
-<h3>Breaking Changes</h3>
+<h3>{{SECTION_BREAKING}}</h3>
 <ol class="changes">
   <li><span class="tag breaking">Breaking</span> {{破坏性变更描述}}</li>
 </ol>
 
-<h3>Features</h3>
+<h3>{{SECTION_FEATURES}}</h3>
 <ol class="changes">
   <li>{{新功能 1：一句话描述}}</li>
   <li>{{新功能 2：一句话描述}}</li>
   <li>{{新功能 3：一句话描述}}</li>
 </ol>
 
-<h3>Fixes</h3>
+<h3>{{SECTION_FIXES}}</h3>
 <ol class="changes">
   <li>{{修复 1：一句话描述}}</li>
   <li>{{修复 2：一句话描述}}</li>
@@ -238,21 +242,21 @@
 </ol>
 
 <!-- ========== 更新日志 (中文) ========== -->
-<h2>更新日志</h2>
+<h2>{{SECTION_CHANGELOG_ZH}}</h2>
 
-<h3>破坏性变更</h3>
+<h3>{{SECTION_BREAKING_ZH}}</h3>
 <ol class="changes">
   <li><span class="tag breaking">Breaking</span> {{同上对应的中文描述}}</li>
 </ol>
 
-<h3>新功能</h3>
+<h3>{{SECTION_FEATURES_ZH}}</h3>
 <ol class="changes">
   <li>{{对应中文描述}}</li>
   <li>{{对应中文描述}}</li>
   <li>{{对应中文描述}}</li>
 </ol>
 
-<h3>修复</h3>
+<h3>{{SECTION_FIXES_ZH}}</h3>
 <ol class="changes">
   <li>{{对应中文描述}}</li>
   <li>{{对应中文描述}}</li>
@@ -261,7 +265,7 @@
 
 <!-- ========== THANKS (可选) ========== -->
 <div class="thanks">
-  <div class="thanks-label">致谢</div>
+  <div class="thanks-label">{{SECTION_THANKS}}</div>
   {{感谢贡献者，格式如："感谢 @user1、@user2 的贡献。"}}
 </div>
 

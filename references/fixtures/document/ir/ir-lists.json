@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0",
+  "id": "ir-lists",
+  "lang": "en-US",
+  "metadata": {
+    "title": "Lists",
+    "genre": "one-pager",
+    "author": "Folio"
+  },
+  "profiles": {
+    "typography": "folio-one-pager-en-v1",
+    "page": "a4-one-pager-v1",
+    "theme": "folio-classic-v1"
+  },
+  "blocks": [
+    {
+      "type": "heading",
+      "id": "h-1",
+      "level": 1,
+      "content": [
+        {
+          "type": "text",
+          "value": "Lists"
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "id": "l-1",
+      "ordered": false,
+      "items": [
+        {
+          "id": "li-1",
+          "content": [
+            {
+              "type": "text",
+              "value": "First item"
+            }
+          ]
+        },
+        {
+          "id": "li-2",
+          "content": [
+            {
+              "type": "text",
+              "value": "Second item"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "id": "l-2",
+      "ordered": true,
+      "items": [
+        {
+          "id": "li-3",
+          "content": [
+            {
+              "type": "text",
+              "value": "Step one"
+            }
+          ]
+        },
+        {
+          "id": "li-4",
+          "content": [
+            {
+              "type": "text",
+              "value": "Step two"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "definition_list",
+      "id": "dl-1",
+      "entries": [
+        {
+          "id": "de-1",
+          "term": [
+            {
+              "type": "text",
+              "value": "IR"
+            }
+          ],
+          "definition": [
+            {
+              "type": "text",
+              "value": "A semantic model of a document."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

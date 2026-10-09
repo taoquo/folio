@@ -1,0 +1,97 @@
+id: canonical-mixed-resume
+genre: resume
+language: zh-Hans-CN
+script_profile: han-latin-digits
+template: resume.html
+purpose:
+  - canonical
+  - hard-page-contract
+content:
+  "{{姓名}}": "Folio 维护者 team"
+  "{{摘要}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{关键词}}": "排版工程 Typography"
+  "{{变量}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{别名/英文名}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{岗位定位，如"AI / Agent 工程"}}": "混排会同时暴露字体回退与基线对齐问题。Source Serif 4 负责 Latin 与数字，LXGW WenKai 负责汉字，字号 9.0–12.0 pt 与行高 1.35–1.55 必须同时成立。"
+  "{{GITHUB_URL}}": "https://github.com/taoquo/folio"
+  "{{GITHUB_ID}}": "https://github.com/taoquo/folio"
+  "{{X_URL}}": "https://github.com/taoquo/folio"
+  "{{X_ID}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{PHONE}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{EMAIL}}": "folio@example.org"
+  "{{年龄}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{城市}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{数字}}": "1,024"
+  "{{单位}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{标签}}": "排版工程 Typography"
+  "{{80 字以内。建议结构：现任职位 + 级别 + 时长。团队构成（人数、梯队、协作方）。长期演进方向。核心沉淀领域（4-6 个方向）。}}": "混排会同时暴露字体回退与基线对齐问题。Source Serif 4 负责 Latin 与数字，LXGW WenKai 负责汉字，字号 9.0–12.0 pt 与行高 1.35–1.55 必须同时成立。"
+  "{{起始时间}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{关键里程碑}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{年份}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{阶段标题}}": "中英混排 Baselines in mixed scripts"
+  "{{一句解释这一步的意义}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{项目名}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{项目类型}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{角色定位，如"方向主导"}}": "排版工程 Typography"
+  "{{~60 字：项目是什么 + 为什么做 + 你的位置}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{~80 字：技术方案 / 关键决策 / 执行路径}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{~100 字：数据为王。<span class="hl">关键数字</span> 高亮 1-2 处。}}": "1,024"
+  "{{角色定位}}": "排版工程 Typography"
+  "{{~60 字}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{~80 字}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{~100 字，含 <span class="hl">关键数字</span>}}": "1,024"
+  "{{角色}}": "排版工程 Typography"
+  "{{项目背景和定位}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{执行路径}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{可量化结果，含 <span class="hl">关键数字</span>}}": "1,024"
+  "{{时间跨度}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{一句副标题}}": "中英混排 Baselines in mixed scripts"
+  "{{一句自我定位}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{简述开发者身份：设计审美 / 独立完成流程 / 跨语言实战 / 用户反馈}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{STARS_TOTAL}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{FORKS_TOTAL}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{FOLLOWERS_TOTAL}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{URL}}": "https://github.com/taoquo/folio"
+  "{{语言 + 核心定位 + 平台}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{STARS}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{描述}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{亮点 TAG}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{这个项目的独特故事：开源时机 / 传播范围 / 知名人物推荐等}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{时间}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{事件标题}}": "中英混排 Baselines in mixed scripts"
+  "{{具体做了什么判断或行动，为什么证明判断力}}": "混排会同时暴露字体回退与基线对齐问题。Source Serif 4 负责 Latin 与数字，LXGW WenKai 负责汉字，字号 9.0–12.0 pt 与行高 1.35–1.55 必须同时成立。"
+  "{{具体做了什么判断或行动}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{平台}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{HANDLE}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{粉丝数}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{博客 / 周刊 / 其他内容产品简介}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{副标题}}": "中英混排 Baselines in mixed scripts"
+  "{{文章标题}}": "中英混排 Baselines in mixed scripts"
+  "{{日期}}": "2026-10-03"
+  "{{浏览量 / 赞数 / 影响力指标}}": "1,024"
+  "{{浏览量 / 赞数}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{演讲标题}}": "中英混排 Baselines in mixed scripts"
+  "{{主办方 / 地点}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{能力 1<br>标签}}": "排版工程 Typography"
+  "{{描述。至少 <span class="em-brand">1 处强调</span>}}": "混排会同时暴露字体回退与基线对齐问题。Source Serif 4 负责 Latin 与数字，LXGW WenKai 负责汉字，字号 9.0–12.0 pt 与行高 1.35–1.55 必须同时成立。"
+  "{{能力 2<br>标签}}": "排版工程 Typography"
+  "{{能力 3<br>标签}}": "排版工程 Typography"
+  "{{能力 4<br>标签}}": "排版工程 Typography"
+  "{{能力 5<br>标签}}": "排版工程 Typography"
+  "{{学校}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{学院}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{专业}}": "排版工程 Typography"
+  "{{一句判断性描述，如"放弃保研直接就业"}}": "混排会同时暴露字体回退与基线对齐问题。Source Serif 4 负责 Latin 与数字，LXGW WenKai 负责汉字，字号 9.0–12.0 pt 与行高 1.35–1.55 必须同时成立。"
+  "{{起止时间}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 9
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    density: medium
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: Authored to exercise the resume template under the han-latin-digits composition.

@@ -1,0 +1,94 @@
+id: canonical-en-resume
+genre: resume
+language: en-US
+script_profile: latin-only
+template: resume-en.html
+purpose:
+  - canonical
+  - hard-page-contract
+content:
+  "{{NAME}}": "Folio maintainers"
+  "{{DESCRIPTION}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{KEYWORDS}}": "Typography engineering"
+  "{{VAR}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{ALIAS_OR_PREFERRED_NAME}}": "Folio maintainers"
+  "{{ROLE_TITLE - e.g. AI / Agent Engineer}}": "Make document typography measurable"
+  "{{GITHUB_URL}}": "https://github.com/taoquo/folio"
+  "{{GITHUB_ID}}": "https://github.com/taoquo/folio"
+  "{{X_URL}}": "https://github.com/taoquo/folio"
+  "{{X_ID}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{EMAIL}}": "folio@example.org"
+  "{{CITY}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{COUNTRY_OR_REGION}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{NUMBER}}": "1,024"
+  "{{UNIT}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{LABEL}}": "Typography engineering"
+  "{{~50 words. Structure: current role + seniority + tenure. Team composition (size, seniority mix, cross-functional collaborators). Long-term direction. Three to five core areas of depth.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{START_DATE}}": "2026-10-03"
+  "{{KEY_MILESTONE}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{YEAR}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{STAGE_TITLE}}": "Make document typography measurable"
+  "{{One sentence on what this stage meant.}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{PROJECT_NAME}}": "Folio maintainers"
+  "{{PROJECT_TYPE}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{ROLE - e.g. tech lead}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{~40 words: what the project is, why it existed, what your seat at the table was.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{~55 words: technical approach, key decisions, execution path.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{~65 words: numbers-first. Highlight <span class="hl">1-2 key figures</span>.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{ROLE}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{~40 words.}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{~55 words.}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{~65 words, include <span class="hl">key figures</span>.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{Project context and your seat.}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Execution path.}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Quantifiable outcome with <span class="hl">key figures</span>.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{TIME_RANGE}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{SUBTITLE}}": "Make document typography measurable"
+  "{{One-line positioning statement.}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Short sketch of your indie developer identity: design instinct, solo end-to-end delivery, cross-language range, user reception.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{STARS_TOTAL}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{FORKS_TOTAL}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{FOLLOWERS_TOTAL}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{URL}}": "https://github.com/taoquo/folio"
+  "{{PROJECT}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Stack + core positioning + platform.}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{STARS}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Description.}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{HIGHLIGHT}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{A single anecdote that sets your work apart: the moment it went viral, the notable person who shared it, the community that formed around it.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{DATE}}": "2026-10-03"
+  "{{EVENT_TITLE}}": "Make document typography measurable"
+  "{{Specific call you made or action you took, and the downstream evidence that the judgment was right.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{Specific call or action.}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{PLATFORM}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{HANDLE}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{FOLLOWERS}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Blog / newsletter / other content product.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{ARTICLE_TITLE}}": "Make document typography measurable"
+  "{{Views / likes / impact metric.}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{Views / likes.}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{TALK_TITLE}}": "Make document typography measurable"
+  "{{HOST / VENUE}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{SKILL_LABEL_1}}": "Typography engineering"
+  "{{Description with at least <span class="em-brand">one emphasis</span>.}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{SKILL_LABEL_2}}": "Typography engineering"
+  "{{SKILL_LABEL_3}}": "Typography engineering"
+  "{{SKILL_LABEL_4}}": "Typography engineering"
+  "{{SKILL_LABEL_5}}": "Typography engineering"
+  "{{SCHOOL}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{COLLEGE}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{MAJOR}}": "This paragraph exercises hyphenation policy and ragged-right line texture."
+  "{{One-line judgment-flavored note, e.g. "declined grad school, went straight to industry".}}": "Quality assurance for documents previously stopped at page count and font name, which cannot answer whether a change improved the typography."
+  "{{DATE_RANGE}}": "2026-10-03"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 9
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    density: medium
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: Authored to exercise the resume template under the latin-only composition.

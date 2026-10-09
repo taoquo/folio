@@ -30,6 +30,10 @@ assets/templates/output.pptx
 .superpowers/
 docs/superpowers/
 
+# Local implementation plans for the document engine program. These describe
+# in-progress engineering logic and stay out of the published repository.
+/docs/plans/
+
 # Local render scratch space for showcase review
 /build/
 

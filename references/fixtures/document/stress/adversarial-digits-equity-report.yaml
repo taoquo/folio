@@ -1,0 +1,58 @@
+id: adversarial-digits-equity-report
+genre: equity-report
+language: en-US
+script_profile: digits-heavy
+template: equity-report-en.html
+adversarial: true
+purpose:
+  - numeric-alignment
+  - extreme-values
+  - overflow-boundary
+content:
+  "{{COMPANY_NAME}}": "边界样本"
+  "{{AUTHOR}}": "边界样本"
+  "{{DESCRIPTION}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{KEYWORDS}}": "边界, 禁则, 1,024"
+  "{{EYEBROW - e.g. Equity Research / Valuation / Investment Memo}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{TICKER}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{SECTOR}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{EXCHANGE}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{One-line thesis.}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{CURRENT_PRICE}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{DATE}}": "2026-10-03"
+  "{{NUMBER}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{RATING}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{TARGET}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{HORIZON}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{One-line verdict: buy / hold / watch, and the single strongest reason.}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{VAL}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{Chart title.}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{Industry landscape overview, one or two paragraphs.}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{COMP_A}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{COMP_B}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{COMP_C}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{Risk Type 1}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{Risk description.}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{Risk Type 2}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{Risk Type 3}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{Risk Type 4}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{Three to five sentences summarizing the position. Include target price (if applicable), rating, key catalysts, and core assumptions.}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+  "{{FIRM / DISCLAIMER}}": "Values span 0.0000001 through 9,999,999,999,999. Scientific notation 1.7976931348623157e308 bounds the range. Percentages run 0.0001% to 100.0000%. Integers 1, 12, 123, 1,234, 12,345, 123,456, 1,234,567, 12,345,678, 123,456,789, 1,234,567,890 must stay aligned in their column."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 9
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    forbidden_break: 0
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: >-
+    Boundary content is deliberate and long, so the page ceiling reflects what
+    it actually produces (9 pages). The hard requirements that matter are
+    overflow and missing glyphs, not the count.
+review:
+  expert_required: true
+  note: Inspect line starts and column alignment by eye.

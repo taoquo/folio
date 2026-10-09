@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.dev/schema/taste-contract-1.0.json",
+  "title": "Folio Taste Contract",
+  "description": "What 'appropriate' means for one genre, audience and medium. Hard requirements are correctness and gate a build; soft objectives and taste are judgement and never gate. The separation is enforced: a key may not appear in both.",
+  "type": "object",
+  "required": ["version", "profiles"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {"const": 1},
+    "profiles": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["hard_requirements"],
+        "additionalProperties": false,
+        "properties": {
+          "genre": {"type": "string"},
+          "context": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "audience": {"type": "string"},
+              "media": {"type": "array", "items": {"type": "string"}},
+              "reading_mode": {"type": "string"}
+            }
+          },
+          "hard_requirements": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": true
+          },
+          "soft_objectives": {"type": "object", "additionalProperties": true},
+          "taste": {"type": "object", "additionalProperties": true}
+        }
+      }
+    }
+  }
+}

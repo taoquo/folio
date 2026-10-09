@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.dev/schema/typography-profile-1.0.json",
+  "title": "Folio Typography Profile",
+  "description": "How text is set. Carries no colour and no page geometry: those belong to the theme and page profiles, so changing a theme cannot reflow a document.",
+  "type": "object",
+  "required": [
+    "version",
+    "profiles"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "defaults": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "profiles": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "extends": {
+            "type": "string"
+          },
+          "genre": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "body": {
+            "$ref": "#/$defs/body"
+          },
+          "paragraph": {
+            "$ref": "#/$defs/paragraph"
+          },
+          "roles": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "size_pt": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "leading": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "weight": {
+                  "type": "integer",
+                  "minimum": 100,
+                  "maximum": 900
+                },
+                "keep_with_next": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "not": {
+                "required": [
+                  "extends"
+                ]
+              }
+            },
+            "then": {
+              "required": [
+                "body"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "body": {
+      "type": "object",
+      "required": [
+        "size_pt",
+        "leading"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "family": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "size_pt": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 72
+        },
+        "leading": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 4
+        },
+        "weight": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 900
+        },
+        "alignment": {
+          "enum": [
+            "start",
+            "center",
+            "end",
+            "justify"
+          ]
+        }
+      }
+    },
+    "paragraph": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "widows": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "orphans": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_consecutive_hyphens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hyphenation": {
+          "enum": [
+            "manual",
+            "auto",
+            "none"
+          ]
+        },
+        "alignment": {
+          "enum": [
+            "start",
+            "center",
+            "end",
+            "justify"
+          ]
+        },
+        "section_gap_pt": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

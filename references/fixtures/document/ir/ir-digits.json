@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0",
+  "id": "ir-digits",
+  "lang": "en-US",
+  "metadata": {
+    "title": "Numeric structure",
+    "genre": "one-pager",
+    "author": "Folio"
+  },
+  "profiles": {
+    "typography": "folio-one-pager-en-v1",
+    "page": "a4-one-pager-v1",
+    "theme": "folio-classic-v1"
+  },
+  "blocks": [
+    {
+      "type": "heading",
+      "id": "h-1",
+      "level": 1,
+      "content": [
+        {
+          "type": "text",
+          "value": "0.001 to 1,000,000"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "p-1",
+      "content": [
+        {
+          "type": "text",
+          "value": "Values span 0.001 through 1,000,000 across 42 runs at p95 18.25 ms."
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "id": "t-1",
+      "columns": [
+        {
+          "id": "c1",
+          "label": [
+            {
+              "type": "text",
+              "value": "Metric"
+            }
+          ]
+        },
+        {
+          "id": "c2",
+          "label": [
+            {
+              "type": "text",
+              "value": "Value"
+            }
+          ],
+          "kind": "number"
+        }
+      ],
+      "rows": [
+        {
+          "id": "r1",
+          "cells": [
+            [
+              {
+                "type": "text",
+                "value": "Pages"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "value": "1,024"
+              }
+            ]
+          ]
+        },
+        {
+          "id": "r2",
+          "cells": [
+            [
+              {
+                "type": "text",
+                "value": "Median"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "value": "12.50"
+              }
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}

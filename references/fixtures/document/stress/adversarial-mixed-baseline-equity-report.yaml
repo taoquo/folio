@@ -1,0 +1,57 @@
+id: adversarial-mixed-baseline-equity-report
+genre: equity-report
+language: zh-Hans-CN
+script_profile: digits-heavy
+template: equity-report.html
+adversarial: true
+purpose:
+  - mixed-script-baseline
+  - font-fallback
+content:
+  "{{股票名称}}": "边界测试 Boundary"
+  "{{作者}}": "边界样本"
+  "{{摘要}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{关键词}}": "边界, 禁则, 1,024"
+  "{{公司名称}}": "边界测试 Boundary"
+  "{{股票代码}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{行业}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{交易所}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{一句核心判断}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{当前价格}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{日期}}": "2026-10-03"
+  "{{数字}}": "1,024"
+  "{{评级}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{目标价}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{周期}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{一句话总结：买入/持有/观望的核心理由。}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{数据}}": "1,024"
+  "{{图表标题}}": "边界测试 Boundary"
+  "{{行业格局概述，1-2 段。}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{目标公司}}": "边界测试 Boundary"
+  "{{竞品 A}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{竞品 B}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{竞品 C}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{风险类型 1}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{风险描述}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{风险类型 2}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{风险类型 3}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{风险类型 4}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{3-5 句总结。包含目标价（如有）、评级建议、核心催化剂、关键假设。}}": "中英混排基线：Chinese 与 Latin 共享 baseline，CJK 与 ASCII 交替 tight 排列，数字 1,234 与 1,234,567 需要 tabular 对齐。"
+  "{{机构名 / 免责声明}}": "示例机构"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 20
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    forbidden_break: 0
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Boundary content for mixed-baseline: mixed-script-baseline; font-fallback.
+    It exists to fail loudly if line breaking or alignment regresses.
+review:
+  expert_required: true
+  note: Inspect by eye; automated checks cannot judge every boundary case.

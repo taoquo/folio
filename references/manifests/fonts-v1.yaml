@@ -1,0 +1,227 @@
+# Font manifest for Folio document and diagram builds.
+#
+# Fonts decide pagination: a fallback swap changes line breaks, which changes
+# page counts. This file records which fonts a build is allowed to resolve, so
+# that substitution is a reviewable decision instead of a property of whichever
+# machine happened to run the build.
+#
+# `bundled` fonts ship inside this repository.
+# `system` fonts are resolved from the host and must be present for builds that
+# declare them; CI must install them explicitly (see fallback_policy below).
+
+version: 1
+
+fonts:
+  # --- Bundled: Chinese body, both weights declared as @font-face ---------
+  body_zh_regular:
+    family: LXGW WenKai
+    role: Chinese body text and headings
+    source:
+      kind: bundled
+      path: assets/fonts/LXGWWenKai-Regular.ttf
+      sha256: b64b7add297672bf04c54ce229678ddf09b4f9671cb1ece1f24c868f4226edd0
+      bytes: 25486932
+    weight: 400
+    style: normal
+    license: OFL-1.1
+    license_source: https://github.com/lxgw/LxgwWenKai
+    referenced_as: '@font-face "LXGW WenKai" (weight 400)'
+
+  body_zh_medium:
+    family: LXGW WenKai
+    role: Chinese emphasis (weight 500)
+    source:
+      kind: bundled
+      path: assets/fonts/LXGWWenKai-Medium.ttf
+      sha256: 1b74667333612eb05b7a1a70a9b324458251cd81e9a1d6c1bfd22da871734b9c
+      bytes: 25227744
+    weight: 500
+    style: normal
+    license: OFL-1.1
+    license_source: https://github.com/lxgw/LxgwWenKai
+    referenced_as: '@font-face "LXGW WenKai" (weight 500)'
+
+  # --- Bundled: monospace for code blocks and slide code ------------------
+  mono:
+    family: JetBrains Mono
+    role: code blocks, inline code, slide code
+    source:
+      kind: bundled
+      path: assets/fonts/JetBrainsMono.woff2
+      sha256: 66e5c4a8f319a444fa535e757572360a9679f270e8792b153458791cc2678f5c
+      bytes: 55672
+    weight: 400
+    style: normal
+    license: OFL-1.1
+    license_source: https://github.com/JetBrains/JetBrainsMono
+    referenced_as: '@font-face "JetBrains Mono"'
+
+  # --- System-resolved: English body -------------------------------------
+  # --- Bundled: English body (variable, covers 200-900) -------------------
+  # Added so English builds stop depending on a host font. One variable file
+  # instantiates every weight the templates ask for (400 body, 500 emphasis),
+  # which WeasyPrint does correctly from a single @font-face.
+  body_en:
+    family: Source Serif 4
+    role: English body text and headings
+    source:
+      kind: bundled
+      path: assets/fonts/SourceSerif4Variable-Roman.ttf
+      sha256: 14d360ee1b76655da9276628b229e11671bc1f5d1083636144db6677d452cf55
+      bytes: 1204208
+      upstream: https://github.com/adobe-fonts/source-serif/releases/tag/4.005R
+    weight: 200-900 (variable)
+    style: normal
+    license: OFL-1.1
+    license_source: https://github.com/adobe-fonts/source-serif
+    referenced_as: '@font-face "Source Serif 4" (weight 200 900)'
+
+  # --- System-resolved: English fallbacks, kept for glyphs Source Serif lacks
+  # Source Serif 4 carries 919 codepoints. Decorations used by the templates
+  # (U+2550 box drawing, U+2605 black star, U+2460 circled digits) are outside
+  # that set, so the host resolves them. Charter and Georgia remain declared
+  # for hosts that prefer them and for characters Source Serif does not cover.
+  body_en_fallback:
+    family: Charter
+    role: English fallback for glyphs outside Source Serif 4
+    source:
+      kind: system
+      path: /System/Library/Fonts/Supplemental/Charter.ttc
+      sha256: null
+      rationale: >-
+        Kept in the stack rather than removed: it covers decorative glyphs the
+        bundled serif does not, and macOS ships it. It is no longer the primary
+        entry, so English builds no longer depend on it.
+    weight: 400
+    style: normal
+    license: Bitstream Charter (permissive); macOS system distribution
+    referenced_as: 'var(--serif) second entry'
+
+fallback_chains:
+  # Ordered exactly as declared in the templates. A build that resolves past
+  # the declared entries has substituted a font the design did not choose.
+  en_serif:
+    declared_in: styles.css, assets/templates/*-en.html
+    order:
+      - Source Serif 4
+      - Charter
+      - Georgia
+      - Palatino
+      - Times New Roman
+      - serif
+    approved_fallbacks:
+      - Charter
+      - Georgia
+      - Palatino
+      - Times New Roman
+
+  zh_serif:
+    declared_in: assets/templates/*.html
+    order:
+      - LXGW WenKai
+      - Source Han Serif SC
+      - Noto Serif CJK SC
+      - Songti SC
+      - STSong
+      - Georgia
+      - serif
+    approved_fallbacks:
+      - Source Han Serif SC
+      - Noto Serif CJK SC
+      - Songti SC
+      - STSong
+
+  mono:
+    declared_in: assets/templates/*.html
+    order:
+      - JetBrains Mono
+      - SF Mono
+      - Consolas
+      - LXGW WenKai
+      - Source Han Serif SC
+      - Noto Serif CJK SC
+      - Songti SC
+      - monospace
+    approved_fallbacks: []
+
+  # Diagram templates are language-neutral: they declare one Latin serif stack
+  # and rely on the host to resolve it. Their PDFs are embedded into documents,
+  # so a substitution here still changes the page.
+  diagram_serif:
+    declared_in: assets/diagrams/*.html
+    order:
+      - Charter
+      - Georgia
+      - Palatino
+      - serif
+    approved_fallbacks:
+      - Georgia
+      - Palatino
+      - Times New Roman
+
+fallback_policy:
+  # A resolved font outside `fonts` and the approved fallback lists means the
+  # design intent was silently replaced. CI must fail; local runs may warn so
+  # that a developer without Charter can still iterate.
+  CI: reject_unapproved
+  local: warn
+  primary_fonts:
+    en: Source Serif 4
+    zh: LXGW WenKai
+  # Fonts that may legitimately appear when the primary family lacks a glyph
+  # or the host prefers its own. Membership is a review decision, recorded so
+  # the gate distinguishes "declared fallback" from "unknown substitution".
+  acceptable_substitutes:
+    en:
+      - Charter
+      - Georgia
+      - Palatino
+      - Times New Roman
+      - Hiragino Mincho ProN
+      - STSongti-SC
+      - Times-Roman
+    zh:
+      - Source Han Serif SC
+      - Noto Serif CJK SC
+      - Songti SC
+      - STSong
+      - STSongti-SC
+      - Times-Roman
+      - Hiragino Mincho ProN
+    diagram:
+      - Georgia
+      - Palatino
+      - Times New Roman
+      - Verdana
+  # Fonts seen in built artifacts that no stack named at the time. All four
+  # decorative-glyph fallbacks are now claimed deliberately by the chains and
+  # substitute lists above, so the gate reports them as sanctioned. Kept as a
+  # record of what the host resolves for glyphs Source Serif 4 does not carry
+  # (U+2550, U+2605, U+2460-2461) and for the Songti tail in Chinese stacks.
+  known_unsanctioned:
+    - family: Times-Roman
+      seen_in: assets/demos/demo-agent-ops-longdoc-zh.pdf, demo-chendu-portfolio-zh.pdf
+      note: >-
+        Reached through the generic `serif` tail for decorative glyphs. Now an
+        accepted substitute for both language groups.
+    - family: STSongti-SC-Regular
+      seen_in: assets/demos/demo-agent-ops-longdoc-zh.pdf
+      note: macOS Songti variant reached via the Songti SC entry. Now accepted.
+    - family: Hiragino-Mincho-ProN-Light
+      seen_in: resume-en.pdf, letter-en.pdf (decorative glyphs)
+      note: >-
+        Host serif covering U+2605 / U+2460 / U+2461, which Source Serif 4
+        omits. Accepted as an en fallback.
+
+ci:
+  # Resolved: English body text now comes from the bundled Source Serif 4 via
+  # @font-face, so no font package needs installing for the page-count contract
+  # to reproduce. CI still installs none, which is now correct rather than a
+  # latent dependency.
+  installs_font_packages: false
+  english_font_reproducible: true
+  note: >-
+    Host fonts may still be reached for decorative glyphs outside Source Serif
+    4 (U+2550, U+2605, U+2460-2461). Those substitutions are accepted by
+    name in `acceptable_substitutes`, and they do not carry body text, so they
+    cannot shift pagination on their own.

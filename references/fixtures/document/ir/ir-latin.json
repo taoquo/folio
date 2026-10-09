@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "id": "ir-latin",
+  "lang": "en-US",
+  "metadata": {
+    "title": "Latin structure",
+    "genre": "one-pager",
+    "author": "Folio"
+  },
+  "profiles": {
+    "typography": "folio-one-pager-en-v1",
+    "page": "a4-one-pager-v1",
+    "theme": "folio-classic-v1"
+  },
+  "blocks": [
+    {
+      "type": "heading",
+      "id": "h-1",
+      "level": 1,
+      "content": [
+        {
+          "type": "text",
+          "value": "English heading"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "p-1",
+      "content": [
+        {
+          "type": "text",
+          "value": "A paragraph of Latin text exercising hyphenation policy and ragged-right texture."
+        }
+      ]
+    }
+  ]
+}

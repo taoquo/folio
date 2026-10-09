@@ -1,0 +1,48 @@
+id: canonical-mixed-one-pager
+genre: one-pager
+language: zh-Hans-CN
+script_profile: han-latin-digits
+purpose:
+  - canonical
+  - one-page-density
+  - mixed-script-baseline
+  - font-fallback
+content:
+  "{{EYEBROW · 如 "产品方案" / "项目提案" / "执行摘要"}}": "技术方案 Technical plan"
+  "{{文档主标题（serif，2 行内，动词+名词结构最好）}}": "中英混排的基线 Baselines in mixed scripts"
+  "{{文档标题}}": "中英混排的基线 Baselines in mixed scripts"
+  "{{一行副标题 / 一句核心论点}}": "1,024 页验证 · Source Serif 4 与 LXGW WenKai 协同"
+  "{{一段 40-60 字的核心论点导语。用「<span class="hl">关键词</span>」高亮重点。这段定调整个文档。}}": "中文与 Latin 共享同一行时，<strong>Source Serif 4</strong> 负责 Latin 字形，LXGW WenKai 负责汉字。数字 0.001 与 1,234,567 依赖 tabular figures 保持列对齐，42 runs 覆盖 1,024 pages 与 99.9% 的还原度。"
+  "{{section 标题 1}}": "混排基线 Mixed-script baseline"
+  "{{section 标题 2}}": "实施路径 Execution path"
+  "{{这里写 1-2 句段落，展开论点。}}": "中英数字混排会同时暴露字体回退与基线对齐问题。Chinese text 与 Latin words 共享 baseline 时，字号 9.0–12.0 pt 与行高 1.35–1.55 必须同时成立；数字 1,234 与 1,234,567 的宽度差异需要 tabular 处理才能保持列对齐。"
+  "{{1-2 句段落。}}": "先让现状可复现 make the present reproducible，再谈改进。"
+  "{{短 bullet：数据/观察/判断}}": "8 templates 与 23 diagram types 共用同一套 semantic IR"
+  "{{短 bullet：带 <span class="hl">关键数字</span> 的论据}}": "p95 从 18.25 ms 降至 12.50 ms，覆盖 1,024 个用例"
+  "{{短 bullet}}": "Font manifest 同时声明 Source Serif 4、Charter 与 Georgia"
+  "{{关键引用 / 重要提示 / 核心 takeaway。比正文更需要引起注意的内容放这里。}}": "混排的难点不是字形是否存在，而是 baseline 是否对齐。"
+  "{{建议采取的单一动作：批准 / 暂缓 / 追加资源 / 进入下一阶段。}}": "批准方案并优先完成 baseline 与 contract 两个阶段"
+  "{{负责人 / 截止日}}": "排版工程 Typography · 两周 2 weeks"
+  "{{阶段标题}}": "阶段一 Stage one：冻结与度量 freeze and measure"
+  "{{一句解释}}": "先让现状可复现 make the present reproducible，再谈改进。"
+  "{{数字}}": "1,024"
+  "{{标签描述}}": "CJK, Latin, 数字 1,234, p95 0.001"
+  "{{摘要}}": "中英数字混排在 1,024 页规模下保持 99.95% 一致性。"
+  "{{作者}}": "Folio"
+  "{{作者名}}": "Folio"
+  "{{日期 YYYY.MM.DD}}": "2026.10.03"
+  "{{版本号 / 状态}}": "v1.0 · 草案"
+  "{{机密级别 / 内部 / 公开 等}}": "内部"
+  "{{页码 / 联系方式}}": "1 / folio.dev"
+  "{{关键词}}": "CJK, Latin, 数字 1,234, p95 0.001"
+expected:
+  hard:
+    pages: 1
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    density: medium
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: Authored to exercise the one-pager layout under this script profile.

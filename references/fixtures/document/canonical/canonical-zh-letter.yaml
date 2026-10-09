@@ -1,0 +1,41 @@
+id: canonical-zh-letter
+genre: letter
+language: zh-Hans-CN
+script_profile: han-only
+template: letter.html
+purpose:
+  - canonical
+  - one-page-density
+content:
+  "{{信件主题}}": "本段用于验证中文信函的段落节奏与标点挤压。"
+  "{{作者}}": "Folio 维护者"
+  "{{摘要}}": "本段用于验证中文信函的段落节奏与标点挤压。"
+  "{{关键词}}": "信函, 排版"
+  "{{寄件人姓名}}": "Folio 维护者"
+  "{{寄件人地址 / 部门 / 机构}}": "Folio 维护者"
+  "{{电话}}": "本段用于验证中文信函的段落节奏与标点挤压。"
+  "{{EMAIL}}": "folio@example.org"
+  "{{日期 如 2026 年 4 月 18 日}}": "2026-10-03"
+  "{{收件人姓名 / 称谓}}": "Folio 维护者"
+  "{{收件人机构 / 部门}}": "示例机构"
+  "{{信件主题，一句话说清}}": "本段用于验证中文信函的段落节奏与标点挤压。"
+  "{{第一段：破题。说明写这封信的缘由和核心意图。 不要绕弯，1-2 句话让读者知道你要说什么。}}": "本段用于验证中文信函的段落节奏与标点挤压。"
+  "{{第三段：具体。说清楚你希望对方做什么、 何时做、怎么联系。让行动有明确出口。}}": "本段用于验证中文信函的段落节奏与标点挤压。"
+  "{{第四段（可选）：收尾。表达期待、致谢或礼貌性结束语。}}": "本段用于验证中文信函的段落节奏与标点挤压。"
+  "{{签名 / 亲笔姓名}}": "Folio 维护者"
+  "{{职位 · 部门}}": "示例机构"
+  "{{日期复写 · 可选}}": "2026-10-03"
+  "{{附件清单：① 附件名 1 · ② 附件名 2}}": "本段用于验证中文信函的段落节奏与标点挤压。"
+expected:
+  hard:
+    pages: 1
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    density: medium
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: >-
+    Authored for the han-only composition. Placeholder names that contain
+    quotation marks were skipped; see the placeholder-unification decision.

@@ -1,0 +1,59 @@
+# Theme profiles
+#
+# Theme is appearance: the parchment canvas, the cinnabar accent, and the
+# strokes that carry structure. It deliberately does NOT contain type sizes,
+# leading, hyphenation or page rules -- those live in the typography and page
+# profiles.
+#
+# This split is the point of the file. Today the template `:root` block holds
+# colours and the `--serif` stack side by side, so "change the theme" and
+# "change the typography" are the same edit. Separating them is what makes
+# "switching theme must not reflow the document" a checkable claim rather than
+# a hope.
+#
+# Values are the ones templates render with today, cross-checked against
+# references/tokens.json.
+
+version: 1
+
+profiles:
+  folio-classic-v1:
+    genre: shared
+    # Canvas and neutrals
+    colors:
+      paper: "#F6F0EA"        # --parchment
+      surface: "#FBF7F3"      # --ivory
+      sand: "#E9DED4"         # --sand
+      border: "#E9DED4"       # --border
+      border_soft: "#E8DED6"  # --border-soft
+      text: "#191514"         # --near-black
+      text_warm: "#3A312D"    # --dark-warm
+      charcoal: "#4B3E39"
+      olive: "#5A4A43"
+      stone: "#85776F"
+    # Single accent. The design system allows exactly one; see
+    # references/decisions/0006-folio-single-accent-is-theme-invariant.md
+    accent:
+      brand: "#B83D2E"
+      tint: "#F7E6E1"
+      tint_strong: "#F1D2CC"
+      tag_bg: "#F1D2CC"
+    decoration:
+      rule_width_pt: 0.5
+      corner_radius_pt: 0
+      # Structural rules, not type. Kept here because they are appearance.
+      hairline: "#E9DED4"
+    # Tokens that agents may override without touching layout.
+    overridable:
+      - accent.brand
+      - accent.tint
+      - accent.tint_strong
+
+# Constraint carried over from the design system: brand colour may be changed,
+# but the warm palette (parchment plus warm neutrals) stays in force. A theme
+# that introduces a cool grey is rejected by `build.py --check` today via
+# COOL_GRAY_BLOCKLIST; recording it here makes the rule explicit.
+invariants:
+  palette: warm
+  forbid_cool_grays: true
+  accents_per_document: 1

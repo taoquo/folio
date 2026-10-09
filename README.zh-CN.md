@@ -318,6 +318,24 @@ Folio 不只是模板集合，还带了一份紧凑的操作参考：[CHEATSHEET
 - 构建、页数、渲染行为出问题时，看 `references/production.md`
 - 指导浏览器页面设计时，看 `references/web-foundation.md`、`references/web-reading.md`、`references/web-workspace.md` 和 `references/web-checklist.md`
 
+### 文档引擎
+
+文档先经过语义模型生成，HTML 模板只是它的一个渲染器。
+
+- `scripts/document_ir/` 存放这个模型：其中不出现字号、颜色、页边距或坐标，主题只按名称引用，绝不内联取值
+- 兼容 Writer 填充模板自身的标记，而不是重新生成一份；模板的外观在于它的 DOM 结构，而不只是类名
+- `FOLIO_PIPELINE` 选择渲染路径：`ir`（默认）、`ir-shadow`，以及用于回滚的 `legacy`
+- PPTX 由同一个模型产出，幻灯片不再是独立的代码路径
+
+关于文档的每一项结论都可以复核：
+
+```bash
+python3 scripts/fidelity.py measure          # IR 路径与模板路径对比，七类文档均为 SSIM 1.0000
+python3 scripts/corpus.py validate           # 128 个 fixture，覆盖四种书写系统
+python3 scripts/document_baseline.py compare # 文档与已批准的基线一致
+python3 scripts/migration.py status          # 各类文档的 IR 就绪度
+```
+
 ## 排版规则
 
 这些是最值得守住的最低规则集。

@@ -1,3 +1,4 @@
+import json
 import sys
 from pathlib import Path
 from unittest import TestCase
@@ -90,3 +91,160 @@ class StabilizeProfileValidationTests(TestCase):
 
         with self.assertRaisesRegex(ValueError, "must be numeric"):
             stabilize.validate_profile(broken, "one-pager")
+
+
+class StabilizationGateTests(TestCase):
+    """The stabilizer must converge and must be a fixed point.
+
+    A pass that keeps changing the same file makes `changed=True` meaningless,
+    so idempotence is checked rather than assumed.
+    """
+
+    def setUp(self) -> None:
+        self.profiles = stabilize.load_json(stabilize.PROFILES_FILE)
+        self.tokens = {
+            k: v
+            for k, v in stabilize.load_json(stabilize.TOKENS_FILE).items()
+            if isinstance(k, str) and isinstance(v, str)
+        }
+        self.defaults = self.profiles.get("defaults", {})
+        self.targets_profiles = self.profiles.get("targets", {})
+
+    def test_every_target_is_within_contract_and_idempotent(self) -> None:
+        # Full coverage runs as `stabilize.py --check` in CI. This samples so
+        # the unit suite stays fast: an exact-page contract and a ranged one.
+        sample = ["resume", "changelog"]
+        issues, results = stabilize.check_stabilization(
+            sample, self.defaults, self.targets_profiles, self.tokens
+        )
+        self.assertEqual([], issues)
+        self.assertEqual(sample, [r.target for r in results])
+
+    def test_check_reports_no_overflow_for_constrained_targets(self) -> None:
+        _, results = stabilize.check_stabilization(
+            ["resume-en"], self.defaults, self.targets_profiles, self.tokens
+        )
+        for result in results:
+            with self.subTest(target=result.target):
+                self.assertIsNotNone(result.pages_after)
+                self.assertLessEqual(result.pages_after, result.max_pages)
+
+    def test_check_writes_nothing_into_the_templates(self) -> None:
+        before = {t: (stabilize.TEMPLATES / s).read_bytes() for t, (s, _) in stabilize.HTML_TARGETS.items()}
+        stabilize.check_stabilization(
+            ["one-pager"], self.defaults, self.targets_profiles, self.tokens
+        )
+        after = {t: (stabilize.TEMPLATES / s).read_bytes() for t, (s, _) in stabilize.HTML_TARGETS.items()}
+        self.assertEqual(before, after)
+
+    def test_second_pass_leaves_an_already_normalized_file_untouched(self) -> None:
+        # The property the gate relies on, checked directly on one target.
+        import tempfile
+
+        scratch = stabilize.ROOT / "dist" / "stabilize-check-test"
+        scratch.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as tmp:
+            first_dir, second_dir = Path(tmp) / "a", Path(tmp) / "b"
+            # A template reaches its fonts as `../fonts/<file>`. Without that
+            # path the renderer falls back to the template's remote font URL and
+            # downloads a 24MB face, so the test would measure the network
+            # instead of idempotence.
+            fonts_link = Path(tmp) / "fonts"
+            if not fonts_link.exists():
+                fonts_link.symlink_to(
+                    stabilize.ROOT / "assets" / "fonts", target_is_directory=True
+                )
+            source, max_pages = stabilize.HTML_TARGETS["resume"]
+            profile = stabilize.deep_merge(self.defaults, self.targets_profiles.get("resume", {}))
+            first = stabilize.run_for_target(
+                "resume", source, max_pages, profile, self.tokens, False, first_dir, False
+            )
+            second = stabilize.run_for_target(
+                "resume", source, max_pages, profile, self.tokens, False, second_dir, False,
+                source_override=Path(first.output),
+            )
+            self.assertFalse(second.changed)
+            self.assertEqual(Path(first.output).read_bytes(), Path(second.output).read_bytes())
+
+
+class LayoutDecisionTests(TestCase):
+    """Page fitting must be reviewable, not just visible.
+
+    A solver step says a value moved. A decision says what it bought and what
+    it cost, so a reviewer can question the expensive or pointless ones.
+    """
+
+    def test_a_step_is_turned_into_a_decision(self) -> None:
+        steps = [stabilize.SolverStep("tighten_body_font", 10.0, 9.8, "pt", 3, 2)]
+        decisions = stabilize.decisions_from_steps(steps, max_pages=2)
+        self.assertEqual(1, len(decisions))
+        decision = decisions[0]
+        self.assertEqual("body_font_size_pt", decision.property)
+        self.assertEqual(10.0, decision.value_from)
+        self.assertEqual(9.8, decision.value_to)
+        self.assertEqual(1, decision.pages_saved)
+
+    def test_a_step_that_saved_nothing_is_marked_for_review(self) -> None:
+        steps = [stabilize.SolverStep("tighten_section_gap", 18.0, 17.0, "pt", 3, 3)]
+        decision = stabilize.decisions_from_steps(steps, max_pages=2)[0]
+        self.assertEqual(0, decision.pages_saved)
+        self.assertIn("without_gain", decision.reason)
+
+    def test_reason_names_the_hard_contract_when_one_applies(self) -> None:
+        steps = [stabilize.SolverStep("tighten_body_font", 9.2, 9.0, "pt", 3, 2)]
+        decision = stabilize.decisions_from_steps(steps, max_pages=2)[0]
+        self.assertEqual("hard_page_count_overflow", decision.reason)
+
+    def test_action_order_reflects_typographic_cost(self) -> None:
+        # Tightening a gap is cheaper than shrinking type; the solver spends
+        # the cheap option first, so the costs must stay ordered that way.
+        costs = stabilize.DECISION_COSTS
+        self.assertLess(costs["tighten_section_gap"], costs["tighten_body_line_height"])
+        self.assertLess(costs["tighten_body_line_height"], costs["tighten_body_font"])
+
+    def test_every_solver_action_has_a_property_and_a_cost(self) -> None:
+        actions = [
+            "tighten_section_gap",
+            "tighten_body_line_height",
+            "tighten_body_font",
+            "tighten_page_margin",
+        ]
+        for action in actions:
+            with self.subTest(action=action):
+                self.assertIn(action, stabilize.DECISION_COSTS)
+                self.assertIn(action, stabilize.DECISION_PROPERTIES)
+
+    def test_decision_serializes_for_a_build_artifact(self) -> None:
+        steps = [stabilize.SolverStep("tighten_body_font", 10.0, 9.8, "pt", 3, 2)]
+        payload = stabilize.decisions_from_steps(steps, max_pages=2)[0].to_json()
+        self.assertEqual(
+            {"decision", "property", "from", "to", "unit", "reason", "pages", "pages_saved", "cost"},
+            set(payload),
+        )
+        json.dumps(payload)
+
+    def test_target_result_exposes_decisions_and_a_summary(self) -> None:
+        import json as _json
+        import tempfile
+        from pathlib import Path
+
+        scratch = stabilize.ROOT / "dist" / "stabilize-check-test"
+        scratch.mkdir(parents=True, exist_ok=True)
+        profiles = stabilize.load_json(stabilize.PROFILES_FILE)
+        tokens = {
+            k: v
+            for k, v in stabilize.load_json(stabilize.TOKENS_FILE).items()
+            if isinstance(k, str) and isinstance(v, str)
+        }
+        with tempfile.TemporaryDirectory(dir=scratch) as tmp:
+            source, max_pages = stabilize.HTML_TARGETS["resume"]
+            profile = stabilize.deep_merge(
+                profiles["defaults"], profiles.get("targets", {}).get("resume", {})
+            )
+            result = stabilize.run_for_target(
+                "resume", source, max_pages, profile, tokens, False, Path(tmp), False
+            )
+            payload = result.to_json()
+        self.assertIn("layout_decisions", payload)
+        self.assertIsInstance(payload["layout_decisions"], list)
+        _json.dumps(payload)

@@ -1,0 +1,55 @@
+id: canonical-mixed-equity-report
+genre: equity-report
+language: zh-Hans-CN
+script_profile: han-latin-digits
+template: equity-report.html
+purpose:
+  - canonical
+  - data-dense
+content:
+  "{{股票名称}}": "中英混排 Baselines in mixed scripts"
+  "{{作者}}": "Folio 维护者 team"
+  "{{摘要}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{关键词}}": "排版工程 Typography"
+  "{{EYEBROW · 如 "个股研报" / "估值分析" / "投资备忘"}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{公司名称}}": "中英混排 Baselines in mixed scripts"
+  "{{股票代码}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{行业}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{交易所}}": "近 20 个交易日价格走势"
+  "{{一句核心判断}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{当前价格}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{涨跌幅 如 "+12.3%"}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{日期}}": "2026-10-03"
+  "{{数字}}": "1,024"
+  "{{2-3 句核心投资论点。用 <span class="hl">关键数据</span> 支撑判断。这段是整份研报的灵魂。}}": "1,024"
+  "{{评级}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{目标价}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{周期}}": "2026-10-03"
+  "{{一句话总结：买入/持有/观望的核心理由。}}": "混排会同时暴露字体回退与基线对齐问题。Source Serif 4 负责 Latin 与数字，LXGW WenKai 负责汉字，字号 9.0–12.0 pt 与行高 1.35–1.55 必须同时成立。"
+  "{{图表标题，如 "近 20 个交易日价格走势"}}": "中英混排 Baselines in mixed scripts"
+  "{{数据}}": "1,024"
+  "{{图表标题}}": "中英混排 Baselines in mixed scripts"
+  "{{行业格局概述，1-2 段。}}": "混排会同时暴露字体回退与基线对齐问题。Source Serif 4 负责 Latin 与数字，LXGW WenKai 负责汉字，字号 9.0–12.0 pt 与行高 1.35–1.55 必须同时成立。"
+  "{{目标公司}}": "中英混排 Baselines in mixed scripts"
+  "{{竞品 A}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{竞品 B}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{竞品 C}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{风险类型 1}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{风险描述}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{风险类型 2}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{风险类型 3}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{风险类型 4}}": "Chinese text 与 Latin words 共享 baseline，数字 1,234 需要 tabular figures 保持列对齐。"
+  "{{3-5 句总结。包含目标价（如有）、评级建议、核心催化剂、关键假设。}}": "混排会同时暴露字体回退与基线对齐问题。Source Serif 4 负责 Latin 与数字，LXGW WenKai 负责汉字，字号 9.0–12.0 pt 与行高 1.35–1.55 必须同时成立。"
+  "{{机构名 / 免责声明}}": "示例机构"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 9
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    density: medium
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: Authored to exercise the equity-report template under the han-latin-digits composition.

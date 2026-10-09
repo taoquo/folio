@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "id": "ir-footnote",
+  "lang": "en-US",
+  "metadata": {
+    "title": "Footnotes",
+    "genre": "one-pager",
+    "author": "Folio"
+  },
+  "profiles": {
+    "typography": "folio-one-pager-en-v1",
+    "page": "a4-one-pager-v1",
+    "theme": "folio-classic-v1"
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "id": "p-1",
+      "content": [
+        {
+          "type": "text",
+          "value": "A claim with a note."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "id": "p-2",
+      "content": [
+        {
+          "type": "text",
+          "value": "Supported by a source"
+        },
+        {
+          "type": "footnote_ref",
+          "target": "fn-1"
+        },
+        {
+          "type": "text",
+          "value": "."
+        }
+      ]
+    },
+    {
+      "type": "footnote_definition",
+      "id": "fn-1",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "id": "fn-1-p",
+          "content": [
+            {
+              "type": "text",
+              "value": "The source methodology."
+            }
+          ],
+          "role": "annotation"
+        }
+      ]
+    }
+  ]
+}

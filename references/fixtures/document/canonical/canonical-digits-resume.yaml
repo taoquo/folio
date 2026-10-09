@@ -1,0 +1,97 @@
+id: canonical-digits-resume
+genre: resume
+language: zh-Hans-CN
+script_profile: digits-heavy
+template: resume.html
+purpose:
+  - canonical
+  - hard-page-contract
+content:
+  "{{姓名}}": "1,024 contributors"
+  "{{摘要}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{关键词}}": "2026-10-03"
+  "{{变量}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{别名/英文名}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{岗位定位，如"AI / Agent 工程"}}": "Measurements span 0.001 through 9,999,999,999,999. Percentages run 0.0001% to 100.0000%. Font sizes stay in 9.0-12.0 pt and line heights in 1.35-1.55, keeping 1,234 tests within 0.25 ms of the median."
+  "{{GITHUB_URL}}": "https://example.org/1024"
+  "{{GITHUB_ID}}": "https://example.org/1024"
+  "{{X_URL}}": "https://example.org/1024"
+  "{{X_ID}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{PHONE}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{EMAIL}}": "1024@example.org"
+  "{{年龄}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{城市}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{数字}}": "1,024"
+  "{{单位}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{标签}}": "2026-10-03"
+  "{{80 字以内。建议结构：现任职位 + 级别 + 时长。团队构成（人数、梯队、协作方）。长期演进方向。核心沉淀领域（4-6 个方向）。}}": "Measurements span 0.001 through 9,999,999,999,999. Percentages run 0.0001% to 100.0000%. Font sizes stay in 9.0-12.0 pt and line heights in 1.35-1.55, keeping 1,234 tests within 0.25 ms of the median."
+  "{{起始时间}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{关键里程碑}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{年份}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{阶段标题}}": "12.5% faster at p95 18.25 ms"
+  "{{一句解释这一步的意义}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{项目名}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{项目类型}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{角色定位，如"方向主导"}}": "2026-10-03"
+  "{{~60 字：项目是什么 + 为什么做 + 你的位置}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{~80 字：技术方案 / 关键决策 / 执行路径}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{~100 字：数据为王。<span class="hl">关键数字</span> 高亮 1-2 处。}}": "1,024"
+  "{{角色定位}}": "2026-10-03"
+  "{{~60 字}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{~80 字}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{~100 字，含 <span class="hl">关键数字</span>}}": "1,024"
+  "{{角色}}": "2026-10-03"
+  "{{项目背景和定位}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{执行路径}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{可量化结果，含 <span class="hl">关键数字</span>}}": "1,024"
+  "{{时间跨度}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{一句副标题}}": "12.5% faster at p95 18.25 ms"
+  "{{一句自我定位}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{简述开发者身份：设计审美 / 独立完成流程 / 跨语言实战 / 用户反馈}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{STARS_TOTAL}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{FORKS_TOTAL}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{FOLLOWERS_TOTAL}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{URL}}": "https://example.org/1024"
+  "{{语言 + 核心定位 + 平台}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{STARS}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{描述}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{亮点 TAG}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{这个项目的独特故事：开源时机 / 传播范围 / 知名人物推荐等}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{时间}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{事件标题}}": "12.5% faster at p95 18.25 ms"
+  "{{具体做了什么判断或行动，为什么证明判断力}}": "Measurements span 0.001 through 9,999,999,999,999. Percentages run 0.0001% to 100.0000%. Font sizes stay in 9.0-12.0 pt and line heights in 1.35-1.55, keeping 1,234 tests within 0.25 ms of the median."
+  "{{具体做了什么判断或行动}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{平台}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{HANDLE}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{粉丝数}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{博客 / 周刊 / 其他内容产品简介}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{副标题}}": "12.5% faster at p95 18.25 ms"
+  "{{文章标题}}": "12.5% faster at p95 18.25 ms"
+  "{{日期}}": "2026-10-03"
+  "{{浏览量 / 赞数 / 影响力指标}}": "1,024"
+  "{{浏览量 / 赞数}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{演讲标题}}": "12.5% faster at p95 18.25 ms"
+  "{{主办方 / 地点}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{能力 1<br>标签}}": "2026-10-03"
+  "{{描述。至少 <span class="em-brand">1 处强调</span>}}": "Measurements span 0.001 through 9,999,999,999,999. Percentages run 0.0001% to 100.0000%. Font sizes stay in 9.0-12.0 pt and line heights in 1.35-1.55, keeping 1,234 tests within 0.25 ms of the median."
+  "{{能力 2<br>标签}}": "2026-10-03"
+  "{{能力 3<br>标签}}": "2026-10-03"
+  "{{能力 4<br>标签}}": "2026-10-03"
+  "{{能力 5<br>标签}}": "2026-10-03"
+  "{{学校}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{学院}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+  "{{专业}}": "2026-10-03"
+  "{{一句判断性描述，如"放弃保研直接就业"}}": "Measurements span 0.001 through 9,999,999,999,999. Percentages run 0.0001% to 100.0000%. Font sizes stay in 9.0-12.0 pt and line heights in 1.35-1.55, keeping 1,234 tests within 0.25 ms of the median."
+  "{{起止时间}}": "Values range from 0.001 to 1,000,000 across 42 runs, median 12.50 ms."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 9
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    density: medium
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: Authored to exercise the resume template under the digits-heavy composition.

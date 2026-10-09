@@ -21,23 +21,20 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from page_contracts import HTML_TARGETS as _PAGE_CONTRACTS
 from shared import COOL_GRAY_BLOCKLIST, ROOT, TEMPLATES, TOKENS_FILE
 
 PROFILES_FILE = ROOT / "references" / "stabilizer_profiles.json"
 DEFAULT_OUT_DIR = ROOT / "dist" / "stabilized"
 
 # HTML targets only. Diagrams/slides are intentionally excluded from stabilize v0.
+#
+# `source` and `max_pages` come from the shared page-contract table so this
+# solver and `build.py`'s hard gate can never disagree about a document's page
+# budget. The solver only needs the upper bound; `build.py` also enforces the
+# lower bound.
 HTML_TARGETS: dict[str, tuple[str, int]] = {
-    "one-pager": ("one-pager.html", 1),
-    "letter": ("letter.html", 1),
-    "long-doc": ("long-doc.html", 9),
-    "portfolio": ("portfolio.html", 8),
-    "resume": ("resume.html", 2),
-    "one-pager-en": ("one-pager-en.html", 1),
-    "letter-en": ("letter-en.html", 1),
-    "long-doc-en": ("long-doc-en.html", 9),
-    "portfolio-en": ("portfolio-en.html", 8),
-    "resume-en": ("resume-en.html", 2),
+    name: (spec.source, spec.max_pages) for name, spec in _PAGE_CONTRACTS.items()
 }
 
 STYLE_BLOCK_RE = re.compile(r"(<style>\s*)(?P<css>.*?)(\s*</style>)", re.DOTALL | re.IGNORECASE)
@@ -72,6 +69,94 @@ class SolverStep:
     pages_after: int
 
 
+def decisions_from_steps(steps: list[SolverStep], max_pages: int) -> list[LayoutDecision]:
+    """Turn solver movements into decisions a reviewer can read.
+
+    A step says a value changed; a decision says what problem it was solving,
+    what it cost typographically, and whether it actually bought a page.
+    Steps that moved a value without reducing the page count are kept and
+    marked, because they are exactly the ones worth questioning.
+    """
+    decisions: list[LayoutDecision] = []
+    for step in steps:
+        saved = step.pages_before - step.pages_after
+        reason = (
+            "hard_page_count_overflow"
+            if max_pages > 0 and step.pages_before > max_pages
+            else "page_count_pressure"
+        )
+        if saved <= 0:
+            reason = f"{reason}_without_gain"
+        decisions.append(
+            LayoutDecision(
+                decision=step.action,
+                property=DECISION_PROPERTIES.get(step.action, step.action),
+                value_from=step.before,
+                value_to=step.after,
+                unit=step.unit,
+                reason=reason,
+                pages_before=step.pages_before,
+                pages_after=step.pages_after,
+                pages_saved=saved,
+                cost=DECISION_COSTS.get(step.action, 0.5),
+            )
+        )
+    return decisions
+
+
+@dataclass
+class LayoutDecision:
+    """One layout choice the stabilizer made, with its reason and cost.
+
+    `SolverStep` records that a value moved; a decision records *why* it moved
+    and what it bought. That distinction is what makes page fitting reviewable
+    instead of merely visible.
+    """
+
+    decision: str
+    property: str
+    value_from: float
+    value_to: float
+    unit: str
+    reason: str
+    pages_before: int
+    pages_after: int
+    pages_saved: int
+    # Cost is the relative typographic price: shrinking type costs more than
+    # tightening a section gap, so a reader can see what was traded away.
+    cost: float
+
+    def to_json(self) -> dict[str, Any]:
+        return {
+            "decision": self.decision,
+            "property": self.property,
+            "from": self.value_from,
+            "to": self.value_to,
+            "unit": self.unit,
+            "reason": self.reason,
+            "pages": {"before": self.pages_before, "after": self.pages_after},
+            "pages_saved": self.pages_saved,
+            "cost": self.cost,
+        }
+
+
+# Relative typographic price of each tightening action. Ordering follows the
+# solver's own preference: spend the cheapest first.
+DECISION_COSTS = {
+    "tighten_section_gap": 0.10,
+    "tighten_body_line_height": 0.25,
+    "tighten_body_font": 0.45,
+    "tighten_page_margin": 0.30,
+}
+
+DECISION_PROPERTIES = {
+    "tighten_section_gap": "section_gap_pt",
+    "tighten_body_line_height": "body_line_height",
+    "tighten_body_font": "body_font_size_pt",
+    "tighten_page_margin": "page_margin_mm",
+}
+
+
 @dataclass
 class TargetResult:
     target: str
@@ -84,6 +169,7 @@ class TargetResult:
     status: str
     rules: dict[str, int] = field(default_factory=dict)
     solver_steps: list[SolverStep] = field(default_factory=list)
+    decisions: list[LayoutDecision] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
 
     def to_json(self) -> dict[str, Any]:
@@ -107,6 +193,7 @@ class TargetResult:
                 }
                 for s in self.solver_steps
             ],
+            "layout_decisions": [d.to_json() for d in self.decisions],
             "notes": self.notes,
         }
 
@@ -491,10 +578,11 @@ def run_for_target(
     write_in_place: bool,
     out_dir: Path,
     strict: bool,
+    source_override: Path | None = None,
 ) -> TargetResult:
     validate_profile(profile, target)
 
-    source_path = TEMPLATES / source_file
+    source_path = source_override if source_override is not None else TEMPLATES / source_file
     html = source_path.read_text(encoding="utf-8")
     css, style_match = extract_css(html)
 
@@ -663,10 +751,16 @@ def run_for_target(
     if strict and not page_ok:
         status = "failed-strict"
 
+    # Paths are resolved before relativising: a relative output path under
+    # dist/ would otherwise fail the check below even though it is inside ROOT.
+    source_resolved = source_path.resolve()
+    output_resolved = output_path.resolve()
     result = TargetResult(
         target=target,
-        source=str(source_path.relative_to(ROOT)),
-        output=str(output_path.relative_to(ROOT) if output_path.is_relative_to(ROOT) else output_path),
+        source=str(source_resolved.relative_to(ROOT)),
+        output=str(
+            output_resolved.relative_to(ROOT) if output_resolved.is_relative_to(ROOT) else output_path
+        ),
         changed=changed,
         max_pages=max_pages,
         pages_before=pages_before,
@@ -674,6 +768,7 @@ def run_for_target(
         status=status,
         rules=rule_hits,
         solver_steps=solver_steps,
+        decisions=decisions_from_steps(solver_steps, max_pages),
         notes=notes,
     )
     return result
@@ -702,7 +797,118 @@ def build_arg_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Return non-zero when constrained targets still exceed page limits",
     )
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help=(
+            "Gate mode: require every target to be within its page contract and "
+            "normalization to be idempotent, without writing anything"
+        ),
+    )
     return parser
+
+
+def check_stabilization(
+    targets: list[str],
+    defaults: dict[str, Any],
+    target_profiles: dict[str, Any],
+    tokens: dict[str, str],
+) -> tuple[list[str], list[TargetResult]]:
+    """Verify the stabilizer converges and does not rewrite the same file twice.
+
+    Two properties matter for this tool to be trustworthy:
+
+    1. Contract. A constrained target must end within its page budget.
+    2. Idempotence. Normalizing an already-normalized document must be a no-op.
+       Without this, `changed=True` is meaningless and every run reports work
+       it did not really do.
+
+    Runs entirely in a temporary directory under `dist/`; nothing is written to
+    the repository, but the pass stays inside the repo so `run_for_target`'s
+    own path guard remains satisfied.
+    """
+    issues: list[str] = []
+    results: list[TargetResult] = []
+
+    scratch_root = ROOT / "dist" / "stabilize-check"
+    scratch_root.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=scratch_root) as tmp:
+        first_dir = Path(tmp) / "first"
+        second_dir = Path(tmp) / "second"
+
+        # A template resolves its fonts as `../fonts/<file>`. Inside the scratch
+        # tree that path does not exist, so WeasyPrint falls back to the remote
+        # URL the template also declares and starts downloading a 24MB CJK font
+        # for every target and every pass. Linking the real directory keeps the
+        # relative path valid and the check finishes in seconds.
+        fonts_link = Path(tmp) / "fonts"
+        if not fonts_link.exists():
+            try:
+                fonts_link.symlink_to(ROOT / "assets" / "fonts", target_is_directory=True)
+            except OSError:
+                # A platform that refuses symlinks still gets a real copy of the
+                # directory rather than a silent fall back to the network.
+                import shutil
+
+                shutil.copytree(ROOT / "assets" / "fonts", fonts_link, dirs_exist_ok=True)
+
+        for target in targets:
+            source_file, max_pages = HTML_TARGETS[target]
+            profile = deep_merge(defaults, target_profiles.get(target, {}))
+            try:
+                first = run_for_target(
+                    target=target,
+                    source_file=source_file,
+                    max_pages=max_pages,
+                    profile=profile,
+                    canonical_tokens=tokens,
+                    write_in_place=False,
+                    out_dir=first_dir,
+                    strict=False,
+                )
+            except ValueError as exc:
+                issues.append(f"{target}: {exc}")
+                continue
+            results.append(first)
+
+            if first.status in {"overflow", "failed-strict"}:
+                issues.append(
+                    f"{target}: pages {first.pages_after} exceed the contract maximum {max_pages}"
+                )
+
+            # Normalize the normalized output again. Any change here means the
+            # pass is not a fixed point.
+            first_out = Path(first.output)
+            if not first_out.is_file():
+                issues.append(f"{target}: expected output missing at {first_out}")
+                continue
+            second_dir.mkdir(parents=True, exist_ok=True)
+            try:
+                second = run_for_target(
+                    target=target,
+                    source_file=source_file,
+                    max_pages=max_pages,
+                    profile=profile,
+                    canonical_tokens=tokens,
+                    write_in_place=False,
+                    out_dir=second_dir,
+                    strict=False,
+                    source_override=first_out,
+                )
+            except ValueError as exc:
+                issues.append(f"{target}: second pass failed: {exc}")
+                continue
+
+            second_out = Path(second.output)
+            if second_out.is_file() and first_out.read_bytes() != second_out.read_bytes():
+                changed_rules = {k: v for k, v in second.rules.items() if v}
+                detail = ", ".join(f"{k}={v}" for k, v in sorted(changed_rules.items())) or "unknown"
+                issues.append(
+                    f"{target}: normalization is not idempotent ({detail}); "
+                    "a second pass changed the file"
+                )
+
+    return issues, results
 
 
 def main(argv: list[str]) -> int:
@@ -731,6 +937,36 @@ def main(argv: list[str]) -> int:
     if not isinstance(defaults, dict) or not isinstance(target_profiles, dict):
         print("ERROR: invalid stabilizer_profiles.json, expected keys: defaults(object), targets(object)")
         return 2
+
+    if args.check:
+        issues, checked = check_stabilization(targets, defaults, target_profiles, tokens)
+        for result in checked:
+            print(
+                f"  {'OK  ' if result.status == 'ok' else 'FAIL'} {result.target:<18} "
+                f"pages {result.pages_after}/{result.max_pages} "
+                f"changed={result.changed}"
+            )
+        all_decisions = [d for r in checked for d in r.decisions]
+        for decision in all_decisions:
+            gain = "no page saved" if decision.pages_saved <= 0 else f"{decision.pages_saved} page(s) saved"
+            print(
+                f"  decision[{decision.cost:.2f}]: {decision.property} "
+                f"{decision.value_from} -> {decision.value_to} {decision.unit} "
+                f"({gain}, {decision.reason})"
+            )
+        if issues:
+            print(f"ERROR: stabilization check failed for {len(issues)} target(s)")
+            for issue in issues:
+                print(f"  {issue}")
+            return 1
+        summary = (
+            f"OK: {len(checked)} target(s) within contract and normalization is idempotent"
+        )
+        if all_decisions:
+            pointless = sum(1 for d in all_decisions if d.pages_saved <= 0)
+            summary += f"; {len(all_decisions)} layout decision(s), {pointless} without gain"
+        print(summary)
+        return 0
 
     out_dir = Path(args.out_dir)
     all_results: list[TargetResult] = []
@@ -767,19 +1003,42 @@ def main(argv: list[str]) -> int:
         )
         for note in result.notes:
             print(f"  note: {note}")
+        for decision in result.decisions:
+            gain = "no page saved" if decision.pages_saved <= 0 else f"{decision.pages_saved} page(s) saved"
+            print(
+                f"    decision[{decision.cost:.2f}]: {decision.property} "
+                f"{decision.value_from} -> {decision.value_to} {decision.unit} "
+                f"({gain}, {decision.reason})"
+            )
 
     if args.report:
         report_path = out_dir / "stabilize-report.json"
         report_path.parent.mkdir(parents=True, exist_ok=True)
+        all_decisions = [d for r in all_results for d in r.decisions]
         report = {
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "write_mode": bool(args.write),
             "strict": bool(args.strict),
+            "summary": {
+                "targets": len(all_results),
+                "changed": sum(1 for r in all_results if r.changed),
+                "layout_decisions": len(all_decisions),
+                # Decisions that tightened a value without saving a page are the
+                # ones a reviewer should question first.
+                "decisions_without_gain": sum(1 for d in all_decisions if d.pages_saved <= 0),
+                "cost_total": round(sum(d.cost for d in all_decisions), 3),
+                "fitted_targets": [r.target for r in all_results if r.decisions],
+            },
             "targets": [r.to_json() for r in all_results],
         }
         report_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
         rel = report_path.relative_to(ROOT) if report_path.is_relative_to(ROOT) else report_path
         print(f"REPORT: {rel}")
+        if all_decisions:
+            print(
+                f"OK: {len(all_decisions)} layout decision(s) across "
+                f"{len({r.target for r in all_results if r.decisions})} target(s)"
+            )
 
     if strict_failed:
         return 1

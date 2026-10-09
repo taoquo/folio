@@ -1,0 +1,47 @@
+id: canonical-en-one-pager
+genre: one-pager
+language: en-US
+script_profile: latin-only
+purpose:
+  - canonical
+  - one-page-density
+  - latin-line-break
+content:
+  "{{EYEBROW - e.g. Proposal / Report / Exec Summary}}": "Product plan"
+  "{{Document headline - verb-led, fits in two lines, bookish.}}": "Make document typography measurable"
+  "{{DOC_TITLE}}": "Make document typography measurable"
+  "{{One-line subtitle or the single sharpest claim.}}": "An executive summary on baselines, contracts and quality vectors"
+  "{{~30-40 words. The one paragraph that sets the whole document's tone. Use <span class="hl">brand-color emphasis</span> on the sharpest claim or number. Everything below is in service of this.}}": "The document path has no <strong>measurable quality system</strong>. This plan freezes the baseline first, turns scattered typographic rules into explicit contracts, and makes every later change judgeable as a fix, an improvement or a regression."
+  "{{Section one}}": "The problem"
+  "{{Section two}}": "The path"
+  "{{One or two sentences expanding the claim.}}": "Quality assurance for documents currently stops at page count and font name, which cannot answer whether a change made the typography better. The diagram side already carries full compiler discipline; the document side needs the same boundaries, not a new renderer."
+  "{{One or two sentences.}}": "Make the present reproducible before improving it."
+  "{{Short bullet: a data point, observation, or judgment.}}": "Page contracts are defined in three places and can drift apart"
+  "{{Short bullet with <span class="hl">key figure</span>.}}": "English body text depends on the build host and CI never declares it"
+  "{{Short bullet.}}": "Repeat-render checks compared compressed bytes rather than the visible page"
+  "{{Key quote / critical note / the single takeaway that must not be missed.}}": "Without a deterministic baseline there is no way to tell a fix from a regression."
+  "{{The single recommended action: approve, pause, fund, or move to the next phase.}}": "Approve the plan and fund the baseline and contract stages first"
+  "{{Owner / due date}}": "Typography engineering, two weeks"
+  "{{STAGE_TITLE}}": "Stage one: freeze and measure"
+  "{{One-line explanation.}}": "Make the present reproducible before improving it."
+  "{{NUMBER}}": "14"
+  "{{LABEL}}": "typography, baseline, contracts"
+  "{{DESCRIPTION}}": "Build a document system that can be measured, reproduced and governed."
+  "{{AUTHOR}}": "Folio"
+  "{{AUTHOR}}": "Folio"
+  "{{YYYY.MM.DD}}": "2026.10.03"
+  "{{VERSION / STATUS}}": "v1.0 · 草案"
+  "{{CONFIDENTIALITY - internal / public / draft}}": "内部"
+  "{{PAGE / CONTACT}}": "1 / folio.dev"
+  "{{KEYWORDS}}": "typography, baseline, contracts"
+expected:
+  hard:
+    pages: 1
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    density: medium
+provenance:
+  type: synthetic
+  license: internal-generated
+  note: Authored to exercise the one-pager layout under this script profile.
