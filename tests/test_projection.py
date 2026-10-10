@@ -79,3 +79,60 @@ class ProjectionTests(TestCase):
         payload = json.loads(json.dumps(proj.to_json()))
         self.assertIn("projected", payload)
         self.assertIn("sources", payload)
+
+
+class GapProjectionTests(TestCase):
+    """The spacing model reaches the page, but never overrides a template.
+
+    The model states a gap for each pair of blocks. Emitting all of them would
+    replace decisions the templates have already made, and a differential
+    experiment showed what that costs: changing one `margin-top` to
+    `padding-top` moved the rendering to SSIM 0.90.
+
+    So a gap is emitted only for a pair the stylesheet does not already decide.
+    """
+
+    def test_the_layer_is_off_unless_asked_for(self) -> None:
+        base = projection.combined("one-pager", "zh-Hans-CN", include_policy=True)
+        with_gaps = projection.combined(
+            "one-pager", "zh-Hans-CN", include_policy=True, include_gaps=True
+        )
+        self.assertGreaterEqual(len(with_gaps.projected), len(base.projected))
+
+    def test_a_pair_the_template_decides_is_left_alone(self) -> None:
+        from pathlib import Path
+
+        template = Path(projection.ROOT) / "assets" / "templates" / "one-pager.html"
+        stylesheet = template.read_text(encoding="utf-8")
+        gaps = projection.gap_projection("one-pager", stylesheet)
+        # The one-pager sets its own paragraph and heading margins, so most
+        # pairs are skipped rather than restated.
+        self.assertGreater(len(gaps.skipped), len(gaps.projected))
+
+    def test_a_gap_carries_the_rule_that_produced_it(self) -> None:
+        gaps = projection.gap_projection("one-pager", "")
+        for key in gaps.projected:
+            with self.subTest(key=key):
+                self.assertTrue(gaps.sources.get(key))
+
+    def test_the_emitted_css_is_balanced(self) -> None:
+        gaps = projection.gap_projection("one-pager", "")
+        self.assertEqual(gaps.css.count("{"), gaps.css.count("}"))
+
+    def test_every_gap_uses_the_models_preferred_value(self) -> None:
+        import spacing
+
+        gaps = projection.gap_projection("one-pager", "")
+        for key, value in gaps.projected.items():
+            before, after = key[4:].split("->")
+            with self.subTest(pair=key):
+                expected = spacing.resolve_gap(before, after).spec.preferred.as_pt()
+                self.assertEqual(f"{expected:g}pt", value)
+
+    def test_a_fallback_pair_is_not_projected(self) -> None:
+        # A fallback means the model has no rule for the pair; inventing a value
+        # would put a number on the page that nobody chose.
+        gaps = projection.gap_projection("one-pager", "")
+        for key in gaps.projected:
+            with self.subTest(key=key):
+                self.assertNotIn("fallback", gaps.sources.get(key, ""))

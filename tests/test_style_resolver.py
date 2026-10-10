@@ -78,3 +78,63 @@ class ResolutionTests(TestCase):
         style = style_resolver.resolve(genre="changelog", language="en-US")
         payload = json.dumps(style.to_json())
         self.assertIn("body.size_pt", payload)
+
+
+class LanguageInferenceTests(TestCase):
+    """The profile follows the document's language, not the alphabet.
+
+    The resolver scored candidates on genre and language and broke ties on the
+    profile's name. `-en` sorts before `-zh`, so asking for a one-pager without
+    naming a language produced English typography for a Chinese document -- a
+    wrong answer presented as a resolved style.
+    """
+
+    def test_a_genre_alone_resolves_through_the_template(self) -> None:
+        # `one-pager.html` declares zh-CN, so the Chinese profile is the one
+        # that fits a Chinese document.
+        style = style_resolver.resolve(genre="one-pager")
+        self.assertIn("zh", style.domains.get("typography", ""))
+
+    def test_an_explicit_language_wins_over_the_template(self) -> None:
+        style = style_resolver.resolve(genre="one-pager", language="en-US")
+        self.assertIn("en", style.domains.get("typography", ""))
+
+    def test_the_template_language_is_read_from_the_root_element(self) -> None:
+        from pathlib import Path
+
+        templates = Path(style_resolver.ROOT) / "assets" / "templates"
+        self.assertEqual("zh-CN", style_resolver.language_of_template(templates / "one-pager.html"))
+        self.assertEqual("en", style_resolver.language_of_template(templates / "one-pager-en.html"))
+
+    def test_a_template_without_a_language_returns_none(self) -> None:
+        self.assertIsNone(style_resolver.language_of_template(Path("/nonexistent.html")))
+
+    def test_a_tie_is_reported_rather_than_broken_by_name(self) -> None:
+        # Asked directly, without a language, two profiles fit equally and the
+        # function says so instead of choosing.
+        profiles, _ = style_resolver._load_profiles()
+        choice, tied = style_resolver._best_match(
+            profiles["typography"], "one-pager", False, None
+        )
+        self.assertIsNone(choice)
+        self.assertEqual(2, len(tied))
+
+    def test_a_language_settles_a_tie(self) -> None:
+        profiles, _ = style_resolver._load_profiles()
+        choice, tied = style_resolver._best_match(
+            profiles["typography"], "one-pager", True, "zh-Hans-CN"
+        )
+        self.assertIsNotNone(choice)
+        self.assertEqual([], tied)
+
+    def test_the_template_for_a_genre_is_found(self) -> None:
+        from pathlib import Path
+
+        found = style_resolver.template_for_genre("one-pager")
+        self.assertIsNotNone(found)
+        self.assertTrue(Path(found).is_file())
+
+    def test_an_english_genre_finds_the_english_template(self) -> None:
+        found = style_resolver.template_for_genre("one-pager", "en-US")
+        self.assertIsNotNone(found)
+        self.assertIn("-en", Path(found).name)

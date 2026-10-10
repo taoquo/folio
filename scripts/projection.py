@@ -135,6 +135,60 @@ def style_projection(genre: str | None, language: str | None) -> Projection:
                       skipped=skipped)
 
 
+
+# The pairs the model has a rule for, and the selectors that express them. A
+# selector is only emitted when the template does not already set a margin for
+# the pair, so an existing stylesheet is never overridden.
+GAP_SELECTORS: dict[tuple[str, str], str] = {
+    ("heading", "paragraph"): "h1 + p, h2 + p, h3 + p, h4 + p, h5 + p, h6 + p",
+    ("paragraph", "paragraph"): "p + p",
+    ("paragraph", "list"): "p + ul, p + ol",
+    ("list", "paragraph"): "ul + p, ol + p",
+    ("figure", "caption"): "figure + figcaption, figure + .caption",
+    ("figure", "paragraph"): "figure + p",
+    ("table", "paragraph"): "table + p",
+    ("paragraph", "heading"): "p + h1, p + h2, p + h3, p + h4, p + h5, p + h6",
+}
+
+
+def gap_projection(genre: str | None = None, stylesheet: str | None = None) -> Projection:
+    """Gap rules for pairs the stylesheet does not already decide.
+
+    `stylesheet` is the template's own CSS. A pair whose selector already
+    appears there is left alone: the template has decided, and replacing its
+    decision is what the differential experiment showed to be unsafe.
+    """
+    import spacing
+
+    declared = stylesheet or ""
+    lines: list[str] = []
+    projected: dict[str, str] = {}
+    sources: dict[str, str] = {}
+    skipped: list[str] = []
+
+    for (before, after), selector in sorted(GAP_SELECTORS.items()):
+        first = selector.split(",")[0].strip()
+        # If the template styles this relationship, it keeps the decision.
+        if first.split(" ")[-1].split("+")[-1].strip() in declared and "margin" in declared:
+            skipped.append(f"{before}->{after}")
+            continue
+        gap = spacing.resolve_gap(before, after)
+        if gap.is_fallback:
+            skipped.append(f"{before}->{after}")
+            continue
+        value = gap.spec.preferred.as_pt()
+        lines.append(f"/* {before} -> {after}: {gap.rule} */")
+        lines.append(f"{selector} {{ margin-top: {value:g}pt; }}")
+        projected[f"gap.{before}->{after}"] = f"{value:g}pt"
+        sources[f"gap.{before}->{after}"] = gap.rule
+
+    if not lines:
+        return Projection(css="", projected={}, sources={}, skipped=skipped)
+
+    return Projection(css="\n".join(lines), projected=projected, sources=sources,
+                      skipped=skipped)
+
+
 def policy_projection(genre: str | None, page_profile: str | None = None) -> Projection:
     """The layout-policy layer: keep and break rules only.
 
@@ -179,11 +233,24 @@ def policy_projection(genre: str | None, page_profile: str | None = None) -> Pro
     )
 
 
-def combined(genre: str | None, language: str | None, *, include_policy: bool) -> Projection:
-    """The full injected block."""
+def combined(
+    genre: str | None,
+    language: str | None,
+    *,
+    include_policy: bool,
+    include_gaps: bool = False,
+    stylesheet: str | None = None,
+) -> Projection:
+    """The full injected block.
+
+    The gap layer is off unless asked for: it is the only part that can move a
+    page, and the templates already decide their own spacing.
+    """
     parts = [style_projection(genre, language)]
     if include_policy:
         parts.append(policy_projection(genre))
+    if include_gaps:
+        parts.append(gap_projection(genre, stylesheet))
 
     css = "\n\n".join(p.css for p in parts if not p.empty)
     projected: dict[str, str] = {}

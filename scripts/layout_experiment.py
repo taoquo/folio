@@ -94,6 +94,35 @@ def _targets() -> list[tuple[str, Path]]:
     return out
 
 
+def measure_by_box_tree(genre: str) -> dict[str, Any]:
+    """Pagination defects read from the box tree.
+
+    Returns the same keys the geometry path reports, so the two are comparable
+    and the difference is visible rather than hidden behind a choice of method.
+    """
+    import box_inspector
+    import fidelity
+
+    template = fidelity._template_for(genre) if hasattr(fidelity, "_template_for") else None
+    if template is None:
+        from style_resolver import template_for_genre
+
+        template = template_for_genre(genre)
+    if template is None or not Path(template).is_file():
+        return {"error": f"no template for {genre}"}
+
+    report = box_inspector.inspect(Path(template))
+    paragraphs = report.paragraphs
+    return {
+        "widow": report.widows,
+        "orphan": report.orphans,
+        "heading-at-page-bottom": report.isolated_headings,
+        "paragraphs": len(paragraphs),
+        "pages": report.pages,
+        "method": "box tree",
+    }
+
+
 def run() -> list[DefectClass]:
     """Measure the named defects across the documents that exist."""
     import artifact_inspector

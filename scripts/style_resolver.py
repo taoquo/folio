@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
@@ -37,6 +38,7 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+TEMPLATES = ROOT / "assets" / "templates"
 sys.path.insert(0, str(ROOT / "scripts"))
 
 # Which profile kind owns which top-level field. A domain that writes a field it
@@ -179,6 +181,7 @@ def resolve(
     genre: str | None = None,
     language: str | None = None,
     names: Mapping[str, str] | None = None,
+    template: str | None = None,
 ) -> ResolvedStyle:
     """Combine the five profile kinds into one style.
 
@@ -201,9 +204,18 @@ def resolve(
     for kind in defaults:
         style.domains.setdefault(f"{kind} (defaults)", "defaults")
 
+    # A caller who states a language has decided; one who does not is answered
+    # from the template, which is where the document's language actually lives.
+    # The template is found from the genre when it was not passed, otherwise the
+    # inference never runs for the common case of naming only a genre.
+    template_path = template or (template_for_genre(genre, language) if genre else None)
+    effective_language = language or (
+        language_of_template(template_path) if template_path else None
+    )
+
     selected: dict[str, str] = dict(names or {})
     if not selected:
-        selected = _select_by_genre(profiles, genre, language)
+        selected = _select_by_genre(profiles, genre, effective_language)
 
     # Order matters: later domains may refine a shared field, and the order is
     # the documented precedence rather than an accident of iteration.
@@ -237,6 +249,39 @@ def resolve(
     return style
 
 
+
+# The template states the document's language on its root element, which is what
+# a profile should follow.
+_TEMPLATE_LANG = re.compile(r"<html[^>]*\blang=[\"']([^\"']+)[\"']", re.IGNORECASE)
+
+
+def language_of_template(template_path: str | Path) -> str | None:
+    """The language a template declares, or None when it declares none."""
+    path = Path(template_path)
+    if not path.is_file():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    match = _TEMPLATE_LANG.search(text)
+    return match.group(1).strip() if match else None
+
+
+def template_for_genre(genre: str, language: str | None = None) -> Path | None:
+    """The template a genre and language resolve to, if one exists."""
+    if not genre:
+        return None
+    suffix = ""
+    if language and not language.lower().startswith("zh"):
+        suffix = "-en"
+    candidate = TEMPLATES / f"{genre}{suffix}.html"
+    if candidate.is_file():
+        return candidate
+    fallback = TEMPLATES / f"{genre}.html"
+    return fallback if fallback.is_file() else None
+
+
 def _select_by_genre(
     profiles: Mapping[str, Mapping[str, dict]], genre: str | None, language: str | None
 ) -> dict[str, str]:
@@ -248,9 +293,14 @@ def _select_by_genre(
         candidates = profiles.get(kind) or {}
         if not candidates:
             continue
-        exact = _best_match(candidates, genre, is_zh)
+        exact, ambiguous = _best_match(candidates, genre, is_zh, language)
         if exact:
             chosen[kind] = exact
+        elif ambiguous:
+            # Two profiles fit equally and nothing says which. Choosing one would
+            # be a guess presented as a resolved style, so the candidates are
+            # recorded for the caller to settle.
+            chosen[f"__ambiguous__{kind}"] = ", ".join(ambiguous)
 
     # Theme and language have a single shared profile in this repository, so a
     # genre match is not required for them.
@@ -262,8 +312,21 @@ def _select_by_genre(
     return chosen
 
 
-def _best_match(candidates: Mapping[str, dict], genre: str | None, is_zh: bool) -> str | None:
-    """The profile whose declared genre and language fit best."""
+def _best_match(
+    candidates: Mapping[str, dict],
+    genre: str | None,
+    is_zh: bool,
+    language: str | None = None,
+) -> tuple[str | None, list[str]]:
+    """The profile that fits best, and the candidates that tied for it.
+
+    Scoring is unchanged; what changed is the tie. Two profiles that match the
+    genre and differ only by language used to be separated by the profile's name,
+    which made `-en` win by alphabet and produced English typography for a
+    Chinese document. A tie with no language to settle it is now reported.
+
+    Returns `(choice, tied)` where `tied` is empty when the choice was clear.
+    """
     scored: list[tuple[int, str]] = []
     for name, body in candidates.items():
         score = 0
@@ -272,16 +335,35 @@ def _best_match(candidates: Mapping[str, dict], genre: str | None, is_zh: bool) 
             score += 4
         elif genre and declared_genre:
             continue
+
         blob = json.dumps(body, ensure_ascii=False).lower()
-        if is_zh and ("zh" in name.lower() or "zh" in blob):
-            score += 2
-        if not is_zh and ("-en" in name.lower() or "en-" in name.lower()):
-            score += 2
+        # A stated language earns its profile a point. No language earns nobody
+        # anything, which is what leaves two profiles tied instead of letting
+        # the alphabet decide.
+        if language:
+            if is_zh and ("zh" in name.lower() or "zh" in blob):
+                score += 2
+            elif not is_zh and ("-en" in name.lower() or "en-" in name.lower()):
+                score += 2
         scored.append((score, name))
+
     if not scored:
-        return None
-    scored.sort(key=lambda pair: (-pair[0], pair[1]))
-    return scored[0][1]
+        return None, []
+
+    best = max(score for score, _ in scored)
+    winners = sorted(name for score, name in scored if score == best)
+
+    if len(winners) == 1:
+        return winners[0], []
+
+    # Nothing distinguished the winners. If a language was given and exactly one
+    # winner matches it, that is a basis to choose; otherwise report the tie.
+    if language:
+        matches = [name for name in winners if language.split("-")[0].lower() in name.lower()]
+        if len(matches) == 1:
+            return matches[0], []
+
+    return None, winners
 
 
 def render_text(style: ResolvedStyle) -> str:
