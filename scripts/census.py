@@ -166,6 +166,13 @@ items.append(("INT-4", "7 类灰度通过",
     lambda: run("python3 scripts/fidelity.py measure 2>/dev/null | grep -q 'renders identically     7/7'")[0]))
 
 # ---- 评审 ----
+items.append(("PAGE-1", "分页可从 box tree 精确测量",
+    lambda: run("python3 scripts/box_inspector.py audit --format json >/dev/null 2>&1")[0]))
+items.append(("PAGE-2", "七类文档分页零缺陷",
+    lambda: "defects 0" in run("python3 scripts/box_inspector.py audit")[1] or
+            run("python3 -c \"import sys;sys.path.insert(0,'scripts');import box_inspector as b;a=b.audit();assert a['defects']==0\"")[0]))
+items.append(("PAGE-3", "分页审计已接入 nightly",
+    lambda: grep("box_inspector", ".github/workflows/document-engine-nightly.yml")))
 items.append(("REV-1", "人工评审协议文档",
     lambda: (ROOT/"docs/architecture/review-protocol.md").is_file()))
 items.append(("REV-2", "缺陷分类 taxonomy",

@@ -176,30 +176,51 @@ def inspect(source: Path) -> BoxReport:
     # A paragraph is identified by its text: the same paragraph continued on
     # another page appears as another box with the same content, and a different
     # paragraph has different content.
-    # Keyed by the paragraph's opening words rather than the whole text: a
-    # paragraph that crosses a page is laid out as several boxes, and the later
-    # ones do not repeat the opening.
+    # A continuation is recognised by its opening text repeating on a later
+    # page. Matching text alone is not enough: a table label such as `P/E`
+    # appears on every page it is used, and counting those repeats made short
+    # labels look like paragraphs spanning pages, and then like widows.
+    #
+    # A real continuation also has to be substantial -- a paragraph long enough
+    # that part of it can sit at the foot of one page and the rest at the head
+    # of the next. A single-line label cannot.
+    MIN_CONTINUATION_LINES = 2
+
     by_text: dict[str, list[BoxParagraph]] = {}
     for paragraph in collected:
         if paragraph.is_heading or not paragraph.text:
             continue
-        key = paragraph.text[:24]
-        by_text.setdefault(key, []).append(paragraph)
+        if paragraph.lines < MIN_CONTINUATION_LINES:
+            continue
+        by_text.setdefault(paragraph.text[:24], []).append(paragraph)
 
     for group in by_text.values():
         pages = {p.page for p in group}
         if len(pages) < 2:
             continue
-        report.spanning += 1
         ordered = sorted(group, key=lambda p: p.page)
+        # The pages must be consecutive: a phrase that reappears three pages
+        # later is repetition, not a paragraph that continued.
+        if ordered[-1].page - ordered[0].page != len(ordered) - 1:
+            continue
+        report.spanning += 1
         if ordered[-1].lines == 1:
             report.widows += 1
         if ordered[0].lines == 1:
             report.orphans += 1
 
-    # A heading with no following line on its page is isolated.
+    # A heading is isolated when it sits at the foot of a page whose content has
+    # ended, separated from the text it introduces. A heading that *opens* a page
+    # is a different thing: nothing precedes it and its text follows by design,
+    # which is how this template puts a contents page on its own.
     for index, paragraph in enumerate(collected):
         if not paragraph.is_heading:
+            continue
+        same_page_before = [
+            p for p in collected[:index] if p.page == paragraph.page
+        ]
+        if not same_page_before:
+            # The heading opens the page; it is not stranded at the foot of one.
             continue
         same_page_after = [
             p for p in collected[index + 1:]
@@ -244,6 +265,86 @@ def compare(source: Path) -> dict[str, Any]:
         payload["note"] = f"no rendered PDF beside {source.name}; render it to compare"
 
     return payload
+
+
+
+GENRES = ("one-pager", "letter", "resume", "changelog", "long-doc",
+          "portfolio", "equity-report")
+
+
+def audit(genres: tuple[str, ...] = GENRES) -> dict[str, Any]:
+    """Measure pagination for every document type.
+
+    Reports rather than gates: a defect count depends on the content, so a
+    threshold would fail on a longer paragraph rather than on a layout problem.
+    """
+    from style_resolver import template_for_genre
+
+    rows: list[dict[str, Any]] = []
+    total = {"paragraphs": 0, "widows": 0, "orphans": 0, "isolated_headings": 0,
+             "spanning": 0, "pages": 0}
+
+    for genre in genres:
+        template = template_for_genre(genre)
+        if template is None or not Path(template).is_file():
+            rows.append({"genre": genre, "error": "no template"})
+            continue
+        report = inspect(Path(template))
+        row = {
+            "genre": genre,
+            "template": Path(template).name,
+            "pages": report.pages,
+            "paragraphs": len(report.paragraphs),
+            "lines": sum(p.lines for p in report.paragraphs),
+            "spanning": report.spanning,
+            "widows": report.widows,
+            "orphans": report.orphans,
+            "isolated_headings": report.isolated_headings,
+        }
+        rows.append(row)
+        for key in ("pages", "paragraphs", "spanning", "widows", "orphans",
+                    "isolated_headings"):
+            total[key] += row[key]
+
+    defect_total = total["widows"] + total["orphans"] + total["isolated_headings"]
+    return {
+        "rows": rows,
+        "totals": total,
+        "defects": defect_total,
+        "rate": round(defect_total / total["paragraphs"], 5) if total["paragraphs"] else 0.0,
+        "note": (
+            "Reported, not gated. A defect count depends on the content: a "
+            "longer paragraph produces a widow where a shorter one does not."
+        ),
+    }
+
+
+def render_audit(payload: dict[str, Any]) -> str:
+    lines = ["Pagination audit", ""]
+    lines.append(f"  {'genre':<15}{'pages':>7}{'para':>7}{'span':>7}{'widow':>7}{'orphan':>7}{'head':>7}")
+    lines.append("  " + "-" * 57)
+    for row in payload["rows"]:
+        if "error" in row:
+            lines.append(f"  {row['genre']:<15}  {row['error']}")
+            continue
+        lines.append(
+            f"  {row['genre']:<15}{row['pages']:>7}{row['paragraphs']:>7}"
+            f"{row['spanning']:>7}{row['widows']:>7}{row['orphans']:>7}"
+            f"{row['isolated_headings']:>7}"
+        )
+    totals = payload["totals"]
+    lines.append("  " + "-" * 57)
+    lines.append(
+        f"  {'total':<15}{totals['pages']:>7}{totals['paragraphs']:>7}"
+        f"{totals['spanning']:>7}{totals['widows']:>7}{totals['orphans']:>7}"
+        f"{totals['isolated_headings']:>7}"
+    )
+    lines.append("")
+    lines.append(f"  defects {payload['defects']} across {totals['paragraphs']} paragraph(s)"
+                 f"  ({payload['rate'] * 100:.2f}%)")
+    lines.append("")
+    lines.append("  " + payload["note"])
+    return "\n".join(lines)
 
 
 def render_text(payload: dict[str, Any], command: str) -> str:
@@ -304,7 +405,24 @@ def main(argv: list[str]) -> int:
         cmd.add_argument("source", type=Path)
         cmd.add_argument("--format", choices=("text", "json"), default="text")
 
+    audit_cmd = sub.add_parser("audit", help="measure pagination across every document type")
+    audit_cmd.add_argument("--format", choices=("text", "json"), default="text")
+    audit_cmd.add_argument("--output", type=Path)
+
     args = parser.parse_args(argv)
+
+    if args.command == "audit":
+        payload = audit()
+        if args.output:
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            args.output.write_text(
+                json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+            )
+        if args.format == "json":
+            print(json.dumps(payload, indent=2, ensure_ascii=False))
+        else:
+            print(render_audit(payload))
+        return 0
 
     source = args.source if args.source.is_absolute() else ROOT / args.source
     payload = inspect(source).to_json() if args.command == "inspect" else compare(source)

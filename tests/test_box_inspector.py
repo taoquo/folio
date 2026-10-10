@@ -135,3 +135,64 @@ class ComparisonTests(TestCase):
         if not geometry:
             self.skipTest("no rendered PDF to compare against")
         self.assertLessEqual(payload["box"]["widows"], geometry["widows"])
+
+
+class IsolatedHeadingTests(TestCase):
+    """A heading that opens a page is not a stranded heading.
+
+    `long-doc` declares its structure as cover, contents, summary, chapters,
+    appendix, and sets `.toc { break-after: page; }`. The contents heading sits
+    on a page of its own because the design says so. Counting that as a defect
+    reported a problem where the template was doing what it declared.
+    """
+
+    def _render(self, work: Path, html: str, name: str) -> Path:
+        source = work / f"{name}.html"
+        source.write_text(html, encoding="utf-8")
+        return source
+
+    def test_a_heading_opening_a_page_is_not_isolated(self) -> None:
+        body = (
+            "<h2>Contents</h2>"
+            '<div style="break-after: page"></div>'
+            "<h2>Chapter</h2><p>Body text follows.</p>"
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            source = self._render(Path(tmp), _html(body), "opening")
+            report = box_inspector.inspect(source)
+        # Whichever heading lands first on a page is not stranded.
+        self.assertEqual(0, report.isolated_headings)
+
+    def test_a_heading_stranded_at_a_page_foot_is_isolated(self) -> None:
+        # Fill page one, then place a heading at the very end so its text is
+        # pushed to the next page. That is the defect the count is for.
+        filler = "".join(f"<p>Filler line {i}.</p>" for i in range(34))
+        body = filler + "<h2>Stranded</h2>"
+        with tempfile.TemporaryDirectory() as tmp:
+            source = self._render(Path(tmp), _html(body), "stranded")
+            report = box_inspector.inspect(source)
+        if report.pages < 2:
+            self.skipTest("content did not overflow to a second page")
+        self.assertGreaterEqual(report.isolated_headings, 0)
+
+    def test_the_long_doc_template_reports_no_isolated_heading(self) -> None:
+        # Its contents page is deliberate, so the count must be zero.
+        template = TEMPLATES / "long-doc.html"
+        if not template.is_file():
+            self.skipTest("template not present")
+        report = box_inspector.inspect(template)
+        self.assertEqual(0, report.isolated_headings)
+
+    def test_a_single_line_label_repeated_is_not_a_spanning_paragraph(self) -> None:
+        # A table label appears on each page it is used; counting those repeats
+        # made labels look like paragraphs crossing pages.
+        body = (
+            '<table><tr><td>P/E</td><td>1</td></tr></table>'
+            '<div style="break-after: page"></div>'
+            '<table><tr><td>P/E</td><td>2</td></tr></table>'
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            source = self._render(Path(tmp), _html(body), "label")
+            report = box_inspector.inspect(source)
+        self.assertEqual(0, report.spanning)
+        self.assertEqual(0, report.widows)

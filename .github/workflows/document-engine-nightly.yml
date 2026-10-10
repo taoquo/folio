@@ -72,6 +72,11 @@ jobs:
       - name: Confirm the approved visual baseline still holds
         run: python scripts/document_baseline.py compare
 
+      - name: Report pagination quality for every document type
+        run: |
+          python scripts/box_inspector.py audit \
+            --format json --output dist/reports/pagination.json
+          python scripts/box_inspector.py audit
       - name: Report the quality vector for every document
         run: |
           python - <<'PY'
