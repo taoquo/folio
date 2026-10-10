@@ -1,0 +1,147 @@
+{
+  "schema_version": "1.0",
+  "assets": [
+    {
+      "asset_id": "diagram.agent-runtime-demo",
+      "kind": "diagram",
+      "artifacts": [
+        {
+          "format": "pdf",
+          "path": "assets/diagrams/generated/pdf/agent-runtime-demo.pdf",
+          "sha256": "93c5dfe5a720ab9137f3dad0d85f9cf8a994dabc22429a7102dea89addb6d2b2",
+          "media_type": "application/pdf"
+        },
+        {
+          "format": "png",
+          "path": "assets/diagrams/generated/png/agent-runtime-demo.png",
+          "sha256": "9c241b2274a1fdb8a8c57eb5bbea6af1f24f51925e409a75fd8da8d1a4e1ca17",
+          "media_type": "image/png"
+        },
+        {
+          "format": "svg",
+          "path": "assets/diagrams/generated/svg/agent-runtime-demo.svg",
+          "sha256": "770055951fbe4887bef7645717c9b1ebd5277bcceebf1f570af77277809214dc",
+          "media_type": "image/svg+xml"
+        }
+      ],
+      "source_ref": "references/fixtures/agent-runtime-demo.txt",
+      "source_sha256": "0034deec7aa800a29af2c7012b75ea5bdf4103b96ddc7edb586c4b6cd340cbab"
+    },
+    {
+      "asset_id": "diagram.data-platform-demo",
+      "kind": "diagram",
+      "artifacts": [
+        {
+          "format": "pdf",
+          "path": "assets/diagrams/generated/pdf/data-platform-demo.pdf",
+          "sha256": "7983d17963150c000296a4fdf4e4a0384f5a535eb54868acc13ab52c07cc7f41",
+          "media_type": "application/pdf"
+        },
+        {
+          "format": "png",
+          "path": "assets/diagrams/generated/png/data-platform-demo.png",
+          "sha256": "9612bc069538dad4e4df11dc32f0d4d7147d7d064cf83c99725c76af030d3b70",
+          "media_type": "image/png"
+        },
+        {
+          "format": "svg",
+          "path": "assets/diagrams/generated/svg/data-platform-demo.svg",
+          "sha256": "ce10f3af8dc7b207a66a8dee64c5978f839a0e23c3f87e8ffff95b9b3885f101",
+          "media_type": "image/svg+xml"
+        }
+      ],
+      "source_ref": "references/fixtures/data-platform-demo.txt",
+      "source_sha256": "9a1e8ce33f3185cb551615c10c19bc4dd8d22a10b347271cb57517fe7f8ed529"
+    },
+    {
+      "asset_id": "diagram.flowchart-v2-demo",
+      "kind": "diagram",
+      "artifacts": [
+        {
+          "format": "pdf",
+          "path": "assets/diagrams/generated/pdf/flowchart-v2-demo.pdf",
+          "sha256": "0df1f7fd7de54fd9ac2db651daab894382f5ea6cba9b7d188e76c01e7f605b2a",
+          "media_type": "application/pdf"
+        },
+        {
+          "format": "png",
+          "path": "assets/diagrams/generated/png/flowchart-v2-demo.png",
+          "sha256": "c5b72da1ffdab38f317a4bc009364946c786142d1b40a4b3da07cc864eadf0ba",
+          "media_type": "image/png"
+        },
+        {
+          "format": "svg",
+          "path": "assets/diagrams/generated/svg/flowchart-v2-demo.svg",
+          "sha256": "132fef7db0c914e3371879351d41cb904b4ad5c0c9fc406163b48d730067fe4f",
+          "media_type": "image/svg+xml"
+        }
+      ],
+      "note": "no source found; this artifact cannot be rebuilt"
+    },
+    {
+      "asset_id": "diagram.manifest",
+      "kind": "diagram",
+      "artifacts": [
+        {
+          "format": "json",
+          "path": "assets/diagrams/generated/catalog/manifest.json",
+          "sha256": "c470e6aa3966b59c56e9bb3c69705ead43f230aea9f24581d57e9371185dc029"
+        }
+      ],
+      "source_ref": "assets/diagrams/generated/catalog/manifest.json",
+      "source_sha256": "c470e6aa3966b59c56e9bb3c69705ead43f230aea9f24581d57e9371185dc029"
+    },
+    {
+      "asset_id": "diagram.uml-class-demo",
+      "kind": "diagram",
+      "artifacts": [
+        {
+          "format": "pdf",
+          "path": "assets/diagrams/generated/pdf/uml-class-demo.pdf",
+          "sha256": "9bb54162e34678baac12cab72dc43d425c1866cbb1fd2b5ea48c97aa648df868",
+          "media_type": "application/pdf"
+        },
+        {
+          "format": "png",
+          "path": "assets/diagrams/generated/png/uml-class-demo.png",
+          "sha256": "e0b2d75adbef15f24518571b1dd4a0b56fc988401ef9343a22752bb77a07159a",
+          "media_type": "image/png"
+        },
+        {
+          "format": "svg",
+          "path": "assets/diagrams/generated/svg/uml-class-demo.svg",
+          "sha256": "1dd007a2d93fb63b794d576fe11cf2d8e98e0fe4e61a809b809a8756c1d8bfc3",
+          "media_type": "image/svg+xml"
+        }
+      ],
+      "source_ref": "references/fixtures/uml-class-demo.json",
+      "source_sha256": "4a911742471d43a9723294db5abada24a879a4a71acec3ce2f875242e96f40b0"
+    },
+    {
+      "asset_id": "diagram.workflow-engine-demo",
+      "kind": "diagram",
+      "artifacts": [
+        {
+          "format": "pdf",
+          "path": "assets/diagrams/generated/pdf/workflow-engine-demo.pdf",
+          "sha256": "ef06bd6ac788a83bae638ea37b2615e4b9c26dc1dfe72ccc2d4ffbc034f9f53a",
+          "media_type": "application/pdf"
+        },
+        {
+          "format": "png",
+          "path": "assets/diagrams/generated/png/workflow-engine-demo.png",
+          "sha256": "f9fa59aaf26eecc302c1d0cc24feac5fb99f10044d1c58bd88d76f9928fe27b8",
+          "media_type": "image/png"
+        },
+        {
+          "format": "svg",
+          "path": "assets/diagrams/generated/svg/workflow-engine-demo.svg",
+          "sha256": "3e0c631539733a0802d2f3ffbf68a845521207092965d9bb059e4b8708788dba",
+          "media_type": "image/svg+xml"
+        }
+      ],
+      "source_ref": "references/fixtures/workflow-engine-demo.txt",
+      "source_sha256": "33d97a821ade9ece5163b0d597632dfda2d788df9ad6d2d97c36cf9a8e9d8e7a"
+    }
+  ]
+}

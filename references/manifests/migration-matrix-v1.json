@@ -1,0 +1,167 @@
+{
+  "schema_version": "1.0",
+  "note": "One row per document type. A type is migrated when its own parity check passed and the reason is recorded; a total is not evidence.",
+  "entries": [
+    {
+      "document_type": "changelog",
+      "legacy_renderer": "template",
+      "ir_reader": "fixture",
+      "ir_writer": "skeleton",
+      "renderer": "weasy",
+      "feature_flag": "FOLIO_PIPELINE",
+      "state": "pass",
+      "parity": {
+        "ok": true,
+        "fixture": "minimal-zh-changelog",
+        "legacy_pages": 2,
+        "ir_pages": 2,
+        "filled": 36,
+        "unfilled": 0
+      },
+      "known_gaps": [],
+      "approved_note": "",
+      "rollback_command": "FOLIO_PIPELINE=legacy",
+      "migrated": true
+    },
+    {
+      "document_type": "equity-report",
+      "legacy_renderer": "template",
+      "ir_reader": "fixture",
+      "ir_writer": "skeleton",
+      "renderer": "weasy",
+      "feature_flag": "FOLIO_PIPELINE",
+      "state": "pass",
+      "parity": {
+        "ok": true,
+        "fixture": "canonical-zh-equity-report",
+        "legacy_pages": 5,
+        "ir_pages": 5,
+        "filled": 73,
+        "unfilled": 0
+      },
+      "known_gaps": [],
+      "approved_note": "",
+      "rollback_command": "FOLIO_PIPELINE=legacy",
+      "migrated": true
+    },
+    {
+      "document_type": "letter",
+      "legacy_renderer": "template",
+      "ir_reader": "fixture",
+      "ir_writer": "skeleton",
+      "renderer": "weasy",
+      "feature_flag": "FOLIO_PIPELINE",
+      "state": "pass",
+      "parity": {
+        "ok": true,
+        "fixture": "canonical-zh-letter",
+        "legacy_pages": 1,
+        "ir_pages": 1,
+        "filled": 20,
+        "unfilled": 3
+      },
+      "known_gaps": [],
+      "approved_note": "",
+      "rollback_command": "FOLIO_PIPELINE=legacy",
+      "migrated": true
+    },
+    {
+      "document_type": "long-doc",
+      "legacy_renderer": "template",
+      "ir_reader": "fixture",
+      "ir_writer": "skeleton",
+      "renderer": "weasy",
+      "feature_flag": "FOLIO_PIPELINE",
+      "state": "pass",
+      "parity": {
+        "ok": true,
+        "fixture": "matrix-accessibility-zh",
+        "legacy_pages": 7,
+        "ir_pages": 7,
+        "filled": 47,
+        "unfilled": 6
+      },
+      "known_gaps": [],
+      "approved_note": "",
+      "rollback_command": "FOLIO_PIPELINE=legacy",
+      "migrated": true
+    },
+    {
+      "document_type": "one-pager",
+      "legacy_renderer": "template",
+      "ir_reader": "fixture",
+      "ir_writer": "skeleton",
+      "renderer": "weasy",
+      "feature_flag": "FOLIO_PIPELINE",
+      "state": "pass",
+      "parity": {
+        "ok": true,
+        "fixture": "canonical-zh-one-pager",
+        "legacy_pages": 1,
+        "ir_pages": 1,
+        "filled": 46,
+        "unfilled": 0
+      },
+      "known_gaps": [],
+      "approved_note": "",
+      "rollback_command": "FOLIO_PIPELINE=legacy",
+      "migrated": true
+    },
+    {
+      "document_type": "portfolio",
+      "legacy_renderer": "template",
+      "ir_reader": "fixture",
+      "ir_writer": "skeleton",
+      "renderer": "weasy",
+      "feature_flag": "FOLIO_PIPELINE",
+      "state": "pass",
+      "parity": {
+        "ok": true,
+        "fixture": "canonical-zh-portfolio",
+        "legacy_pages": 6,
+        "ir_pages": 6,
+        "filled": 57,
+        "unfilled": 1
+      },
+      "known_gaps": [],
+      "approved_note": "",
+      "rollback_command": "FOLIO_PIPELINE=legacy",
+      "migrated": true
+    },
+    {
+      "document_type": "resume",
+      "legacy_renderer": "template",
+      "ir_reader": "fixture",
+      "ir_writer": "skeleton",
+      "renderer": "weasy",
+      "feature_flag": "FOLIO_PIPELINE",
+      "state": "pass",
+      "parity": {
+        "ok": true,
+        "fixture": "canonical-zh-resume",
+        "legacy_pages": 4,
+        "ir_pages": 4,
+        "filled": 138,
+        "unfilled": 0
+      },
+      "known_gaps": [],
+      "approved_note": "",
+      "rollback_command": "FOLIO_PIPELINE=legacy",
+      "migrated": true
+    },
+    {
+      "document_type": "slides",
+      "legacy_renderer": "template",
+      "ir_reader": "fixture",
+      "ir_writer": "skeleton",
+      "renderer": "weasy",
+      "feature_flag": "FOLIO_PIPELINE",
+      "state": "not-started",
+      "parity": {},
+      "known_gaps": [],
+      "approved_note": "",
+      "rollback_command": "FOLIO_PIPELINE=legacy",
+      "migrated": false
+    }
+  ]
+}

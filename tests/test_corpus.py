@@ -116,8 +116,12 @@ class ShippedFixtureTests(TestCase):
         # The corpus exists to exercise CJK, Latin, digits and their mixture. A
         # corpus that drifts to one writing system stops doing that.
         profiles = {corpus.load_fixture(p)["script_profile"] for p in corpus.discover_fixtures()}
+        # RTL values were added with the coverage matrix: a fixture that
+        # exercises Arabic shaping cannot declare itself as a left-to-right
+        # composition.
         self.assertEqual(
-            {"han-only", "latin-only", "digits-heavy", "han-latin-digits"},
+            {"han-only", "latin-only", "digits-heavy", "han-latin-digits",
+             "rtl-only", "rtl-with-latin"},
             profiles,
         )
 

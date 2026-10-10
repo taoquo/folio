@@ -1,0 +1,65 @@
+id: matrix-long-document-en
+genre: long-doc
+language: en-US
+script_profile: latin-only
+template: long-doc-en.html
+purpose:
+  - academic-paper
+  - api-reference
+content:
+  "{{DOC_TITLE}}": "Technical Report: Document Typography Baseline"
+  "{{AUTHOR}}": "Corpus Matrix"
+  "{{DESCRIPTION}}": "Technical Report: Document Typography Baseline"
+  "{{KEYWORDS}}": "corpus, coverage, matrix"
+  "{{EYEBROW - e.g. Technical Report / Annual Review / White Paper}}": "Technical Report: Document Typography Baseline"
+  "{{Document title<br>can span two lines}}": "Technical Report: Document Typography Baseline"
+  "{{One-line subtitle - what this is and who it's for.}}": "Technical Report: Document Typography Baseline"
+  "{{AUTHOR / TEAM}}": "Corpus Matrix"
+  "{{Version 1.0}}": "Technical Report: Document Typography Baseline"
+  "{{YYYY.MM}}": "Technical Report: Document Typography Baseline"
+  "{{PUBLISHER / ORGANIZATION}}": "Technical Report: Document Typography Baseline"
+  "{{Takeaway 1 - a quantified conclusion in one line.}}": "Technical Report: Document Typography Baseline"
+  "{{Takeaway 2 - an insight backed by data.}}": "Technical Report: Document Typography Baseline"
+  "{{Takeaway 3 - a forward-looking judgment.}}": "Technical Report: Document Typography Baseline"
+  "{{List the three core questions as actual questions - so the reader can decide in ten seconds whether to read on.}}": "Technical Report: Document Typography Baseline"
+  "{{Chapter intro - what this chapter is solving, why it matters. One or two sentences.}}": "Technical Report: Document Typography Baseline"
+  "{{Sidenote: define a key term, sample boundary, or constraint the reader should keep in mind.}}": "Technical Report: Document Typography Baseline"
+  "{{State the problem specifically. Use a callout to emphasize a key observation:}}": "Technical Report: Document Typography Baseline"
+  "{{A short quoted line or key observation. Different in tone from the body so the reader gets a breath.}}": "Technical Report: Document Typography Baseline"
+  "{{DIMENSION_1}}": "Technical Report: Document Typography Baseline"
+  "{{VAL}}": "Technical Report: Document Typography Baseline"
+  "{{GAP}}": "Technical Report: Document Typography Baseline"
+  "{{DIMENSION_2}}": "Technical Report: Document Typography Baseline"
+  "{{Chapter intro.}}": "Technical Report: Document Typography Baseline"
+  "{{Describe the methodology. Code or formula examples welcome:}}": "Technical Report: Document Typography Baseline"
+  "{{TITLE}}": "Technical Report: Document Typography Baseline"
+  "{{A paragraph.}}": "Technical Report: Document Typography Baseline"
+  "{{A quoted passage - user interview, expert perspective, or cited source.}}": "Technical Report: Document Typography Baseline"
+  "{{SOURCE / PERSON}}": "Technical Report: Document Typography Baseline"
+  "{{DATE}}": "2026-10-09"
+  "{{Footnote: data definition, citation detail, or methodological limitation.}}": "Technical Report: Document Typography Baseline"
+  "{{Chapter intro - a one-line summary of the conclusion, then the recommendations below.}}": "Technical Report: Document Typography Baseline"
+  "{{Conclusion 1.}}": "Technical Report: Document Typography Baseline"
+  "{{Conclusion 2.}}": "Technical Report: Document Typography Baseline"
+  "{{Conclusion 3.}}": "Technical Report: Document Typography Baseline"
+  "{{Concrete, executable recommendations tied to the conclusions.}}": "Technical Report: Document Typography Baseline"
+  "{{If the reader does one thing, what is it? Specific enough to start Monday morning.}}": "Technical Report: Document Typography Baseline"
+  "{{Reference 1}}": "Technical Report: Document Typography Baseline"
+  "{{Reference 2}}": "Technical Report: Document Typography Baseline"
+  "{{TERM}}": "Technical Report: Document Typography Baseline"
+  "{{definition}}": "Technical Report: Document Typography Baseline"
+  "{{Acknowledgement paragraph.}}": "Technical Report: Document Typography Baseline"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: long-document
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Added to cover the long-document class in the plan's corpus matrix.
+    The fixture protects a named behaviour rather than raising a count.

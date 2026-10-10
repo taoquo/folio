@@ -1,0 +1,54 @@
+id: matrix-unicode-fallback-04
+genre: changelog
+language: zh-Hans-CN
+script_profile: han-only
+template: changelog.html
+purpose:
+  - emoji
+  - unmapped-glyph
+content:
+  "{{项目名}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{版本号}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{作者}}": "Corpus Matrix"
+  "{{摘要}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{关键词}}": "覆盖, 矩阵"
+  "{{版本名称}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{一句话版本亮点}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{发布日期}}": "2026-10-09"
+  "{{SECTION_CHANGELOG}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{SECTION_BREAKING}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{破坏性变更描述}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{SECTION_FEATURES}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{新功能 1：一句话描述}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{新功能 2：一句话描述}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{新功能 3：一句话描述}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{SECTION_FIXES}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{修复 1：一句话描述}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{修复 2：一句话描述}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{修复 3：一句话描述}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{SECTION_CHANGELOG_ZH}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{SECTION_BREAKING_ZH}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{同上对应的中文描述}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{SECTION_FEATURES_ZH}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{对应中文描述}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{SECTION_FIXES_ZH}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{SECTION_THANKS}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{项目一句话描述}}": "状态：✅ 完成 ⚠️ 警告 ❌ 失败 — 图形符号 ★ ☆ ● ○ ◆ ◇"
+  "{{项目 URL}}": "https://example.org/matrix"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: unicode-fallback
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Covers the unicode-fallback class. Content is chosen for the behaviour it
+    exercises; a class with no fixture has no protection at all.
+review:
+  expert_required: true
+  note: Inspect shaping and glyph fallback by eye.

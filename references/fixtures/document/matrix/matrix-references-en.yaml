@@ -1,0 +1,66 @@
+id: matrix-references-en
+genre: long-doc
+language: en-US
+script_profile: latin-only
+template: long-doc-en.html
+purpose:
+  - footnote
+  - citation
+  - cross-ref
+content:
+  "{{DOC_TITLE}}": "The derivation is in Appendix A"
+  "{{AUTHOR}}": "Corpus Matrix"
+  "{{DESCRIPTION}}": "The derivation is in Appendix A"
+  "{{KEYWORDS}}": "corpus, coverage, matrix"
+  "{{EYEBROW - e.g. Technical Report / Annual Review / White Paper}}": "The derivation is in Appendix A"
+  "{{Document title<br>can span two lines}}": "The derivation is in Appendix A"
+  "{{One-line subtitle - what this is and who it's for.}}": "The derivation is in Appendix A"
+  "{{AUTHOR / TEAM}}": "Corpus Matrix"
+  "{{Version 1.0}}": "The derivation is in Appendix A"
+  "{{YYYY.MM}}": "The derivation is in Appendix A"
+  "{{PUBLISHER / ORGANIZATION}}": "The derivation is in Appendix A"
+  "{{Takeaway 1 - a quantified conclusion in one line.}}": "The derivation is in Appendix A"
+  "{{Takeaway 2 - an insight backed by data.}}": "The derivation is in Appendix A"
+  "{{Takeaway 3 - a forward-looking judgment.}}": "The derivation is in Appendix A"
+  "{{List the three core questions as actual questions - so the reader can decide in ten seconds whether to read on.}}": "The derivation is in Appendix A"
+  "{{Chapter intro - what this chapter is solving, why it matters. One or two sentences.}}": "The derivation is in Appendix A"
+  "{{Sidenote: define a key term, sample boundary, or constraint the reader should keep in mind.}}": "The derivation is in Appendix A"
+  "{{State the problem specifically. Use a callout to emphasize a key observation:}}": "The derivation is in Appendix A"
+  "{{A short quoted line or key observation. Different in tone from the body so the reader gets a breath.}}": "The derivation is in Appendix A"
+  "{{DIMENSION_1}}": "The derivation is in Appendix A"
+  "{{VAL}}": "The derivation is in Appendix A"
+  "{{GAP}}": "The derivation is in Appendix A"
+  "{{DIMENSION_2}}": "The derivation is in Appendix A"
+  "{{Chapter intro.}}": "The derivation is in Appendix A"
+  "{{Describe the methodology. Code or formula examples welcome:}}": "The derivation is in Appendix A"
+  "{{TITLE}}": "The derivation is in Appendix A"
+  "{{A paragraph.}}": "The derivation is in Appendix A"
+  "{{A quoted passage - user interview, expert perspective, or cited source.}}": "The derivation is in Appendix A"
+  "{{SOURCE / PERSON}}": "The derivation is in Appendix A"
+  "{{DATE}}": "2026-10-09"
+  "{{Footnote: data definition, citation detail, or methodological limitation.}}": "The derivation is in Appendix A"
+  "{{Chapter intro - a one-line summary of the conclusion, then the recommendations below.}}": "The derivation is in Appendix A"
+  "{{Conclusion 1.}}": "The derivation is in Appendix A"
+  "{{Conclusion 2.}}": "The derivation is in Appendix A"
+  "{{Conclusion 3.}}": "The derivation is in Appendix A"
+  "{{Concrete, executable recommendations tied to the conclusions.}}": "The derivation is in Appendix A"
+  "{{If the reader does one thing, what is it? Specific enough to start Monday morning.}}": "The derivation is in Appendix A"
+  "{{Reference 1}}": "The derivation is in Appendix A"
+  "{{Reference 2}}": "The derivation is in Appendix A"
+  "{{TERM}}": "The derivation is in Appendix A"
+  "{{definition}}": "The derivation is in Appendix A"
+  "{{Acknowledgement paragraph.}}": "The derivation is in Appendix A"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: references
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Added to cover the references class in the plan's corpus matrix.
+    The fixture protects a named behaviour rather than raising a count.

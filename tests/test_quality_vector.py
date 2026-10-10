@@ -156,7 +156,14 @@ class RealDocumentTests(TestCase):
             manifest = {}
         vector = qv.evaluate(demo, "resume-en", qv.DEFAULTS, manifest)
         names = {d.name for d in vector.dimensions}
-        self.assertEqual({"correctness", "typography", "pagination", "accessibility", "measurement"}, names)
+        self.assertEqual(
+            {
+                "correctness", "typography", "pagination", "visual_rhythm",
+                "readability", "accessibility", "renderer_stability",
+                "reproducibility", "measurement",
+            },
+            names,
+        )
         self.assertEqual([], vector.correctness_failures)
 
 

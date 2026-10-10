@@ -1,0 +1,52 @@
+id: matrix-figures-en
+genre: equity-report
+language: en-US
+script_profile: latin-only
+template: equity-report-en.html
+purpose:
+  - figure-caption
+  - long-legend
+content:
+  "{{COMPANY_NAME}}": "Corpus Matrix"
+  "{{AUTHOR}}": "Corpus Matrix"
+  "{{DESCRIPTION}}": "Figure 1: data flow between service and storage"
+  "{{KEYWORDS}}": "corpus, coverage, matrix"
+  "{{EYEBROW - e.g. Equity Research / Valuation / Investment Memo}}": "Figure 1: data flow between service and storage"
+  "{{TICKER}}": "Figure 1: data flow between service and storage"
+  "{{SECTOR}}": "Figure 1: data flow between service and storage"
+  "{{EXCHANGE}}": "Figure 1: data flow between service and storage"
+  "{{One-line thesis.}}": "Figure 1: data flow between service and storage"
+  "{{CURRENT_PRICE}}": "Figure 1: data flow between service and storage"
+  "{{DATE}}": "2026-10-09"
+  "{{NUMBER}}": "Figure 1: data flow between service and storage"
+  "{{RATING}}": "Figure 1: data flow between service and storage"
+  "{{TARGET}}": "Figure 1: data flow between service and storage"
+  "{{HORIZON}}": "Figure 1: data flow between service and storage"
+  "{{One-line verdict: buy / hold / watch, and the single strongest reason.}}": "Figure 1: data flow between service and storage"
+  "{{VAL}}": "Figure 1: data flow between service and storage"
+  "{{Chart title.}}": "Figure 1: data flow between service and storage"
+  "{{Industry landscape overview, one or two paragraphs.}}": "Figure 1: data flow between service and storage"
+  "{{COMP_A}}": "Figure 1: data flow between service and storage"
+  "{{COMP_B}}": "Figure 1: data flow between service and storage"
+  "{{COMP_C}}": "Figure 1: data flow between service and storage"
+  "{{Risk Type 1}}": "Figure 1: data flow between service and storage"
+  "{{Risk description.}}": "Figure 1: data flow between service and storage"
+  "{{Risk Type 2}}": "Figure 1: data flow between service and storage"
+  "{{Risk Type 3}}": "Figure 1: data flow between service and storage"
+  "{{Risk Type 4}}": "Figure 1: data flow between service and storage"
+  "{{Three to five sentences summarizing the position. Include target price (if applicable), rating, key catalysts, and core assumptions.}}": "Figure 1: data flow between service and storage"
+  "{{FIRM / DISCLAIMER}}": "Figure 1: data flow between service and storage"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: figures
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Added to cover the figures class in the plan's corpus matrix.
+    The fixture protects a named behaviour rather than raising a count.

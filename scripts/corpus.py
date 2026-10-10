@@ -40,7 +40,9 @@ TEMPLATES = ROOT / "assets" / "templates"
 
 # Directories that hold fixtures. `scripts` holds reusable content blocks, not
 # fixtures, so it is excluded from discovery.
-FIXTURE_DIRS = ("minimal", "canonical", "stress", "mixed-script")
+# Fixture directories are discovered, not listed: a new one added to cover a
+# class the plan asks for should be picked up without editing this module.
+FIXTURE_DIRS: tuple[str, ...] = ()
 
 PLACEHOLDER = re.compile(r"\{\{([^{}]*)\}\}")
 
@@ -304,10 +306,16 @@ def _key_separator(content: str) -> int:
 
 
 def discover_fixtures() -> list[Path]:
+    """Every fixture, from every directory that holds one.
+
+    The `ir/` directory is excluded: those are Document IR documents, not
+    document fixtures, and they have their own reader and schema.
+    """
+    if not FIXTURES.is_dir():
+        return []
     found: list[Path] = []
-    for directory in FIXTURE_DIRS:
-        target = FIXTURES / directory
-        if target.is_dir():
+    for target in sorted(FIXTURES.iterdir()):
+        if target.is_dir() and target.name != "ir":
             found.extend(sorted(target.glob("*.yaml")))
     return found
 

@@ -1,0 +1,64 @@
+id: matrix-code-equations-zh
+genre: long-doc
+language: zh-Hans-CN
+script_profile: han-only
+template: long-doc.html
+purpose:
+  - code-wrap
+  - long-code-line
+content:
+  "{{文档标题}}": "def render(document):\n    return document.layout()"
+  "{{作者}}": "语料矩阵"
+  "{{摘要}}": "def render(document):\n    return document.layout()"
+  "{{关键词}}": "语料, 覆盖, 矩阵"
+  "{{文档主标题<br>可以两行}}": "def render(document):\n    return document.layout()"
+  "{{副标题，一句话说清这份文档是什么 / 为谁而写}}": "def render(document):\n    return document.layout()"
+  "{{作者 / 团队}}": "语料矩阵"
+  "{{版本 V1.0}}": "def render(document):\n    return document.layout()"
+  "{{日期 2026.04}}": "2026-10-09"
+  "{{发布方 / 机构}}": "def render(document):\n    return document.layout()"
+  "{{Takeaway 1：一句话，可量化的结论}}": "def render(document):\n    return document.layout()"
+  "{{Takeaway 2：有数据的洞察}}": "def render(document):\n    return document.layout()"
+  "{{Takeaway 3：对未来的判断}}": "def render(document):\n    return document.layout()"
+  "{{用疑问句列出 3 个本文档的核心问题。让读者立刻 get 到是否需要读完。}}": "def render(document):\n    return document.layout()"
+  "{{章节导语：这一章要解决什么问题，为什么重要。1-2 句。}}": "def render(document):\n    return document.layout()"
+  "{{边注：定义本章关键词、样本范围或读者需要记住的限定条件。}}": "语料, 覆盖, 矩阵"
+  "{{陈述具体的核心问题。可以用 callout 突出关键观察：}}": "def render(document):\n    return document.layout()"
+  "{{一段重要引用或核心观察。和正文语气略有不同，给读者呼吸节奏。}}": "def render(document):\n    return document.layout()"
+  "{{维度 1}}": "def render(document):\n    return document.layout()"
+  "{{数据}}": "def render(document):\n    return document.layout()"
+  "{{差距}}": "def render(document):\n    return document.layout()"
+  "{{维度 2}}": "def render(document):\n    return document.layout()"
+  "{{章节导语}}": "def render(document):\n    return document.layout()"
+  "{{描述方法论。可以用代码 / 公式示例：}}": "def render(document):\n    return document.layout()"
+  "{{标题}}": "def render(document):\n    return document.layout()"
+  "{{一段论述。}}": "def render(document):\n    return document.layout()"
+  "{{一段引用，可以是用户访谈、专家观点、文献引用}}": "def render(document):\n    return document.layout()"
+  "{{来源 / 人物}}": "def render(document):\n    return document.layout()"
+  "{{日期}}": "2026-10-09"
+  "{{脚注：补充数据口径、引用出处或方法限制。}}": "def render(document):\n    return document.layout()"
+  "{{章节导语：一句话总结结论，下面展开建议。}}": "def render(document):\n    return document.layout()"
+  "{{结论 1}}": "def render(document):\n    return document.layout()"
+  "{{结论 2}}": "def render(document):\n    return document.layout()"
+  "{{结论 3}}": "def render(document):\n    return document.layout()"
+  "{{基于结论的具体可执行建议。}}": "def render(document):\n    return document.layout()"
+  "{{如果读者要做一件事，是什么？具体到可以周一早上就开始行动。}}": "def render(document):\n    return document.layout()"
+  "{{参考文献 1}}": "def render(document):\n    return document.layout()"
+  "{{参考文献 2}}": "def render(document):\n    return document.layout()"
+  "{{术语}}": "def render(document):\n    return document.layout()"
+  "{{定义}}": "def render(document):\n    return document.layout()"
+  "{{致谢段落}}": "def render(document):\n    return document.layout()"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: code-equations
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Added to cover the code-equations class in the plan's corpus matrix.
+    The fixture protects a named behaviour rather than raising a count.

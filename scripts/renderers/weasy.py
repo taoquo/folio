@@ -51,6 +51,11 @@ FEATURES = (
     "rtl",
     "vertical_writing",
     "forms",
+    # Added when the spacing model began expressing them: a document can now ask
+    # for elastic spacing and for layout diagnostics, so the renderer has to say
+    # whether it can deliver.
+    "elastic_spacing",
+    "layout_diagnostics",
 )
 
 
@@ -202,6 +207,13 @@ class WeasyPrintRenderer:
             "rtl": "partial",
             "vertical_writing": "unsupported",
             "forms": "partial",
+            # WeasyPrint lays out CSS; it does not distribute leftover page space
+            # according to a stretch factor, so an elastic gap is applied at its
+            # preferred value and the difference is reported rather than hidden.
+            "elastic_spacing": "unsupported",
+            # Page geometry is readable from the PDF afterwards, but the renderer
+            # does not emit the layout decisions it made.
+            "layout_diagnostics": "emulated",
         }
 
         # Tagged output is only claimed when the option is actually present.

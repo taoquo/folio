@@ -1,0 +1,65 @@
+id: matrix-code-equations-en
+genre: long-doc
+language: en-US
+script_profile: latin-only
+template: long-doc-en.html
+purpose:
+  - code-wrap
+  - long-code-line
+content:
+  "{{DOC_TITLE}}": "def render(document):\n    return document.layout()"
+  "{{AUTHOR}}": "Corpus Matrix"
+  "{{DESCRIPTION}}": "def render(document):\n    return document.layout()"
+  "{{KEYWORDS}}": "corpus, coverage, matrix"
+  "{{EYEBROW - e.g. Technical Report / Annual Review / White Paper}}": "def render(document):\n    return document.layout()"
+  "{{Document title<br>can span two lines}}": "def render(document):\n    return document.layout()"
+  "{{One-line subtitle - what this is and who it's for.}}": "def render(document):\n    return document.layout()"
+  "{{AUTHOR / TEAM}}": "Corpus Matrix"
+  "{{Version 1.0}}": "def render(document):\n    return document.layout()"
+  "{{YYYY.MM}}": "def render(document):\n    return document.layout()"
+  "{{PUBLISHER / ORGANIZATION}}": "def render(document):\n    return document.layout()"
+  "{{Takeaway 1 - a quantified conclusion in one line.}}": "def render(document):\n    return document.layout()"
+  "{{Takeaway 2 - an insight backed by data.}}": "def render(document):\n    return document.layout()"
+  "{{Takeaway 3 - a forward-looking judgment.}}": "def render(document):\n    return document.layout()"
+  "{{List the three core questions as actual questions - so the reader can decide in ten seconds whether to read on.}}": "def render(document):\n    return document.layout()"
+  "{{Chapter intro - what this chapter is solving, why it matters. One or two sentences.}}": "def render(document):\n    return document.layout()"
+  "{{Sidenote: define a key term, sample boundary, or constraint the reader should keep in mind.}}": "def render(document):\n    return document.layout()"
+  "{{State the problem specifically. Use a callout to emphasize a key observation:}}": "def render(document):\n    return document.layout()"
+  "{{A short quoted line or key observation. Different in tone from the body so the reader gets a breath.}}": "def render(document):\n    return document.layout()"
+  "{{DIMENSION_1}}": "def render(document):\n    return document.layout()"
+  "{{VAL}}": "def render(document):\n    return document.layout()"
+  "{{GAP}}": "def render(document):\n    return document.layout()"
+  "{{DIMENSION_2}}": "def render(document):\n    return document.layout()"
+  "{{Chapter intro.}}": "def render(document):\n    return document.layout()"
+  "{{Describe the methodology. Code or formula examples welcome:}}": "def render(document):\n    return document.layout()"
+  "{{TITLE}}": "def render(document):\n    return document.layout()"
+  "{{A paragraph.}}": "def render(document):\n    return document.layout()"
+  "{{A quoted passage - user interview, expert perspective, or cited source.}}": "def render(document):\n    return document.layout()"
+  "{{SOURCE / PERSON}}": "def render(document):\n    return document.layout()"
+  "{{DATE}}": "2026-10-09"
+  "{{Footnote: data definition, citation detail, or methodological limitation.}}": "def render(document):\n    return document.layout()"
+  "{{Chapter intro - a one-line summary of the conclusion, then the recommendations below.}}": "def render(document):\n    return document.layout()"
+  "{{Conclusion 1.}}": "def render(document):\n    return document.layout()"
+  "{{Conclusion 2.}}": "def render(document):\n    return document.layout()"
+  "{{Conclusion 3.}}": "def render(document):\n    return document.layout()"
+  "{{Concrete, executable recommendations tied to the conclusions.}}": "def render(document):\n    return document.layout()"
+  "{{If the reader does one thing, what is it? Specific enough to start Monday morning.}}": "def render(document):\n    return document.layout()"
+  "{{Reference 1}}": "def render(document):\n    return document.layout()"
+  "{{Reference 2}}": "def render(document):\n    return document.layout()"
+  "{{TERM}}": "def render(document):\n    return document.layout()"
+  "{{definition}}": "def render(document):\n    return document.layout()"
+  "{{Acknowledgement paragraph.}}": "def render(document):\n    return document.layout()"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: code-equations
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Added to cover the code-equations class in the plan's corpus matrix.
+    The fixture protects a named behaviour rather than raising a count.

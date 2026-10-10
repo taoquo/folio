@@ -27,6 +27,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 
+# A type moves through these states. `pass` and `approved-diff` are the only
+# two that permit describing a type as migrated.
+STATES = ("not-started", "running", "pass", "approved-diff", "blocked")
+MIGRATED_STATES = ("pass", "approved-diff")
+STATE_FILE = ROOT / "references" / "manifests" / "migration-matrix-v1.json"
+
 GENRES = (
     "one-pager", "letter", "long-doc", "portfolio", "resume", "equity-report",
     "changelog", "slides",
@@ -204,6 +210,19 @@ def main(argv: list[str]) -> int:
     plan_cmd.add_argument("genre")
     plan_cmd.add_argument("--format", choices=("text", "json"), default="text")
 
+    matrix_cmd = sub.add_parser("matrix", help="the per-type migration matrix")
+    matrix_cmd.add_argument("--format", choices=("text", "json"), default="text")
+
+    parity_cmd = sub.add_parser("check-parity", help="run parity for one type")
+    parity_cmd.add_argument("genre")
+    parity_cmd.add_argument("--record", action="store_true")
+    parity_cmd.add_argument("--format", choices=("text", "json"), default="text")
+
+    record_cmd = sub.add_parser("record", help="record a judgement for one type")
+    record_cmd.add_argument("genre")
+    record_cmd.add_argument("--state", choices=STATES, required=True)
+    record_cmd.add_argument("--note", required=True)
+
     args = parser.parse_args(argv)
 
     if args.command == "status":
@@ -224,6 +243,43 @@ def main(argv: list[str]) -> int:
             print(render_text(statuses))
         return 0
 
+    if args.command == "matrix":
+        entries = load_matrix()
+        if args.format == "json":
+            print(json.dumps([entries[k].to_json() for k in sorted(entries)],
+                             indent=2, ensure_ascii=False))
+        else:
+            print(render_matrix(entries))
+        return 0
+
+    if args.command == "check-parity":
+        entry = check_parity(args.genre, record=args.record)
+        if args.format == "json":
+            print(json.dumps(entry.to_json(), indent=2, ensure_ascii=False))
+        else:
+            print(f"{entry.document_type}: {entry.state}")
+            for key, value in sorted(entry.parity.items()):
+                print(f"  {key}: {value}")
+            for gap in entry.known_gaps:
+                print(f"  gap: {gap}")
+        return 0 if entry.migrated else 1
+
+    if args.command == "record":
+        if not args.note.strip():
+            print("ERROR: a state change needs a reason")
+            return 2
+        entries = load_matrix()
+        entry = entries.get(args.genre)
+        if entry is None:
+            print(f"ERROR: unknown document type: {args.genre}")
+            return 2
+        entry.state = args.state
+        entry.approved_note = args.note
+        entries[args.genre] = entry
+        save_matrix(entries)
+        print(f"OK: {args.genre} -> {args.state}")
+        return 0
+
     payload = plan(args.genre)
     if args.format == "json":
         print(json.dumps(payload, indent=2, ensure_ascii=False))
@@ -241,6 +297,172 @@ def main(argv: list[str]) -> int:
         for index, step in enumerate(payload["steps"], start=1):
             print(f"    {index}. {step}")
     return 0
+
+
+
+
+# ---------------------------------------------------------------------------
+# Migration matrix
+#
+# The survey above answers "can this type be built from the IR at all". The
+# matrix answers the question the plan insists on: "has this type been checked,
+# and who approved the difference". A type is migrated when its own parity check
+# passed, never because a total looked good.
+# ---------------------------------------------------------------------------
+
+@dataclass
+class MigrationEntry:
+    """One document type's migration record."""
+
+    document_type: str
+    legacy_renderer: str = "template"
+    ir_reader: str = "fixture"
+    ir_writer: str = "skeleton"
+    renderer: str = "weasy"
+    feature_flag: str = "FOLIO_PIPELINE"
+    state: str = "not-started"
+    parity: dict[str, object] = field(default_factory=dict)
+    known_gaps: list[str] = field(default_factory=list)
+    approved_note: str = ""
+    rollback: str = "FOLIO_PIPELINE=legacy"
+
+    @property
+    def migrated(self) -> bool:
+        return self.state in MIGRATED_STATES
+
+    def to_json(self) -> dict[str, object]:
+        return {
+            "document_type": self.document_type,
+            "legacy_renderer": self.legacy_renderer,
+            "ir_reader": self.ir_reader,
+            "ir_writer": self.ir_writer,
+            "renderer": self.renderer,
+            "feature_flag": self.feature_flag,
+            "state": self.state,
+            "parity": self.parity,
+            "known_gaps": self.known_gaps,
+            "approved_note": self.approved_note,
+            "rollback_command": self.rollback,
+            "migrated": self.migrated,
+        }
+
+
+def load_matrix() -> dict[str, MigrationEntry]:
+    entries: dict[str, MigrationEntry] = {}
+    if STATE_FILE.is_file():
+        try:
+            data = json.loads(STATE_FILE.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            data = {}
+        for item in data.get("entries") or []:
+            name = str(item.get("document_type", ""))
+            if name:
+                entries[name] = MigrationEntry(
+                    document_type=name,
+                    state=str(item.get("state", "not-started")),
+                    parity=dict(item.get("parity") or {}),
+                    known_gaps=list(item.get("known_gaps") or []),
+                    approved_note=str(item.get("approved_note", "")),
+                )
+    for name in GENRES:
+        entries.setdefault(name, MigrationEntry(document_type=name))
+    return entries
+
+
+def save_matrix(entries: dict[str, MigrationEntry]) -> None:
+    STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "schema_version": "1.0",
+        "note": (
+            "One row per document type. A type is migrated when its own parity "
+            "check passed and the reason is recorded; a total is not evidence."
+        ),
+        "entries": [entries[key].to_json() for key in sorted(entries)],
+    }
+    STATE_FILE.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
+                          encoding="utf-8")
+
+
+def run_parity(document_type: str) -> dict[str, object]:
+    """Build one type through both paths and compare what came out."""
+    import tempfile
+
+    import corpus
+    import document_build
+    import fidelity
+
+    fixture = fidelity._fixture_for(document_type)
+    if fixture is None:
+        return {"ok": False, "reason": "no fixture for this type"}
+
+    data = corpus.load_fixture(fixture)
+    with tempfile.TemporaryDirectory(prefix="folio-parity-") as tmp:
+        work = Path(tmp)
+        try:
+            legacy = document_build.build_legacy(data, work / "legacy.pdf")
+            ir = document_build.build_ir(data, work / "ir.pdf")
+        except Exception as exc:
+            return {"ok": False, "reason": f"{type(exc).__name__}: {exc}"}
+        if ir.error:
+            return {"ok": False, "reason": ir.error, "fixture": fixture.stem}
+        return {
+            "ok": legacy.pages == ir.pages and ir.pages is not None,
+            "fixture": fixture.stem,
+            "legacy_pages": legacy.pages,
+            "ir_pages": ir.pages,
+            "filled": ir.filled,
+            "unfilled": len(ir.missing),
+        }
+
+
+def check_parity(document_type: str, *, record: bool = False) -> MigrationEntry:
+    """Run parity for a type and, optionally, write the outcome down."""
+    entries = load_matrix()
+    entry = entries.get(document_type)
+    if entry is None:
+        raise ValueError(f"unknown document type: {document_type}")
+
+    parity = run_parity(document_type)
+    entry.parity = parity
+    if parity.get("ok"):
+        entry.state = "pass"
+        entry.known_gaps = []
+    else:
+        if entry.state not in MIGRATED_STATES:
+            entry.state = "blocked"
+        reason = str(parity.get("reason", "page counts differ"))
+        if reason not in entry.known_gaps:
+            entry.known_gaps.append(reason)
+
+    if record:
+        entries[document_type] = entry
+        save_matrix(entries)
+    return entry
+
+
+def render_matrix(entries: dict[str, MigrationEntry]) -> str:
+    lines = ["Migration matrix", ""]
+    lines.append(f"  {'type':<15} {'state':<14} {'legacy':>7} {'ir':>5}  note")
+    lines.append("  " + "-" * 70)
+    for name in sorted(entries):
+        entry = entries[name]
+        parity = entry.parity or {}
+        note = entry.approved_note or (entry.known_gaps[0] if entry.known_gaps else "")
+        lines.append(
+            f"  {name:<15} {entry.state:<14} "
+            f"{str(parity.get('legacy_pages', '-')):>7} "
+            f"{str(parity.get('ir_pages', '-')):>5}  {note[:32]}"
+        )
+
+    migrated = sum(1 for e in entries.values() if e.migrated)
+    lines.append("")
+    lines.append(f"  {migrated}/{len(entries)} type(s) migrated")
+    lines.append("")
+    lines.append("  Each row carries its own evidence. The total is a summary, not the")
+    lines.append("  justification: a type moves when its own parity check passes.")
+    lines.append("")
+    lines.append("  Run: migration.py check-parity <type> --record")
+    return "\n".join(lines)
 
 
 if __name__ == "__main__":

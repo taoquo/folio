@@ -1,0 +1,66 @@
+id: matrix-accessibility-en
+genre: long-doc
+language: en-US
+script_profile: latin-only
+template: long-doc-en.html
+purpose:
+  - heading-structure
+  - alt-text
+  - table-semantics
+content:
+  "{{DOC_TITLE}}": "Accessibility checkpoint"
+  "{{AUTHOR}}": "Corpus Matrix"
+  "{{DESCRIPTION}}": "Accessibility checkpoint"
+  "{{KEYWORDS}}": "corpus, coverage, matrix"
+  "{{EYEBROW - e.g. Technical Report / Annual Review / White Paper}}": "Accessibility checkpoint"
+  "{{Document title<br>can span two lines}}": "Accessibility checkpoint"
+  "{{One-line subtitle - what this is and who it's for.}}": "Accessibility checkpoint"
+  "{{AUTHOR / TEAM}}": "Corpus Matrix"
+  "{{Version 1.0}}": "Accessibility checkpoint"
+  "{{YYYY.MM}}": "Accessibility checkpoint"
+  "{{PUBLISHER / ORGANIZATION}}": "Accessibility checkpoint"
+  "{{Takeaway 1 - a quantified conclusion in one line.}}": "Accessibility checkpoint"
+  "{{Takeaway 2 - an insight backed by data.}}": "Accessibility checkpoint"
+  "{{Takeaway 3 - a forward-looking judgment.}}": "Accessibility checkpoint"
+  "{{List the three core questions as actual questions - so the reader can decide in ten seconds whether to read on.}}": "Accessibility checkpoint"
+  "{{Chapter intro - what this chapter is solving, why it matters. One or two sentences.}}": "Accessibility checkpoint"
+  "{{Sidenote: define a key term, sample boundary, or constraint the reader should keep in mind.}}": "Accessibility checkpoint"
+  "{{State the problem specifically. Use a callout to emphasize a key observation:}}": "Accessibility checkpoint"
+  "{{A short quoted line or key observation. Different in tone from the body so the reader gets a breath.}}": "Accessibility checkpoint"
+  "{{DIMENSION_1}}": "Accessibility checkpoint"
+  "{{VAL}}": "Accessibility checkpoint"
+  "{{GAP}}": "Accessibility checkpoint"
+  "{{DIMENSION_2}}": "Accessibility checkpoint"
+  "{{Chapter intro.}}": "Accessibility checkpoint"
+  "{{Describe the methodology. Code or formula examples welcome:}}": "Accessibility checkpoint"
+  "{{TITLE}}": "Accessibility checkpoint"
+  "{{A paragraph.}}": "Accessibility checkpoint"
+  "{{A quoted passage - user interview, expert perspective, or cited source.}}": "Accessibility checkpoint"
+  "{{SOURCE / PERSON}}": "Accessibility checkpoint"
+  "{{DATE}}": "2026-10-09"
+  "{{Footnote: data definition, citation detail, or methodological limitation.}}": "Accessibility checkpoint"
+  "{{Chapter intro - a one-line summary of the conclusion, then the recommendations below.}}": "Accessibility checkpoint"
+  "{{Conclusion 1.}}": "Accessibility checkpoint"
+  "{{Conclusion 2.}}": "Accessibility checkpoint"
+  "{{Conclusion 3.}}": "Accessibility checkpoint"
+  "{{Concrete, executable recommendations tied to the conclusions.}}": "Accessibility checkpoint"
+  "{{If the reader does one thing, what is it? Specific enough to start Monday morning.}}": "Accessibility checkpoint"
+  "{{Reference 1}}": "Accessibility checkpoint"
+  "{{Reference 2}}": "Accessibility checkpoint"
+  "{{TERM}}": "Accessibility checkpoint"
+  "{{definition}}": "Accessibility checkpoint"
+  "{{Acknowledgement paragraph.}}": "Accessibility checkpoint"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: accessibility
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Added to cover the accessibility class in the plan's corpus matrix.
+    The fixture protects a named behaviour rather than raising a count.

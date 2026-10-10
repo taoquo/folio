@@ -1,0 +1,45 @@
+id: matrix-complex-scripts-02
+genre: letter
+language: he-IL
+script_profile: rtl-only
+template: letter.html
+purpose:
+  - rtl
+  - bidi
+content:
+  "{{信件主题}}": "النسبة 42.5% في 2026 مع تقرير Q4 والمرجع RFC 3986."
+  "{{作者}}": "Corpus Matrix"
+  "{{摘要}}": "النسبة 42.5% في 2026 مع تقرير Q4 والمرجع RFC 3986."
+  "{{关键词}}": "覆盖, 矩阵"
+  "{{寄件人姓名}}": "Corpus Matrix"
+  "{{寄件人地址 / 部门 / 机构}}": "النسبة 42.5% في 2026 مع تقرير Q4 والمرجع RFC 3986."
+  "{{电话}}": "النسبة 42.5% في 2026 مع تقرير Q4 والمرجع RFC 3986."
+  "{{EMAIL}}": "matrix@example.org"
+  "{{日期 如 2026 年 4 月 18 日}}": "2026-10-09"
+  "{{收件人姓名 / 称谓}}": "Corpus Matrix"
+  "{{收件人机构 / 部门}}": "النسبة 42.5% في 2026 مع تقرير Q4 والمرجع RFC 3986."
+  "{{信件主题，一句话说清}}": "النسبة 42.5% في 2026 مع تقرير Q4 والمرجع RFC 3986."
+  "{{第一段：破题。说明写这封信的缘由和核心意图。 不要绕弯，1-2 句话让读者知道你要说什么。}}": "النسبة 42.5% في 2026 مع تقرير Q4 والمرجع RFC 3986."
+  "{{第三段：具体。说清楚你希望对方做什么、 何时做、怎么联系。让行动有明确出口。}}": "النسبة 42.5% في 2026 مع تقرير Q4 والمرجع RFC 3986."
+  "{{第四段（可选）：收尾。表达期待、致谢或礼貌性结束语。}}": "النسبة 42.5% في 2026 مع تقرير Q4 والمرجع RFC 3986."
+  "{{签名 / 亲笔姓名}}": "Corpus Matrix"
+  "{{职位 · 部门}}": "النسبة 42.5% في 2026 مع تقرير Q4 والمرجع RFC 3986."
+  "{{日期复写 · 可选}}": "2026-10-09"
+  "{{附件清单：① 附件名 1 · ② 附件名 2}}": "النسبة 42.5% في 2026 مع تقرير Q4 والمرجع RFC 3986."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: complex-scripts
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Covers the complex-scripts class. Content is chosen for the behaviour it
+    exercises; a class with no fixture has no protection at all.
+review:
+  expert_required: true
+  note: Inspect shaping and glyph fallback by eye.

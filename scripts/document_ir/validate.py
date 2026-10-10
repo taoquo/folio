@@ -122,12 +122,12 @@ def _check_identity(document: Document, report: ValidationReport) -> None:
     seen: dict[str, int] = {}
     for node in document.walk():
         if not node.id:
-            report.error("DOC.IR.ID.MISSING", node.type, "node has no id",
+            report.error("DOC-ID.MISSING", node.type, "node has no id",
                          hint="Give every node an id; references and anchors key on it.")
             continue
         if not ID_PATTERN.match(node.id):
             report.error(
-                "DOC.IR.ID.INVALID",
+                "DOC-ID.INVALID",
                 node.id,
                 f"id '{node.id}' is not a valid reference token",
                 hint="Use letters, digits, dot, dash or underscore, starting with a letter or digit.",
@@ -137,7 +137,7 @@ def _check_identity(document: Document, report: ValidationReport) -> None:
     for node_id, count in sorted(seen.items()):
         if count > 1:
             report.error(
-                "DOC.IR.ID.DUPLICATE",
+                "DOC-ID.DUPLICATE",
                 node_id,
                 f"id '{node_id}' is used by {count} nodes",
                 hint="Ids must be unique: a duplicate makes a cross-reference ambiguous.",
@@ -146,19 +146,19 @@ def _check_identity(document: Document, report: ValidationReport) -> None:
     # A renderer must never rename a node, so the document id may not collide
     # with a node id either.
     if document.id in seen:
-        report.warning("DOC.IR.ID.COLLISION", document.id,
+        report.warning("DOC-ID.COLLISION", document.id,
                        "document id is also used by a node")
 
 
 def _check_language_and_metadata(document: Document, report: ValidationReport) -> None:
     if not document.lang or len(document.lang) < 2:
-        report.error("DOC.IR.LANG.MISSING", document.id,
+        report.error("DOC-LANG.MISSING", document.id,
                      "document language is required",
                      hint="Set lang to a BCP 47 tag; it drives hyphenation and font fallback.")
     if not document.metadata.title:
-        report.error("DOC.IR.TITLE.MISSING", document.id, "document title is required")
+        report.error("DOC-TITLE.MISSING", document.id, "document title is required")
     if not document.blocks:
-        report.error("DOC.IR.CONTENT.EMPTY", document.id, "document has no blocks")
+        report.error("DOC-CONTENT.EMPTY", document.id, "document has no blocks")
 
     # Empty text nodes are almost always a transform that dropped content.
     for node in document.walk():
@@ -167,7 +167,7 @@ def _check_language_and_metadata(document: Document, report: ValidationReport) -
         if isinstance(content, tuple) and content:
             text = _inline_text(content)
             if not text.strip():
-                report.warning("DOC.IR.TEXT.EMPTY", node.id,
+                report.warning("DOC-TEXT.EMPTY", node.id,
                                f"{node.type} has content but no readable text")
 
 
@@ -181,11 +181,11 @@ def _check_references(document: Document, report: ValidationReport) -> None:
             if node_type in REFERENCE_TARGETS:
                 target = getattr(inline, REFERENCE_TARGETS[node_type], None)
                 if not target:
-                    report.error("DOC.IR.REF.EMPTY", node.id,
+                    report.error("DOC-REF.EMPTY", node.id,
                                  f"{node_type} has no target")
                 elif target not in ids:
                     report.error(
-                        "DOC.IR.REF.BROKEN",
+                        "DOC-REF.BROKEN",
                         node.id,
                         f"{node_type} points at '{target}', which does not exist",
                         hint="Add the target node or fix the id; a broken pointer reaches the reader.",
@@ -194,7 +194,7 @@ def _check_references(document: Document, report: ValidationReport) -> None:
                 for citation_key in getattr(inline, "keys", ()):
                     if bibliography and citation_key not in bibliography:
                         report.error(
-                            "DOC.IR.CITE.UNKNOWN",
+                            "DOC-CITE.UNKNOWN",
                             node.id,
                             f"citation '{citation_key}' is not in the bibliography",
                         )
@@ -210,10 +210,10 @@ def _check_references(document: Document, report: ValidationReport) -> None:
         node.id for node in document.walk() if node.type == "footnote_definition"
     }
     for node_id in sorted(defined - referenced):
-        report.warning("DOC.IR.FOOTNOTE.ORPHAN", node_id,
+        report.warning("DOC-FOOTNOTE.ORPHAN", node_id,
                        "footnote definition is never referenced")
     for node_id in sorted(referenced - defined):
-        report.error("DOC.IR.FOOTNOTE.MISSING", node_id,
+        report.error("DOC-FOOTNOTE.MISSING", node_id,
                      "footnote reference has no definition",
                      hint="Every call needs a matching definition.")
 
@@ -228,7 +228,7 @@ def _check_figures(document: Document, report: ValidationReport) -> None:
         # reader using a screen reader gets nothing without it.
         if not alt and not decorative:
             report.error(
-                "DOC.A11Y.MISSING_ALT",
+                "A11Y-IMAGE.MISSING_ALT",
                 node.id,
                 f"{node.type} has no alt text and is not marked decorative",
                 hint="Describe the figure, or set decorative when it carries no information.",
@@ -236,7 +236,7 @@ def _check_figures(document: Document, report: ValidationReport) -> None:
         asset = node.payload.get("asset") or node.payload.get("drawing")
         uri = asset.get("uri") if isinstance(asset, dict) else getattr(asset, "uri", None)
         if not uri:
-            report.error("DOC.IR.ASSET.MISSING", node.id,
+            report.error("DOC-ASSET.MISSING", node.id,
                          f"{node.type} has no asset uri")
 
 
@@ -249,7 +249,7 @@ def _check_headings(document: Document, report: ValidationReport) -> None:
             continue
         level = node.payload.get("level")
         if not isinstance(level, int) or not 1 <= level <= 6:
-            report.error("DOC.IR.HEADING.LEVEL", node.id,
+            report.error("DOC-HEADING.LEVEL", node.id,
                          f"heading level {level!r} is outside 1-6")
             continue
         if not first_heading_seen:
@@ -258,7 +258,7 @@ def _check_headings(document: Document, report: ValidationReport) -> None:
             continue
         if level > previous + 1:
             report.error(
-                "DOC.A11Y.HEADING_SKIP",
+                "A11Y-HEADING.SKIP",
                 node.id,
                 f"heading jumps from level {previous} to {level}",
                 hint="A skipped level breaks the document outline for assistive technology.",
@@ -273,14 +273,14 @@ def _check_tables(document: Document, report: ValidationReport) -> None:
         columns = node.payload.get("columns") or ()
         rows = node.payload.get("rows") or ()
         if not columns:
-            report.error("DOC.IR.TABLE.NO_COLUMNS", node.id, "table has no columns")
+            report.error("DOC-TABLE.NO_COLUMNS", node.id, "table has no columns")
             continue
         for row in rows:
             cells = getattr(row, "cells", ())
             if len(cells) != len(columns):
                 row_id = getattr(row, "id", "?")
                 report.error(
-                    "DOC.IR.TABLE.RAGGED",
+                    "DOC-TABLE.RAGGED",
                     node.id,
                     f"row '{row_id}' has {len(cells)} cells for {len(columns)} columns",
                     hint="Ragged rows make the table unreadable to a screen reader.",
@@ -294,11 +294,11 @@ def _check_raw_fallback(document: Document, report: ValidationReport) -> None:
     fallbacks = [n for n in nodes if n.type == "raw_fallback"]
     for node in fallbacks:
         if not str(node.payload.get("reason", "")).strip():
-            report.error("DOC.IR.RAWFALLBACK.REASON", node.id,
+            report.error("DOC-FALLBACK.REASON", node.id,
                          "raw_fallback must state why it could not be expressed")
     if nodes and len(fallbacks) / len(nodes) > 0.10:
         report.warning(
-            "DOC.IR.RAWFALLBACK.EXCESSIVE",
+            "DOC-FALLBACK.EXCESSIVE",
             document.id,
             f"{len(fallbacks)} of {len(nodes)} nodes are raw fallback",
             hint="A high share means the IR cannot express this content; widen the schema.",

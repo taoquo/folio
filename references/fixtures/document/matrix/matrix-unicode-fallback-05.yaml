@@ -1,0 +1,67 @@
+id: matrix-unicode-fallback-05
+genre: long-doc
+language: zh-Hans-CN
+script_profile: han-only
+template: long-doc.html
+purpose:
+  - unmapped-glyph
+  - combining-mark
+content:
+  "{{文档标题}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{作者}}": "Corpus Matrix"
+  "{{摘要}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{关键词}}": "覆盖, 矩阵"
+  "{{文档主标题<br>可以两行}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{副标题，一句话说清这份文档是什么 / 为谁而写}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{作者 / 团队}}": "Corpus Matrix"
+  "{{版本 V1.0}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{日期 2026.04}}": "2026-10-09"
+  "{{发布方 / 机构}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{Takeaway 1：一句话，可量化的结论}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{Takeaway 2：有数据的洞察}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{Takeaway 3：对未来的判断}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{用疑问句列出 3 个本文档的核心问题。让读者立刻 get 到是否需要读完。}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{章节导语：这一章要解决什么问题，为什么重要。1-2 句。}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{边注：定义本章关键词、样本范围或读者需要记住的限定条件。}}": "覆盖, 矩阵"
+  "{{陈述具体的核心问题。可以用 callout 突出关键观察：}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{一段重要引用或核心观察。和正文语气略有不同，给读者呼吸节奏。}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{维度 1}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{数据}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{差距}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{维度 2}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{章节导语}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{描述方法论。可以用代码 / 公式示例：}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{标题}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{一段论述。}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{一段引用，可以是用户访谈、专家观点、文献引用}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{来源 / 人物}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{日期}}": "2026-10-09"
+  "{{脚注：补充数据口径、引用出处或方法限制。}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{章节导语：一句话总结结论，下面展开建议。}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{结论 1}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{结论 2}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{结论 3}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{基于结论的具体可执行建议。}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{如果读者要做一件事，是什么？具体到可以周一早上就开始行动。}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{参考文献 1}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{参考文献 2}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{术语}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{定义}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+  "{{致谢段落}}": "罕见字符：𠀀 𠀁 𪛖 与私用区  ，需回退字体覆盖。 Café naïve résumé Zürich — combining marks: é ä ô"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: unicode-fallback
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Covers the unicode-fallback class. Content is chosen for the behaviour it
+    exercises; a class with no fixture has no protection at all.
+review:
+  expert_required: true
+  note: Inspect shaping and glyph fallback by eye.

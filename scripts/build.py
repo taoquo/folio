@@ -28,6 +28,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 from dataclasses import dataclass
 from html import escape
 from pathlib import Path
@@ -1091,8 +1092,11 @@ def verify_target(name: str, source: str, min_pages: int, max_pages: int, src_di
         issues.append(dep_error)
         return issues
 
-    EXAMPLES.mkdir(parents=True, exist_ok=True)
-    out = EXAMPLES / f"{name}.pdf"
+    # Verification renders into a scratch directory. Writing to `assets/examples`
+    # would make the check modify the workspace it is checking, and a run that
+    # changes its own inputs cannot answer whether a change is safe.
+    scratch = Path(tempfile.mkdtemp(prefix="folio-verify-"))
+    out = scratch / f"{name}.pdf"
 
     # Warn about missing local font files before rendering
     missing_fonts = _check_font_sources(src)
@@ -1190,7 +1194,78 @@ def verify_slides_target(name: str) -> list[str]:
     return [issue] if issue else []
 
 
+def _tracked_status() -> str:
+    """The tracked-file status, used to prove a check wrote nothing.
+
+    Untracked files are excluded on purpose: a check may leave a temporary
+    directory behind, and failing on that would train people to ignore the
+    guard.
+    """
+    try:
+        result = subprocess.run(
+            ["git", "status", "--porcelain", "--untracked-files=no"],
+            cwd=ROOT, capture_output=True, text=True, check=False, timeout=60,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return ""
+    return result.stdout or ""
+
+
+def verify_diagram_artifact(name: str) -> list[str]:
+    """Check an artifact's outputs exist and are non-empty.
+
+    Verification reads. Rebuilding here would rewrite `assets/demos/`, so the
+    check would repair whatever it was asked to detect.
+    """
+    config = DIAGRAM_ARTIFACT_TARGETS.get(name)
+    if not config:
+        return [f"{name}: no artifact configuration"]
+
+    # The outputs are named per format in the target's own configuration, so the
+    # check reads those names rather than guessing from the target id.
+    issues: list[str] = []
+    # Diagram artifacts land in `assets/diagrams/generated/`, one directory per
+    # format, which is where the build writes them.
+    locations = {
+        "svg": GENERATED_DIAGRAM_SVG,
+        "png": GENERATED_DIAGRAM_PNG,
+        "pdf": GENERATED_DIAGRAM_PDF,
+    }
+    for suffix, directory in locations.items():
+        filename = config.get(suffix)
+        if not filename:
+            continue
+        path = directory / filename
+        if not path.is_file():
+            issues.append(f"{path.relative_to(ROOT)} is missing; run build.py to generate it")
+        elif path.stat().st_size == 0:
+            issues.append(f"{path.relative_to(ROOT)} is empty")
+    return issues
+
+
+def verify_host_integration(name: str) -> list[str]:
+    """Check a host integration's outputs exist.
+
+    The same rule: this reports what is there rather than producing it.
+    """
+    issues: list[str] = []
+    for candidate in sorted(EXAMPLES.glob(f"{name}.*")):
+        if candidate.stat().st_size == 0:
+            issues.append(f"{candidate.relative_to(ROOT)} is empty")
+    if not list(EXAMPLES.glob(f"{name}.*")):
+        issues.append(f"{name}: no output found; run build.py to generate it")
+    return issues
+
+
 def verify_all(target: str | None = None) -> int:
+    """Verify the build, without writing to the workspace.
+
+    The status before the run is compared with the status after it. A
+    difference means verification changed tracked files, which makes the result
+    unusable as evidence that a change is safe.
+    """
+    workspace_before = _tracked_status()
+
     targets_to_run: dict[str, tuple[str, str, int, int, Path] | None] = {}
     if target:
         if target in HTML_TARGETS:
@@ -1227,9 +1302,9 @@ def verify_all(target: str | None = None) -> int:
         else:
             target_kind, source, min_pages, max_pages, src_dir = config
             if target_kind == "artifact":
-                issues = [] if build_diagram_artifact(name) else ["artifact build failed"]
+                issues = verify_diagram_artifact(name)
             elif target_kind == "host":
-                issues = [] if build_host_integration(name) else ["host integration build failed"]
+                issues = verify_host_integration(name)
             else:
                 issues = verify_target(name, source, min_pages, max_pages, src_dir)
         if issues:
@@ -1240,6 +1315,21 @@ def verify_all(target: str | None = None) -> int:
 
     for status, detail in rows:
         print(f"{status}: {detail}")
+
+    # Verification is only evidence if it left the workspace alone.
+    workspace_after = _tracked_status()
+    if workspace_after != workspace_before:
+        before_lines = set(workspace_before.splitlines())
+        after_lines = set(workspace_after.splitlines())
+        touched = sorted(after_lines - before_lines)
+        print("")
+        print("ERROR: verification changed tracked files")
+        for line in touched[:10]:
+            print(f"  {line}")
+        print("")
+        print("  A check that modifies the workspace cannot show that a change is safe.")
+        print("  Rendering belongs to `build.py`, not to `--verify`.")
+        failures += 1
 
     return 0 if failures == 0 else 1
 

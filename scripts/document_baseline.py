@@ -371,6 +371,25 @@ def _write_baseline(capture: dict[str, Any], reason: str, dpi: int) -> Path:
     return BASELINE_FILE
 
 
+def unattended_environment() -> str | None:
+    """Why this run looks unattended, or None when a person is present.
+
+    A recorded approval has to mean someone looked. The environment is used
+    rather than an argument because an argument can be passed by a pipeline just
+    as easily as by a person.
+    """
+    if os.environ.get("CI"):
+        return "CI is set"
+    if os.environ.get("GITHUB_ACTIONS"):
+        return "GITHUB_ACTIONS is set"
+    if not sys.stdin.isatty() and not os.environ.get("FOLIO_ALLOW_UNATTENDED_APPROVAL"):
+        return (
+            "stdin is not a terminal; set FOLIO_ALLOW_UNATTENDED_APPROVAL=1 to "
+            "approve anyway, which records that the approval was scripted"
+        )
+    return None
+
+
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -399,8 +418,21 @@ def main(argv: list[str]) -> int:
 
         if not args.approval_reason:
             print("ERROR: capture requires --approval-reason to write the approved baseline")
-            print("       Use --dry-run to inspect the capture without writing it.")
+            print("")
+            print("  A baseline is approved by a person. State what changed and why it")
+            print("  is intended; a reason with no reviewer behind it is not an approval.")
             return 2
+
+        blocked = unattended_environment() if not args.dry_run else None
+        if blocked:
+            print("ERROR: refusing to approve a baseline from an unattended run")
+            print(f"  {blocked}")
+            print("")
+            print("  CI must never write an approved baseline, because the record would")
+            print("  claim a review that did not happen. Capture with --dry-run to")
+            print("  inspect the difference, then approve it from a terminal.")
+            return 2
+
         try:
             path = _write_baseline(capture, args.approval_reason, args.dpi)
         except ValueError as exc:

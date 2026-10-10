@@ -153,14 +153,14 @@ class IdStabilityTests(TestCase):
         ])
         report = validate(document_from_data(data))
         self.assertFalse(report.ok)
-        self.assertIn("DOC.IR.ID.DUPLICATE", {d.code for d in report.errors})
+        self.assertIn("DOC-ID.DUPLICATE", {d.code for d in report.errors})
 
     def test_an_invalid_id_token_is_rejected(self) -> None:
         data = sample_data(blocks=[
             {"type": "paragraph", "id": "has space", "content": [{"type": "text", "value": "x"}]},
         ])
         report = validate(document_from_data(data))
-        self.assertIn("DOC.IR.ID.INVALID", {d.code for d in report.errors})
+        self.assertIn("DOC-ID.INVALID", {d.code for d in report.errors})
 
 
 class FailClosedValidationTests(TestCase):
@@ -174,7 +174,7 @@ class FailClosedValidationTests(TestCase):
         ])
         report = validate(document_from_data(data))
         self.assertFalse(report.ok)
-        self.assertIn("DOC.IR.REF.BROKEN", {d.code for d in report.errors})
+        self.assertIn("DOC-REF.BROKEN", {d.code for d in report.errors})
 
     def test_a_figure_without_alt_text_fails(self) -> None:
         data = sample_data(blocks=[
@@ -182,7 +182,7 @@ class FailClosedValidationTests(TestCase):
         ])
         report = validate(document_from_data(data))
         self.assertFalse(report.ok)
-        self.assertIn("DOC.A11Y.MISSING_ALT", {d.code for d in report.errors})
+        self.assertIn("A11Y-IMAGE.MISSING_ALT", {d.code for d in report.errors})
 
     def test_a_decorative_figure_needs_no_alt_text(self) -> None:
         data = sample_data(blocks=[
@@ -190,7 +190,7 @@ class FailClosedValidationTests(TestCase):
              "alt": "", "decorative": True},
         ])
         report = validate(document_from_data(data))
-        self.assertNotIn("DOC.A11Y.MISSING_ALT", {d.code for d in report.errors})
+        self.assertNotIn("A11Y-IMAGE.MISSING_ALT", {d.code for d in report.errors})
 
     def test_a_skipped_heading_level_fails(self) -> None:
         data = sample_data(blocks=[
@@ -198,7 +198,7 @@ class FailClosedValidationTests(TestCase):
             {"type": "heading", "id": "h-2", "level": 3, "content": [{"type": "text", "value": "b"}]},
         ])
         report = validate(document_from_data(data))
-        self.assertIn("DOC.A11Y.HEADING_SKIP", {d.code for d in report.errors})
+        self.assertIn("A11Y-HEADING.SKIP", {d.code for d in report.errors})
 
     def test_a_ragged_table_fails(self) -> None:
         data = sample_data(blocks=[
@@ -208,7 +208,7 @@ class FailClosedValidationTests(TestCase):
              "rows": [{"id": "r1", "cells": [[{"type": "text", "value": "1"}]]}]},
         ])
         report = validate(document_from_data(data))
-        self.assertIn("DOC.IR.TABLE.RAGGED", {d.code for d in report.errors})
+        self.assertIn("DOC-TABLE.RAGGED", {d.code for d in report.errors})
 
     def test_a_missing_footnote_definition_fails(self) -> None:
         data = sample_data(blocks=[
@@ -216,15 +216,15 @@ class FailClosedValidationTests(TestCase):
              "content": [{"type": "footnote_ref", "target": "fn-1"}]},
         ])
         report = validate(document_from_data(data))
-        self.assertIn("DOC.IR.FOOTNOTE.MISSING", {d.code for d in report.errors})
+        self.assertIn("DOC-FOOTNOTE.MISSING", {d.code for d in report.errors})
 
     def test_an_empty_document_fails(self) -> None:
         report = validate(document_from_data(sample_data(blocks=[])))
-        self.assertIn("DOC.IR.CONTENT.EMPTY", {d.code for d in report.errors})
+        self.assertIn("DOC-CONTENT.EMPTY", {d.code for d in report.errors})
 
     def test_a_missing_language_fails(self) -> None:
         report = validate(document_from_data(sample_data(lang="")))
-        self.assertIn("DOC.IR.LANG.MISSING", {d.code for d in report.errors})
+        self.assertIn("DOC-LANG.MISSING", {d.code for d in report.errors})
 
     def test_report_serialises_with_codes_and_hints(self) -> None:
         data = sample_data(blocks=[
@@ -234,7 +234,7 @@ class FailClosedValidationTests(TestCase):
         payload = validate(document_from_data(data)).to_json()
         json.dumps(payload)
         self.assertFalse(payload["ok"])
-        broken = [d for d in payload["diagnostics"] if d["code"] == "DOC.IR.REF.BROKEN"][0]
+        broken = [d for d in payload["diagnostics"] if d["code"] == "DOC-REF.BROKEN"][0]
         self.assertTrue(broken["hint"])
 
 
@@ -253,14 +253,14 @@ class RawFallbackTests(TestCase):
             {"type": "raw_fallback", "id": "r-1", "value": "<div/>", "reason": ""},
         ])
         report = validate(document_from_data(data))
-        self.assertIn("DOC.IR.RAWFALLBACK.REASON", {d.code for d in report.errors})
+        self.assertIn("DOC-FALLBACK.REASON", {d.code for d in report.errors})
 
     def test_excessive_fallback_is_flagged(self) -> None:
         blocks = [{"type": "paragraph", "id": "p-1", "content": [{"type": "text", "value": "x"}]}]
         blocks += [{"type": "raw_fallback", "id": f"r-{i}", "value": "x", "reason": "unknown"}
                    for i in range(3)]
         report = validate(document_from_data(sample_data(blocks=blocks)))
-        self.assertIn("DOC.IR.RAWFALLBACK.EXCESSIVE", {d.code for d in report.warnings})
+        self.assertIn("DOC-FALLBACK.EXCESSIVE", {d.code for d in report.warnings})
 
 
 class ReaderTests(TestCase):
@@ -657,3 +657,61 @@ class MigrationTests(TestCase):
                 import json as _json
 
                 self.assertEqual(CURRENT_VERSION, version_of(_json.loads(path.read_text())))
+
+
+class ShippedFixtureRoundTripTests(TestCase):
+    """Every shipped IR fixture must survive a round trip unchanged.
+
+    The model's stability is a claim about the whole vocabulary, so it is
+    checked against the fixtures that exercise that vocabulary rather than
+    against one hand-written sample.
+    """
+
+    def _fixtures(self):
+        directory = ROOT / "references" / "fixtures" / "document" / "ir"
+        if not directory.is_dir():
+            self.skipTest("IR fixtures not present")
+        return sorted(directory.glob("*.json"))
+
+    def test_every_fixture_round_trips_unchanged(self) -> None:
+        from document_ir.readers.structured import document_from_data
+
+        for path in self._fixtures():
+            with self.subTest(fixture=path.stem):
+                original = read(path)
+                rebuilt = document_from_data(original.to_json())
+                self.assertEqual(original.to_json(), rebuilt.to_json())
+
+    def test_reading_a_fixture_twice_gives_the_same_document(self) -> None:
+        for path in self._fixtures():
+            with self.subTest(fixture=path.stem):
+                self.assertEqual(read(path).to_json(), read(path).to_json())
+
+    def test_round_trip_preserves_node_ids_and_order(self) -> None:
+        from document_ir.readers.structured import document_from_data
+
+        for path in self._fixtures():
+            with self.subTest(fixture=path.stem):
+                original = read(path)
+                rebuilt = document_from_data(original.to_json())
+                self.assertEqual(original.node_ids(), rebuilt.node_ids())
+
+    def test_the_core_model_does_not_import_a_renderer(self) -> None:
+        """The IR must be expressible without a backend.
+
+        `writers/` is allowed to reach a renderer: projecting to a backend is
+        what a writer does. The model, validator, reader and bridge must not,
+        because then the document could not exist without that backend.
+        """
+        core = [
+            ROOT / "scripts" / "document_ir" / name
+            for name in ("model.py", "validate.py", "bridge.py", "containers.py",
+                         "layout_policy.py", "migrations.py")
+        ]
+        core.append(ROOT / "scripts" / "document_ir" / "readers" / "structured.py")
+
+        for path in core:
+            with self.subTest(module=path.name):
+                text = path.read_text(encoding="utf-8")
+                for banned in ("weasyprint", "from pptx", "import pptx"):
+                    self.assertNotIn(banned, text.lower())

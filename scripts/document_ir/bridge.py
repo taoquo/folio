@@ -92,6 +92,21 @@ class BridgeMap:
 INLINE_TAG = re.compile(r"<(strong|em|b|i|span)(?:\s+class=\"([^\"]*)\")?>(.*?)</\1>", re.DOTALL)
 
 
+def _normalise_id(value: str) -> str:
+    """Reduce a proposed id to a valid reference token.
+
+    The IR requires ids matching `^[A-Za-z0-9][A-Za-z0-9._-]*$`. A role table
+    written from a template's own wording can carry spaces and slashes, so the
+    id is normalised where it is assigned rather than trusted from the table.
+    """
+    cleaned = re.sub(r"[^A-Za-z0-9._-]+", "-", value).strip("-")
+    cleaned = re.sub(r"-{2,}", "-", cleaned)
+    if not cleaned or not cleaned[0].isalnum():
+        cleaned = f"n-{cleaned}" if cleaned else "node"
+        cleaned = re.sub(r"[^A-Za-z0-9._-]", "", cleaned)
+    return cleaned or "node"
+
+
 def text_to_inlines(value: str) -> tuple:
     """Turn a value that may contain emphasis markers into inline nodes.
 
@@ -206,6 +221,11 @@ def bridge_template(
         if extra not in declared:
             names_to_place.append(extra)
 
+    # Ids already used in this document. Two placeholders may map to one slot,
+    # and an id has to identify exactly one node, so a repeat is given a suffix
+    # rather than overwriting or colliding.
+    used_ids: set[str] = set()
+
     for index, name in enumerate(names_to_place):
         value = values.get(name, "").strip()
         if not value:
@@ -214,12 +234,22 @@ def bridge_template(
         if role.role == "ignore":
             continue
 
-        node_id = role.block_id or _slug(name, fallback=f"node-{index}")
+        node_id = _normalise_id(role.block_id) if role.block_id else _slug(name, fallback=f"node-{index}")
         # A numbered placeholder shares its base's id, and two nodes cannot share
         # an id: the second section's bullets were collapsed onto the first's.
         number = re.search(r"\s*(\d+)$", name)
         if role.block_id and number and name not in mapping.roles:
             node_id = f"{role.block_id}-{number.group(1)}"
+
+        # A placeholder that maps onto an id another placeholder already used
+        # keeps its own node under a distinct id, so the document validates and
+        # no content is dropped.
+        if node_id in used_ids:
+            suffix = 2
+            while f"{node_id}-{suffix}" in used_ids:
+                suffix += 1
+            node_id = f"{node_id}-{suffix}"
+        used_ids.add(node_id)
         source = SourceRef(source_id=source_id, locator=name)
 
         # One branch per role, each ending in `continue`. Falling through would

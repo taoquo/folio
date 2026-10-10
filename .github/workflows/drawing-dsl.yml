@@ -93,6 +93,31 @@ jobs:
           from document_ir.validate import validate
           print(f"OK: Document IR imports, {len(document_ir.__all__)} public types")
           PY
+      - name: Resolve the document style and trace every value
+        run: >-
+          python scripts/style_resolver.py resolve
+          --genre one-pager --lang zh-Hans-CN
+      - name: Check the spacing model is complete and explained
+        run: python scripts/spacing.py pairs
+      - name: Check the asset manifest resolves
+        run: python scripts/assets.py check
+      - name: Record the build conditions
+        run: python scripts/build_manifest.py show
+      - name: Check verification leaves the workspace alone
+        run: |
+          python scripts/build.py --verify one-pager
+          if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
+            echo "ERROR: verification wrote to tracked files"
+            git status --porcelain --untracked-files=no
+            exit 1
+          fi
+          echo "OK: verification is read-only"
+      - name: Report what may be claimed about each language
+        run: python scripts/language_support.py report
+      - name: Check corpus coverage against the plan's matrix
+        run: python scripts/corpus_matrix.py report
+      - name: Show the per-type migration matrix
+        run: python scripts/migration.py matrix
       - name: Render a smoke sample of the corpus
         run: >-
           python scripts/corpus.py render

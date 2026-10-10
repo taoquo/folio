@@ -88,7 +88,7 @@ class ComparisonVerdictTests(TestCase):
         self.assertFalse(item.ok)
 
     def test_ir_validation_errors_are_reported(self) -> None:
-        item = _comparison(ir_errors=["DOC.IR.REF.BROKEN"])
+        item = _comparison(ir_errors=["DOC-REF.BROKEN"])
         self.assertFalse(item.ok)
 
     def test_report_serialises_for_a_build_artifact(self) -> None:

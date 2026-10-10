@@ -288,6 +288,136 @@ def unresolved_dimension(report: InspectorReport) -> Dimension:
     )
 
 
+
+def visual_rhythm_dimension(report: InspectorReport) -> Dimension:
+    """How evenly the page carries its content.
+
+    Rhythm is not a score. This reports the variation in how much each page
+    holds, which is what a reader notices as a page that feels thin or crowded.
+    """
+    counts = report.page_line_counts
+    if not counts or len(counts) < 2:
+        return Dimension(
+            name="visual_rhythm",
+            status="NOT_MEASURED",
+            metrics={"pages": len(counts)},
+            gate="craft",
+            detail="a single page has no rhythm to compare",
+        )
+
+    busiest = max(counts)
+    quietest = min(counts)
+    spread = (busiest - quietest) / busiest if busiest else 0.0
+    status = "REVIEW" if spread > 0.5 else "PASS"
+    return Dimension(
+        name="visual_rhythm",
+        status=status,
+        metrics={
+            "lines_per_page": counts,
+            "busiest": busiest,
+            "quietest": quietest,
+            "spread_ratio": round(spread, 3),
+        },
+        gate="craft",
+        detail=None if status == "PASS" else "page density varies widely",
+    )
+
+
+def readability_dimension(report: InspectorReport) -> Dimension:
+    """Line length and hyphenation strain.
+
+    A measure that is too wide tires the eye; a run of hyphenated line ends
+    breaks words apart faster than a reader can reassemble them. Both are
+    warnings: they describe text that is harder to read, not text that is wrong.
+    """
+    metrics: dict[str, Any] = {
+        "words": report.words,
+        "lines": report.lines,
+        "hyphenated_lines": report.hyphenated_line_count,
+        "max_consecutive_hyphens": report.max_consecutive_hyphens,
+        "short_last_line_count": report.short_last_line_count,
+        "last_line_ratio_mean": round(
+            sum(report.last_line_ratios) / len(report.last_line_ratios), 4
+        ) if report.last_line_ratios else None,
+    }
+    if report.lines == 0:
+        return Dimension(
+            name="readability", status="NOT_MEASURED", metrics=metrics,
+            gate="craft", detail="no lines were extracted",
+        )
+
+    hyphen_rate = report.hyphenated_line_count / report.lines
+    metrics["hyphen_rate"] = round(hyphen_rate, 4)
+    status = "REVIEW" if hyphen_rate > 0.15 or report.max_consecutive_hyphens > 2 else "PASS"
+    return Dimension(
+        name="readability", status=status, metrics=metrics, gate="craft",
+        detail=None if status == "PASS" else "hyphenation density is high",
+    )
+
+
+def renderer_stability_dimension(pdf: Path) -> Dimension:
+    """Whether this artifact came from a known renderer.
+
+    Stability is about being able to reproduce the page. This reports what
+    produced the file, and says so when the answer is not available, rather than
+    assuming a renderer that was never recorded.
+    """
+    metrics: dict[str, Any] = {"path": str(pdf)}
+    try:
+        import subprocess
+
+        result = subprocess.run(
+            ["pdfinfo", str(pdf)], capture_output=True, text=True, check=False, timeout=60,
+        )
+        for line in (result.stdout or "").splitlines():
+            if line.lower().startswith(("producer:", "creator:", "pdf version:")):
+                key, _, value = line.partition(":")
+                metrics[key.strip().lower().replace(" ", "_")] = value.strip()
+    except (OSError, subprocess.SubprocessError):
+        pass
+
+    has_producer = bool(metrics.get("producer") or metrics.get("creator"))
+    return Dimension(
+        name="renderer_stability",
+        status="PASS" if has_producer else "NOT_MEASURED",
+        metrics=metrics,
+        gate="craft",
+        detail=None if has_producer else "the artifact records no renderer",
+    )
+
+
+def reproducibility_dimension(pdf: Path) -> Dimension:
+    """Whether the conditions that produced this artifact are recorded.
+
+    A page whose build conditions are unknown cannot be compared with another.
+    The build manifest answers this; without one the honest status is that the
+    question was not asked.
+    """
+    metrics: dict[str, Any] = {}
+    try:
+        import build_manifest
+
+        manifest = build_manifest.capture()
+        payload = manifest.to_json()
+        metrics = {
+            "commit": payload.get("folio_commit"),
+            "renderer": payload.get("renderer"),
+            "font_manifest_hash": payload.get("font_manifest_hash"),
+            "fingerprint": manifest.fingerprint[:32],
+        }
+    except Exception as exc:
+        return Dimension(
+            name="reproducibility", status="NOT_MEASURED",
+            metrics={"error": type(exc).__name__}, gate="craft",
+            detail="the build manifest could not be read",
+        )
+
+    return Dimension(
+        name="reproducibility",
+        status="PASS" if metrics.get("fingerprint") else "NOT_MEASURED",
+        metrics=metrics, gate="craft",
+    )
+
 def evaluate(pdf: Path, genre: str | None, thresholds: dict[str, float],
              manifest: dict | None = None) -> QualityVector:
     report = inspect(pdf)
@@ -302,7 +432,11 @@ def evaluate(pdf: Path, genre: str | None, thresholds: dict[str, float],
     vector.add(correctness_dimension(report, expected, fonts=report.fonts, manifest=manifest))
     vector.add(typography_dimension(report, thresholds))
     vector.add(pagination_dimension(report, thresholds))
+    vector.add(visual_rhythm_dimension(report))
+    vector.add(readability_dimension(report))
     vector.add(accessibility_dimension(report))
+    vector.add(renderer_stability_dimension(pdf))
+    vector.add(reproducibility_dimension(pdf))
     vector.add(unresolved_dimension(report))
 
     for note in report.notes:

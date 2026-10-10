@@ -1,0 +1,65 @@
+id: matrix-lists-en
+genre: long-doc
+language: en-US
+script_profile: latin-only
+template: long-doc-en.html
+purpose:
+  - nested-list
+  - long-marker
+content:
+  "{{DOC_TITLE}}": "First item: a step to verify in order"
+  "{{AUTHOR}}": "Corpus Matrix"
+  "{{DESCRIPTION}}": "First item: a step to verify in order"
+  "{{KEYWORDS}}": "corpus, coverage, matrix"
+  "{{EYEBROW - e.g. Technical Report / Annual Review / White Paper}}": "First item: a step to verify in order"
+  "{{Document title<br>can span two lines}}": "First item: a step to verify in order"
+  "{{One-line subtitle - what this is and who it's for.}}": "First item: a step to verify in order"
+  "{{AUTHOR / TEAM}}": "Corpus Matrix"
+  "{{Version 1.0}}": "First item: a step to verify in order"
+  "{{YYYY.MM}}": "First item: a step to verify in order"
+  "{{PUBLISHER / ORGANIZATION}}": "First item: a step to verify in order"
+  "{{Takeaway 1 - a quantified conclusion in one line.}}": "First item: a step to verify in order"
+  "{{Takeaway 2 - an insight backed by data.}}": "First item: a step to verify in order"
+  "{{Takeaway 3 - a forward-looking judgment.}}": "First item: a step to verify in order"
+  "{{List the three core questions as actual questions - so the reader can decide in ten seconds whether to read on.}}": "First item: a step to verify in order"
+  "{{Chapter intro - what this chapter is solving, why it matters. One or two sentences.}}": "First item: a step to verify in order"
+  "{{Sidenote: define a key term, sample boundary, or constraint the reader should keep in mind.}}": "First item: a step to verify in order"
+  "{{State the problem specifically. Use a callout to emphasize a key observation:}}": "First item: a step to verify in order"
+  "{{A short quoted line or key observation. Different in tone from the body so the reader gets a breath.}}": "First item: a step to verify in order"
+  "{{DIMENSION_1}}": "First item: a step to verify in order"
+  "{{VAL}}": "First item: a step to verify in order"
+  "{{GAP}}": "First item: a step to verify in order"
+  "{{DIMENSION_2}}": "First item: a step to verify in order"
+  "{{Chapter intro.}}": "First item: a step to verify in order"
+  "{{Describe the methodology. Code or formula examples welcome:}}": "First item: a step to verify in order"
+  "{{TITLE}}": "First item: a step to verify in order"
+  "{{A paragraph.}}": "First item: a step to verify in order"
+  "{{A quoted passage - user interview, expert perspective, or cited source.}}": "First item: a step to verify in order"
+  "{{SOURCE / PERSON}}": "First item: a step to verify in order"
+  "{{DATE}}": "2026-10-09"
+  "{{Footnote: data definition, citation detail, or methodological limitation.}}": "First item: a step to verify in order"
+  "{{Chapter intro - a one-line summary of the conclusion, then the recommendations below.}}": "First item: a step to verify in order"
+  "{{Conclusion 1.}}": "First item: a step to verify in order"
+  "{{Conclusion 2.}}": "First item: a step to verify in order"
+  "{{Conclusion 3.}}": "First item: a step to verify in order"
+  "{{Concrete, executable recommendations tied to the conclusions.}}": "First item: a step to verify in order"
+  "{{If the reader does one thing, what is it? Specific enough to start Monday morning.}}": "First item: a step to verify in order"
+  "{{Reference 1}}": "First item: a step to verify in order"
+  "{{Reference 2}}": "First item: a step to verify in order"
+  "{{TERM}}": "First item: a step to verify in order"
+  "{{definition}}": "First item: a step to verify in order"
+  "{{Acknowledgement paragraph.}}": "First item: a step to verify in order"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: lists
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Added to cover the lists class in the plan's corpus matrix.
+    The fixture protects a named behaviour rather than raising a count.

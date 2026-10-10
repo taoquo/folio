@@ -1,0 +1,65 @@
+id: matrix-heading-hierarchy-en
+genre: long-doc
+language: en-US
+script_profile: latin-only
+template: long-doc-en.html
+purpose:
+  - heading-structure
+  - deep-heading
+content:
+  "{{DOC_TITLE}}": "Executive Summary"
+  "{{AUTHOR}}": "Corpus Matrix"
+  "{{DESCRIPTION}}": "Executive Summary"
+  "{{KEYWORDS}}": "corpus, coverage, matrix"
+  "{{EYEBROW - e.g. Technical Report / Annual Review / White Paper}}": "Executive Summary"
+  "{{Document title<br>can span two lines}}": "Executive Summary"
+  "{{One-line subtitle - what this is and who it's for.}}": "Executive Summary"
+  "{{AUTHOR / TEAM}}": "Corpus Matrix"
+  "{{Version 1.0}}": "Executive Summary"
+  "{{YYYY.MM}}": "Executive Summary"
+  "{{PUBLISHER / ORGANIZATION}}": "Executive Summary"
+  "{{Takeaway 1 - a quantified conclusion in one line.}}": "Executive Summary"
+  "{{Takeaway 2 - an insight backed by data.}}": "Executive Summary"
+  "{{Takeaway 3 - a forward-looking judgment.}}": "Executive Summary"
+  "{{List the three core questions as actual questions - so the reader can decide in ten seconds whether to read on.}}": "Executive Summary"
+  "{{Chapter intro - what this chapter is solving, why it matters. One or two sentences.}}": "Executive Summary"
+  "{{Sidenote: define a key term, sample boundary, or constraint the reader should keep in mind.}}": "Executive Summary"
+  "{{State the problem specifically. Use a callout to emphasize a key observation:}}": "Executive Summary"
+  "{{A short quoted line or key observation. Different in tone from the body so the reader gets a breath.}}": "Executive Summary"
+  "{{DIMENSION_1}}": "Executive Summary"
+  "{{VAL}}": "Executive Summary"
+  "{{GAP}}": "Executive Summary"
+  "{{DIMENSION_2}}": "Executive Summary"
+  "{{Chapter intro.}}": "Executive Summary"
+  "{{Describe the methodology. Code or formula examples welcome:}}": "Executive Summary"
+  "{{TITLE}}": "Executive Summary"
+  "{{A paragraph.}}": "Executive Summary"
+  "{{A quoted passage - user interview, expert perspective, or cited source.}}": "Executive Summary"
+  "{{SOURCE / PERSON}}": "Executive Summary"
+  "{{DATE}}": "2026-10-09"
+  "{{Footnote: data definition, citation detail, or methodological limitation.}}": "Executive Summary"
+  "{{Chapter intro - a one-line summary of the conclusion, then the recommendations below.}}": "Executive Summary"
+  "{{Conclusion 1.}}": "Executive Summary"
+  "{{Conclusion 2.}}": "Executive Summary"
+  "{{Conclusion 3.}}": "Executive Summary"
+  "{{Concrete, executable recommendations tied to the conclusions.}}": "Executive Summary"
+  "{{If the reader does one thing, what is it? Specific enough to start Monday morning.}}": "Executive Summary"
+  "{{Reference 1}}": "Executive Summary"
+  "{{Reference 2}}": "Executive Summary"
+  "{{TERM}}": "Executive Summary"
+  "{{definition}}": "Executive Summary"
+  "{{Acknowledgement paragraph.}}": "Executive Summary"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: heading-hierarchy
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Added to cover the heading-hierarchy class in the plan's corpus matrix.
+    The fixture protects a named behaviour rather than raising a count.
