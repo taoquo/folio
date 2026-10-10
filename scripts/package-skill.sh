@@ -56,6 +56,7 @@ awk '
   /^assets\/illustrations\// { next }
   /^dist\// { next }
   /^docs\/audits\// { next }
+  /^docs\/acceptance\// { next }
   /^scripts\/(repair_evidence|build_repair_report)\.py$/ { next }
   /^scripts\/templates\/repair-comparison\.html$/ { next }
   /^\.vercel\// { next }
