@@ -1,0 +1,52 @@
+id: matrix-figures-08
+genre: equity-report
+language: en-US
+script_profile: latin-only
+template: equity-report-en.html
+purpose:
+  - figure-caption
+  - figure-page-break
+content:
+  "{{COMPANY_NAME}}": "Corpus Matrix"
+  "{{AUTHOR}}": "Corpus Matrix"
+  "{{DESCRIPTION}}": "Figure 1: revenue against gross margin."
+  "{{KEYWORDS}}": "覆盖, 矩阵"
+  "{{EYEBROW - e.g. Equity Research / Valuation / Investment Memo}}": "Figure 1: revenue against gross margin."
+  "{{TICKER}}": "Figure 1: revenue against gross margin."
+  "{{SECTOR}}": "Figure 1: revenue against gross margin."
+  "{{EXCHANGE}}": "Figure 1: revenue against gross margin."
+  "{{One-line thesis.}}": "Figure 1: revenue against gross margin."
+  "{{CURRENT_PRICE}}": "Figure 1: revenue against gross margin."
+  "{{DATE}}": "2026-10-09"
+  "{{NUMBER}}": "Figure 1: revenue against gross margin."
+  "{{RATING}}": "Figure 1: revenue against gross margin."
+  "{{TARGET}}": "Figure 1: revenue against gross margin."
+  "{{HORIZON}}": "Figure 1: revenue against gross margin."
+  "{{One-line verdict: buy / hold / watch, and the single strongest reason.}}": "Figure 1: revenue against gross margin."
+  "{{VAL}}": "Figure 1: revenue against gross margin."
+  "{{Chart title.}}": "Figure 1: revenue against gross margin."
+  "{{Industry landscape overview, one or two paragraphs.}}": "Figure 1: revenue against gross margin."
+  "{{COMP_A}}": "Figure 1: revenue against gross margin."
+  "{{COMP_B}}": "Figure 1: revenue against gross margin."
+  "{{COMP_C}}": "Figure 1: revenue against gross margin."
+  "{{Risk Type 1}}": "Figure 1: revenue against gross margin."
+  "{{Risk description.}}": "Figure 1: revenue against gross margin."
+  "{{Risk Type 2}}": "Figure 1: revenue against gross margin."
+  "{{Risk Type 3}}": "Figure 1: revenue against gross margin."
+  "{{Risk Type 4}}": "Figure 1: revenue against gross margin."
+  "{{Three to five sentences summarizing the position. Include target price (if applicable), rating, key catalysts, and core assumptions.}}": "Figure 1: revenue against gross margin."
+  "{{FIRM / DISCLAIMER}}": "Figure 1: revenue against gross margin."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: figures
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Covers the figures class. Content is chosen for the behaviour it
+    exercises, not to raise a count.

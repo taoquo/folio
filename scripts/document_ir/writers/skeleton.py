@@ -74,6 +74,27 @@ def _aliases(placeholder: str) -> tuple[str, ...]:
     return tuple(dict.fromkeys(out))
 
 
+def payload_lang(item: Any) -> str | None:
+    """The language a node declares, wherever it declares it."""
+    payload = getattr(item, "payload", None) or {}
+    value = payload.get("lang")
+    return str(value) if value else None
+
+
+def _with_language(text: str, lang: str | None) -> str:
+    """Mark a run whose language differs from the document's.
+
+    The document already declares its language on the `<html>` element, so a run
+    that matches it needs no marker. Marking only the exceptions keeps the
+    markup readable and the intent visible: this span exists because the
+    language changed here.
+    """
+    language = (lang or "").strip()
+    if not language or not text:
+        return text
+    return f'<span lang="{language}">{text}</span>'
+
+
 def collect_values(document: Any) -> dict[str, str]:
     """Every string the IR can offer, keyed by the names it may be asked for.
 
@@ -92,12 +113,13 @@ def collect_values(document: Any) -> dict[str, str]:
         """
         value = getattr(item, "value", None)
         if value:
-            return str(value)
+            text = str(value)
+            return _with_language(text, getattr(item, "lang", None) or payload_lang(item))
 
         payload = getattr(item, "payload", {}) or {}
         own = payload.get("value")
         if isinstance(own, str) and own:
-            return own
+            return _with_language(own, payload.get("lang"))
 
         item_type = getattr(item, "type", "") or payload.get("type", "")
         nested = getattr(item, "content", None) or payload.get("content") or ()

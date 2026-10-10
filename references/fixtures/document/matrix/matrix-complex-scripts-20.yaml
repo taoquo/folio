@@ -1,0 +1,43 @@
+id: matrix-complex-scripts-20
+genre: letter
+language: he-IL
+script_profile: rtl-only
+template: letter-en.html
+purpose:
+  - rtl
+  - combining-mark
+content:
+  "{{LETTER_SUBJECT}}": "דוח רבעון 2026 עם נתונים."
+  "{{AUTHOR}}": "Corpus Matrix"
+  "{{DESCRIPTION}}": "דוח רבעון 2026 עם נתונים."
+  "{{KEYWORDS}}": "覆盖, 矩阵"
+  "{{SENDER_NAME}}": "Corpus Matrix"
+  "{{SENDER_ADDRESS / DEPARTMENT / ORGANIZATION}}": "דוח רבעון 2026 עם נתונים."
+  "{{PHONE}}": "דוח רבעון 2026 עם נתונים."
+  "{{EMAIL}}": "matrix@example.org"
+  "{{DATE, e.g. April 18, 2026}}": "2026-10-09"
+  "{{RECIPIENT_NAME_OR_TITLE}}": "Corpus Matrix"
+  "{{RECIPIENT_ORG / DEPARTMENT}}": "דוח רבעון 2026 עם נתונים."
+  "{{One-sentence subject line: what this letter is about.}}": "דוח רבעון 2026 עם נתונים."
+  "{{NAME}}": "Corpus Matrix"
+  "{{Paragraph 1: state the purpose. Why you are writing and the core intent. No preamble. Two sentences at most so the reader knows what you want from this letter.}}": "דוח רבעון 2026 עם נתונים."
+  "{{Paragraph 3: be specific. What you want the reader to do, by when, and how to reach you. Give the action a clear exit.}}": "דוח רבעון 2026 עם נתונים."
+  "{{Paragraph 4 (optional): close. Express anticipation, gratitude, or a courteous sign-off line.}}": "דוח רבעון 2026 עם נתונים."
+  "{{HANDWRITTEN_NAME_OR_SIGNATURE}}": "Corpus Matrix"
+  "{{TITLE · DEPARTMENT}}": "דוח רבעון 2026 עם נתונים."
+  "{{DATE (optional restatement)}}": "2026-10-09"
+  "{{List - ① Attachment 1 · ② Attachment 2}}": "דוח רבעון 2026 עם נתונים."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: complex-scripts
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Covers the complex-scripts class. Content is chosen for the behaviour it
+    exercises, not to raise a count.

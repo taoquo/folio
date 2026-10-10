@@ -95,9 +95,15 @@ class FootnotePolicy:
 
 @dataclass(frozen=True, slots=True)
 class PageBreakPolicy:
-    """When a break should happen before a block."""
+    """When a break should happen before a block.
 
-    before_level_1: BreakStrength = "prefer"
+    `before_level_1` defaults to `auto`, not to a preferred break. A level-1
+    heading is the document title in most of these templates -- the one-pager
+    has exactly one -- and forcing a break there splits a single-page document.
+    A genre that does open chapters asks for the break explicitly.
+    """
+
+    before_level_1: BreakStrength = "auto"
     before_level_2: BreakStrength = "auto"
     # A page-count objective: a preference a policy may trade against other
     # objectives, never a reason to shrink type without a recorded decision.

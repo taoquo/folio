@@ -1,0 +1,65 @@
+id: matrix-accessibility-26
+genre: long-doc
+language: en-US
+script_profile: latin-only
+template: long-doc-en.html
+purpose:
+  - alt-text
+  - reading-order
+content:
+  "{{DOC_TITLE}}": "Alt text and reading order."
+  "{{AUTHOR}}": "Corpus Matrix"
+  "{{DESCRIPTION}}": "Alt text and reading order."
+  "{{KEYWORDS}}": "覆盖, 矩阵"
+  "{{EYEBROW - e.g. Technical Report / Annual Review / White Paper}}": "Alt text and reading order."
+  "{{Document title<br>can span two lines}}": "Alt text and reading order."
+  "{{One-line subtitle - what this is and who it's for.}}": "Alt text and reading order."
+  "{{AUTHOR / TEAM}}": "Corpus Matrix"
+  "{{Version 1.0}}": "Alt text and reading order."
+  "{{YYYY.MM}}": "Alt text and reading order."
+  "{{PUBLISHER / ORGANIZATION}}": "Alt text and reading order."
+  "{{Takeaway 1 - a quantified conclusion in one line.}}": "Alt text and reading order."
+  "{{Takeaway 2 - an insight backed by data.}}": "Alt text and reading order."
+  "{{Takeaway 3 - a forward-looking judgment.}}": "Alt text and reading order."
+  "{{List the three core questions as actual questions - so the reader can decide in ten seconds whether to read on.}}": "Alt text and reading order."
+  "{{Chapter intro - what this chapter is solving, why it matters. One or two sentences.}}": "Alt text and reading order."
+  "{{Sidenote: define a key term, sample boundary, or constraint the reader should keep in mind.}}": "Alt text and reading order."
+  "{{State the problem specifically. Use a callout to emphasize a key observation:}}": "Alt text and reading order."
+  "{{A short quoted line or key observation. Different in tone from the body so the reader gets a breath.}}": "Alt text and reading order."
+  "{{DIMENSION_1}}": "Alt text and reading order."
+  "{{VAL}}": "Alt text and reading order."
+  "{{GAP}}": "Alt text and reading order."
+  "{{DIMENSION_2}}": "Alt text and reading order."
+  "{{Chapter intro.}}": "Alt text and reading order."
+  "{{Describe the methodology. Code or formula examples welcome:}}": "Alt text and reading order."
+  "{{TITLE}}": "Alt text and reading order."
+  "{{A paragraph.}}": "Alt text and reading order."
+  "{{A quoted passage - user interview, expert perspective, or cited source.}}": "Alt text and reading order."
+  "{{SOURCE / PERSON}}": "Alt text and reading order."
+  "{{DATE}}": "2026-10-09"
+  "{{Footnote: data definition, citation detail, or methodological limitation.}}": "Alt text and reading order."
+  "{{Chapter intro - a one-line summary of the conclusion, then the recommendations below.}}": "Alt text and reading order."
+  "{{Conclusion 1.}}": "Alt text and reading order."
+  "{{Conclusion 2.}}": "Alt text and reading order."
+  "{{Conclusion 3.}}": "Alt text and reading order."
+  "{{Concrete, executable recommendations tied to the conclusions.}}": "Alt text and reading order."
+  "{{If the reader does one thing, what is it? Specific enough to start Monday morning.}}": "Alt text and reading order."
+  "{{Reference 1}}": "Alt text and reading order."
+  "{{Reference 2}}": "Alt text and reading order."
+  "{{TERM}}": "Alt text and reading order."
+  "{{definition}}": "Alt text and reading order."
+  "{{Acknowledgement paragraph.}}": "Alt text and reading order."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: accessibility
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Covers the accessibility class. Content is chosen for the behaviour it
+    exercises, not to raise a count.

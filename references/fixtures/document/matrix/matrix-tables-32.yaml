@@ -1,0 +1,52 @@
+id: matrix-tables-32
+genre: equity-report
+language: en-US
+script_profile: latin-only
+template: equity-report-en.html
+purpose:
+  - wide-table
+  - numeric-alignment
+content:
+  "{{COMPANY_NAME}}": "Corpus Matrix"
+  "{{AUTHOR}}": "Corpus Matrix"
+  "{{DESCRIPTION}}": "Data tables spanning several columns."
+  "{{KEYWORDS}}": "覆盖, 矩阵"
+  "{{EYEBROW - e.g. Equity Research / Valuation / Investment Memo}}": "Data tables spanning several columns."
+  "{{TICKER}}": "Data tables spanning several columns."
+  "{{SECTOR}}": "Data tables spanning several columns."
+  "{{EXCHANGE}}": "Data tables spanning several columns."
+  "{{One-line thesis.}}": "Data tables spanning several columns."
+  "{{CURRENT_PRICE}}": "Data tables spanning several columns."
+  "{{DATE}}": "2026-10-09"
+  "{{NUMBER}}": "Data tables spanning several columns."
+  "{{RATING}}": "Data tables spanning several columns."
+  "{{TARGET}}": "Data tables spanning several columns."
+  "{{HORIZON}}": "Data tables spanning several columns."
+  "{{One-line verdict: buy / hold / watch, and the single strongest reason.}}": "Data tables spanning several columns."
+  "{{VAL}}": "Data tables spanning several columns."
+  "{{Chart title.}}": "Data tables spanning several columns."
+  "{{Industry landscape overview, one or two paragraphs.}}": "Data tables spanning several columns."
+  "{{COMP_A}}": "Data tables spanning several columns."
+  "{{COMP_B}}": "Data tables spanning several columns."
+  "{{COMP_C}}": "Data tables spanning several columns."
+  "{{Risk Type 1}}": "Data tables spanning several columns."
+  "{{Risk description.}}": "Data tables spanning several columns."
+  "{{Risk Type 2}}": "Data tables spanning several columns."
+  "{{Risk Type 3}}": "Data tables spanning several columns."
+  "{{Risk Type 4}}": "Data tables spanning several columns."
+  "{{Three to five sentences summarizing the position. Include target price (if applicable), rating, key catalysts, and core assumptions.}}": "Data tables spanning several columns."
+  "{{FIRM / DISCLAIMER}}": "Data tables spanning several columns."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: tables
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Covers the tables class. Content is chosen for the behaviour it
+    exercises, not to raise a count.

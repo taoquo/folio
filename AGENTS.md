@@ -23,6 +23,9 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 | `scripts/renderers/` | Renderer protocol and the WeasyPrint adapter | Low |
 | `scripts/pipeline.py` | Chooses the render path via `FOLIO_PIPELINE` | Low |
 | `scripts/fidelity.py` | Measures the IR path against the template path, per document type | Medium |
+| `scripts/projection.py` | Projects the resolved style and layout policy into a document's stylesheet | Medium |
+| `scripts/document_build.py` | Builds a finished document from content, choosing the path by configuration | Medium |
+| `scripts/spacing_probe.py` | Reads a rendered document's spacing back and compares it with the model | Low |
 | `scripts/package-skill.sh` | Codex Desktop ZIP packager, excluding large fonts | Low |
 | `CHANGELOG.md` | Aggregated release highlights linking to full notes | Medium |
 | `docs/releases/` | Archived release notes for superseded versions | Low |
@@ -56,6 +59,8 @@ python3 scripts/document_baseline.py compare  # documents match the approved bas
 python3 scripts/pipeline.py rollback-drill    # every mode can be left by configuration
 python3 scripts/migration.py status           # IR readiness per document type
 python3 scripts/fidelity.py measure           # IR path against the template path
+python3 scripts/projection.py check           # the style projection layer is well formed
+python3 scripts/spacing_probe.py compare --genre one-pager   # rendered spacing vs the model
 ```
 
 Lint runs from the shared `pyproject.toml` config, so local and CI results match:
@@ -86,6 +91,20 @@ The compatibility writer fills the template's own markup rather than rebuilding 
 - **A structural label belongs in a placeholder.** If a template hard-codes wording that the IR should carry — a section heading, a stage label — promote it to a placeholder and give it a default in `scripts/section_defaults.py`, so the template still renders on its own.
 
 IR documents declare no font size, colour, margin or coordinate. A test walks every model field against a banned-vocabulary list, so a theme is referenced by name and never inlined. `references/schemas/document-1.0.schema.json` is the shape; `scripts/document_ir/validate.py` is the gate.
+
+### Where a style reaches the page
+
+`scripts/projection.py` appends the resolved style and the layout policy inside a template's own `<style>` element. The template is not edited, so the change is reversible by configuration and reviewable as a diff of the injected block alone.
+
+| Switch | Default | Effect |
+|---|---|---|
+| `FOLIO_STYLE_PROJECTION` | on | projects the resolved style as CSS variables |
+| `FOLIO_LAYOUT_POLICY` | off | projects keep and break rules |
+| `FOLIO_BUILD_MANIFEST` | on | writes a build manifest beside the artifact |
+
+Turning the style projection off restores the previous rendering exactly. That was measured rather than assumed: seven document types build to the same page count and SSIM 1.00000 with it on and off, because the values projected are the ones the templates already use.
+
+Do not replace a template's spacing with the model's rules. A differential experiment found that changing one `margin-top` to `padding-top` moved the rendering to SSIM 0.90 — the two are not the same thing. `spacing_probe.py` reads spacing back and compares it, which is the safe direction.
 
 PPTX is produced by `scripts/document_ir/writers/pptx.py`. Slides have no template path, so `fidelity.py` does not measure them.
 

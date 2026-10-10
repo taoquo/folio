@@ -1,0 +1,53 @@
+id: matrix-accessibility-27
+genre: equity-report
+language: zh-Hans-CN
+script_profile: han-only
+template: equity-report.html
+purpose:
+  - alt-text
+  - table-semantics
+content:
+  "{{股票名称}}": "图表替代文本检查。"
+  "{{作者}}": "Corpus Matrix"
+  "{{摘要}}": "图表替代文本检查。"
+  "{{关键词}}": "覆盖, 矩阵"
+  "{{公司名称}}": "图表替代文本检查。"
+  "{{股票代码}}": "图表替代文本检查。"
+  "{{行业}}": "图表替代文本检查。"
+  "{{交易所}}": "图表替代文本检查。"
+  "{{一句核心判断}}": "图表替代文本检查。"
+  "{{当前价格}}": "图表替代文本检查。"
+  "{{日期}}": "2026-10-09"
+  "{{数字}}": "图表替代文本检查。"
+  "{{评级}}": "图表替代文本检查。"
+  "{{目标价}}": "图表替代文本检查。"
+  "{{周期}}": "图表替代文本检查。"
+  "{{一句话总结：买入/持有/观望的核心理由。}}": "图表替代文本检查。"
+  "{{数据}}": "图表替代文本检查。"
+  "{{图表标题}}": "图表替代文本检查。"
+  "{{行业格局概述，1-2 段。}}": "图表替代文本检查。"
+  "{{目标公司}}": "图表替代文本检查。"
+  "{{竞品 A}}": "图表替代文本检查。"
+  "{{竞品 B}}": "图表替代文本检查。"
+  "{{竞品 C}}": "图表替代文本检查。"
+  "{{风险类型 1}}": "图表替代文本检查。"
+  "{{风险描述}}": "图表替代文本检查。"
+  "{{风险类型 2}}": "图表替代文本检查。"
+  "{{风险类型 3}}": "图表替代文本检查。"
+  "{{风险类型 4}}": "图表替代文本检查。"
+  "{{3-5 句总结。包含目标价（如有）、评级建议、核心催化剂、关键假设。}}": "图表替代文本检查。"
+  "{{机构名 / 免责声明}}": "图表替代文本检查。"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: accessibility
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Covers the accessibility class. Content is chosen for the behaviour it
+    exercises, not to raise a count.

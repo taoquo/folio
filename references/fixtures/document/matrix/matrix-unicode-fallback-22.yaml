@@ -1,0 +1,51 @@
+id: matrix-unicode-fallback-22
+genre: changelog
+language: zh-Hans-CN
+script_profile: han-only
+template: changelog.html
+purpose:
+  - emoji
+  - unmapped-glyph
+content:
+  "{{项目名}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{版本号}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{作者}}": "Corpus Matrix"
+  "{{摘要}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{关键词}}": "覆盖, 矩阵"
+  "{{版本名称}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{一句话版本亮点}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{发布日期}}": "2026-10-09"
+  "{{SECTION_CHANGELOG}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{SECTION_BREAKING}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{破坏性变更描述}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{SECTION_FEATURES}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{新功能 1：一句话描述}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{新功能 2：一句话描述}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{新功能 3：一句话描述}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{SECTION_FIXES}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{修复 1：一句话描述}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{修复 2：一句话描述}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{修复 3：一句话描述}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{SECTION_CHANGELOG_ZH}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{SECTION_BREAKING_ZH}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{同上对应的中文描述}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{SECTION_FEATURES_ZH}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{对应中文描述}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{SECTION_FIXES_ZH}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{SECTION_THANKS}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{项目一句话描述}}": "新增 ✅ 修复 ❌ 变更 ⚠️"
+  "{{项目 URL}}": "https://example.org/matrix"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: unicode-fallback
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Covers the unicode-fallback class. Content is chosen for the behaviour it
+    exercises, not to raise a count.

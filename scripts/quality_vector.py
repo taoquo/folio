@@ -355,6 +355,70 @@ def readability_dimension(report: InspectorReport) -> Dimension:
     )
 
 
+def pdf_structure_facts(pdf: Path) -> dict[str, Any]:
+    """What the artifact says about its own structure.
+
+    Read from the file rather than inferred: `pdfinfo` reports whether the PDF is
+    tagged and whether it declares a language, and both are prerequisites for any
+    accessibility claim.
+    """
+    facts: dict[str, Any] = {}
+    try:
+        import subprocess
+
+        result = subprocess.run(
+            ["pdfinfo", str(pdf)], capture_output=True, text=True, check=False, timeout=60,
+        )
+        for line in (result.stdout or "").splitlines():
+            key, _, value = line.partition(":")
+            key = key.strip().lower().replace(" ", "_")
+            if key in {"tagged", "metadata_stream", "encrypted", "pdf_version"}:
+                facts[key] = value.strip()
+    except (OSError, subprocess.SubprocessError):
+        pass
+    return facts
+
+
+def pdf_ua_dimension(pdf: Path, report: InspectorReport) -> Dimension:
+    """Whether the artifact can be claimed to conform to PDF/UA.
+
+    It cannot, and the dimension says so rather than passing. An artifact that is
+    not tagged has no structure tree for a UA validator to accept, so the status
+    is `NOT_MEASURED` with the reason, and the facts that were checked are
+    reported alongside.
+    """
+    facts = pdf_structure_facts(pdf)
+    tagged = str(facts.get("tagged", "")).strip().lower() == "yes"
+    metrics: dict[str, Any] = {
+        "tagged": facts.get("tagged"),
+        "metadata_stream": facts.get("metadata_stream"),
+        "text_extractable": report.text_chars > 0,
+    }
+
+    if tagged:
+        return Dimension(
+            name="pdf_ua",
+            status="REVIEW",
+            metrics=metrics,
+            gate="correctness",
+            detail=(
+                "the artifact is tagged, but no PDF/UA validator is available to "
+                "confirm conformance; install one before claiming it"
+            ),
+        )
+
+    return Dimension(
+        name="pdf_ua",
+        status="NOT_MEASURED",
+        metrics=metrics,
+        gate="craft",
+        detail=(
+            "the artifact is not tagged, so a PDF/UA claim cannot be made; "
+            "no validator is installed either"
+        ),
+    )
+
+
 def renderer_stability_dimension(pdf: Path) -> Dimension:
     """Whether this artifact came from a known renderer.
 
@@ -418,8 +482,20 @@ def reproducibility_dimension(pdf: Path) -> Dimension:
         metrics=metrics, gate="craft",
     )
 
-def evaluate(pdf: Path, genre: str | None, thresholds: dict[str, float],
+def evaluate(pdf: Path, genre: str | None, thresholds: dict[str, float] | None = None,
              manifest: dict | None = None) -> QualityVector:
+    """Measure a document against the thresholds.
+
+    Missing thresholds fall back to `DEFAULTS` rather than raising. The
+    alternative was a `KeyError` for a caller who supplied a partial set, which
+    reports a configuration mistake as a crash and hides the measurement that
+    would have shown it.
+    """
+    effective = dict(DEFAULTS)
+    if thresholds:
+        effective.update(thresholds)
+    thresholds = effective
+
     report = inspect(pdf)
     vector = QualityVector(path=str(pdf), genre=genre)
 
@@ -435,6 +511,7 @@ def evaluate(pdf: Path, genre: str | None, thresholds: dict[str, float],
     vector.add(visual_rhythm_dimension(report))
     vector.add(readability_dimension(report))
     vector.add(accessibility_dimension(report))
+    vector.add(pdf_ua_dimension(pdf, report))
     vector.add(renderer_stability_dimension(pdf))
     vector.add(reproducibility_dimension(pdf))
     vector.add(unresolved_dimension(report))

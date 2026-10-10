@@ -1,0 +1,65 @@
+id: matrix-page-geometry-17
+genre: long-doc
+language: en-US
+script_profile: latin-only
+template: long-doc-en.html
+purpose:
+  - chapter-opening
+  - blank-page
+content:
+  "{{DOC_TITLE}}": "Chapter Two: geometry and running heads."
+  "{{AUTHOR}}": "Corpus Matrix"
+  "{{DESCRIPTION}}": "Chapter Two: geometry and running heads."
+  "{{KEYWORDS}}": "覆盖, 矩阵"
+  "{{EYEBROW - e.g. Technical Report / Annual Review / White Paper}}": "Chapter Two: geometry and running heads."
+  "{{Document title<br>can span two lines}}": "Chapter Two: geometry and running heads."
+  "{{One-line subtitle - what this is and who it's for.}}": "Chapter Two: geometry and running heads."
+  "{{AUTHOR / TEAM}}": "Corpus Matrix"
+  "{{Version 1.0}}": "Chapter Two: geometry and running heads."
+  "{{YYYY.MM}}": "Chapter Two: geometry and running heads."
+  "{{PUBLISHER / ORGANIZATION}}": "Chapter Two: geometry and running heads."
+  "{{Takeaway 1 - a quantified conclusion in one line.}}": "Chapter Two: geometry and running heads."
+  "{{Takeaway 2 - an insight backed by data.}}": "Chapter Two: geometry and running heads."
+  "{{Takeaway 3 - a forward-looking judgment.}}": "Chapter Two: geometry and running heads."
+  "{{List the three core questions as actual questions - so the reader can decide in ten seconds whether to read on.}}": "Chapter Two: geometry and running heads."
+  "{{Chapter intro - what this chapter is solving, why it matters. One or two sentences.}}": "Chapter Two: geometry and running heads."
+  "{{Sidenote: define a key term, sample boundary, or constraint the reader should keep in mind.}}": "Chapter Two: geometry and running heads."
+  "{{State the problem specifically. Use a callout to emphasize a key observation:}}": "Chapter Two: geometry and running heads."
+  "{{A short quoted line or key observation. Different in tone from the body so the reader gets a breath.}}": "Chapter Two: geometry and running heads."
+  "{{DIMENSION_1}}": "Chapter Two: geometry and running heads."
+  "{{VAL}}": "Chapter Two: geometry and running heads."
+  "{{GAP}}": "Chapter Two: geometry and running heads."
+  "{{DIMENSION_2}}": "Chapter Two: geometry and running heads."
+  "{{Chapter intro.}}": "Chapter Two: geometry and running heads."
+  "{{Describe the methodology. Code or formula examples welcome:}}": "Chapter Two: geometry and running heads."
+  "{{TITLE}}": "Chapter Two: geometry and running heads."
+  "{{A paragraph.}}": "Chapter Two: geometry and running heads."
+  "{{A quoted passage - user interview, expert perspective, or cited source.}}": "Chapter Two: geometry and running heads."
+  "{{SOURCE / PERSON}}": "Chapter Two: geometry and running heads."
+  "{{DATE}}": "2026-10-09"
+  "{{Footnote: data definition, citation detail, or methodological limitation.}}": "Chapter Two: geometry and running heads."
+  "{{Chapter intro - a one-line summary of the conclusion, then the recommendations below.}}": "Chapter Two: geometry and running heads."
+  "{{Conclusion 1.}}": "Chapter Two: geometry and running heads."
+  "{{Conclusion 2.}}": "Chapter Two: geometry and running heads."
+  "{{Conclusion 3.}}": "Chapter Two: geometry and running heads."
+  "{{Concrete, executable recommendations tied to the conclusions.}}": "Chapter Two: geometry and running heads."
+  "{{If the reader does one thing, what is it? Specific enough to start Monday morning.}}": "Chapter Two: geometry and running heads."
+  "{{Reference 1}}": "Chapter Two: geometry and running heads."
+  "{{Reference 2}}": "Chapter Two: geometry and running heads."
+  "{{TERM}}": "Chapter Two: geometry and running heads."
+  "{{definition}}": "Chapter Two: geometry and running heads."
+  "{{Acknowledgement paragraph.}}": "Chapter Two: geometry and running heads."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: page-geometry
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Covers the page-geometry class. Content is chosen for the behaviour it
+    exercises, not to raise a count.

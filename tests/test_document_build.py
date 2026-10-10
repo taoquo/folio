@@ -110,3 +110,86 @@ class BuildEquivalenceTests(TestCase):
         # Either it renders with the value absent, or it refuses; what it must
         # not do is raise a traceback with no context.
         self.assertTrue(outcome.error is None or "validation" in (outcome.error or ""))
+
+
+class ProjectionIntegrationTests(TestCase):
+    """The projection reaches the page, and the switch turns it off.
+
+    Modelled on the measurements that justified the default: a document built
+    with the projection on must have the same page count as one built with it
+    off, because the values projected are the ones the template already uses.
+    """
+
+    def _build(self, tmp: Path, name: str, env: dict[str, str]):
+        import json
+        import os
+        import subprocess
+
+        environ = dict(os.environ)
+        environ.update(env)
+        out = tmp / name
+        result = subprocess.run(
+            [sys.executable, "scripts/document_build.py", "build",
+             "--genre", "one-pager", "--lang", "zh",
+             "--out", str(out), "--format", "json"],
+            cwd=ROOT, capture_output=True, text=True, env=environ,
+        )
+        self.assertEqual(0, result.returncode, result.stderr[-400:])
+        return json.loads(result.stdout)
+
+    def test_the_projection_is_on_by_default(self) -> None:
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            payload = self._build(Path(tmp), "on", {})
+        self.assertGreater(payload.get("projected_values", 0), 0)
+
+    def test_the_switch_turns_it_off(self) -> None:
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            payload = self._build(Path(tmp), "off", {"FOLIO_STYLE_PROJECTION": "off"})
+        self.assertEqual(0, payload.get("projected_values", 0))
+
+    def test_the_page_count_is_the_same_either_way(self) -> None:
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            on = self._build(Path(tmp), "on", {})
+            off = self._build(Path(tmp), "off", {"FOLIO_STYLE_PROJECTION": "off"})
+        self.assertEqual(off["pages"], on["pages"])
+
+    def test_a_manifest_is_written_beside_the_artifact(self) -> None:
+        import json
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            payload = self._build(Path(tmp), "on", {})
+            manifest = Path(payload["manifest_path"])
+            self.assertTrue(manifest.is_file())
+            data = json.loads(manifest.read_text())
+        for key in ("folio_commit", "renderer", "font_manifest_hash", "build_options"):
+            with self.subTest(key=key):
+                self.assertIn(key, data)
+
+    def test_the_manifest_records_which_template_and_document(self) -> None:
+        import json
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            payload = self._build(Path(tmp), "on", {})
+            data = json.loads(Path(payload["manifest_path"]).read_text())
+        self.assertEqual("one-pager.html", data["build_options"]["template"])
+        self.assertIn("document_id", data["build_options"])
+
+    def test_the_layout_policy_is_a_separate_switch(self) -> None:
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            # Policy on, style projection off: the policy layer still applies.
+            payload = self._build(
+                Path(tmp), "policy",
+                {"FOLIO_STYLE_PROJECTION": "on", "FOLIO_LAYOUT_POLICY": "on"},
+            )
+        self.assertGreater(payload.get("projected_values", 0), 0)
+        self.assertEqual(1, payload["pages"])

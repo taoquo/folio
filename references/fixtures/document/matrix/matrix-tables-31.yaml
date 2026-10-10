@@ -1,0 +1,53 @@
+id: matrix-tables-31
+genre: equity-report
+language: zh-Hans-CN
+script_profile: han-only
+template: equity-report.html
+purpose:
+  - wide-table
+  - table-page-break
+content:
+  "{{股票名称}}": "宽表与跨页表头。"
+  "{{作者}}": "Corpus Matrix"
+  "{{摘要}}": "宽表与跨页表头。"
+  "{{关键词}}": "覆盖, 矩阵"
+  "{{公司名称}}": "宽表与跨页表头。"
+  "{{股票代码}}": "宽表与跨页表头。"
+  "{{行业}}": "宽表与跨页表头。"
+  "{{交易所}}": "宽表与跨页表头。"
+  "{{一句核心判断}}": "宽表与跨页表头。"
+  "{{当前价格}}": "宽表与跨页表头。"
+  "{{日期}}": "2026-10-09"
+  "{{数字}}": "宽表与跨页表头。"
+  "{{评级}}": "宽表与跨页表头。"
+  "{{目标价}}": "宽表与跨页表头。"
+  "{{周期}}": "宽表与跨页表头。"
+  "{{一句话总结：买入/持有/观望的核心理由。}}": "宽表与跨页表头。"
+  "{{数据}}": "宽表与跨页表头。"
+  "{{图表标题}}": "宽表与跨页表头。"
+  "{{行业格局概述，1-2 段。}}": "宽表与跨页表头。"
+  "{{目标公司}}": "宽表与跨页表头。"
+  "{{竞品 A}}": "宽表与跨页表头。"
+  "{{竞品 B}}": "宽表与跨页表头。"
+  "{{竞品 C}}": "宽表与跨页表头。"
+  "{{风险类型 1}}": "宽表与跨页表头。"
+  "{{风险描述}}": "宽表与跨页表头。"
+  "{{风险类型 2}}": "宽表与跨页表头。"
+  "{{风险类型 3}}": "宽表与跨页表头。"
+  "{{风险类型 4}}": "宽表与跨页表头。"
+  "{{3-5 句总结。包含目标价（如有）、评级建议、核心催化剂、关键假设。}}": "宽表与跨页表头。"
+  "{{机构名 / 免责声明}}": "宽表与跨页表头。"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: tables
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Covers the tables class. Content is chosen for the behaviour it
+    exercises, not to raise a count.

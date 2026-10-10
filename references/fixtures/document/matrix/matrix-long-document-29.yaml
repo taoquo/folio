@@ -1,0 +1,65 @@
+id: matrix-long-document-29
+genre: long-doc
+language: en-US
+script_profile: latin-only
+template: long-doc-en.html
+purpose:
+  - api-reference
+  - academic-paper
+content:
+  "{{DOC_TITLE}}": "API Reference: rendering pipeline."
+  "{{AUTHOR}}": "Corpus Matrix"
+  "{{DESCRIPTION}}": "API Reference: rendering pipeline."
+  "{{KEYWORDS}}": "覆盖, 矩阵"
+  "{{EYEBROW - e.g. Technical Report / Annual Review / White Paper}}": "API Reference: rendering pipeline."
+  "{{Document title<br>can span two lines}}": "API Reference: rendering pipeline."
+  "{{One-line subtitle - what this is and who it's for.}}": "API Reference: rendering pipeline."
+  "{{AUTHOR / TEAM}}": "Corpus Matrix"
+  "{{Version 1.0}}": "API Reference: rendering pipeline."
+  "{{YYYY.MM}}": "API Reference: rendering pipeline."
+  "{{PUBLISHER / ORGANIZATION}}": "API Reference: rendering pipeline."
+  "{{Takeaway 1 - a quantified conclusion in one line.}}": "API Reference: rendering pipeline."
+  "{{Takeaway 2 - an insight backed by data.}}": "API Reference: rendering pipeline."
+  "{{Takeaway 3 - a forward-looking judgment.}}": "API Reference: rendering pipeline."
+  "{{List the three core questions as actual questions - so the reader can decide in ten seconds whether to read on.}}": "API Reference: rendering pipeline."
+  "{{Chapter intro - what this chapter is solving, why it matters. One or two sentences.}}": "API Reference: rendering pipeline."
+  "{{Sidenote: define a key term, sample boundary, or constraint the reader should keep in mind.}}": "API Reference: rendering pipeline."
+  "{{State the problem specifically. Use a callout to emphasize a key observation:}}": "API Reference: rendering pipeline."
+  "{{A short quoted line or key observation. Different in tone from the body so the reader gets a breath.}}": "API Reference: rendering pipeline."
+  "{{DIMENSION_1}}": "API Reference: rendering pipeline."
+  "{{VAL}}": "API Reference: rendering pipeline."
+  "{{GAP}}": "API Reference: rendering pipeline."
+  "{{DIMENSION_2}}": "API Reference: rendering pipeline."
+  "{{Chapter intro.}}": "API Reference: rendering pipeline."
+  "{{Describe the methodology. Code or formula examples welcome:}}": "API Reference: rendering pipeline."
+  "{{TITLE}}": "API Reference: rendering pipeline."
+  "{{A paragraph.}}": "API Reference: rendering pipeline."
+  "{{A quoted passage - user interview, expert perspective, or cited source.}}": "API Reference: rendering pipeline."
+  "{{SOURCE / PERSON}}": "API Reference: rendering pipeline."
+  "{{DATE}}": "2026-10-09"
+  "{{Footnote: data definition, citation detail, or methodological limitation.}}": "API Reference: rendering pipeline."
+  "{{Chapter intro - a one-line summary of the conclusion, then the recommendations below.}}": "API Reference: rendering pipeline."
+  "{{Conclusion 1.}}": "API Reference: rendering pipeline."
+  "{{Conclusion 2.}}": "API Reference: rendering pipeline."
+  "{{Conclusion 3.}}": "API Reference: rendering pipeline."
+  "{{Concrete, executable recommendations tied to the conclusions.}}": "API Reference: rendering pipeline."
+  "{{If the reader does one thing, what is it? Specific enough to start Monday morning.}}": "API Reference: rendering pipeline."
+  "{{Reference 1}}": "API Reference: rendering pipeline."
+  "{{Reference 2}}": "API Reference: rendering pipeline."
+  "{{TERM}}": "API Reference: rendering pipeline."
+  "{{definition}}": "API Reference: rendering pipeline."
+  "{{Acknowledgement paragraph.}}": "API Reference: rendering pipeline."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: long-document
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Covers the long-document class. Content is chosen for the behaviour it
+    exercises, not to raise a count.

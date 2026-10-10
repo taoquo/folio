@@ -57,6 +57,8 @@ class BuildOutcome:
     filled: int = 0
     missing: list[str] = field(default_factory=list)
     shadow_path: str | None = None
+    manifest_path: str | None = None
+    projected_values: int = 0
     error: str | None = None
 
     def to_json(self) -> dict[str, Any]:
@@ -72,6 +74,10 @@ class BuildOutcome:
             out["pages"] = self.pages
         if self.shadow_path:
             out["shadow_path"] = self.shadow_path
+        if self.manifest_path:
+            out["manifest_path"] = self.manifest_path
+        if self.projected_values:
+            out["projected_values"] = self.projected_values
         if self.error:
             out["error"] = self.error
         return out
@@ -151,12 +157,85 @@ def build_ir(fixture: dict[str, Any], output: Path) -> BuildOutcome:
     filled = fill_template(template_text, document)
     html = attach_ids(filled.html, document)
 
+    # The resolved style and the layout policy are projected into the document
+    # rather than edited into the template, so the change is one configuration
+    # value away from being undone.
+    projected = _project(genre, language, fixture)
+    if projected is not None:
+        html = _inject(html, projected)
+
     output.parent.mkdir(parents=True, exist_ok=True)
     HTML(string=html, base_url=str(template_path.parent)).write_pdf(str(output))
-    return BuildOutcome(
+
+    manifest_path = None
+    if _projection_enabled("FOLIO_BUILD_MANIFEST", default=True):
+        manifest_path = _write_manifest(output, document.id, template_path)
+
+    outcome = BuildOutcome(
         document_id=document.id, path=str(output), pipeline="ir", primary="ir",
         pages=_page_count(output), filled=filled.filled, missing=filled.missing,
     )
+    if manifest_path:
+        outcome.manifest_path = str(manifest_path)
+    if projected is not None:
+        outcome.projected_values = len(projected.projected)
+    return outcome
+
+
+def _projection_enabled(name: str, *, default: bool) -> bool:
+    """Whether a projection stage is on.
+
+    Read at call time rather than import time so a test can exercise both
+    settings in one process, which is how the off switch is proven to work.
+    """
+    import os
+
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    return raw.strip().lower() not in {"off", "0", "false", "no"}
+
+
+def _project(genre: str, language: str, fixture: dict[str, Any]):
+    """The projection for this document, or None when it is switched off.
+
+    On by default. Seven document types were measured with it on and off and
+    produced the same pages at SSIM 1.00000, because the values projected are
+    the ones the templates already use. The switch remains so the next change to
+    a projection can be compared against this behaviour.
+    """
+    if not _projection_enabled("FOLIO_STYLE_PROJECTION", default=True):
+        return None
+    import projection
+
+    include_policy = _projection_enabled("FOLIO_LAYOUT_POLICY", default=True)
+    return projection.combined(genre, language, include_policy=include_policy)
+
+
+def _inject(html: str, projected: Any) -> str:
+    import projection
+
+    return projection.inject(html, projected)
+
+
+def _write_manifest(pdf: Path, document_id: str, template_path: Path) -> Path:
+    """Record what produced this artifact.
+
+    Written beside the artifact so the two travel together. A manifest that is
+    separate from its artifact is one that gets separated from it.
+    """
+    import build_manifest
+
+    manifest = build_manifest.capture({
+        "document_id": document_id,
+        "template": template_path.name,
+    })
+    path = pdf.with_suffix(pdf.suffix + ".manifest.json")
+    path.write_text(
+        __import__("json").dumps(manifest.to_json(), indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    return path
 
 
 def _page_count(pdf: Path) -> int | None:
@@ -196,22 +275,17 @@ def build(
 
 
 def _fixture_for_genre(genre: str, language: str | None) -> Path | None:
-    import corpus
+    """The fixture a genre is built from.
 
-    best: tuple[int, Path] | None = None
-    for path in corpus.discover_fixtures():
-        try:
-            data = corpus.load_fixture(path)
-        except Exception:
-            continue
-        if data.get("genre") != genre or data.get("adversarial"):
-            continue
-        if language and not str(data.get("language", "")).startswith(language[:2]):
-            continue
-        score = 2 if path.stem.startswith("canonical-") else 1
-        if best is None or score > best[0]:
-            best = (score, path)
-    return best[1] if best else None
+    Delegates to `fidelity._fixture_for` rather than scoring its own candidates.
+    Two choosers meant two answers: this one and the fidelity one selected
+    different documents for the same genre, so comparing the two build paths
+    compared two different documents and reported a difference that belonged to
+    the harness rather than to the engine.
+    """
+    import fidelity
+
+    return fidelity._fixture_for(genre, language)
 
 
 def render_text(outcome: BuildOutcome) -> str:
@@ -225,6 +299,10 @@ def render_text(outcome: BuildOutcome) -> str:
         lines.append(f"  unfilled    {len(outcome.missing)} (a language mismatch, not a defect)")
     if outcome.shadow_path:
         lines.append(f"  shadow      {outcome.shadow_path}")
+    if outcome.projected_values:
+        lines.append(f"  projected   {outcome.projected_values} style value(s)")
+    if outcome.manifest_path:
+        lines.append(f"  manifest    {Path(outcome.manifest_path).name}")
     if outcome.error:
         lines.append("")
         lines.append(f"  ERROR: {outcome.error}")

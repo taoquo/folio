@@ -93,33 +93,48 @@ class Fidelity:
         }
 
 
-def _fixture_for(genre: str) -> Path | None:
-    """A canonical fixture for a genre, preferring the plain composition."""
+def _fixture_for(genre: str, language: str | None = None) -> Path | None:
+    """The fixture a genre is measured against.
+
+    Deterministic on purpose. The first version scored candidates and broke ties
+    by corpus order, so adding fixtures silently changed which document a genre
+    was measured against and the score moved for a reason that had nothing to do
+    with the code. The choice is now stated by precedence and by name, so the
+    same fixture is chosen every time and the result can be attributed.
+    """
     import corpus
 
-    candidates = []
+    scored: list[tuple[int, str, Path]] = []
     for path in corpus.discover_fixtures():
         try:
             data = corpus.load_fixture(path)
         except Exception:
             continue
-        if data.get("genre") != genre:
+        if data.get("genre") != genre or data.get("adversarial"):
             continue
-        if data.get("adversarial"):
-            continue
-        score = 0
+
         name = path.stem
+        score = 0
+        # A hand-authored canonical fixture is the reference for a genre; the
+        # generated matrix fixtures exist to cover behaviour, not to be the
+        # yardstick.
         if name.startswith("canonical-"):
+            score += 8
+        if name.startswith("matrix-"):
+            score -= 4
+        if language and str(data.get("language", "")).startswith(language[:2]):
             score += 2
-        if "-zh-" in name or name.endswith("-zh"):
+        if "-zh" in name:
             score += 1
         if "digits" in name:
             score -= 1
-        candidates.append((score, path))
-    if not candidates:
+        # Name breaks ties, so the result does not depend on directory order.
+        scored.append((score, name, path))
+
+    if not scored:
         return None
-    candidates.sort(key=lambda pair: pair[0], reverse=True)
-    return candidates[0][1]
+    scored.sort(key=lambda item: (-item[0], item[1]))
+    return scored[0][2]
 
 
 def measure_one(genre: str, work: Path) -> Fidelity:

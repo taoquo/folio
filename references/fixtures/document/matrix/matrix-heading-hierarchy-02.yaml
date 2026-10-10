@@ -1,0 +1,65 @@
+id: matrix-heading-hierarchy-02
+genre: long-doc
+language: en-US
+script_profile: latin-only
+template: long-doc-en.html
+purpose:
+  - heading-structure
+  - heading-at-page-bottom
+content:
+  "{{DOC_TITLE}}": "A heading immediately before its body text."
+  "{{AUTHOR}}": "Corpus Matrix"
+  "{{DESCRIPTION}}": "A heading immediately before its body text."
+  "{{KEYWORDS}}": "覆盖, 矩阵"
+  "{{EYEBROW - e.g. Technical Report / Annual Review / White Paper}}": "A heading immediately before its body text."
+  "{{Document title<br>can span two lines}}": "A heading immediately before its body text."
+  "{{One-line subtitle - what this is and who it's for.}}": "A heading immediately before its body text."
+  "{{AUTHOR / TEAM}}": "Corpus Matrix"
+  "{{Version 1.0}}": "A heading immediately before its body text."
+  "{{YYYY.MM}}": "A heading immediately before its body text."
+  "{{PUBLISHER / ORGANIZATION}}": "A heading immediately before its body text."
+  "{{Takeaway 1 - a quantified conclusion in one line.}}": "A heading immediately before its body text."
+  "{{Takeaway 2 - an insight backed by data.}}": "A heading immediately before its body text."
+  "{{Takeaway 3 - a forward-looking judgment.}}": "A heading immediately before its body text."
+  "{{List the three core questions as actual questions - so the reader can decide in ten seconds whether to read on.}}": "A heading immediately before its body text."
+  "{{Chapter intro - what this chapter is solving, why it matters. One or two sentences.}}": "A heading immediately before its body text."
+  "{{Sidenote: define a key term, sample boundary, or constraint the reader should keep in mind.}}": "A heading immediately before its body text."
+  "{{State the problem specifically. Use a callout to emphasize a key observation:}}": "A heading immediately before its body text."
+  "{{A short quoted line or key observation. Different in tone from the body so the reader gets a breath.}}": "A heading immediately before its body text."
+  "{{DIMENSION_1}}": "A heading immediately before its body text."
+  "{{VAL}}": "A heading immediately before its body text."
+  "{{GAP}}": "A heading immediately before its body text."
+  "{{DIMENSION_2}}": "A heading immediately before its body text."
+  "{{Chapter intro.}}": "A heading immediately before its body text."
+  "{{Describe the methodology. Code or formula examples welcome:}}": "A heading immediately before its body text."
+  "{{TITLE}}": "A heading immediately before its body text."
+  "{{A paragraph.}}": "A heading immediately before its body text."
+  "{{A quoted passage - user interview, expert perspective, or cited source.}}": "A heading immediately before its body text."
+  "{{SOURCE / PERSON}}": "A heading immediately before its body text."
+  "{{DATE}}": "2026-10-09"
+  "{{Footnote: data definition, citation detail, or methodological limitation.}}": "A heading immediately before its body text."
+  "{{Chapter intro - a one-line summary of the conclusion, then the recommendations below.}}": "A heading immediately before its body text."
+  "{{Conclusion 1.}}": "A heading immediately before its body text."
+  "{{Conclusion 2.}}": "A heading immediately before its body text."
+  "{{Conclusion 3.}}": "A heading immediately before its body text."
+  "{{Concrete, executable recommendations tied to the conclusions.}}": "A heading immediately before its body text."
+  "{{If the reader does one thing, what is it? Specific enough to start Monday morning.}}": "A heading immediately before its body text."
+  "{{Reference 1}}": "A heading immediately before its body text."
+  "{{Reference 2}}": "A heading immediately before its body text."
+  "{{TERM}}": "A heading immediately before its body text."
+  "{{definition}}": "A heading immediately before its body text."
+  "{{Acknowledgement paragraph.}}": "A heading immediately before its body text."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 14
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: heading-hierarchy
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Covers the heading-hierarchy class. Content is chosen for the behaviour it
+    exercises, not to raise a count.

@@ -101,6 +101,10 @@ jobs:
         run: python scripts/spacing.py pairs
       - name: Check the asset manifest resolves
         run: python scripts/assets.py check
+      - name: Check every coverage class has a fixture
+        run: python scripts/corpus_matrix.py gaps
+      - name: Compare rendered spacing with the model
+        run: python scripts/spacing_probe.py compare --genre one-pager
       - name: Record the build conditions
         run: python scripts/build_manifest.py show
       - name: Check verification leaves the workspace alone
@@ -114,10 +118,46 @@ jobs:
           echo "OK: verification is read-only"
       - name: Report what may be claimed about each language
         run: python scripts/language_support.py report
+      - name: Confirm a language without fixtures makes no claim
+        run: |
+          python - <<'PY'
+          import sys
+          sys.path.insert(0, "scripts")
+          import language_support
+
+          claimed = [
+              s.tag for s in language_support.survey()
+              if s.level == "supported" and s.fixtures == 0
+          ]
+          if claimed:
+              print(f"ERROR: these languages are claimed without evidence: {claimed}")
+              raise SystemExit(1)
+          print("OK: every supported language has a fixture behind it")
+          PY
       - name: Check corpus coverage against the plan's matrix
         run: python scripts/corpus_matrix.py report
       - name: Show the per-type migration matrix
         run: python scripts/migration.py matrix
+      - name: Check the style projection layer
+        run: python scripts/projection.py check
+      - name: Build a document with the projection and confirm the page count
+        run: |
+          python scripts/document_build.py build --genre one-pager --lang zh --out dist/projected
+          python scripts/document_build.py build --genre one-pager --lang zh --out dist/unprojected
+          python - <<'PY'
+          import json, sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from pypdf import PdfReader
+          pages = {}
+          for name in ("projected", "unprojected"):
+              pdf = next(Path(f"dist/{name}").glob("*.pdf"))
+              pages[name] = len(PdfReader(str(pdf)).pages)
+          if pages["projected"] != pages["unprojected"]:
+              print(f"ERROR: the projection changed the page count: {pages}")
+              raise SystemExit(1)
+          print(f"OK: projection keeps the page count at {pages['projected']}")
+          PY
       - name: Render a smoke sample of the corpus
         run: >-
           python scripts/corpus.py render
@@ -190,6 +230,51 @@ jobs:
         run: |
           python scripts/shadow.py compare \
             --format json --output dist/reports/shadow.json --keep dist/shadow
+      - name: Confirm the build conditions are recorded
+        run: |
+          python scripts/build_manifest.py write dist/reports/build-manifest.json
+          python scripts/build_manifest.py show
+      - name: Confirm the font manifest is controlled
+        run: |
+          python - <<'PY'
+          import json, sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          import build_manifest
+
+          manifest = build_manifest.capture()
+          payload = manifest.to_json()
+          if not payload.get("font_manifest_hash"):
+              print("ERROR: no font manifest hash; fonts are not controlled")
+              raise SystemExit(1)
+          print(f"OK: font manifest {payload['font_manifest_hash'][:16]}")
+          PY
+      - name: Confirm repeated renders agree
+        run: >-
+          python scripts/determinism.py
+          --repeat 3 --format json --output dist/reports/determinism.json
+      - name: Confirm every mode can be left by configuration
+        run: python scripts/pipeline.py rollback-drill --output dist/reports/rollback.json
+      - name: Confirm the accessibility dimension was measured
+        run: |
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from quality_vector import evaluate
+
+          pdf = Path("assets/examples/one-pager.pdf")
+          if not pdf.is_file():
+              print("ERROR: no built example to measure")
+              raise SystemExit(1)
+          vector = evaluate(pdf, "one-pager")
+          names = {d.name for d in vector.dimensions}
+          for required in ("accessibility", "pdf_ua", "correctness"):
+              if required not in names:
+                  print(f"ERROR: the {required} dimension is missing")
+                  raise SystemExit(1)
+          print(f"OK: {len(vector.dimensions)} quality dimension(s) reported")
+          PY
       - name: Upload corpus evidence
         if: always()
         uses: actions/upload-artifact@v4

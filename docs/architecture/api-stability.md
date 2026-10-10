@@ -40,6 +40,20 @@ recorded.
 | `FOLIO_PIPELINE` and its three values | `pipeline.py` |
 | `BuildManifest`, `capture` | `build_manifest.py` |
 
+### Projection
+
+| Surface | Module |
+|---|---|
+| `FOLIO_STYLE_PROJECTION`, `FOLIO_LAYOUT_POLICY`, `FOLIO_BUILD_MANIFEST` | `document_build.py` |
+| `projection.check`, `projection.inject` | `projection.py` |
+| `BuildOutcome` | `document_build.py` |
+| `spacing_probe.measure`, `spacing_probe.compare` | `spacing_probe.py` |
+
+The switch names and their meaning are stable. The CSS a projection generates is
+not: it is an implementation of the style model, and it changes when the model
+does. A caller depends on `FOLIO_STYLE_PROJECTION=off` restoring the previous
+rendering, not on the text of the injected block.
+
 ### Command line
 
 | Command | Promise |
@@ -64,6 +78,8 @@ not change it.
 | `document_ir/containers.py` | Records the structure of today's templates. |
 | `shadow.py` | A comparison harness, not a product surface. |
 | `visual_diff.py` internals | The SSIM implementation may change; the thresholds are the contract. |
+| `projection.py` internals | The generated CSS follows the model; the switches are the contract. |
+| `spacing_probe.py` thresholds | The block-gap factor is a measurement heuristic and may be recalibrated. |
 | `stabilize.py` | Being retired into the layout policy. |
 
 ## Experimental
@@ -74,7 +90,7 @@ not change it.
 | `spacing.py` | Declares gaps; the templates still decide them. |
 | `document_ir/writers/pptx.py` | Produces decks; has no template path to compare against. |
 | `layout_experiment.py` | A measurement harness for a decision not yet taken. |
-| `style_resolver.py` | Resolves and explains; no renderer consumes the result yet. |
+| `spacing.py` | Declares gaps; `spacing_probe.py` compares them with a page but nothing renders from them. |
 
 Experimental surfaces do not enter a stable schema. An experimental field that
 grows a consumer is promoted by moving it into this document, not by leaving it

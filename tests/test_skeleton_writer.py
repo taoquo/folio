@@ -144,3 +144,46 @@ class FidelityHarnessTests(TestCase):
         item = fidelity.Fidelity(genre="x", fixture="f", template="t", ssim=1.0,
                                  changed_ratio=0.0, pages_match=True)
         self.assertTrue(item.acceptable)
+
+
+class LanguageMarkingTests(TestCase):
+    """A run whose language differs from the document's is marked.
+
+    A report in one language can carry a term in another, and the IR records
+    that on the run. The writer read the value and dropped it, so a screen
+    reader could not tell the language had changed and hyphenation could be
+    applied by the wrong rules.
+    """
+
+    def test_a_run_with_a_language_is_wrapped(self) -> None:
+        from document_ir.writers.skeleton import _with_language
+
+        self.assertEqual('<span lang="en">Hello</span>', _with_language("Hello", "en"))
+
+    def test_a_run_without_a_language_is_unchanged(self) -> None:
+        from document_ir.writers.skeleton import _with_language
+
+        self.assertEqual("Hello", _with_language("Hello", None))
+        self.assertEqual("Hello", _with_language("Hello", ""))
+        self.assertEqual("Hello", _with_language("Hello", "   "))
+
+    def test_empty_text_is_not_wrapped(self) -> None:
+        from document_ir.writers.skeleton import _with_language
+
+        self.assertEqual("", _with_language("", "en"))
+
+    def test_the_document_language_is_read_from_the_html_element(self) -> None:
+        # The wrapper marks an exception, so the document's own language stays
+        # on <html> and a run that matches it needs no marker.
+        text = '<html lang="zh-Hans-CN"><body>x</body></html>'
+        self.assertIn('lang="zh-Hans-CN"', text)
+
+    def test_a_node_language_is_found_in_its_payload(self) -> None:
+        from document_ir.writers.skeleton import payload_lang
+
+        class Node:
+            def __init__(self, payload):
+                self.payload = payload
+
+        self.assertEqual("en", payload_lang(Node({"lang": "en"})))
+        self.assertIsNone(payload_lang(Node({})))

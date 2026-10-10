@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "folio_commit": "a58e2e460e01690ba8865f0074b0f8a17574bb2b",
+  "commit_is_dirty": true,
+  "python_version": "3.14.5",
+  "dependency_lock_hash": "31cea1b99e4ecc1bb1bb50dfa19d9fa70dea5104cb69f6c6203a4e73aa5d439e",
+  "renderer": {
+    "name": "weasy",
+    "version": "68.1"
+  },
+  "font_manifest_hash": "fca51faafd9ba0dbedb0b4357d001fd68ad3695c42d05094dc75c83a8dfe8627",
+  "locale": "C/C.UTF-8/C/C/C/C",
+  "platform": "Darwin 27.0.0",
+  "machine": "arm64",
+  "build_options": {
+    "LANG": "C.UTF-8",
+    "document_id": "balanced-en-long-doc-02",
+    "template": "long-doc-en.html"
+  }
+}

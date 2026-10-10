@@ -159,7 +159,7 @@ class RealDocumentTests(TestCase):
         self.assertEqual(
             {
                 "correctness", "typography", "pagination", "visual_rhythm",
-                "readability", "accessibility", "renderer_stability",
+                "readability", "accessibility", "pdf_ua", "renderer_stability",
                 "reproducibility", "measurement",
             },
             names,
