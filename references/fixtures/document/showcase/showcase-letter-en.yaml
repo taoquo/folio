@@ -1,0 +1,46 @@
+id: showcase-letter-en
+genre: letter
+language: en-US
+script_profile: latin-only
+template: letter-en.html
+purpose:
+  - showcase
+content:
+  "{{SALUTATION · e.g. \"Dear Ms. Chen,\" / \"Dear committee members,\"}}": "Dear committee members,"
+  "{{LETTER_SUBJECT}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{AUTHOR}}": "Lin Zhiyuan"
+  "{{DESCRIPTION}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{KEYWORDS}}": "data platform, product plan, decision speed"
+  "{{SENDER_NAME}}": "Lin Zhiyuan"
+  "{{SENDER_ADDRESS / DEPARTMENT / ORGANIZATION}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{PHONE}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{EMAIL}}": "zhiyuan.lin@example.com"
+  "{{DATE, e.g. April 18, 2026}}": "2026-10-09"
+  "{{RECIPIENT_NAME_OR_TITLE}}": "Lin Zhiyuan"
+  "{{RECIPIENT_ORG / DEPARTMENT}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{One-sentence subject line: what this letter is about.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{NAME}}": "Lin Zhiyuan"
+  "{{Paragraph 1: state the purpose. Why you are writing and the core intent. No preamble. Two sentences at most so the reader knows what you want from this letter.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Paragraph 2: elaborate. Background, reasoning, evidence. Use <span class="hl">brand-color emphasis</span> on the single most important point.}}": "Each business line kept its own reports, so one metric had three values."
+  "{{Paragraph 3: be specific. What you want the reader to do, by when, and how to reach you. Give the action a clear exit.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Paragraph 4 (optional): close. Express anticipation, gratitude, or a courteous sign-off line.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Closing - "Best regards," / "Sincerely," / "Warm regards,"}}": "Kind regards"
+  "{{HANDWRITTEN_NAME_OR_SIGNATURE}}": "Lin Zhiyuan"
+  "{{TITLE · DEPARTMENT}}": "Head of Product"
+  "{{DATE (optional restatement)}}": "2026-10-09"
+  "{{List - ① Attachment 1 · ② Attachment 2}}": "Clearview brings scattered data into one place so conclusions can be reused."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 9
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: showcase
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Written for the published example of this document type. The content
+    is one running theme, so the examples read as documents rather than
+    as filled-in forms.

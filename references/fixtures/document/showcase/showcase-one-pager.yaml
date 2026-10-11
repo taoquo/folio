@@ -1,0 +1,56 @@
+id: showcase-one-pager
+genre: one-pager
+language: zh-Hans-CN
+script_profile: han-only
+template: one-pager.html
+purpose:
+  - showcase
+content:
+  "{{文档标题}}": "决策周期从三天缩短到半天。"
+  "{{作者}}": "林知远"
+  "{{摘要}}": "决策周期从三天缩短到半天。"
+  "{{关键词}}": "78%"
+  "{{EYEBROW · 如 "产品方案" / "项目提案" / "执行摘要"}}": "决策周期从三天缩短到半天。"
+  "{{文档主标题（serif，2 行内，动词+名词结构最好）}}": "78%"
+  "{{一行副标题 / 一句核心论点}}": "78%"
+  "{{作者名}}": "林知远"
+  "{{日期 YYYY.MM.DD}}": "2026-10-09"
+  "{{版本号 / 状态}}": "v2.4"
+  "{{数字}}": "决策周期从三天缩短到半天。"
+  "{{标签描述}}": "决策周期从三天缩短到半天。"
+  "{{一段 40-60 字的核心论点导语。用「<span class="hl">关键词</span>」高亮重点。这段定调整个文档。}}": "78%"
+  "{{DECISION_LABEL}}": "决策周期从三天缩短到半天。"
+  "{{建议采取的单一动作：批准 / 暂缓 / 追加资源 / 进入下一阶段。}}": "先把最高频的三个报表迁入平台，再逐层扩展。"
+  "{{负责人 / 截止日}}": "决策周期从三天缩短到半天。"
+  "{{section 标题 1}}": "决策周期从三天缩短到半天。"
+  "{{这里写 1-2 句段落，展开论点。}}": "决策周期从三天缩短到半天。"
+  "{{短 bullet：数据/观察/判断}}": "78%"
+  "{{短 bullet：带 <span class="hl">关键数字</span> 的论据}}": "统一口径后，重复分析减少六成。"
+  "{{短 bullet}}": "统一口径后，重复分析减少六成。"
+  "{{section 标题 2}}": "决策周期从三天缩短到半天。"
+  "{{1-2 句段落。}}": "决策周期从三天缩短到半天。"
+  "{{ROADMAP_TITLE}}": "决策周期从三天缩短到半天。"
+  "{{ROADMAP_NOTE}}": "决策周期从三天缩短到半天。"
+  "{{STAGE_1_TITLE}}": "决策周期从三天缩短到半天。"
+  "{{阶段标题}}": "接入、校验、发布，均可回退。"
+  "{{一句解释}}": "决策周期从三天缩短到半天。"
+  "{{STAGE_2_TITLE}}": "决策周期从三天缩短到半天。"
+  "{{STAGE_3_TITLE}}": "决策周期从三天缩短到半天。"
+  "{{关键引用 / 重要提示 / 核心 takeaway。比正文更需要引起注意的内容放这里。}}": "让结论可复用，而不是每次重做。"
+  "{{机密级别 / 内部 / 公开 等}}": "决策周期从三天缩短到半天。"
+  "{{页码 / 联系方式}}": "决策周期从三天缩短到半天。"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 9
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: showcase
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Written for the published example of this document type. The content
+    is one running theme, so the examples read as documents rather than
+    as filled-in forms.

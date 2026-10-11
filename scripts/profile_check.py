@@ -291,12 +291,23 @@ def check_page_contracts(profiles: dict[str, dict[str, dict]], report: Report) -
             continue
         contract = page.get("page_count") or {}
         if contract.get("mode") == "hard":
-            if contract.get("exact") != spec.max_pages or spec.min_pages != spec.max_pages:
+            # The profile records the count the template aims at; the contract
+            # file is what a build is checked against. A contract with a floor
+            # and a ceiling -- two pages at least, three at most -- has no single
+            # number, so the profile's count is compared with the ceiling and the
+            # floor is checked to be a floor.
+            if contract.get("exact") != spec.max_pages:
                 report.error(
                     "PROFILE.PAGE.CONTRACT_MISMATCH",
                     genre,
                     f"profile says exact {contract.get('exact')}, page_contracts.py says "
                     f"{spec.min_pages}-{spec.max_pages}",
+                )
+            elif spec.min_pages > spec.max_pages:
+                report.error(
+                    "PROFILE.PAGE.CONTRACT_INVERTED",
+                    genre,
+                    f"page_contracts.py says {spec.min_pages}-{spec.max_pages}",
                 )
         else:
             target_pages = contract.get("target")

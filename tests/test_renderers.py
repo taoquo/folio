@@ -337,9 +337,15 @@ class LayoutPolicyTests(TestCase):
         from document_ir.layout_policy import policy_for
 
         profiles = profile_check.load_profiles()
-        policy = policy_for(profiles["page"]["a4-resume-v1"], name="a4-resume-v1")
+        body = profiles["page"]["a4-resume-v1"]
+        policy = policy_for(body, name="a4-resume-v1")
+
+        declared = body["page_count"]
         self.assertEqual("hard", policy.breaks.page_count_mode)
-        self.assertEqual(2, policy.breaks.page_count_target)
+        # Read from the profile: the point is that a hard contract is carried
+        # through, not that it holds one particular number.
+        self.assertEqual(declared.get("exact") or declared.get("target"),
+                         policy.breaks.page_count_target)
 
     def test_node_types_compile_to_real_css_selectors(self) -> None:
         import profile_check

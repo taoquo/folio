@@ -1,0 +1,46 @@
+id: showcase-changelog-en
+genre: changelog
+language: en-US
+script_profile: latin-only
+template: changelog-en.html
+purpose:
+  - showcase
+content:
+  "{{PROJECT_NAME}}": "Lin Zhiyuan"
+  "{{VERSION}}": "v2.4"
+  "{{AUTHOR}}": "Lin Zhiyuan"
+  "{{DESCRIPTION}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{KEYWORDS}}": "data platform, product plan, decision speed"
+  "{{RELEASE_NAME}}": "Lin Zhiyuan"
+  "{{One-line release highlight.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{RELEASE_DATE}}": "2026-10-09"
+  "{{SECTION_CHANGELOG}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{SECTION_BREAKING}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Breaking change description.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{SECTION_FEATURES}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{New feature 1: one-line description.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{New feature 2: one-line description.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{New feature 3: one-line description.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{SECTION_FIXES}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Fix 1: one-line description.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Fix 2: one-line description.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Fix 3: one-line description.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{SECTION_THANKS}}": "Thanks to everyone who put a disagreement about definitions on the table."
+  "{{Thank contributors, e.g. "Thanks to @user1, @user2 for their contributions."}}": "Thanks to everyone who put a disagreement about definitions on the table."
+  "{{One-line project description.}}": "Metric dictionary: defining every business line's metrics from scratch."
+  "{{PROJECT_URL}}": "Metric dictionary: defining every business line's metrics from scratch."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 9
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: showcase
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Written for the published example of this document type. The content
+    is one running theme, so the examples read as documents rather than
+    as filled-in forms.

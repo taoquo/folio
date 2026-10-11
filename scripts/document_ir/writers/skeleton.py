@@ -70,7 +70,10 @@ def _aliases(placeholder: str) -> tuple[str, ...]:
     fixture or from a bridge.
     """
     name = _normalise(placeholder)
-    out = [name, name.lower()]
+    bare = name[2:-2].strip() if name.startswith("{{") and name.endswith("}}") else name
+    # Both spellings name the same slot: a fixture writes the template's own text
+    # with its braces, a bridge carries the bare name.
+    out = [name, name.lower(), bare, bare.lower(), "{{" + bare + "}}", "{{" + bare + "}}".lower()]
     return tuple(dict.fromkeys(out))
 
 
@@ -170,8 +173,17 @@ def collect_values(document: Any) -> dict[str, str]:
                 # A bridge labels a slot like `{{数字}}`; the template asks for
                 # `数字`, so the braces come off.
                 bare = locator.strip()
-                if text and bare.startswith("{{") and bare.endswith("}}"):
-                    values.setdefault(bare[2:-2].strip(), text)
+                if text:
+                    # Store both spellings: a fixture keys the slot with braces,
+                    # a bridge carries the bare name, and a placeholder may ask
+                    # with either. Which one a caller uses must not decide
+                    # whether the value is found.
+                    if bare.startswith("{{") and bare.endswith("}}"):
+                        values.setdefault(bare[2:-2].strip(), text)
+                        values.setdefault(bare, text)
+                    else:
+                        values.setdefault(bare, text)
+                        values.setdefault("{{" + bare + "}}", text)
 
         node_id = getattr(node, "id", "")
         if isinstance(node_id, str) and node_id and text:
@@ -179,13 +191,29 @@ def collect_values(document: Any) -> dict[str, str]:
 
         # A list keeps its content in its items rather than in its own payload,
         # so each item is offered under its own id as well as under the list's.
-        for item in payload.get("items", ()) or ():
+        #
+        # A placeholder names one slot, and the bridge may split it into several
+        # items. The list carries the locator and the items do not, so an item of
+        # a single-item list also answers to its parent's name -- which is the
+        # slot the template is asking for.
+        items = list(payload.get("items", ()) or ())
+        parent_locator = None
+        if source is not None:
+            candidate = getattr(source, "locator", None)
+            if isinstance(candidate, str) and candidate.strip():
+                parent_locator = candidate.strip()
+
+        for item in items:
             item_text = "".join(inline_text(x) for x in (getattr(item, "content", ()) or ()))
             item_id = getattr(item, "id", "")
             if item_id and item_text:
                 values.setdefault(item_id, item_text)
             if item_text:
                 values.setdefault(f"{node_id}-{item_id}" if node_id else item_id, item_text)
+            if item_text and parent_locator:
+                values.setdefault(parent_locator, item_text)
+                if parent_locator.startswith("{{") and parent_locator.endswith("}}"):
+                    values.setdefault(parent_locator[2:-2].strip(), item_text)
 
         for child in getattr(node, "children", ()) or ():
             walk(child)

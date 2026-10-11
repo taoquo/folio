@@ -50,12 +50,22 @@ class PageContractSourceTests(TestCase):
                 self.assertLessEqual(spec.min_pages, spec.max_pages)
 
     def test_strict_page_documents_declare_an_exact_count(self) -> None:
-        # Resume and the one-pagers must stay exact contracts; a widened range
-        # would silently relax a documented hard requirement.
-        for name in ("resume", "resume-en", "one-pager", "one-pager-en", "letter", "letter-en"):
+        # These types fit on one page by design; a range would silently relax a
+        # documented hard requirement.
+        for name in ("one-pager", "one-pager-en", "letter", "letter-en"):
             with self.subTest(target=name):
                 spec = page_contracts.HTML_TARGETS[name]
                 self.assertEqual(spec.min_pages, spec.max_pages)
+
+    def test_the_resume_keeps_a_strict_floor(self) -> None:
+        # The resume's ceiling moved when the published example was built from
+        # real content. Its floor did not: a resume that fits on one page has
+        # lost content, which is the failure the contract exists to catch.
+        for name in ("resume", "resume-en"):
+            with self.subTest(target=name):
+                spec = page_contracts.HTML_TARGETS[name]
+                self.assertEqual(2, spec.min_pages)
+                self.assertGreaterEqual(spec.max_pages, spec.min_pages)
 
     def test_stabilizer_max_pages_matches_the_enforced_ceiling(self) -> None:
         # The solver must never aim above the count the hard gate accepts.

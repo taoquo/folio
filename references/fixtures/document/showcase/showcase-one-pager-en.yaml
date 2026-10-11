@@ -1,0 +1,55 @@
+id: showcase-one-pager-en
+genre: one-pager
+language: en-US
+script_profile: latin-only
+template: one-pager-en.html
+purpose:
+  - showcase
+content:
+  "{{DOC_TITLE}}": "Head of Product"
+  "{{AUTHOR}}": "Lin Zhiyuan"
+  "{{DESCRIPTION}}": "Three days to half a day."
+  "{{KEYWORDS}}": "data platform, product plan, decision speed"
+  "{{EYEBROW - e.g. Proposal / Report / Exec Summary}}": "Teams spent seven of every ten analysis hours looking for data rather than using it."
+  "{{Document headline - verb-led, fits in two lines, bookish.}}": "Three days to half a day."
+  "{{One-line subtitle or the single sharpest claim.}}": "Head of Product"
+  "{{YYYY.MM.DD}}": "Three days to half a day."
+  "{{VERSION / STATUS}}": "v2.4"
+  "{{NUMBER}}": "Three days to half a day."
+  "{{LABEL}}": "Three days to half a day."
+  "{{~30-40 words. The one paragraph that sets the whole document's tone. Use <span class="hl">brand-color emphasis</span> on the sharpest claim or number. Everything below is in service of this.}}": "Three days to half a day."
+  "{{DECISION_LABEL}}": "Three days to half a day."
+  "{{The single recommended action: approve, pause, fund, or move to the next phase.}}": "Move the three most-used reports onto the platform first."
+  "{{Owner / due date}}": "2026-10-09"
+  "{{Section one}}": "Three days to half a day."
+  "{{One or two sentences expanding the claim.}}": "Three days to half a day."
+  "{{Short bullet: a data point, observation, or judgment.}}": "One definition cut repeated analysis by sixty percent."
+  "{{Short bullet with <span class="hl">key figure</span>.}}": "One definition cut repeated analysis by sixty percent."
+  "{{Short bullet.}}": "One definition cut repeated analysis by sixty percent."
+  "{{Section two}}": "Three days to half a day."
+  "{{One or two sentences.}}": "Three days to half a day."
+  "{{ROADMAP_TITLE}}": "Head of Product"
+  "{{ROADMAP_NOTE}}": "Three days to half a day."
+  "{{STAGE_1_TITLE}}": "Head of Product"
+  "{{STAGE_TITLE}}": "Head of Product"
+  "{{One-line explanation.}}": "Three days to half a day."
+  "{{STAGE_2_TITLE}}": "Head of Product"
+  "{{STAGE_3_TITLE}}": "Head of Product"
+  "{{Key quote / critical note / the single takeaway that must not be missed.}}": "78%"
+  "{{CONFIDENTIALITY - internal / public / draft}}": "Three days to half a day."
+  "{{PAGE / CONTACT}}": "Three days to half a day."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 9
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: showcase
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Written for the published example of this document type. The content
+    is one running theme, so the examples read as documents rather than
+    as filled-in forms.

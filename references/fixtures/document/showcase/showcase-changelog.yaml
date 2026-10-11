@@ -1,0 +1,52 @@
+id: showcase-changelog
+genre: changelog
+language: zh-Hans-CN
+script_profile: han-only
+template: changelog.html
+purpose:
+  - showcase
+content:
+  "{{项目名}}": "指标字典：从零建立覆盖全部业务线的指标定义"
+  "{{版本号}}": "v2.4"
+  "{{作者}}": "林知远"
+  "{{摘要}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{关键词}}": "数据平台, 产品规划, 决策效率"
+  "{{版本名称}}": "v2.4"
+  "{{一句话版本亮点}}": "v2.4"
+  "{{发布日期}}": "2026-10-09"
+  "{{SECTION_CHANGELOG}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{SECTION_BREAKING}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{破坏性变更描述}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{SECTION_FEATURES}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{新功能 1：一句话描述}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{新功能 2：一句话描述}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{新功能 3：一句话描述}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{SECTION_FIXES}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{修复 1：一句话描述}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{修复 2：一句话描述}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{修复 3：一句话描述}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{SECTION_CHANGELOG_ZH}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{SECTION_BREAKING_ZH}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{同上对应的中文描述}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{SECTION_FEATURES_ZH}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{对应中文描述}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{SECTION_FIXES_ZH}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{SECTION_THANKS}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{感谢贡献者，格式如："感谢 @user1、@user2 的贡献。"}}": "澄明数据平台把分散的数据汇入一处，让结论可以复用。"
+  "{{项目一句话描述}}": "指标字典：从零建立覆盖全部业务线的指标定义"
+  "{{项目 URL}}": "指标字典：从零建立覆盖全部业务线的指标定义"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 9
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: showcase
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Written for the published example of this document type. The content
+    is one running theme, so the examples read as documents rather than
+    as filled-in forms.

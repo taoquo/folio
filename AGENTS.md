@@ -13,6 +13,7 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 | `references/production.md` | WeasyPrint build and troubleshooting runbook, English-only source | Medium |
 | `references/drawing-dsl.md` | Drawing DSL scope, compiler stages, routing, and output layer | Low |
 | `references/drawing-dsl-v6-final-audit.md` | Closing program audit, gate evidence, and known limits | Low |
+| `assets/examples/` | Published document examples, built from the IR | Medium |
 | `assets/templates/` | 8 document templates in 2 base language families | Medium |
 | `assets/demos/` | README showcase demos, regenerate after visual changes | Medium |
 | `assets/diagrams/generated/catalog/` | 23 generated catalog artifacts per format, SVG / PNG / PDF | Medium |
@@ -69,7 +70,9 @@ Lint runs from the shared `pyproject.toml` config, so local and CI results match
 ruff check .                      # same rule set the fast-gate CI job enforces
 ```
 
-Expected page counts: one-pager 1 / letter 1 / resume 2 strict / long-doc 7 +/- 2 / portfolio 6 +/- 2 / slides 7 +/- 3 / equity-report 2-3 / changelog 1-2
+Expected page counts: one-pager 1 / letter 1 / resume 2-3 / long-doc 7 +/- 2 / portfolio 6 +/- 2 / slides 7 +/- 3 / equity-report 2-3 / changelog 1-2
+
+The resume floor is strict: a resume that fits on one page has lost content. Its ceiling moved to 3 when the published example was built from real content, which runs longer than the placeholders the contract was written against.
 
 Page contracts live in `scripts/page_contracts.py` and are consumed by both `build.py` (hard gate) and `stabilize.py` (overflow solver). Change them there, never in a consumer.
 
@@ -105,6 +108,12 @@ IR documents declare no font size, colour, margin or coordinate. A test walks ev
 Turning the style projection off restores the previous rendering exactly. That was measured rather than assumed: seven document types build to the same page count and SSIM 1.00000 with it on and off, because the values projected are the ones the templates already use.
 
 Do not replace a template's spacing with the model's rules. A differential experiment found that changing one `margin-top` to `padding-top` moved the rendering to SSIM 0.90 — the two are not the same thing. `spacing_probe.py` reads spacing back and compares it, which is the safe direction.
+
+### Where the published examples come from
+
+`python3 scripts/build.py` builds each document example from a fixture in `references/fixtures/document/showcase/` through the IR, so the example a reader sees is what the engine produces. The showcase fixtures were written for the examples; a generated fixture from the general corpus reads like test data.
+
+A diagram target keeps its own path: a diagram is not a document, and it is rendered from its template with an output profile applied.
 
 PPTX is produced by `scripts/document_ir/writers/pptx.py`. Slides have no template path, so `fidelity.py` does not measure them.
 

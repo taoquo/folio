@@ -1,0 +1,68 @@
+id: showcase-long-doc-en
+genre: long-doc
+language: en-US
+script_profile: latin-only
+template: long-doc-en.html
+purpose:
+  - showcase
+content:
+  "{{DOC_TITLE}}": "Head of Product"
+  "{{AUTHOR}}": "Lin Zhiyuan"
+  "{{DESCRIPTION}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{KEYWORDS}}": "data platform, product plan, decision speed"
+  "{{EYEBROW - e.g. Technical Report / Annual Review / White Paper}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Document title<br>can span two lines}}": "Head of Product"
+  "{{One-line subtitle - what this is and who it's for.}}": "Head of Product"
+  "{{AUTHOR / TEAM}}": "Lin Zhiyuan"
+  "{{Version 1.0}}": "v2.4"
+  "{{YYYY.MM}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{PUBLISHER / ORGANIZATION}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Two or three sentences opening the whole thesis. Use <span class="hl">brand-color emphasis</span> to grab attention on the sharpest claim. A reader of only this paragraph should understand what the document argues.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Takeaway 1 - a quantified conclusion in one line.}}": "Once intake was unified, repeated analysis fell by roughly sixty percent."
+  "{{Takeaway 2 - an insight backed by data.}}": "Teams using self-service analysis save four and a half hours per person each week."
+  "{{Takeaway 3 - a forward-looking judgment.}}": "Insight backed by a number"
+  "{{List the three core questions as actual questions - so the reader can decide in ten seconds whether to read on.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Chapter intro - what this chapter is solving, why it matters. One or two sentences.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Sidenote: define a key term, sample boundary, or constraint the reader should keep in mind.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Three to five lines describing the status quo. Use <span class="hl">specific figures</span> rather than adjectives.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{State the problem specifically. Use a callout to emphasize a key observation:}}": "Half of every cross-team meeting went to confirming which number was right."
+  "{{A short quoted line or key observation. Different in tone from the body so the reader gets a breath.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{DIMENSION_1}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{VAL}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{GAP}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{DIMENSION_2}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Chapter intro.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Describe the methodology. Code or formula examples welcome:}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{TITLE}}": "Head of Product"
+  "{{A paragraph with data: <span class="hl">specific numbers or ratios</span>.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{A paragraph.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{A quoted passage - user interview, expert perspective, or cited source.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{SOURCE / PERSON}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{DATE}}": "2026-10-09"
+  "{{Footnote: data definition, citation detail, or methodological limitation.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Chapter intro - a one-line summary of the conclusion, then the recommendations below.}}": "Teams spent seven of every ten analysis hours looking for data rather than using it."
+  "{{Conclusion 1.}}": "Once intake was unified, repeated analysis fell by roughly sixty percent."
+  "{{Conclusion 2.}}": "Once intake was unified, repeated analysis fell by roughly sixty percent."
+  "{{Conclusion 3.}}": "Once intake was unified, repeated analysis fell by roughly sixty percent."
+  "{{Concrete, executable recommendations tied to the conclusions.}}": "Once intake was unified, repeated analysis fell by roughly sixty percent."
+  "{{If the reader does one thing, what is it? Specific enough to start Monday morning.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Reference 1}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Reference 2}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{TERM}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{definition}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Acknowledgement paragraph.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 9
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: showcase
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Written for the published example of this document type. The content
+    is one running theme, so the examples read as documents rather than
+    as filled-in forms.

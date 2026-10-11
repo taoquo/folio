@@ -144,3 +144,33 @@ class ImportFormTests(TestCase):
     def test_the_content_path_does_not_call_the_library_directly(self) -> None:
         text = architecture._read("scripts/document_build.py")
         self.assertNotIn("from weasyprint", text)
+
+
+class ExampleBuildTests(TestCase):
+    """A published example must be what the engine produces.
+
+    The document examples were renderings of each template with its placeholders
+    still in them, so the path that makes what a reader sees never went through
+    the engine. The structural check now requires it, and these tests hold the
+    requirement and its consequence.
+    """
+
+    def test_the_build_script_is_required_to_reach_the_engine(self) -> None:
+        required = architecture.REQUIRED_CALLS["scripts/build.py"]
+        self.assertIn("document_build", required)
+
+    def test_the_build_script_reaches_the_engine(self) -> None:
+        text = architecture._read("scripts/build.py")
+        self.assertTrue(architecture._used(text, "document_build"))
+
+    def test_no_document_example_is_rendered_from_a_template(self) -> None:
+        # A document target goes through the IR; a diagram target does not,
+        # because a diagram is not a document.
+        text = architecture._read("scripts/build.py")
+        self.assertIn("build_document_example", text)
+        self.assertIn("SHOWCASE_DIR", text)
+
+    def test_the_reachability_check_is_clean(self) -> None:
+        result = architecture.reachability()
+        errors = [f.subject for f in result.findings if f.severity == "error"]
+        self.assertEqual([], errors)

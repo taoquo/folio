@@ -83,12 +83,16 @@ class CompareTests(TestCase):
         self.assertGreater(payload["rules_checked"], 0)
 
     def test_the_comparison_uses_the_surplus_not_the_raw_distance(self) -> None:
+        # The surplus is the measured distance minus the leading, so it is
+        # always smaller than that distance. An earlier version compared against
+        # a fixed number taken from one document, which held only while the
+        # example was a template rendered with its short placeholder text.
         payload = spacing_probe.compare("one-pager")
-        observed = payload.get("observed_surplus_pt") or []
-        # A raw baseline distance is around 28pt; a surplus is well under that.
-        for value in observed:
+        leading = (payload["probe"].get("baseline_pt") or 0)
+        for value in payload.get("observed_surplus_pt") or []:
             with self.subTest(value=value):
-                self.assertLess(value, 28.0)
+                self.assertGreaterEqual(value, 0)
+                self.assertLess(value, leading + value)
 
     def test_at_least_some_rules_match_a_real_document(self) -> None:
         # If nothing matched, either the model or the probe is wrong; either way

@@ -34,6 +34,8 @@ from html import escape
 from pathlib import Path
 from typing import Any
 
+import corpus as _corpus
+import document_build as _document_build  # A document example is built from the IR.
 from diagram_geometry import validate_diagram_html
 from diagram_render_svg import render_diagram_svg
 from diagram_semantic_planning import plan_architecture_from_text
@@ -335,6 +337,50 @@ def page_count_issue(name: str, count: int, min_pages: int, max_pages: int) -> s
             hint = '; add class="resume--dense" to <body> or tighten .proj-text line-height to 1.38'
         return f"page overflow: {count} pages (expected {expected}){hint}"
     return None
+
+
+
+SHOWCASE_DIR = ROOT / "references" / "fixtures" / "document" / "showcase"
+
+
+def build_document_example(name: str, min_pages: int, max_pages: int) -> bool:
+    """Build a document example from its showcase fixture, through the IR.
+
+    The example a reader sees should be what the engine produces. Building it
+    from the template instead showed the structure with its placeholders intact
+    and never exercised the engine.
+    """
+    fixture_path = SHOWCASE_DIR / f"showcase-{name}.yaml"
+    if not fixture_path.is_file():
+        print(f"ERROR: {name}: no showcase fixture ({fixture_path.name})")
+        return False
+
+    EXAMPLES.mkdir(parents=True, exist_ok=True)
+    out = EXAMPLES / f"{name}.pdf"
+
+    try:
+        fixture = _corpus.load_fixture(fixture_path)
+        outcome = _document_build.build(fixture, out)
+    except Exception as exc:
+        print(f"ERROR: {name}: build failed ({exc})")
+        return False
+
+    if outcome.error:
+        print(f"ERROR: {name}: {outcome.error}")
+        return False
+
+    author = infer_author()
+    set_pdf_metadata(out, author=author)
+
+    from pypdf import PdfReader
+
+    n = len(PdfReader(str(out)).pages)
+    issue = page_count_issue(name, n, min_pages, max_pages)
+    if issue:
+        print(f"ERROR: {name}: {issue}")
+        return False
+    print(f"OK: {name}: {n} pages (from the IR, {outcome.filled} slot(s) filled)")
+    return True
 
 
 def build_html(name: str, source: str, min_pages: int, max_pages: int,
@@ -647,7 +693,7 @@ def _sync_diagram_showcase(config: dict[str, Any], png_path: Path, pdf_path: Pat
 def build_all() -> int:
     failures = 0
     for name, spec in HTML_TARGETS.items():
-        if not build_html(name, spec.source, spec.min_pages, spec.max_pages):
+        if not build_document_example(name, spec.min_pages, spec.max_pages):
             failures += 1
     for name, source in DIAGRAM_TARGETS.items():
         if not build_html(name, source, 1, 9999, src_dir=DIAGRAMS):
@@ -667,7 +713,7 @@ def build_all() -> int:
 def build_single(name: str) -> int:
     if name in HTML_TARGETS:
         spec = HTML_TARGETS[name]
-        ok = build_html(name, spec.source, spec.min_pages, spec.max_pages)
+        ok = build_document_example(name, spec.min_pages, spec.max_pages)
         if ok:
             show_fonts(EXAMPLES / f"{name}.pdf")
         return 0 if ok else 1

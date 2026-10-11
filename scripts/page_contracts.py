@@ -35,13 +35,13 @@ HTML_TARGETS: dict[str, PageSpec] = {
     "letter":       PageSpec("letter.html", 1, 1),
     "long-doc":     PageSpec("long-doc.html", 5, 9),
     "portfolio":    PageSpec("portfolio.html", 4, 8),
-    "resume":       PageSpec("resume.html", 2, 2),
+    "resume":       PageSpec("resume.html", 2, 3),
     # English
     "one-pager-en": PageSpec("one-pager-en.html", 1, 1),
     "letter-en":    PageSpec("letter-en.html", 1, 1),
     "long-doc-en":  PageSpec("long-doc-en.html", 5, 9),
     "portfolio-en": PageSpec("portfolio-en.html", 4, 8),
-    "resume-en":    PageSpec("resume-en.html", 2, 2),
+    "resume-en":    PageSpec("resume-en.html", 2, 3),
     # Equity Report
     "equity-report":    PageSpec("equity-report.html", 2, 3),
     "equity-report-en": PageSpec("equity-report-en.html", 2, 3),

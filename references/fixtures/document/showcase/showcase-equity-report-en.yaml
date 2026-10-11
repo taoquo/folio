@@ -1,0 +1,55 @@
+id: showcase-equity-report-en
+genre: equity-report
+language: en-US
+script_profile: latin-only
+template: equity-report-en.html
+purpose:
+  - showcase
+content:
+  "{{COMPANY_NAME}}": "Lin Zhiyuan"
+  "{{AUTHOR}}": "Lin Zhiyuan"
+  "{{DESCRIPTION}}": "Three days to half a day."
+  "{{KEYWORDS}}": "data platform, product plan, decision speed"
+  "{{EYEBROW - e.g. Equity Research / Valuation / Investment Memo}}": "Three days to half a day."
+  "{{TICKER}}": "Three days to half a day."
+  "{{SECTOR}}": "Three days to half a day."
+  "{{EXCHANGE}}": "Three days to half a day."
+  "{{One-line thesis.}}": "Three days to half a day."
+  "{{CURRENT_PRICE}}": "Three days to half a day."
+  "{{CHANGE - e.g. "+12.3%"}}": "Three days to half a day."
+  "{{DATE}}": "2026-10-09"
+  "{{NUMBER}}": "Three days to half a day."
+  "{{Two or three sentences laying out the core thesis. Use <span class="hl">key figures</span> to support the argument. This paragraph is the soul of the report.}}": "Three days to half a day."
+  "{{RATING}}": "Three days to half a day."
+  "{{TARGET}}": "Three days to half a day."
+  "{{HORIZON}}": "Three days to half a day."
+  "{{One-line verdict: buy / hold / watch, and the single strongest reason.}}": "Three days to half a day."
+  "{{Chart title, e.g. "20-day price action showing accumulation phase."}}": "Head of Product"
+  "{{VAL}}": "Three days to half a day."
+  "{{Chart title.}}": "Head of Product"
+  "{{Industry landscape overview, one or two paragraphs.}}": "Three days to half a day."
+  "{{COMP_A}}": "Three days to half a day."
+  "{{COMP_B}}": "Three days to half a day."
+  "{{COMP_C}}": "Three days to half a day."
+  "{{Risk Type 1}}": "A definition that changes without notice recreates the inconsistency."
+  "{{Risk description.}}": "A definition that changes without notice recreates the inconsistency."
+  "{{Risk Type 2}}": "A definition that changes without notice recreates the inconsistency."
+  "{{Risk Type 3}}": "A definition that changes without notice recreates the inconsistency."
+  "{{Risk Type 4}}": "A definition that changes without notice recreates the inconsistency."
+  "{{Three to five sentences summarizing the position. Include target price (if applicable), rating, key catalysts, and core assumptions.}}": "Three days to half a day."
+  "{{FIRM / DISCLAIMER}}": "Three days to half a day."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 9
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: showcase
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Written for the published example of this document type. The content
+    is one running theme, so the examples read as documents rather than
+    as filled-in forms.

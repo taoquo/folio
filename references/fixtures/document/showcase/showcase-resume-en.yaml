@@ -1,0 +1,96 @@
+id: showcase-resume-en
+genre: resume
+language: en-US
+script_profile: latin-only
+template: resume-en.html
+purpose:
+  - showcase
+content:
+  "{{NAME}}": "Lin Zhiyuan"
+  "{{DESCRIPTION}}": "Three days to half a day."
+  "{{KEYWORDS}}": "data platform, product plan, decision speed"
+  "{{VAR}}": "Three days to half a day."
+  "{{ALIAS_OR_PREFERRED_NAME}}": "Lin Zhiyuan"
+  "{{ROLE_TITLE - e.g. AI / Agent Engineer}}": "Head of Product"
+  "{{GITHUB_URL}}": "Three days to half a day."
+  "{{GITHUB_ID}}": "Three days to half a day."
+  "{{X_URL}}": "Three days to half a day."
+  "{{X_ID}}": "Three days to half a day."
+  "{{EMAIL}}": "zhiyuan.lin@example.com"
+  "{{CITY}}": "Shanghai"
+  "{{COUNTRY_OR_REGION}}": "Three days to half a day."
+  "{{NUMBER}}": "Three days to half a day."
+  "{{UNIT}}": "Three days to half a day."
+  "{{LABEL}}": "Three days to half a day."
+  "{{~50 words. Structure: current role + seniority + tenure. Team composition (size, seniority mix, cross-functional collaborators). Long-term direction. Three to five core areas of depth.}}": "Three days to half a day."
+  "{{START_DATE}}": "2026-10-09"
+  "{{KEY_MILESTONE}}": "Three days to half a day."
+  "{{YEAR}}": "Three days to half a day."
+  "{{STAGE_TITLE}}": "Head of Product"
+  "{{One sentence on what this stage meant.}}": "Three days to half a day."
+  "{{PROJECT_NAME}}": "Lin Zhiyuan"
+  "{{PROJECT_TYPE}}": "Metric dictionary: defining every business line's metrics from scratch."
+  "{{ROLE - e.g. tech lead}}": "Three days to half a day."
+  "{{~40 words: what the project is, why it existed, what your seat at the table was.}}": "Metric dictionary: defining every business line's metrics from scratch."
+  "{{~55 words: technical approach, key decisions, execution path.}}": "Define the metric once, then let every tool read that definition."
+  "{{~65 words: numbers-first. Highlight <span class="hl">1-2 key figures</span>.}}": "Three days to half a day."
+  "{{ROLE}}": "Three days to half a day."
+  "{{~40 words.}}": "Three days to half a day."
+  "{{~55 words.}}": "Three days to half a day."
+  "{{~65 words, include <span class="hl">key figures</span>.}}": "Three days to half a day."
+  "{{Project context and your seat.}}": "Metric dictionary: defining every business line's metrics from scratch."
+  "{{Execution path.}}": "Three days to half a day."
+  "{{Quantifiable outcome with <span class="hl">key figures</span>.}}": "Three days to half a day."
+  "{{TIME_RANGE}}": "Three days to half a day."
+  "{{SUBTITLE}}": "Head of Product"
+  "{{One-line positioning statement.}}": "Three days to half a day."
+  "{{Short sketch of your indie developer identity: design instinct, solo end-to-end delivery, cross-language range, user reception.}}": "Three days to half a day."
+  "{{STARS_TOTAL}}": "Three days to half a day."
+  "{{FORKS_TOTAL}}": "Three days to half a day."
+  "{{FOLLOWERS_TOTAL}}": "Three days to half a day."
+  "{{URL}}": "Three days to half a day."
+  "{{PROJECT}}": "Metric dictionary: defining every business line's metrics from scratch."
+  "{{Stack + core positioning + platform.}}": "Three days to half a day."
+  "{{STARS}}": "Three days to half a day."
+  "{{Description.}}": "Three days to half a day."
+  "{{HIGHLIGHT}}": "Three days to half a day."
+  "{{A single anecdote that sets your work apart: the moment it went viral, the notable person who shared it, the community that formed around it.}}": "Three days to half a day."
+  "{{DATE}}": "2026-10-09"
+  "{{EVENT_TITLE}}": "Head of Product"
+  "{{Specific call you made or action you took, and the downstream evidence that the judgment was right.}}": "Three days to half a day."
+  "{{Specific call or action.}}": "Three days to half a day."
+  "{{PLATFORM}}": "Three days to half a day."
+  "{{HANDLE}}": "Three days to half a day."
+  "{{FOLLOWERS}}": "Three days to half a day."
+  "{{Blog / newsletter / other content product.}}": "Three days to half a day."
+  "{{ARTICLE_TITLE}}": "Head of Product"
+  "{{Views / likes / impact metric.}}": "Three days to half a day."
+  "{{Views / likes.}}": "Three days to half a day."
+  "{{TALK_TITLE}}": "Head of Product"
+  "{{HOST / VENUE}}": "Three days to half a day."
+  "{{SKILL_LABEL_1}}": "Product planning · Metrics · Analysis · Cross-team delivery"
+  "{{Description with at least <span class="em-brand">one emphasis</span>.}}": "Three days to half a day."
+  "{{SKILL_LABEL_2}}": "Product planning · Metrics · Analysis · Cross-team delivery"
+  "{{SKILL_LABEL_3}}": "Product planning · Metrics · Analysis · Cross-team delivery"
+  "{{SKILL_LABEL_4}}": "Product planning · Metrics · Analysis · Cross-team delivery"
+  "{{SKILL_LABEL_5}}": "Product planning · Metrics · Analysis · Cross-team delivery"
+  "{{SCHOOL}}": "Three days to half a day."
+  "{{COLLEGE}}": "Three days to half a day."
+  "{{MAJOR}}": "Three days to half a day."
+  "{{One-line judgment-flavored note, e.g. "declined grad school, went straight to industry".}}": "Three days to half a day."
+  "{{DATE_RANGE}}": "2026-10-09"
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 9
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: showcase
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Written for the published example of this document type. The content
+    is one running theme, so the examples read as documents rather than
+    as filled-in forms.

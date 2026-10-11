@@ -1,0 +1,62 @@
+id: showcase-portfolio-en
+genre: portfolio
+language: en-US
+script_profile: latin-only
+template: portfolio-en.html
+purpose:
+  - showcase
+content:
+  "{{NAME}}": "Lin Zhiyuan"
+  "{{DESCRIPTION}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{KEYWORDS}}": "data platform, product plan, decision speed"
+  "{{YEAR_RANGE - e.g. Selected Works 2023–2026}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{One-line self-description or portfolio theme.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{DISCIPLINE / ROLE}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{LOCATION}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{EMAIL}}": "zhiyuan.lin@example.com"
+  "{{WEBSITE / SOCIAL}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Single-line positioning headline.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Two or three lines of introduction in serif. Not sales-y. Describe in your own words what you care about and what you do well.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{A paragraph on your past experience.}}": "2022 to present, Clearview Data, Head of Product"
+  "{{A paragraph on your current focus or methodology.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{PROJECT_TYPE - e.g. Product Design / Open Source}}": "Metric dictionary: defining every business line's metrics from scratch."
+  "{{PROJECT_NAME}}": "Lin Zhiyuan"
+  "{{One-line description of what this project did.}}": "Metric dictionary: defining every business line's metrics from scratch."
+  "{{DATE - e.g. 2025.04 - 2026.02}}": "2026-10-09"
+  "{{Tag 1}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Tag 2}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Tag 3}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{A short project thesis: why this work exists, what it notices, and what it makes visible.}}": "Metric dictionary: defining every business line's metrics from scratch."
+  "{{Medium, system, technology, or site condition.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Results - <span class="hl">figures</span>, feedback, impact.}}": "Six months in, the platform carries three hundred and twenty metrics."
+  "{{NUMBER}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{LABEL}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{PROJECT_TYPE}}": "Metric dictionary: defining every business line's metrics from scratch."
+  "{{One-line description.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{DATE}}": "2026-10-09"
+  "{{Tag}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Project thesis.}}": "Metric dictionary: defining every business line's metrics from scratch."
+  "{{Medium / technology / site condition.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{Outcome.}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{WORK_TITLE}}": "Head of Product"
+  "{{LINK / STATUS}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{One-line opening - e.g. "Open to new collaborations."}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{PHONE}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{URL}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{PLATFORM}}": "Clearview brings scattered data into one place so conclusions can be reused."
+  "{{HANDLE}}": "Clearview brings scattered data into one place so conclusions can be reused."
+expected:
+  hard:
+    pages_min: 1
+    pages_max: 9
+    missing_glyphs: 0
+    overflow: 0
+  soft:
+    case: showcase
+provenance:
+  type: generated
+  license: internal-generated
+  note: >-
+    Written for the published example of this document type. The content
+    is one running theme, so the examples read as documents rather than
+    as filled-in forms.

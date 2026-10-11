@@ -63,6 +63,10 @@ REQUIRED_CALLS = {
     },
     "scripts/build.py": {
         "renderers": "template rendering must go through the boundary",
+        "document_build": (
+            "a published document example must be what the engine produces, not "
+            "a template rendered with its placeholders intact"
+        ),
     },
 }
 
