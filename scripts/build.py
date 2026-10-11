@@ -576,7 +576,7 @@ def _showcase_demo_html(showcase: dict[str, str], generated_png_name: str) -> st
     padding: 32px 24px;
     background: var(--parchment);
     color: var(--near-black);
-    font-family: Charter, Georgia, serif;
+    font-family: "Source Serif 4", Charter, Georgia, serif;
   }}
 
   main {{

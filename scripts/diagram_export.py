@@ -89,6 +89,16 @@ def export_pdf(
     safe_language = html_escape(language or "en", quote=True)
     safe_background = html_escape(background or "#F6F0EA", quote=True)
     svg_source = svg.read_text(encoding="utf-8")
+
+    # The renderer resolves a file URL directly, and the font lives beside the
+    # project root. Without this the renderer cannot see a family the
+    # repository ships and falls through to the system's own face.
+    _font = (
+        Path(__file__).resolve().parents[1]
+        / "assets" / "fonts" / "SourceSerif4Variable-Roman.ttf"
+    )
+    font_url = _font.as_uri() if _font.is_file() else ""
+
     page_rule = "size: A4; margin: 12mm;"
     canvas_rule = "display: flex; align-items: center; justify-content: center;"
     if profile in {"artifact", "embed"}:
@@ -102,6 +112,7 @@ def export_pdf(
   <meta charset="UTF-8">
   <title>{safe_title}</title>
   <style>
+    @font-face {{ font-family: "Source Serif 4"; src: url("{font_url}") format("truetype"); font-weight: 200 900; font-style: normal; }}
     @page {{ {page_rule} }}
     body {{ margin: 0; background: {safe_background}; }}
     .canvas {{ {canvas_rule} }}

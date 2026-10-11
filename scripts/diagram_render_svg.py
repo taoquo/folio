@@ -17,6 +17,11 @@ from drawing.compiler import DEFAULT_COMPILER_REGISTRY
 from drawing.theme.folio import DEFAULT_FOLIO_THEME
 from renderers.svg import render_svg
 
+# The serif stack as an attribute value. The family name has spaces, so it is
+# quoted; the attribute itself is quoted with single quotes so the two do not
+# close each other.
+SERIF_ATTR = 'font-family=\'"Source Serif 4", Charter, Georgia, serif\''
+
 PARCHMENT = DEFAULT_FOLIO_THEME.parchment
 IVORY = DEFAULT_FOLIO_THEME.ivory
 NEAR_BLACK = DEFAULT_FOLIO_THEME.near_black
@@ -59,7 +64,7 @@ def render_uml_class_svg(spec: UmlClassDiagramSpec) -> str:
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {spec.width} {spec.height}">',
         f'<rect width="{spec.width}" height="{spec.height}" fill="{PARCHMENT}" />',
         f'<text x="{spec.width // 2}" y="40" fill="{NEAR_BLACK}" font-size="24" '
-        'font-family="Charter, Georgia, serif" text-anchor="middle">'
+        f'{SERIF_ATTR} text-anchor="middle">'
         f"{escape(spec.title)}</text>",
     ]
     relation_fragments = []
@@ -121,7 +126,7 @@ def render_uml_class_svg(spec: UmlClassDiagramSpec) -> str:
         )
         fragments.append(
             f'<text x="{x + width // 2}" y="{y + max(16, int(22 * scale))}" fill="{NEAR_BLACK}" font-size="{max(10, int(13 * scale))}" '
-            'font-family="Charter, Georgia, serif" font-weight="500" text-anchor="middle">'
+            f'{SERIF_ATTR} font-weight="500" text-anchor="middle">'
             f"{escape(item.name)}</text>"
         )
         attr_y = y + header_h + row_h

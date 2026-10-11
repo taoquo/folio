@@ -8,19 +8,19 @@
         {
           "format": "pdf",
           "path": "assets/diagrams/generated/pdf/agent-runtime-demo.pdf",
-          "sha256": "93c5dfe5a720ab9137f3dad0d85f9cf8a994dabc22429a7102dea89addb6d2b2",
+          "sha256": "81552469b0f877da35deb5a555128835ec511ee45bfbefbc2605991fc6eb41ad",
           "media_type": "application/pdf"
         },
         {
           "format": "png",
           "path": "assets/diagrams/generated/png/agent-runtime-demo.png",
-          "sha256": "9c241b2274a1fdb8a8c57eb5bbea6af1f24f51925e409a75fd8da8d1a4e1ca17",
+          "sha256": "d342e6885f943510f2f75b121b3a124632400fb2d366510f1810fe373434d9bf",
           "media_type": "image/png"
         },
         {
           "format": "svg",
           "path": "assets/diagrams/generated/svg/agent-runtime-demo.svg",
-          "sha256": "770055951fbe4887bef7645717c9b1ebd5277bcceebf1f570af77277809214dc",
+          "sha256": "0e68ced214efa4b8ad5243b9a7c3f062101ae06038ac86a457ddf7681c658f80",
           "media_type": "image/svg+xml"
         }
       ],
@@ -34,19 +34,19 @@
         {
           "format": "pdf",
           "path": "assets/diagrams/generated/pdf/data-platform-demo.pdf",
-          "sha256": "7983d17963150c000296a4fdf4e4a0384f5a535eb54868acc13ab52c07cc7f41",
+          "sha256": "f2b05786810b8da5408a28ad69f3228656eaf9d1ed440c10e751df886775db57",
           "media_type": "application/pdf"
         },
         {
           "format": "png",
           "path": "assets/diagrams/generated/png/data-platform-demo.png",
-          "sha256": "9612bc069538dad4e4df11dc32f0d4d7147d7d064cf83c99725c76af030d3b70",
+          "sha256": "0369a0e89c0912266b225fff6510320987960827a8bb23b7d3edca67867f076c",
           "media_type": "image/png"
         },
         {
           "format": "svg",
           "path": "assets/diagrams/generated/svg/data-platform-demo.svg",
-          "sha256": "ce10f3af8dc7b207a66a8dee64c5978f839a0e23c3f87e8ffff95b9b3885f101",
+          "sha256": "b27a27feb9dc5a47dc162377e6030bb6b9a67ca9f06067f3c9067a77c2ec583f",
           "media_type": "image/svg+xml"
         }
       ],
@@ -60,19 +60,19 @@
         {
           "format": "pdf",
           "path": "assets/diagrams/generated/pdf/flowchart-v2-demo.pdf",
-          "sha256": "0df1f7fd7de54fd9ac2db651daab894382f5ea6cba9b7d188e76c01e7f605b2a",
+          "sha256": "2adcf9123c28e2a673aafa621fcb840a0eb6e1cdd0c4e882605b299471f4616a",
           "media_type": "application/pdf"
         },
         {
           "format": "png",
           "path": "assets/diagrams/generated/png/flowchart-v2-demo.png",
-          "sha256": "c5b72da1ffdab38f317a4bc009364946c786142d1b40a4b3da07cc864eadf0ba",
+          "sha256": "320114a5f7579bedef4e848409fb44c80e66fe90cf3cbcaaa3e36aed2fff5c8c",
           "media_type": "image/png"
         },
         {
           "format": "svg",
           "path": "assets/diagrams/generated/svg/flowchart-v2-demo.svg",
-          "sha256": "132fef7db0c914e3371879351d41cb904b4ad5c0c9fc406163b48d730067fe4f",
+          "sha256": "2592995123e53ec687a86018b62292ce8f1401fcbaef57e68ae709aa2d73d4ac",
           "media_type": "image/svg+xml"
         }
       ],
@@ -98,19 +98,19 @@
         {
           "format": "pdf",
           "path": "assets/diagrams/generated/pdf/uml-class-demo.pdf",
-          "sha256": "9bb54162e34678baac12cab72dc43d425c1866cbb1fd2b5ea48c97aa648df868",
+          "sha256": "e35ee2e8711416085816d55d49a88246130aeb7c4d3ec04050897fec62e34c2b",
           "media_type": "application/pdf"
         },
         {
           "format": "png",
           "path": "assets/diagrams/generated/png/uml-class-demo.png",
-          "sha256": "e0b2d75adbef15f24518571b1dd4a0b56fc988401ef9343a22752bb77a07159a",
+          "sha256": "7d68a9a832f4c74a84ee42b5531e53e3afbb602817f340502c806c88962c32d3",
           "media_type": "image/png"
         },
         {
           "format": "svg",
           "path": "assets/diagrams/generated/svg/uml-class-demo.svg",
-          "sha256": "1dd007a2d93fb63b794d576fe11cf2d8e98e0fe4e61a809b809a8756c1d8bfc3",
+          "sha256": "d5aab07930852f66378f64e1eb7abc468d6a467465adf3c1b13a5fd6376e7f4f",
           "media_type": "image/svg+xml"
         }
       ],
@@ -124,19 +124,19 @@
         {
           "format": "pdf",
           "path": "assets/diagrams/generated/pdf/workflow-engine-demo.pdf",
-          "sha256": "ef06bd6ac788a83bae638ea37b2615e4b9c26dc1dfe72ccc2d4ffbc034f9f53a",
+          "sha256": "88faf52b31e37675dce31b39c9a29163beed1e26849aa7a5b087d8c327a2baba",
           "media_type": "application/pdf"
         },
         {
           "format": "png",
           "path": "assets/diagrams/generated/png/workflow-engine-demo.png",
-          "sha256": "f9fa59aaf26eecc302c1d0cc24feac5fb99f10044d1c58bd88d76f9928fe27b8",
+          "sha256": "18de6dfe66053e25331dec1a5a4ebabaf79168e23e142880b64cab15afc37330",
           "media_type": "image/png"
         },
         {
           "format": "svg",
           "path": "assets/diagrams/generated/svg/workflow-engine-demo.svg",
-          "sha256": "3e0c631539733a0802d2f3ffbf68a845521207092965d9bb059e4b8708788dba",
+          "sha256": "6ca207d085d5392482d9507aaa56d926212194aad423566fd7de4c62c576a838",
           "media_type": "image/svg+xml"
         }
       ],

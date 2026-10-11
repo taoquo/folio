@@ -17,7 +17,9 @@ class FolioTheme:
     neutral_mid: str = "#B9ACA3"
     neutral_light: str = "#D7CBC2"
     neutral_deep: str = "#8B8078"
-    serif: str = "Charter, Georgia, serif"
+    # The repository ships Source Serif 4; listing it first is what makes a
+    # diagram render the same on a machine that has never seen Charter.
+    serif: str = '"Source Serif 4", Charter, Georgia, serif'
     mono: str = "'JetBrains Mono', monospace"
 
 

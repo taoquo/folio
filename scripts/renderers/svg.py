@@ -25,6 +25,19 @@ def _attribute(value: str) -> str:
     return escape(value, {'"': "&quot;", "'": "&apos;"})
 
 
+
+def _font_family_attr(family: str) -> str:
+    """A `font-family` attribute quoted so the value survives.
+
+    A stack may contain single quotes, double quotes, or neither, and the
+    attribute has to use the one the value does not -- both are valid XML and a
+    font matcher treats them the same.
+    """
+    if "'" in family:
+        return f'font-family="{family}"'
+    return f"font-family='{family}'"
+
+
 def _number(value: float) -> str:
     return str(int(value)) if float(value).is_integer() else str(value)
 
@@ -39,7 +52,7 @@ def _style(style: SceneStyle) -> str:
 
 
 def _text(item: SceneText) -> str:
-    attrs = [f'x="{item.x}"', f'y="{item.y}"', f'fill="{item.fill}"', f'font-size="{_number(item.size)}"', f'font-family="{item.family}"']
+    attrs = [f'x="{item.x}"', f'y="{item.y}"', f'fill="{item.fill}"', f'font-size="{_number(item.size)}"', _font_family_attr(item.family)]
     if item.anchor != "start":
         attrs.append(f'text-anchor="{item.anchor}"')
     if item.tracking:
