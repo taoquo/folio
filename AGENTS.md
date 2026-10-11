@@ -15,7 +15,7 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 | `references/drawing-dsl-v6-final-audit.md` | Closing program audit, gate evidence, and known limits | Low |
 | `assets/examples/` | Published document examples, built from the IR | Medium |
 | `assets/templates/` | 8 document templates in 2 base language families | Medium |
-| `assets/demos/` | README showcase demos, regenerate after visual changes | Medium |
+| `assets/demos/` | README showcase demos, rebuilt from their HTML sources by `scripts/build_demos.py`; seven have no source and cannot be rebuilt | Medium |
 | `assets/diagrams/generated/catalog/` | 23 generated catalog artifacts per format, SVG / PNG / PDF | Medium |
 | `scripts/build.py` | PDF / PPTX build and verification script, plus placeholder / orphan / rhythm checks | Low |
 | `scripts/folio.py` | Drawing DSL CLI, routing, render, import, catalog | Low |
@@ -74,6 +74,7 @@ python3 scripts/build_color_reference.py --design        # the reference page an
 python3 scripts/build_color_reference.py --design --check # both are current
 python3 scripts/build_literal_ledger.py --check # every literal is recorded
 python3 scripts/check_links.py                # every relative link resolves
+python3 scripts/build_demos.py --check        # the showcase images are current
 python3 scripts/check_theme_schemes.py        # every scheme: roles, contrast, ladder
 python3 scripts/build_scheme_comparison.py    # every scheme, side by side
 python3 scripts/build_scheme_comparison.py --inject   # the homepage galleries

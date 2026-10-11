@@ -107,6 +107,9 @@ jobs:
       - name: Check that one palette edit moves every artifact
         run: python scripts/theme_switch_check.py
 
+      - name: Check the demo showcase is current
+        run: python scripts/build_demos.py --check
+
       - name: Upload the nightly evidence bundle
         if: always()
         uses: actions/upload-artifact@v4

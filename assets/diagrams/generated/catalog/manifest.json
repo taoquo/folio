@@ -15,11 +15,11 @@
   "contact_sheets": [
     {
       "path": "assets/demos/drawing-dsl-all-types.png",
-      "sha256": "26a4866c4999541477a68a26dd656fc6f9d410446a87799b88c52bc2f80fd99e"
+      "sha256": "6e436d971b3323d4e98f06bd8255a4e6340706616741c62abd0d1452dd98dfae"
     },
     {
       "path": "assets/demos/drawing-dsl-supported-types.png",
-      "sha256": "c4a8677a9839d00c4181ec89239dc15b71ad9a6d598c4f256be7581ef3a3fc0d"
+      "sha256": "8f51473f1f0e32cac23d784aed978b81ca0e3623fa41aebe6f7253c095c1a3c1"
     }
   ],
   "diagrams": [
@@ -57,15 +57,15 @@
       },
       "content_bounds": [
         104,
-        102,
+        101,
         1169,
         719
       ],
       "diagnostics": [],
       "metrics": {
         "content_width": 1065,
-        "content_height": 617,
-        "bounding_box_ratio": 0.301879,
+        "content_height": 618,
+        "bounding_box_ratio": 0.302369,
         "semantic_nodes": 7,
         "visual_nodes": 7,
         "edges": 7,
@@ -79,10 +79,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "5b1569c33087374e9c040f1f509a454af5db810643af58e40ab54f6cff4ca0e2",
+        "png": "363eb1333bd259b6113e971798796a6ecc195ccff56251c3349190beb4c7cb10",
         "input": "1781e1e5e60fed9bd0f7fcc16559b0a95e3b59ff25cb50d38898e4354661bd4e",
-        "svg": "95e8884fec3a256d2058beb56220873007d9d23913240f8668d363b5acfe2464",
-        "pdf": "3f6c87139747e280f80a04ce03c5b43ebabe8de092730cf7bda108889d94bf7f"
+        "svg": "f1cb69bfa3e26c78f8d80fa1fa3d7af2c27e1a150a68f9a4fabd3e3fcd93ea0b",
+        "pdf": "8d0c1f614e3dbc1698331782a6768107f67dec9a67aee80da09cfad4ee924f96"
       },
       "unresolved_placeholders": []
     },
@@ -118,15 +118,15 @@
       },
       "content_bounds": [
         132,
-        131,
+        130,
         1108,
         1467
       ],
       "diagnostics": [],
       "metrics": {
         "content_width": 976,
-        "content_height": 1336,
-        "bounding_box_ratio": 0.599039,
+        "content_height": 1337,
+        "bounding_box_ratio": 0.599487,
         "semantic_nodes": 5,
         "visual_nodes": 5,
         "edges": 5,
@@ -140,10 +140,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "607f438ca64d45356b5dbb05ccc5f29adae12c03bf5d294642cea0cba9060fbb",
+        "png": "b4459fdac735294213ef6514fa7e99e75db50c36a13b447b8d06779d3c649c3c",
         "input": "716dc64d01f794aeebddd3e178a56c574e8758246e38766997fe85930390ac30",
-        "svg": "aa1e974b3ffae34a836bfc17adce6fa17645bf5af91945e2f9bf7c5ee62ee243",
-        "pdf": "e23d309cb72de0505182b23705b1cf7637228c1bd9a2e16da144c96ee18deafd"
+        "svg": "a4b1d32422ac0a051e80978bc4bf613bd3e844126427c659530a4f0464bdb671",
+        "pdf": "c21b5816aa3c2c4e63056481db6bb279e33b69f888aae6680103fdfdc917737c"
       },
       "unresolved_placeholders": []
     },
@@ -204,10 +204,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "4e9267688799be8ce140989863c6857c58d02b06cddb974847fb6c82f4dbd752",
+        "png": "cdae9390e6858d5d2631cb11b7ba4091c48427309dccb7329c1fd6bb4e69a3f2",
         "input": "08ae32fee0750b70799c173766c10baaf8d6f6577b18127b4b8362eb14558c49",
-        "svg": "cd36c0ae9d554275142f9be9b970274b41fa9013844f16dc49656444a4872abd",
-        "pdf": "0c84f7f583deab4e0dd5fd7c9e9eaad5832cb42d492ed8b96443041c99e8f3a6"
+        "svg": "a5372c631565d50e282535f54237b1d233790766069e4527d853d68c08de6760",
+        "pdf": "1bc14f78ffad004b0095eedab6c32b9bb86e2e0d02a40673b8ba87ba326ba8cc"
       },
       "unresolved_placeholders": []
     },
@@ -248,15 +248,15 @@
       },
       "content_bounds": [
         102,
-        97,
-        1130,
+        96,
+        1143,
         600
       ],
       "diagnostics": [],
       "metrics": {
-        "content_width": 1028,
-        "content_height": 503,
-        "bounding_box_ratio": 0.237553,
+        "content_width": 1041,
+        "content_height": 504,
+        "bounding_box_ratio": 0.241035,
         "semantic_nodes": 10,
         "visual_nodes": 10,
         "edges": 0,
@@ -270,10 +270,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "cb692dbb3ad9358e964b18333d8eb041b34ce4a968a052702bdac14337763725",
+        "png": "878e7b4f2f584efb01f59a6c119d6adfd51fec6f85ca63bbe65ef8966e7d02c6",
         "input": "4a5786ce21b169abbc7de552392a8ed630e428e8157ba936ea3da805ec0a23b7",
-        "svg": "f837a1fe957a8a499036e6bd594ae86d0fa0cf96f1ce3b528e650f624e072d9a",
-        "pdf": "c2c74ccedaf9cd23a015fd8809a18909d88db70422f2d169d22dcb4a00a02ee5"
+        "svg": "8ceb921a95c2516896e1c308d16fb88e9ad772bd0e5f699faca74472b6f33107",
+        "pdf": "ce4f003fa9e31a6a0b36c7e9bc2de007e82112f25d3829e10f913e723bdd1a63"
       },
       "unresolved_placeholders": []
     },
@@ -315,14 +315,14 @@
       "content_bounds": [
         101,
         97,
-        1116,
+        1129,
         611
       ],
       "diagnostics": [],
       "metrics": {
-        "content_width": 1015,
+        "content_width": 1028,
         "content_height": 514,
-        "bounding_box_ratio": 0.239678,
+        "bounding_box_ratio": 0.242748,
         "semantic_nodes": 10,
         "visual_nodes": 10,
         "edges": 0,
@@ -336,10 +336,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "969ac894ccfa92d6cce0bbee74d83aa6a70f135a1e3b1994276c3743f33f59dd",
+        "png": "dbe2f3e8378e39c95e452e0c5b99ab62455ced860a955c195276771c07e4ea47",
         "input": "eaf755963f9771e6b886ba93ee7e1433f0dc98a8bde9e25bf07aed3807db598e",
-        "svg": "5ff9d8df4faea61cf4e0b3303faf72b9bb1074ce9999b1743efe49f792d05847",
-        "pdf": "0c0cd5023b896ff0e4f053b6e25be271f805e65beb1d8fca31369a8b44ae4e25"
+        "svg": "68491a03e7f81d9e432533ff5117dd38633a8c6a4e6d3f58f52d5a4664c92a0a",
+        "pdf": "5dc005fab3cae824db21b89b6d26ed0906ff4c2a7a39d8b72503af2aa4c41db9"
       },
       "unresolved_placeholders": []
     },
@@ -375,14 +375,14 @@
       "content_bounds": [
         107,
         104,
-        1098,
+        1115,
         811
       ],
       "diagnostics": [],
       "metrics": {
-        "content_width": 991,
+        "content_width": 1008,
         "content_height": 707,
-        "bounding_box_ratio": 0.321878,
+        "bounding_box_ratio": 0.3274,
         "semantic_nodes": 4,
         "visual_nodes": 4,
         "edges": 0,
@@ -396,10 +396,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "ef9c8209a5b0078c7cdeeb0c0130f32246c5d66cc70aa73e4bf571a22a2b7004",
+        "png": "dc8d2f3b4032d992d87d87bc48cd30217fd9d6e0df6be5d510421e6c70d04758",
         "input": "2c8032f1a83022985f6190d9b1e290ad774011e33bc541e3559a873cd5d45d2d",
-        "svg": "faeef9dc0b322a78e552450265a78a94ea5ecec40d932a5cfed40b6099a41092",
-        "pdf": "3c7eafc57ed7a8511b2182cd594f7c857df5fd32ea98a078cb553994bb836212"
+        "svg": "8424692df012c6582729a2d651ec1a8f99c9b246a74e9f896d893c041a1ef7e3",
+        "pdf": "f7ee251686632ffcedff239f74ed9c9f815d00c704da6aca9b7565532fd601c5"
       },
       "unresolved_placeholders": []
     },
@@ -458,10 +458,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "30d4995a4936661b03e9f4134be997e06e325d214d5362ffb4a82cf46a30b0d3",
+        "png": "f212c188339b78a505bee5d986960a2d3656d1150ae7ce81fc2f121b67d7a9ea",
         "input": "6ccb3ef7d231e6df6bca9e5142f9cf5805a7daf2c0007a2b9ecd006bc30d1553",
-        "svg": "1796801eee501201f0e1da2443d67a6704b467514ea41d8acd7e91503f4eff98",
-        "pdf": "aa975d943569acb7f960b815d3d5f8b832882a2ddb5f7ae6774275a8ced803cf"
+        "svg": "88ddf71cb9169171e53267fb9d7c6150074b1f7d5f48f68fbf3ab5578b2df6a5",
+        "pdf": "42e94608cc74084b32244fab9a2256697a73bdbcb57e5fdc3be3df1e5d167e39"
       },
       "unresolved_placeholders": []
     },
@@ -500,14 +500,14 @@
       "content_bounds": [
         101,
         97,
-        1133,
+        1137,
         503
       ],
       "diagnostics": [],
       "metrics": {
-        "content_width": 1032,
+        "content_width": 1036,
         "content_height": 406,
-        "bounding_box_ratio": 0.192488,
+        "bounding_box_ratio": 0.193234,
         "semantic_nodes": 7,
         "visual_nodes": 7,
         "edges": 0,
@@ -521,10 +521,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "55b8dadf174c9885eb2b1167ea45808355219f39badc6d213f4f6af4212de4a0",
+        "png": "0ee0cabbcab13e31a90611256e72e26bf610732196517a88a55f232db9864877",
         "input": "9f1281022dc468dd817017df2a04beddff4a5eb02ed8f5f2c598f733d1879cfc",
-        "svg": "d85ea63996141fb09020b8d22824cd5c68a44ef4dc43c503bf669b265bc94611",
-        "pdf": "50cf0caccef90f1392ba14f383cab380fef7fdb1aba55a08764e435617a8a9b1"
+        "svg": "50b0b3df6f0d2009c4b2c78db152b6ca65499dbb2fa06562e8dac0f8e0ffb811",
+        "pdf": "c355e2fd814c27a7b09135d184b2a64b082a42cd50dadd51b84770e805bf3841"
       },
       "unresolved_placeholders": []
     },
@@ -582,10 +582,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "896e9123ba6f99e68addde207fd7028579c3a1efea87baefba3afa7734ab94e4",
+        "png": "721a4b57ebf6781d0f8196e348144b0fb9e9174b8c1ccc1e06a23c96014d5a59",
         "input": "cf6892927660612aceb0a04354d5844c1d0649d9f54785b87de97602577edf64",
-        "svg": "9d0f689b31affdda151f13601d9720c18b61e6b71c016201c93b372afc375d86",
-        "pdf": "088549e6b37aa6bbaf61bfc55e4249b2e59fbc663c59a9f90c50885eb1114017"
+        "svg": "3a957bf2c22c79fc96811dbe7bed7e5cf9552408fdd95c8933bc244dad7d49fe",
+        "pdf": "c0871ad241aad37fc618f67e943ff56d8a40b4d926068ef88b478ad9ed8c2b5b"
       },
       "unresolved_placeholders": []
     },
@@ -646,10 +646,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "0c1872d49ffd857967f6034ad69dcfd91d69c6e446f3b9711d6537ba5a58b9b0",
+        "png": "c0bb02552f0c25a66487cbb66cc5b1595cefa38d3ae1f8bc62c4f88cdc1d2386",
         "input": "df6834ed82e761de45cf08a59ac2fd59bb620d3469dd89d5a72680f35cc6495a",
-        "svg": "9eba7e62b6652f045f784ce563a3ca22aca1e4ef064e190112ec1d0ee3120223",
-        "pdf": "4173546a51b050bb159655ebfa3d58420089c9135d165af97bf2ae31cfc8fd5a"
+        "svg": "f22e89ffd7b8bd76f29518c36a0753efdac45d2525eef417d207ec16e2a92105",
+        "pdf": "5520961f2b762ff2812aa6a1d323546832ac8a14ce6e8c0b7cc166fefb68443c"
       },
       "unresolved_placeholders": []
     },
@@ -707,10 +707,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "d88f8db9ba0fa83a29c759475e5eb3c1e7993e3f0c0bd18ca2502802e73ed188",
+        "png": "c279e846734fea551f679a2700f350b09704fa081aca05383ed9e89da69b7e5a",
         "input": "e485665477cd2030d5c701f0bbab824d70af424e3b22f24e53d53d1236332fc2",
-        "svg": "98252aa2691df89aec51832e37ee2e9b90befec488a829f9452aed9f571b36e9",
-        "pdf": "b8203baff7e4fccd47be5ab7153ad37585b0652677d2f2a047ce7887d472956f"
+        "svg": "ceede21c267a3c29d9d01265931eefb6b4b5944a8b944abf2b9f5f3d11cd689d",
+        "pdf": "7cce0d261fb683690461dc839afc14e3aa62d9d064674882756b7cebb2d927b6"
       },
       "unresolved_placeholders": []
     },
@@ -766,10 +766,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "474cf90ec14157a224d9fa8add6ade394f11f66b6c0f3e4302d58d2e8ba109c9",
+        "png": "566e306a329fe38e57c43070f21cb123a5fd56b1bc875fd9b8961167f7fd1577",
         "input": "bbe24eeafcff57301896533d8c13844e2eb33ed13380de75073b134ae215d6b1",
-        "svg": "a96406130bf183eee6d180602c145dfc20707ea6c908070fc8c752387604ea7f",
-        "pdf": "54455a0d149c988939ae563011b85d37575e358c64835fbdb96a31ae709bead6"
+        "svg": "a08f65586a71f78d43803664bd9cfdc78a77cc964468417894200ed390ae2bd8",
+        "pdf": "7aa50e980a88272f3bc3765ba97ce2f9704cd59b244110640919a4004b978790"
       },
       "unresolved_placeholders": []
     },
@@ -805,14 +805,14 @@
       "content_bounds": [
         101,
         99,
-        1097,
+        1119,
         691
       ],
       "diagnostics": [],
       "metrics": {
-        "content_width": 996,
+        "content_width": 1018,
         "content_height": 592,
-        "bounding_box_ratio": 0.270882,
+        "bounding_box_ratio": 0.276865,
         "semantic_nodes": 4,
         "visual_nodes": 4,
         "edges": 0,
@@ -826,10 +826,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "bb4e8e94da28124f95dcd78f99a2c41391e23fedeff035a24b1505b686b96bae",
+        "png": "44fd3c421e5413f80ccafc54835af5d7dea563e7251d4ca0ce20219f50a5ffe0",
         "input": "69adc98e9855e49d5439ad7d91da2757ec1f9b8bdd29d31e3f884ffd264aa89f",
-        "svg": "cd6bae1c9b3739721d75a8c5a21badc13433ad266f33d3e67e627d8139950a13",
-        "pdf": "0e454473d9f7374fd1eb3e4104d693f085b757110fe78868b6a74ee8df24d041"
+        "svg": "3a0b99503215cbc194d66c0dce3951065908b50fa839058027b7857ff8691872",
+        "pdf": "31b85f31e5ad3faa63d0283f3c63698c1cb8f7f1b94c4d46949bf9862006927e"
       },
       "unresolved_placeholders": []
     },
@@ -889,10 +889,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "1204b4fd7e0f7c16a98578dfee34881691822d5e39d1cf20dfaf7e18a80b9ff1",
+        "png": "ccd54a715a56069664cef877c94b3e0fdbeec259a9c2755d87584def34decfde",
         "input": "6e50bddcf05e719c59d571a8090659c0139e40776620c2fa4b0744d9b05bda4f",
-        "svg": "14f02c594779b7e5656362b24a1ceb41c155718637430bdfd7d6710f4a003b1f",
-        "pdf": "55b7dda7c13d8e4912fc1f25bebafdfd932baac9c3ed0075481df2b4325da8b1"
+        "svg": "bf86970f6dccb5c14500c7e25c4b66cb69c6462a79fad3f01d6d40af257189aa",
+        "pdf": "1583cb53a5e78e770dbc2c86f95a329ec9e8e5415f4cb897e88f3b3b63e43ebe"
       },
       "unresolved_placeholders": []
     },
@@ -928,14 +928,14 @@
       "content_bounds": [
         104,
         102,
-        1080,
+        1115,
         810
       ],
       "diagnostics": [],
       "metrics": {
-        "content_width": 976,
+        "content_width": 1011,
         "content_height": 708,
-        "bounding_box_ratio": 0.317455,
+        "bounding_box_ratio": 0.328839,
         "semantic_nodes": 4,
         "visual_nodes": 4,
         "edges": 0,
@@ -949,10 +949,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "3d711d28529afccf695ad21344fa77d38550e3037d920e3cb5b1a79ec4cd598e",
+        "png": "9fc63db0191633005563a6215b6bfa01a22bdc02e47437ac3c631a0a91b6195b",
         "input": "8390f9f0ae5eb0db1e498983dfbf0576bded33c1eca9278c791769f543ad0306",
-        "svg": "ec9b112b6fdc43d365722f0674e07d522661711377f2098803bae2e335e58c72",
-        "pdf": "560a7142e045df12aa22899b976c0edde3e3e5100931591e5aa6c87bc6ccbf75"
+        "svg": "796e7d410d33fb778f052da07a7070c4470ca598783ac163e67aea7f8daea91a",
+        "pdf": "ce6ea23813e46133f968ca79d108dc08cc49f284d456b4749a3882f81ff6b40d"
       },
       "unresolved_placeholders": []
     },
@@ -990,15 +990,15 @@
       },
       "content_bounds": [
         105,
-        101,
+        100,
         1135,
         675
       ],
       "diagnostics": [],
       "metrics": {
         "content_width": 1030,
-        "content_height": 574,
-        "bounding_box_ratio": 0.271611,
+        "content_height": 575,
+        "bounding_box_ratio": 0.272084,
         "semantic_nodes": 7,
         "visual_nodes": 7,
         "edges": 0,
@@ -1012,10 +1012,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "93fe52f22ff573bda51e2412f1b31ca4c8eea6fe044d6b0dffd00197cec7c9ee",
+        "png": "580d434842db6c5e3288d57a4b8824684aa1f9183ee982cce68e71d37eb31622",
         "input": "c64f5470f87e592ba4c2134ec35c150fb17d71e3857421810d42ee7f20deb2cb",
-        "svg": "3a60c272a80fff06ba515c4671656bfe406c2c8ea664ee4857f18947df043e63",
-        "pdf": "2e0e3c567a420a302b8a816af8b82c33a27aa0d14547e895e6f3d04cdc4026a3"
+        "svg": "172bbfbe58557928bd5bf98cf9f69952685193d16a4b7f87ecf7f7a07aab1fd5",
+        "pdf": "3f073a315fe29e6883aeeebca3ccd4998c8a7ed157f4982554d26f7e3705df5b"
       },
       "unresolved_placeholders": []
     },
@@ -1075,10 +1075,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "638c192357ffed775669be508849d86be3ed164ee076d1dfb25c516973f97f95",
+        "png": "4e010e234f9cce1b60036a1b47e2d4143552a1f9bdcbc826b59f79d5b0005e80",
         "input": "c9bb7dc6e9c0fde400db24fa0038e5548ae723297110f22b51f12c856265c699",
-        "svg": "7d8bf85c69aeaaffd0b48e45a788c94bc2ce1205044a5249b69861fb81454dcb",
-        "pdf": "1872a4fdee9c4b962e2beb85e965466aa94d71003034b0d678750e48f81a7b2a"
+        "svg": "cee2b5adbc3239e391137466abe3ad2120041cb3ebb5ecfc2221d588b7cb2334",
+        "pdf": "3f6faf9b9fb9c934b4d6ca74cc23ae384256471fe8108fb2d4509ec15568a1f9"
       },
       "unresolved_placeholders": []
     },
@@ -1137,10 +1137,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "2edb0bc22b642bc9d0bad59792fd4079b183ff18b7c560479eec3b3183c2aa37",
+        "png": "fb94dcfc601fb86efdbbc0634ab579af02a45fa93f8893df3e86b706eee84597",
         "input": "710b880ef2b0cc6d129367a9b2ed16acc9100d76a14362d169446dd95effee35",
-        "svg": "948f7626c1155d2fb621ab0bc742d36421d31b93100f82bc5d4df313845fe38d",
-        "pdf": "3ca5be938dba72402337e171612548629fb0c58594f4da9b904c3dff5c6f3ff8"
+        "svg": "75d95c460e5618e48c02ef5863407134f64d37c29719873efe7a9e46cfa74c06",
+        "pdf": "2a2e09ffd675ab103bc7b9efa37bbde06905102fa7f5b907e4a13c61669d12a7"
       },
       "unresolved_placeholders": []
     },
@@ -1199,10 +1199,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "1584ea897fed3b9532e92d26a93effa2ab40146c6dd1d497edb913ddb5a2499b",
+        "png": "f11b7fd4ffc9b2471fc5caf46818293b68facf8b45bb5539913b44deee28ab14",
         "input": "7c02e652342dfd497b4bb17829e03e28682efd014dbe30cf5966b36aa910f371",
-        "svg": "14a923368b7a43b5312267062e32c5de5dfc06e6e63e4b9c6c2a57364c1af014",
-        "pdf": "5a954359e88d0fff14ad56afd93b37b8f6b6591758718dfa3616f55c28bfc468"
+        "svg": "b07f44c04ce51b9ccc7731ee23b39526625533805a9a1623c29f8e0c4839a367",
+        "pdf": "d13c94d684f952d5d00f1164e0174718006c43069e5f24463d82a5334f057bf0"
       },
       "unresolved_placeholders": []
     },
@@ -1262,10 +1262,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "029bd8eb5b8525f50a5daec9078496c200046f9cd15ede919365cef8b9341a8d",
+        "png": "dba78222af138fa59a100b28b3e5077c7fb985e9ccc69044ba5fae5521984cea",
         "input": "2272355bef0e001578ea9e1e61c91aaf70963ec8a7b07957f902f0a7777db81c",
-        "svg": "5c9bc4348771f6938b451e4c780746887f4b4cae39d30a9d0e81f72e95f49d4c",
-        "pdf": "ff20a1e5f18b56e91f1fb5debb623fd1c2c15295c9c14dd71506abc5a20b0057"
+        "svg": "2e21e303c0a8c53069efb4bf214aee38e9f9699777869b1f327a517c3dcd073e",
+        "pdf": "5bab9e707d42f0382453300eb1b2dccb00e490bff504f8494f6597546bcfac9e"
       },
       "unresolved_placeholders": []
     },
@@ -1325,10 +1325,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "2cd359edd2819d28cfb343a125723a8a7dbaba33fcd4d3903948237df98f9cfc",
+        "png": "c987ccd36ae3e76f316403f569382f3b5aa9f570653c442ac0c95a5ba79859d9",
         "input": "d72321f3a09ac556aa4ecc86b518bb2313f007f4d3d4da5178c406d005aedceb",
-        "svg": "5d22e128dba004418ee7d2b77babb946e453033f4444dd4f04b9e07911d1a577",
-        "pdf": "76d485bb05761794528c6b5ce85bb40ae92fd52fe7be2e5e4ec15973498281ea"
+        "svg": "3fdf69cc2a4fd2a7d92bd14bb1280b82952a7beb41f00af4addcafe8d4303c7b",
+        "pdf": "af816edabc404bc861fa68416472330e334b0cd82a31766f93ee24f2660b01cb"
       },
       "unresolved_placeholders": []
     },
@@ -1386,10 +1386,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "1dc6c36d683cb48d9d83994ec87cfc5c69d9c15eb2d120852195ebce30ea9f75",
+        "png": "4f42e3048f7fde8b97414adc7b8d6be4573e7823dbc83a98225a31ad650d5c52",
         "input": "a34e03b91012df934dcdde1fb58b365bf8d1ac49bdf3cef822882666047449d2",
-        "svg": "879e4ae2c89c3eab0e5c7258be9c7af9d7dffb131bc1ec2d3a1a7275eb11a504",
-        "pdf": "4582aa3774e1717c1eb4db936ee7d8cb8982e7cb3837d39c5c600ced8e7616a5"
+        "svg": "d586c14940076649d1d8a5c27844149f1023869d711424d2bf2173c6381ef1d6",
+        "pdf": "2a8f018119a863361291ce0cae20f36a34cad7dc3e3fb854f51ae7bbc12c549c"
       },
       "unresolved_placeholders": []
     },
@@ -1447,10 +1447,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "a82e735422005a974f8aebfa479754ff41da79aa1d52272942930203d32d09ab",
+        "png": "50f1064c32825fc1980d9aa5cdf71531542779b7603d217956f82e295a408e97",
         "input": "ad464d3d548838319037749ac2b69b2698eed5e49548368488af149f689ed3b2",
-        "svg": "2f35769d8359e7fdcdffbd4110c4c33b190c8148601cd9206c60ba550dc1b34b",
-        "pdf": "d0941f27ffc166e265b2ec59365e17a00e9e586ed79417c5b7a940d476276605"
+        "svg": "b49d81091f075ed3679af58d5080eb4396fc616e2db40e677f7f65636bedf57a",
+        "pdf": "67c61d87930aef2ef112b424c3846af05a344342db1379faa3bac36a3e217ae6"
       },
       "unresolved_placeholders": []
     }

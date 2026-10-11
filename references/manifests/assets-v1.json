@@ -85,11 +85,11 @@
         {
           "format": "json",
           "path": "assets/diagrams/generated/catalog/manifest.json",
-          "sha256": "c470e6aa3966b59c56e9bb3c69705ead43f230aea9f24581d57e9371185dc029"
+          "sha256": "4487cc2a9c47d373b62fbc2c5a06424d453de8cf61993342d9368080c0f1870f"
         }
       ],
       "source_ref": "assets/diagrams/generated/catalog/manifest.json",
-      "source_sha256": "c470e6aa3966b59c56e9bb3c69705ead43f230aea9f24581d57e9371185dc029"
+      "source_sha256": "4487cc2a9c47d373b62fbc2c5a06424d453de8cf61993342d9368080c0f1870f"
     },
     {
       "asset_id": "diagram.uml-class-demo",
