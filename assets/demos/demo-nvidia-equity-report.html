@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<!-- ==================================================================
+     EQUITY REPORT · English · parchment design system
+     2-3 page A4 equity research / valuation / investment memo
+     Structure: header -> metrics -> charts -> financials -> comps -> risks -> summary
+     ================================================================== -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NVIDIA · Equity Report</title>
+<meta name="author" content="Folio contributors">
+<meta name="description" content="NVIDIA equity research note: AI infrastructure demand remains strong while valuation leaves less room for error.">
+<meta name="keywords" content="NVIDIA, NVDA, equity research, semiconductors, AI infrastructure">
+<meta name="generator" content="Folio">
+<style>
+  @font-face { font-family: "JetBrains Mono"; src: url("../fonts/JetBrainsMono.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+  @font-face { font-family: "JetBrains Mono"; src: url("../fonts/JetBrainsMono.woff2") format("woff2"); font-weight: 500; font-style: normal; }
+  @font-face { font-family: "Source Serif 4"; src: url("../fonts/SourceSerif4Variable-Roman.ttf") format("truetype"); font-weight: 200 900; font-style: normal; }
+
+  @page {
+    size: A4;
+    margin: 16mm 18mm 18mm 18mm;
+    background: #F6F0EA;
+
+    @bottom-center {
+      content: counter(page) "  ·  NVIDIA Equity Report";
+      font-family: var(--serif);
+      font-size: 9pt;
+      color: #85776F;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --parchment: #F6F0EA;
+    --ivory:     #FBF7F3;
+    --near-black:#191514;
+    --dark-warm: #3A312D;
+    --olive:     #5A4A43;
+    --stone:     #85776F;
+    --brand:     #B83D2E;
+    --border:    #E9DED4;
+    --border-soft:#E8DED6;
+    --tag-bg:    #F1D2CC;
+    --positive:  #B83D2E;
+    --negative:  #85776F;
+
+    --serif: "Source Serif 4", Charter, Georgia,
+             Palatino, "Times New Roman", serif;
+    --sans: var(--serif);
+    --mono:  "JetBrains Mono", "SF Mono", "Fira Code",
+             Consolas, Monaco, monospace;
+  }
+
+  html, body { background: var(--parchment); }
+
+  @media screen {
+    body { max-width: 210mm; margin: 0 auto; padding: 16mm 18mm 18mm 18mm; }
+  }
+
+  body {
+    color: var(--near-black);
+    font-family: var(--serif);
+    font-size: 9.8pt;
+    line-height: 1.45;
+    /* Paragraph flow; declared in references/profiles/typography/folio-v1.yaml. */
+    widows: 2;
+    orphans: 2;
+    hyphens: manual;
+  }
+
+  strong { font-weight: 500; }
+  .hl { color: var(--brand); font-weight: 500; }
+
+  /* HEADER */
+  .report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12pt;
+    padding-bottom: 8pt;
+    border-bottom: 1pt solid var(--near-black);
+  }
+  .ticker-block { flex: 1; }
+  .ticker-eyebrow {
+    font-family: var(--sans);
+    font-size: 9pt;
+    color: var(--brand);
+    letter-spacing: 1.5pt;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 4pt;
+  }
+  .ticker-name {
+    font-family: var(--serif);
+    font-size: 26pt;
+    font-weight: 500;
+    color: var(--near-black);
+    line-height: 1.12;
+    letter-spacing: -0.3pt;
+    margin-bottom: 4pt;
+  }
+  .ticker-sub {
+    font-size: 10pt;
+    color: var(--olive);
+    line-height: 1.4;
+  }
+  .price-block {
+    text-align: right;
+    padding-top: 4pt;
+  }
+  .price-current {
+    font-family: var(--serif);
+    font-size: 30pt;
+    font-weight: 500;
+    color: var(--near-black);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.5pt;
+  }
+  .price-change {
+    font-size: 10pt;
+    font-weight: 500;
+    margin-top: 2pt;
+    font-variant-numeric: tabular-nums;
+  }
+  .price-change.up { color: var(--positive); }
+  .price-change.down { color: var(--negative); }
+  .price-date {
+    font-size: 9pt;
+    color: var(--stone);
+    margin-top: 2pt;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* METRICS */
+  .metrics {
+    display: flex;
+    gap: 10pt;
+    margin-bottom: 14pt;
+    padding: 6pt 0;
+    border-top: 0.5pt solid var(--border);
+    border-bottom: 0.5pt solid var(--border);
+  }
+  .metric {
+    flex: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 5pt;
+  }
+  .metric-value {
+    font-family: var(--serif);
+    font-size: 18pt;
+    font-weight: 500;
+    color: var(--brand);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    letter-spacing: -0.3pt;
+  }
+  .metric-label {
+    font-size: 9pt;
+    color: var(--olive);
+    line-height: 1.3;
+  }
+
+  /* SECTIONS */
+  h2 {
+    font-family: var(--serif);
+    font-size: 16pt;
+    font-weight: 500;
+    color: var(--near-black);
+    margin: 18pt 0 6pt 0;
+    break-after: avoid;
+  }
+
+  h3 {
+    font-size: 13pt;
+    font-weight: 500;
+    color: var(--dark-warm);
+    margin: 12pt 0 4pt 0;
+    break-after: avoid;
+  }
+
+  p { margin: 0 0 8pt 0; line-height: 1.5; }
+
+  ul, ol {
+    margin: 4pt 0 8pt 0;
+    padding-left: 18pt;
+    line-height: 1.5;
+  }
+  ul li::marker { color: var(--brand); }
+  ol li::marker { color: var(--brand); font-weight: 500; }
+
+  /* TAG */
+  .tag {
+    display: inline-block;
+    background: var(--tag-bg);
+    color: var(--brand);
+    font-family: var(--sans);
+    font-size: 9pt;
+    font-weight: 500;
+    padding: 1pt 6pt;
+    border-radius: 3pt;
+    letter-spacing: 0.4pt;
+    text-transform: uppercase;
+    margin-right: 3pt;
+  }
+
+  /* TABLE (folio-table) */
+  table, .folio-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9.5pt;
+    margin: 8pt 0;
+    break-inside: avoid;
+  }
+  table th, .folio-table th {
+    text-align: left;
+    font-family: var(--sans);
+    font-weight: 500;
+    color: var(--dark-warm);
+    padding: 4pt 6pt;
+    border-top: 0.8pt solid var(--near-black);
+    border-bottom: 0.5pt solid var(--border);
+    background: transparent;
+  }
+  table td, .folio-table td {
+    padding: 3pt 6pt;
+    border-bottom: 0.3pt solid var(--border-soft);
+    vertical-align: top;
+  }
+  table.compact th, .folio-table.compact th { padding: 3pt 6pt; font-size: 8pt; }
+  table.compact td, .folio-table.compact td { padding: 2pt 6pt; font-size: 8pt; line-height: 1.4; }
+  table.financial td:not(:first-child), .folio-table.financial td:not(:first-child) {
+    text-align: right; font-variant-numeric: tabular-nums;
+  }
+  table.financial th:not(:first-child), .folio-table.financial th:not(:first-child) { text-align: right; }
+  table.striped tbody tr:nth-child(even) td, .folio-table.striped tbody tr:nth-child(even) td {
+    background: var(--ivory);
+  }
+  table .total td, .folio-table .total td {
+    font-weight: 500; border-top: 1pt solid var(--brand); border-bottom: none; color: var(--near-black);
+  }
+
+  /* CALLOUT */
+  .callout {
+    background: transparent;
+    border-top: 0.8pt solid var(--brand);
+    border-bottom: 0.3pt dotted var(--border);
+    padding: 6pt 0;
+    border-radius: 0;
+    margin: 10pt 0;
+    line-height: 1.5;
+    break-inside: avoid;
+  }
+
+  /* FIGURE */
+  figure { margin: 12pt 0; break-inside: avoid; }
+  figcaption {
+    font-family: var(--sans);
+    font-size: 9pt;
+    color: var(--stone);
+    margin-top: 4pt;
+    text-align: left;
+  }
+
+  .research-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 14pt;
+    align-items: start;
+  }
+
+  .data-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8pt;
+    margin: 8pt 0;
+    padding: 5pt 0;
+    border-top: 0.5pt solid var(--border);
+    border-bottom: 0.3pt dotted var(--border);
+  }
+  .data-strip .label {
+    font-size: 8pt;
+    color: var(--stone);
+    letter-spacing: 0.5pt;
+    text-transform: uppercase;
+  }
+  .data-strip .value {
+    font-size: 13pt;
+    color: var(--near-black);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* RISK MATRIX */
+  .risk-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10pt;
+    margin: 8pt 0;
+  }
+  .risk-item {
+    padding: 5pt 0;
+    background: transparent;
+    border-top: 0.3pt solid var(--border);
+    border-radius: 0;
+    break-inside: avoid;
+  }
+  .risk-label {
+    font-family: var(--sans);
+    font-size: 9pt;
+    font-weight: 500;
+    color: var(--brand);
+    letter-spacing: 0.3pt;
+    text-transform: uppercase;
+    margin-bottom: 2pt;
+  }
+  .risk-desc {
+    font-size: 9pt;
+    color: var(--olive);
+    line-height: 1.45;
+  }
+
+  /* TWO-COLUMN */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16pt;
+  }
+
+  /* ANALYST SUMMARY */
+  .analyst-box {
+    background: transparent;
+    border-top: 1pt solid var(--near-black);
+    border-radius: 0;
+    padding: 8pt 0 0 0;
+    margin: 12pt 0;
+    break-inside: avoid;
+  }
+
+  /* CHART PLACEHOLDER */
+  .chart-placeholder {
+    background: var(--ivory);
+    border-radius: 4pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--stone);
+    font-size: 9pt;
+  }
+  .analyst-label {
+    font-family: var(--sans);
+    font-size: 9pt;
+    color: var(--brand);
+    letter-spacing: 1pt;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 4pt;
+  }
+
+  /* FOOTER */
+  .report-footer {
+    margin-top: 16pt;
+    padding-top: 6pt;
+    border-top: 0.3pt dotted var(--border);
+    font-size: 9pt;
+    color: var(--stone);
+    display: flex;
+    justify-content: space-between;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .page-break { break-before: page; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="report-header">
+  <div class="ticker-block">
+    <div class="ticker-eyebrow">EQUITY RESEARCH</div>
+    <div class="ticker-name">NVIDIA <span style="font-size: 14pt; color: var(--stone);">NVIDIA</span></div>
+    <div class="ticker-sub">Semiconductors · NASDAQ · NASDAQ: NVDA · Hold with upside bias: the business is still compounding, but the multiple already assumes near-perfect execution.</div>
+  </div>
+  <div class="price-block">
+    <div class="price-current">$121.40</div>
+    <div class="price-change up">+18.6% YTD</div>
+    <div class="price-date">April 29, 2026</div>
+  </div>
+</div>
+
+<!-- METRICS -->
+<div class="metrics">
+  <div class="metric">
+    <div class="metric-value">$3.1T</div>
+    <div class="metric-label">Market Cap</div>
+  </div>
+  <div class="metric">
+    <div class="metric-value">$61x</div>
+    <div class="metric-label">P/E Ratio</div>
+  </div>
+  <div class="metric">
+    <div class="metric-value">$148.5B</div>
+    <div class="metric-label">Revenue</div>
+  </div>
+  <div class="metric">
+    <div class="metric-value">56.2% Margin</div>
+    <div class="metric-label">Margin</div>
+  </div>
+</div>
+
+<!-- INVESTMENT THESIS -->
+<h2>Investment Thesis</h2>
+<div class="research-grid">
+  <p>Hold with upside bias: the business is still compounding, but the multiple already assumes a long runway of near-perfect execution. Data center demand carries <span class="hl">$148.5B</span> of revenue at a <span class="hl">56.2%</span> margin, and the question is no longer growth but what the market has already paid for it.</p>
+  <div class="data-strip">
+    <div><div class="label">Rating</div><div class="value">Hold</div></div>
+    <div><div class="label">Target</div><div class="value">$132</div></div>
+    <div><div class="label">Horizon</div><div class="value">12 months</div></div>
+  </div>
+</div>
+
+<div class="callout">
+  Hold: the franchise is intact and the valuation is not. Upside depends on software monetization arriving before hardware growth normalizes.
+</div>
+
+<!-- CHART: fill this figure slot with folio.py embed-drawing -->
+<h2>Price Action</h2>
+<figure data-folio-diagram-slot="price-action">
+  <svg viewBox="0 0 760 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="20-day price action">
+    <rect width="100%" height="100%" fill="#F6F0EA"/>
+    <!-- 价格区间 102-134，图表区 x=56 y=20 w=660 h=190，基线 y=210 -->
+    <line x1="56" y1="210" x2="716" y2="210" stroke="#E6D9D1" stroke-width="0.8"/>
+    <line x1="56" y1="115" x2="716" y2="115" stroke="#E6D9D1" stroke-width="0.5" stroke-dasharray="3 4"/>
+    <line x1="56" y1="20" x2="716" y2="20" stroke="#E6D9D1" stroke-width="0.5" stroke-dasharray="3 4"/>
+    <text x="48" y="214" fill="#85776F" font-size="9" text-anchor="end" font-family="'Source Serif 4',Charter,Georgia,serif">102</text>
+    <text x="48" y="119" fill="#85776F" font-size="9" text-anchor="end" font-family="'Source Serif 4',Charter,Georgia,serif">118</text>
+    <text x="48" y="24" fill="#85776F" font-size="9" text-anchor="end" font-family="'Source Serif 4',Charter,Georgia,serif">134</text>
+
+    <!-- 20 根蜡烛：波动后回升，2 月重置，3 月修复 -->
+    <g stroke="#B83D2E" fill="#B83D2E">
+      <line x1="80" y1="150" x2="80" y2="182" stroke-width="1"/><rect x="76" y="158" width="8" height="18" rx="1"/>
+      <line x1="112" y1="140" x2="112" y2="172" stroke-width="1"/><rect x="108" y="146" width="8" height="20" rx="1"/>
+      <line x1="144" y1="156" x2="144" y2="190" stroke-width="1"/><rect x="140" y="162" width="8" height="22" rx="1"/>
+      <line x1="176" y1="168" x2="176" y2="200" stroke-width="1"/><rect x="172" y="174" width="8" height="20" rx="1"/>
+      <line x1="208" y1="176" x2="208" y2="206" stroke-width="1"/><rect x="204" y="180" width="8" height="22" rx="1"/>
+      <line x1="240" y1="170" x2="240" y2="198" stroke-width="1"/><rect x="236" y="176" width="8" height="16" rx="1"/>
+      <line x1="272" y1="158" x2="272" y2="186" stroke-width="1"/><rect x="268" y="164" width="8" height="16" rx="1"/>
+      <line x1="304" y1="148" x2="304" y2="178" stroke-width="1"/><rect x="300" y="154" width="8" height="18" rx="1"/>
+      <line x1="336" y1="138" x2="336" y2="168" stroke-width="1"/><rect x="332" y="144" width="8" height="18" rx="1"/>
+      <line x1="368" y1="128" x2="368" y2="158" stroke-width="1"/><rect x="364" y="134" width="8" height="18" rx="1"/>
+    </g>
+    <g stroke="#4A6B52" fill="#4A6B52">
+      <line x1="400" y1="112" x2="400" y2="146" stroke-width="1"/><rect x="396" y="118" width="8" height="22" rx="1"/>
+      <line x1="432" y1="102" x2="432" y2="136" stroke-width="1"/><rect x="428" y="108" width="8" height="22" rx="1"/>
+      <line x1="464" y1="94" x2="464" y2="126" stroke-width="1"/><rect x="460" y="100" width="8" height="20" rx="1"/>
+      <line x1="496" y1="86" x2="496" y2="118" stroke-width="1"/><rect x="492" y="92" width="8" height="20" rx="1"/>
+      <line x1="528" y1="78" x2="528" y2="110" stroke-width="1"/><rect x="524" y="84" width="8" height="20" rx="1"/>
+      <line x1="560" y1="86" x2="560" y2="116" stroke-width="1"/><rect x="556" y="92" width="8" height="18" rx="1"/>
+      <line x1="592" y1="72" x2="592" y2="104" stroke-width="1"/><rect x="588" y="78" width="8" height="20" rx="1"/>
+      <line x1="624" y1="64" x2="624" y2="96" stroke-width="1"/><rect x="620" y="70" width="8" height="20" rx="1"/>
+      <line x1="656" y1="56" x2="656" y2="88" stroke-width="1"/><rect x="652" y="62" width="8" height="20" rx="1"/>
+      <line x1="688" y1="48" x2="688" y2="80" stroke-width="1"/><rect x="684" y="54" width="8" height="20" rx="1"/>
+    </g>
+
+    <text x="56" y="238" fill="#5A4A43" font-size="9" font-family="'Source Serif 4',Charter,Georgia,serif">Feb reset</text>
+    <text x="380" y="238" fill="#5A4A43" font-size="9" font-family="'Source Serif 4',Charter,Georgia,serif">Recovery on AI demand</text>
+    <text x="640" y="238" fill="#5A4A43" font-size="9" font-family="'Source Serif 4',Charter,Georgia,serif">$134</text>
+  </svg>
+  <figcaption>Figure 1. NVDA over 20 sessions. A February reset on rate concerns, then recovery as AI infrastructure orders held. Range $102 - $134.</figcaption>
+</figure>
+
+<!-- FINANCIALS -->
+<h2>Financial Overview</h2>
+<table class="financial striped">
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>FY2023</th>
+      <th>FY2024</th>
+      <th>FY2025E</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Revenue</td><td>$60.9B</td><td>$130.5B</td><td>$148.5B</td></tr>
+    <tr><td>Net Income</td><td>$29.8B</td><td>$74.3B</td><td>$84.1B</td></tr>
+    <tr><td>EPS</td><td>$12.96</td><td>$31.7</td><td>$36.1</td></tr>
+    <tr><td>Gross Margin</td><td>72.7%</td><td>74.6%</td><td>75.3%</td></tr>
+    <tr><td>ROE</td><td>63%</td><td>71%</td><td>74%</td></tr>
+  </tbody>
+</table>
+
+<!-- REVENUE BREAKDOWN -->
+<h2>Revenue Breakdown</h2>
+<figure data-folio-diagram-slot="revenue-breakdown">
+  <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Revenue breakdown by segment">
+    <rect width="100%" height="100%" fill="#F6F0EA"/>
+    <!-- 横向条形：数据中 data center 主导 -->
+    <g font-family="'Source Serif 4',Charter,Georgia,serif" font-size="10" fill="#5A4A43">
+      <text x="56" y="42">Data Center</text>
+      <rect x="180" y="30" width="400" height="16" fill="#B83D2E" rx="2"/>
+      <text x="592" y="42" fill="#85776F">$115.2B</text>
+
+      <text x="56" y="84">Gaming</text>
+      <rect x="180" y="72" width="62" height="16" fill="#C97A63" rx="2"/>
+      <text x="254" y="84" fill="#85776F">$17.8B</text>
+
+      <text x="56" y="126">Professional Visualisation</text>
+      <rect x="180" y="114" width="34" height="16" fill="#8B8078" rx="2"/>
+      <text x="226" y="126" fill="#85776F">$9.7B</text>
+
+      <text x="56" y="168">Automotive &amp; Other</text>
+      <rect x="180" y="156" width="20" height="16" fill="#B9ACA3" rx="2"/>
+      <text x="212" y="168" fill="#85776F">$5.8B</text>
+    </g>
+  </svg>
+  <figcaption>Figure 2. Revenue by segment. Data center carries the majority of the total; networking and software are the incremental contribution.</figcaption>
+</figure>
+
+<!-- COMPETITIVE POSITIONING -->
+<div class="page-break"></div>
+<h2>Competitive Landscape</h2>
+<p>NVIDIA sits in a different economic tier from most semiconductor peers because its moat is not just silicon. The ecosystem spans CUDA, system design, networking, and a broad installed base of developer habits. That said, valuation comparison still matters: when expectations peak, even category leaders can de-rate faster than fundamentals change.</p>
+
+<table class="financial compact striped">
+  <thead>
+    <tr>
+      <th>Company</th>
+      <th>Mkt Cap</th>
+      <th>P/E</th>
+      <th>Rev Growth</th>
+      <th>Margin</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>NVIDIA</strong></td><td>$3.1T</td><td>61x</td><td>82%</td><td>56.2%</td></tr>
+    <tr><td>Microsoft</td><td>$1.9T</td><td>34x</td><td>18%</td><td>38.4%</td></tr>
+    <tr><td>Broadcom</td><td>$417B</td><td>29x</td><td>13%</td><td>36.1%</td></tr>
+    <tr><td>AMD</td><td>$248B</td><td>48x</td><td>41%</td><td>52.0%</td></tr>
+  </tbody>
+</table>
+
+<!-- RISKS -->
+<h2>Risk Factors</h2>
+<div class="risk-grid">
+  <div class="risk-item">
+    <div class="risk-label">CUSTOMER CONCENTRATION</div>
+    <div class="risk-desc">A handful of hyperscalers still drive the majority of AI accelerator demand.</div>
+  </div>
+  <div class="risk-item">
+    <div class="risk-label">CLOUD CAPEX DIGESTION</div>
+    <div class="risk-desc">If cloud buyers pause deployments after major buildouts, near-term growth could decelerate sharply.</div>
+  </div>
+  <div class="risk-item">
+    <div class="risk-label">EXPORT CONTROLS</div>
+    <div class="risk-desc">Policy changes remain a live variable for shipment mix and regional revenue exposure.</div>
+  </div>
+  <div class="risk-item">
+    <div class="risk-label">MULTIPLE COMPRESSION</div>
+    <div class="risk-desc">With expectations already high, even strong execution may not protect the stock from valuation resets.</div>
+  </div>
+</div>
+
+<!-- ANALYST SUMMARY -->
+<div class="analyst-box">
+  <div class="analyst-label">Analyst Summary</div>
+  Our stance remains constructive on the business and more selective on the stock. NVIDIA still benefits from strong AI training and inference demand, a sticky software stack, and broad customer urgency. The risk is less operational collapse than expectation saturation. Investors should watch hyperscaler order cadence, margin mix, and signs that software monetization is beginning to supplement hardware economics.
+</div>
+
+<!-- FOOTER -->
+<div class="report-footer">
+  <span>Illustrative research note. Not investment advice.</span>
+  <span>Folio contributors · April 29, 2026</span>
+</div>
+
+</body>
+</html>
