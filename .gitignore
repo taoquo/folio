@@ -42,3 +42,7 @@ docs/superpowers/
 /scripts/repair_evidence.py
 /scripts/build_repair_report.py
 /scripts/templates/repair-comparison.html
+
+# Exploration: rendered colour-scheme pages are intermediate, the comparison
+# page keeps its own copies.
+dist/color-schemes/
