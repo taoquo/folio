@@ -20,15 +20,40 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-# The parchment palette, kept in one place. A theme profile supplies colours in
-# the IR; these are the defaults when it does not.
-PALETTE = {
-    "canvas": "F6F0EA",
-    "ink": "24211D",
-    "muted": "85776F",
-    "accent": "B83D2E",
-    "rule": "E5D9CE",
+# The colour roles a deck paints with. The values come from the theme profile,
+# so a deck and a page from the same document agree -- they did not before: this
+# module kept a private palette whose ink and rule appeared nowhere else in the
+# repository, and a deck came out in a different colour from its PDF.
+PALETTE_ROLES = {
+    "canvas": "color.surface.page",
+    "ink": "color.text.primary",
+    "muted": "color.text.muted",
+    "accent": "color.accent.brand",
+    "rule": "color.border.default",
 }
+
+
+def palette(theme: str | None = None) -> dict[str, str]:
+    """The deck's colours, resolved from the theme.
+
+    Hex without the leading `#`, which is what python-pptx takes.
+    """
+    import os
+    import sys
+
+    scripts = Path(__file__).resolve().parents[2]
+    if str(scripts) not in sys.path:
+        sys.path.insert(0, str(scripts))
+    import style_resolver
+
+    name = (theme or os.environ.get("FOLIO_THEME") or "").strip() or None
+    style = style_resolver.resolve(names={"theme": name} if name else None)
+    out: dict[str, str] = {}
+    for key, role in PALETTE_ROLES.items():
+        value = style.get(role)
+        text = str(value).strip() if value is not None else ""
+        out[key] = text.lstrip("#").upper() if text.startswith("#") else ""
+    return out
 
 SLIDE_WIDTH_IN = 13.333
 SLIDE_HEIGHT_IN = 7.5
@@ -279,10 +304,14 @@ def write_pptx(document: Any, output: Path) -> Path:
     if not slides:
         raise PptxWriterError("document produced no slides")
 
-    canvas = RGBColor.from_string(PALETTE["canvas"])
-    ink = RGBColor.from_string(PALETTE["ink"])
-    muted = RGBColor.from_string(PALETTE["muted"])
-    accent = RGBColor.from_string(PALETTE["accent"])
+    colours = palette()
+    missing = [key for key, value in colours.items() if not value]
+    if missing:
+        raise PptxWriterError(f"theme did not supply: {', '.join(sorted(missing))}")
+    canvas = RGBColor.from_string(colours["canvas"])
+    ink = RGBColor.from_string(colours["ink"])
+    muted = RGBColor.from_string(colours["muted"])
+    accent = RGBColor.from_string(colours["accent"])
 
     presentation = Presentation()
     presentation.slide_width = Inches(SLIDE_WIDTH_IN)

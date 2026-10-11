@@ -20,6 +20,7 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 | `scripts/build.py` | PDF / PPTX build and verification script, plus placeholder / orphan / rhythm checks | Low |
 | `scripts/folio.py` | Drawing DSL CLI, routing, render, import, catalog | Low |
 | `scripts/page_contracts.py` | Single source for page-count contracts, consumed by every checker | Low |
+| `references/profiles/theme/` | Colour schemes: a palette of raw values and the semantic roles that point at it | Medium |
 | `scripts/document_ir/` | Document IR: model, validator, readers, HTML and PPTX writers | Medium |
 | `scripts/renderers/` | Renderer protocol and the WeasyPrint adapter | Low |
 | `scripts/pipeline.py` | Chooses the render path via `FOLIO_PIPELINE` | Low |
@@ -61,7 +62,9 @@ python3 scripts/pipeline.py rollback-drill    # every mode can be left by config
 python3 scripts/migration.py status           # IR readiness per document type
 python3 scripts/fidelity.py measure           # IR path against the template path
 python3 scripts/projection.py check           # the style projection layer is well formed
-python3 scripts/color_sources.py check        # the four colour sources agree
+python3 scripts/color_sources.py check        # the colour sources agree, and the
+                                              # template-literal ledger is intact
+python3 scripts/theme_switch_check.py         # one palette edit moves every artifact
 python3 scripts/spacing_probe.py compare --genre one-pager   # rendered spacing vs the model
 ```
 

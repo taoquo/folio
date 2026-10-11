@@ -171,7 +171,14 @@ def _parse_yaml(text: str) -> dict:
         indent = len(stripped) - len(stripped.lstrip())
         content = stripped.strip()
 
-        while stack and indent <= stack[-1][0]:
+        # A block sequence may be written at its key's own indentation, which is
+        # how a YAML dumper emits one. Such an item belongs to the list on top of
+        # the stack, so the same-indent pop is skipped for it.
+        is_item = content.startswith("- ")
+        while stack and (
+            indent < stack[-1][0]
+            or (indent == stack[-1][0] and not (is_item and isinstance(stack[-1][1], list)))
+        ):
             stack.pop()
         container = stack[-1][1]
 
@@ -239,7 +246,11 @@ def _parse_yaml(text: str) -> dict:
             for nxt in lines[index:]:
                 if not nxt.strip() or nxt.lstrip().startswith("#"):
                     continue
-                if len(nxt) - len(nxt.lstrip()) > indent:
+                nxt_indent = len(nxt) - len(nxt.lstrip())
+                # A block sequence may sit at its key's own indentation, which is
+                # how a YAML dumper writes one; deciding by "deeper" alone read
+                # such a sequence as an empty mapping.
+                if nxt_indent > indent or (nxt_indent >= indent and nxt.strip().startswith("- ")):
                     lookahead = nxt.strip()
                 break
             new: Any = [] if (lookahead or "").startswith("- ") else {}

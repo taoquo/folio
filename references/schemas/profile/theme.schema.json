@@ -11,7 +11,11 @@
   "additionalProperties": false,
   "properties": {
     "version": {
-      "const": 1
+      "type": "integer",
+      "enum": [
+        1,
+        2
+      ]
     },
     "invariants": {
       "type": "object",
@@ -22,9 +26,6 @@
       "minProperties": 1,
       "additionalProperties": {
         "type": "object",
-        "required": [
-          "colors"
-        ],
         "additionalProperties": false,
         "properties": {
           "genre": {
@@ -79,8 +80,56 @@
               "$ref": "#/$defs/colour"
             },
             "description": "What a chart series is. Categorical hues imply no order, the sequential ramp is ordered, the diverging poles sit either side of a baseline."
+          },
+          "default": {
+            "type": "boolean",
+            "description": "Marks the theme a document gets when it names none. Exactly one profile in the repository may carry it."
+          },
+          "palette": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {
+              "$ref": "#/$defs/colour"
+            },
+            "description": "Raw colours, each written once. Only the color layer references these; a template never reads one."
+          },
+          "color": {
+            "type": "object",
+            "additionalProperties": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/colour"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/$defs/colour"
+                      },
+                      {
+                        "$ref": "#/$defs/palette_ref"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "description": "Semantic roles. Each is either a colour or a reference to a palette entry. The projection derives one CSS variable per path."
           }
-        }
+        },
+        "anyOf": [
+          {
+            "required": [
+              "colors"
+            ]
+          },
+          {
+            "required": [
+              "color"
+            ]
+          }
+        ]
       }
     }
   },
@@ -88,6 +137,20 @@
     "colour": {
       "type": "string",
       "pattern": "^#[0-9A-Fa-f]{6}$"
+    },
+    "palette_ref": {
+      "type": "object",
+      "required": [
+        "palette"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "palette": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "description": "A reference to a palette entry, by name."
     }
   }
 }

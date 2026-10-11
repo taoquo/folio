@@ -58,7 +58,11 @@ DOMAIN_FIELDS: dict[str, frozenset[str]] = {
         "punctuation", "hyphenation", "tracking", "notes",
     }),
     "theme": frozenset({
-        "palette", "colors", "accent", "decoration", "invariants", "overridable",
+        # The two-layer shape. `palette` holds raw colours; `color` holds the
+        # roles a template reads and points at the palette.
+        "palette", "color", "default",
+        # The flat domains, kept while templates migrate onto `color`.
+        "colors", "accent", "decoration", "invariants", "overridable",
         # What a value means, and what a chart series is. Both are colour
         # decisions, so both belong to the theme rather than to a template.
         "status", "data",
@@ -158,6 +162,40 @@ def _load_profiles() -> tuple[dict[str, dict[str, dict]], dict[str, dict]]:
     return resolved, defaults
 
 
+
+def _expand_palette(body: Mapping[str, Any]) -> tuple[Mapping[str, Any], dict[str, str]]:
+    """Replace `{palette: name}` references with the palette's value.
+
+    A theme states its roles once and points them at a palette entry, so a
+    colour five roles share is written once. Every consumer then reads a plain
+    colour, which is what keeps the two-layer shape from leaking into the
+    renderers.
+
+    Returns the body with references expanded, and a map from role path to the
+    palette entry it came from, so provenance survives.
+    """
+    palette = body.get("palette")
+    if not isinstance(palette, Mapping) or not palette:
+        return body, {}
+
+    origin: dict[str, str] = {}
+
+    def expand(node: Any, prefix: str) -> Any:
+        if isinstance(node, Mapping):
+            if set(node) == {"palette"}:
+                name = str(node["palette"])
+                origin[prefix] = name
+                return palette.get(name, node)
+            return {key: expand(item, f"{prefix}.{key}" if prefix else str(key))
+                    for key, item in node.items()}
+        return node
+
+    expanded = dict(body)
+    if "color" in body:
+        expanded["color"] = expand(body["color"], "color")
+    return expanded, origin
+
+
 def _walk(value: Any, prefix: str = "") -> Iterable[tuple[str, Any]]:
     """Flatten a mapping into dotted paths, keeping leaves only."""
     if isinstance(value, Mapping):
@@ -219,6 +257,20 @@ def resolve(
     selected: dict[str, str] = dict(names or {})
     if not selected:
         selected = _select_by_genre(profiles, genre, effective_language)
+    # The theme is chosen by name, or by the one profile marked `default`.
+    # Leaving it to genre scoring would make `genre` mean "document type" and
+    # "colour scheme" at once.
+    if selected.get("theme"):
+        if selected["theme"] not in (profiles.get("theme") or {}):
+            available = ", ".join(theme_profile_names(profiles)) or "none"
+            style.violations.append(
+                f"theme: no profile named '{selected['theme']}' (available: {available})"
+            )
+            selected.pop("theme", None)
+    elif profiles.get("theme"):
+        fallback = default_theme_name(profiles)
+        if fallback:
+            selected["theme"] = fallback
 
     # Order matters: later domains may refine a shared field, and the order is
     # the documented precedence rather than an accident of iteration.
@@ -234,6 +286,9 @@ def resolve(
             continue
 
         style.domains[kind] = name
+        origin: dict[str, str] = {}
+        if kind == "theme":
+            body, origin = _expand_palette(body)
         for path, value in _walk(body):
             if not _owned_by(kind, path):
                 style.violations.append(
@@ -245,6 +300,8 @@ def resolve(
             # records that it did.
             previous = style.values.get(path)
             chain = (previous.chain + (f"{kind}:{name}",)) if previous else (f"{kind}:{name}",)
+            if path in origin:
+                chain = chain + (f"{path.split('.')[0]}:{name}:palette.{origin[path]}",)
             style.values[path] = ResolvedValue(
                 path=path, value=value, source=f"{kind}:{name}", chain=chain
             )
@@ -313,6 +370,34 @@ def _select_by_genre(
         chosen[kind] = next(iter(sorted(profiles[kind])))
 
     return chosen
+
+
+def default_theme_name(profiles: Mapping[str, Mapping[str, Any]] | None = None) -> str | None:
+    """The theme a document gets when it names none.
+
+    A profile marks itself with `default: true`. Exactly one may, and the check
+    that enforces that is `profile_check`; here an ambiguous set is reported
+    rather than resolved by an accident of ordering.
+    """
+    if profiles is None:
+        profiles, _ = _load_profiles()
+    themes = profiles.get("theme") or {}
+    marked = [name for name, body in themes.items()
+              if isinstance(body, Mapping) and body.get("default")]
+    if len(marked) == 1:
+        return marked[0]
+    if not marked and themes:
+        # No marker: fall back to the first name, which is the pre-marker
+        # behaviour, so an unmarked set keeps working.
+        return sorted(themes)[0]
+    return None
+
+
+def theme_profile_names(profiles: Mapping[str, Mapping[str, Any]] | None = None) -> list[str]:
+    """Every theme a document may name."""
+    if profiles is None:
+        profiles, _ = _load_profiles()
+    return sorted((profiles.get("theme") or {}).keys())
 
 
 def _best_match(

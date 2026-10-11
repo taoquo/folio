@@ -29,8 +29,8 @@ class SourceReadingTests(TestCase):
         # Not by parsing the file: the resolver is what a renderer sees, and a
         # profile value that loads as an empty string is not a colour.
         theme = color_sources._theme_declarations()
-        self.assertEqual("#F6F0EA", theme.get("colors.paper"))
-        self.assertEqual("#B83D2E", theme.get("accent.brand"))
+        self.assertEqual("#F6F0EA", theme.get("color.surface.page"))
+        self.assertEqual("#B83D2E", theme.get("color.accent.brand"))
 
     def test_a_template_declaration_is_read(self) -> None:
         template = color_sources._template_declarations()
@@ -94,7 +94,7 @@ class ThemeDomainTests(TestCase):
         style = style_resolver.resolve(genre="one-pager")
         for name in ("positive", "caution", "negative", "informative"):
             with self.subTest(name=name):
-                value = style.values.get(f"status.{name}")
+                value = style.values.get(f"color.status.{name}")
                 self.assertIsNotNone(value)
                 self.assertTrue(str(value.value).startswith("#"))
 
@@ -104,15 +104,15 @@ class ThemeDomainTests(TestCase):
         style = style_resolver.resolve(genre="one-pager")
         for name in ("positive", "caution", "negative", "informative"):
             with self.subTest(name=name):
-                self.assertIn(f"status.{name}_tint", style.values)
+                self.assertIn(f"color.status.{name}-tint", style.values)
 
     def test_the_data_domain_covers_three_palettes(self) -> None:
         import style_resolver
 
         style = style_resolver.resolve(genre="one-pager")
-        categorical = [k for k in style.values if k.startswith("data.category_")]
-        sequential = [k for k in style.values if k.startswith("data.sequential_")]
-        diverging = [k for k in style.values if k.startswith("data.diverging_")]
+        categorical = [k for k in style.values if k.startswith("color.data.category-")]
+        sequential = [k for k in style.values if k.startswith("color.data.sequential-")]
+        diverging = [k for k in style.values if k.startswith("color.data.diverging-")]
         # Six, because a chart series palette in this repository holds six and
         # a document that names fewer than a chart can draw would run short.
         self.assertEqual(6, len(categorical))
@@ -125,5 +125,57 @@ class ThemeDomainTests(TestCase):
         from drawing.theme.folio import DEFAULT_FOLIO_THEME
 
         style = style_resolver.resolve(genre="one-pager")
-        self.assertEqual(str(style.values["accent.brand"].value).upper(),
+        self.assertEqual(str(style.values["color.accent.brand"].value).upper(),
                          DEFAULT_FOLIO_THEME.brand.upper())
+
+
+class PaletteLayerTests(TestCase):
+    """A role points at a palette entry, so one edit moves every role.
+
+    Five roles share the brand red. Before the palette layer they shared it by
+    repeating the hex five times, and changing it meant finding all five.
+    """
+
+    def test_the_roles_that_share_a_colour_share_a_palette_entry(self) -> None:
+        import style_resolver
+
+        style = style_resolver.resolve(genre="one-pager")
+        origins = {
+            path: value.chain[-1].split("palette.")[-1]
+            for path, value in style.values.items()
+            if path.startswith("color.") and "palette." in value.chain[-1]
+        }
+        self.assertEqual("cinnabar", origins["color.accent.brand"])
+        self.assertEqual("cinnabar", origins["color.status.positive"])
+        self.assertEqual("cinnabar", origins["color.data.category-1"])
+        self.assertEqual("cinnabar", origins["color.data.diverging-positive"])
+
+    def test_a_role_resolves_to_the_palette_value(self) -> None:
+        import style_resolver
+
+        style = style_resolver.resolve(genre="one-pager")
+        palette_ink = style.values["palette.ink"].value
+        self.assertEqual(palette_ink, style.values["color.text.primary"].value)
+
+    def test_every_role_is_backed_by_a_palette_entry(self) -> None:
+        import style_resolver
+
+        style = style_resolver.resolve(genre="one-pager")
+        palette_names = {
+            path.split(".", 1)[1]
+            for path in style.values
+            if path.startswith("palette.")
+        }
+        for path, value in style.values.items():
+            if not path.startswith("color."):
+                continue
+            with self.subTest(role=path):
+                self.assertTrue(str(value.value).startswith("#"))
+        self.assertTrue(palette_names)
+
+    def test_the_palette_holds_each_value_once(self) -> None:
+        import style_resolver
+
+        style = style_resolver.resolve(genre="one-pager")
+        values = [str(v.value).upper() for k, v in style.values.items() if k.startswith("palette.")]
+        self.assertEqual(len(values), len(set(values)))

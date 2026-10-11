@@ -1,105 +1,140 @@
-# Theme profiles
+# Theme profile
 #
-# Theme is appearance: the parchment canvas, the cinnabar accent, and the
-# strokes that carry structure. It deliberately does NOT contain type sizes,
-# leading, hyphenation or page rules -- those live in the typography and page
-# profiles.
+# Two layers, and the split is the point.
 #
-# This split is the point of the file. Today the template `:root` block holds
-# colours and the `--serif` stack side by side, so "change the theme" and
-# "change the typography" are the same edit. Separating them is what makes
-# "switching theme must not reflow the document" a checkable claim rather than
-# a hope.
+# `palette` holds each raw colour once. `color` holds the roles a document uses
+# and points them at the palette. Five roles share the brand red -- the accent,
+# the positive status, the first chart category, a step of the sequential ramp
+# and the positive diverging pole -- and before this file existed they shared it
+# by repeating the same hex five times. Changing it meant finding all five.
 #
-# Values are the ones templates render with today, cross-checked against
-# references/tokens.json.
+# A template reads `color`, never `palette`. The projection derives a CSS
+# variable from each role's path: `color.surface.page` becomes
+# `--color-surface-page`.
+#
+# Values are the ones the templates render with today, so this restructure does
+# not move a page.
+#
+# A scheme may omit `status` (it inherits the accent) and `data` (it inherits a
+# categorical order from the palette), so adopting a scheme does not require
+# designing fourteen chart colours.
 
-version: 1
-
+version: 2
 profiles:
   folio-classic-v1:
-    genre: shared
-    # Canvas and neutrals
-    colors:
-      paper: "#F6F0EA"        # --parchment
-      surface: "#FBF7F3"      # --ivory
-      sand: "#E9DED4"         # --sand
-      border: "#E9DED4"       # --border
-      border_soft: "#E8DED6"  # --border-soft
-      text: "#191514"         # --near-black
-      text_warm: "#3A312D"    # --dark-warm
-      charcoal: "#4B3E39"
-      olive: "#5A4A43"
-      stone: "#85776F"
-    # Single accent. The design system allows exactly one; see
-    # references/decisions/0006-folio-single-accent-is-theme-invariant.md
-    accent:
-      brand: "#B83D2E"
-      tint: "#F7E6E1"
-      tint_strong: "#F1D2CC"
-      tag_bg: "#F1D2CC"
-    # What a value means, not how it looks. A status colour is only used
-    # together with a word: colour alone is not an accessible signal, and a
-    # greyscale print loses it entirely.
-    #
-    # `positive` is the brand red because a Chinese financial reader reads red
-    # as a gain. That is a deliberate departure from the Western convention, and
-    # it is why the meaning belongs in a profile rather than in a template.
-    status:
-      positive: "#B83D2E"
-      caution: "#A8722C"
-      negative: "#5A6B7A"
-      informative: "#4A6B7A"
-      # Tints for a background behind status text, paired with the same word.
-      positive_tint: "#F7E6E1"
-      caution_tint: "#F6EBD9"
-      negative_tint: "#E4E9ED"
-      informative_tint: "#E3ECEF"
-
-    # What a chart series is. A category colour says "this is a different
-    # series", never "this one is better"; a business meaning belongs to
-    # `status` and mixing the two is how a chart lies.
-    data:
-      # Categorical: distinguishable, no implied order.
-      category_1: "#B83D2E"
-      category_2: "#3D5A63"
-      category_3: "#8A5A16"
-      category_4: "#5C4A6B"
-      category_5: "#5A4A43"
-      category_6: "#4B3E39"
-      # Sequential: ordered, light to dark, for a value that only grows.
-      sequential_1: "#F7E6E1"
-      sequential_2: "#E5B9AE"
-      sequential_3: "#CE8474"
-      sequential_4: "#B83D2E"
-      sequential_5: "#7E241C"
-      # Diverging: a deviation either side of a baseline. The poles match the
-      # status colours so a chart and a callout agree.
-      diverging_negative: "#5A6B7A"
-      diverging_neutral: "#E9DED4"
-      diverging_positive: "#B83D2E"
-
+    default: true
+    palette:
+      parchment: '#F6F0EA'
+      ivory: '#FBF7F3'
+      sand: '#E9DED4'
+      warm-100: '#E8DED6'
+      ink: '#191514'
+      warm-800: '#3A312D'
+      warm-700: '#5A4A43'
+      warm-500: '#85776F'
+      cinnabar: '#B83D2E'
+      cinnabar-100: '#F7E6E1'
+      cinnabar-200: '#F1D2CC'
+      amber-700: '#A8722C'
+      slate-600: '#5A6B7A'
+      teal-600: '#4A6B7A'
+      amber-100: '#F6EBD9'
+      slate-100: '#E4E9ED'
+      teal-100: '#E3ECEF'
+      teal-800: '#3D5A63'
+      amber-800: '#8A5A16'
+      plum-700: '#5C4A6B'
+      coral-200: '#E5B9AE'
+      coral-400: '#CE8474'
+      cinnabar-700: '#7E241C'
+      warm-200: '#e3baa9'
+      warm-900: '#4B3E39'
+    color:
+      surface:
+        page:
+          palette: parchment
+        card:
+          palette: ivory
+      text:
+        primary:
+          palette: ink
+        secondary:
+          palette: warm-700
+        muted:
+          palette: warm-500
+        warm:
+          palette: warm-800
+      border:
+        default:
+          palette: sand
+        soft:
+          palette: warm-100
+        warm:
+          palette: warm-200
+      accent:
+        brand:
+          palette: cinnabar
+        tint:
+          palette: cinnabar-100
+        tag:
+          palette: cinnabar-200
+      status:
+        positive:
+          palette: cinnabar
+        caution:
+          palette: amber-700
+        negative:
+          palette: slate-600
+        informative:
+          palette: teal-600
+        positive-tint:
+          palette: cinnabar-100
+        caution-tint:
+          palette: amber-100
+        negative-tint:
+          palette: slate-100
+        informative-tint:
+          palette: teal-100
+      data:
+        category-1:
+          palette: cinnabar
+        category-2:
+          palette: teal-800
+        category-3:
+          palette: amber-800
+        category-4:
+          palette: plum-700
+        category-5:
+          palette: warm-700
+        category-6:
+          palette: warm-900
+        sequential-1:
+          palette: cinnabar-100
+        sequential-2:
+          palette: coral-200
+        sequential-3:
+          palette: coral-400
+        sequential-4:
+          palette: cinnabar
+        sequential-5:
+          palette: cinnabar-700
+        diverging-negative:
+          palette: slate-600
+        diverging-neutral:
+          palette: sand
+        diverging-positive:
+          palette: cinnabar
     decoration:
       rule_width_pt: 0.5
       corner_radius_pt: 0
-      # Structural rules, not type. Kept here because they are appearance.
-      hairline: "#E9DED4"
-    # Tokens that agents may override without touching layout.
+      hairline: '#E9DED4'
     overridable:
-      - accent.brand
-      - accent.tint
-      - accent.tint_strong
-      # A genre with its own convention may remap a status meaning; the words
-      # stay the same, so a reader is never left with a colour alone.
-      - status.positive
-      - status.caution
-      - status.negative
-      - status.informative
-
-# Constraint carried over from the design system: brand colour may be changed,
-# but the warm palette (parchment plus warm neutrals) stays in force. A theme
-# that introduces a cool grey is rejected by `build.py --check` today via
-# COOL_GRAY_BLOCKLIST; recording it here makes the rule explicit.
+    - accent.brand
+    - accent.tint
+    - status.positive
+    - status.caution
+    - status.negative
+    - status.informative
 invariants:
   palette: warm
   forbid_cool_grays: true

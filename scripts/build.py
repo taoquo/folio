@@ -405,6 +405,10 @@ def build_html(name: str, source: str, min_pages: int, max_pages: int,
             from drawing.output import apply_html_output_profile
 
             source_html = apply_html_output_profile(src.read_text(encoding="utf-8"), "page-preview")
+            # A diagram belongs to no document type, so it takes the default
+            # theme; the block carries the same alias names the template reads,
+            # which is what makes one palette edit reach a diagram too.
+            source_html = _inject_theme_colours(source_html)
             render_html_to_pdf(source_html, src.parent, out)
         else:
             render_html_to_pdf(src, src.parent, out)
@@ -698,6 +702,70 @@ def _sync_diagram_showcase(config: dict[str, Any], png_path: Path, pdf_path: Pat
     _write_showcase_png(png_path, demo_png)
     demo_pdf.write_bytes(pdf_path.read_bytes())
     demo_html.write_text(_showcase_demo_html(showcase, config["png"]), encoding="utf-8")
+
+
+
+def _inject_theme_colours(html: str) -> str:
+    """Project the theme's colours into a diagram page.
+
+    Returns the html unchanged when the projection layer is off or produces
+    nothing, so a diagram can always be rendered.
+    """
+    try:
+        import projection
+    except Exception:  # pragma: no cover - depends on the host layout
+        return html
+    import os
+
+    theme = (os.environ.get("FOLIO_THEME") or "").strip() or None
+    try:
+        block = projection.style_projection(None, None, theme)
+    except Exception:  # pragma: no cover - a broken profile must not stop a build
+        return html
+    html = _retarget_literal_colours(html, theme)
+    return projection.inject(html, block) if block and not block.empty else html
+
+
+def _retarget_literal_colours(html: str, theme: str | None = None) -> str:
+    """Swap a pre-palette template's literals for the selected theme's values.
+
+    A diagram template states `fill="#B83D2E"` rather than reading a variable.
+    Measured: this renderer ignores a CSS rule that would override a presentation
+    attribute and does not resolve `var()` inside one, so the literal has to be
+    replaced in the markup.
+
+    What each literal means is read from
+    `references/theme/template-literal-ledger.json` -- recorded rather than
+    derived, because the default theme is the thing being changed and cannot be
+    its own reference. With the default theme selected the mapping is the
+    identity, so nothing moves.
+    """
+    try:
+        import json
+
+        import style_resolver
+    except Exception:  # pragma: no cover - depends on the host layout
+        return html
+
+    ledger_path = ROOT / "references" / "theme" / "template-literal-ledger.json"
+    if not ledger_path.is_file():
+        return html
+    try:
+        ledger = json.loads(ledger_path.read_text(encoding="utf-8")).get("shipped") or {}
+    except Exception:  # pragma: no cover - a broken ledger must not stop a build
+        return html
+
+    try:
+        style = style_resolver.resolve(names={"theme": theme} if theme else None)
+    except Exception:  # pragma: no cover - a broken profile must not stop a build
+        return html
+
+    for literal, entry in ledger.items():
+        value = style.get(f"palette.{entry}")
+        replacement = str(value).strip() if value is not None else ""
+        if replacement.startswith("#") and replacement.upper() != literal.upper():
+            html = re.sub(re.escape(literal), replacement, html, flags=re.IGNORECASE)
+    return html
 
 
 def build_all() -> int:

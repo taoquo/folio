@@ -88,136 +88,21 @@ class Report:
 # --------------------------------------------------------------------------
 
 
-def _scalar(text: str):
-    text = text.strip()
-    if not text:
-        return None
-    if text.startswith("{") and text.endswith("}"):
-        inner = text[1:-1].strip()
-        if not inner:
-            return {}
-        out = {}
-        # Split on commas that separate key: value pairs.
-        parts, depth, current = [], 0, ""
-        for ch in inner:
-            if ch in "[{":
-                depth += 1
-            elif ch in "]}":
-                depth -= 1
-            if ch == "," and depth == 0:
-                parts.append(current)
-                current = ""
-            else:
-                current += ch
-        parts.append(current)
-        for part in parts:
-            if ":" not in part:
-                continue
-            key, value = part.split(":", 1)
-            out[key.strip()] = _scalar(value)
-        return out
-    if text.startswith("[") and text.endswith("]"):
-        inner = text[1:-1].strip()
-        if not inner:
-            return []
-        return [_scalar(item) for item in inner.split(",")]
-    if (text.startswith('"') and text.endswith('"')) or (text.startswith("'") and text.endswith("'")):
-        return text[1:-1]
-    if text in {"true", "false"}:
-        return text == "true"
-    if text in {"null", "~"}:
-        return None
-    try:
-        return int(text)
-    except ValueError:
-        pass
-    try:
-        return float(text)
-    except ValueError:
-        pass
-    return text
-
-
-
-def _strip_comment(line: str) -> str:
-    """The line with its trailing comment removed.
-
-    A `#` begins a comment only outside quotes. Splitting on the first one
-    anywhere removes the `#` of a hex colour, which is how every value in the
-    theme profile came to load as an empty string.
-    """
-    quote: str | None = None
-    for index, char in enumerate(line):
-        if quote:
-            if char == quote:
-                quote = None
-            continue
-        if char in "\"'":
-            quote = char
-            continue
-        if char == "#":
-            return line[:index]
-    return line
-
-
 def parse_yaml(text: str) -> dict:
-    """Parse the profile subset. Comments and blank lines are ignored."""
-    root: dict = {}
-    # Stack of (indent, container)
-    stack: list[tuple[int, object]] = [(-1, root)]
-    pending_key: dict[int, str] = {}
+    """Read a profile file with the shared YAML reader.
 
-    for raw in text.splitlines():
-        line = _strip_comment(raw).rstrip()
-        if not line.strip():
-            continue
-        indent = len(line) - len(line.lstrip())
-        stripped = line.strip()
+    This module used to carry its own copy, which drifted: it recognized a block
+    scalar's opening marker and then dropped its contents, so a multi-line note
+    loaded as an empty mapping. The copy next to it in `corpus` had the same
+    same-indent sequence bug, and each fix had to be made twice.
 
-        while stack and indent <= stack[-1][0]:
-            stack.pop()
-        container = stack[-1][1]
+    There is one reader now -- `corpus._parse_yaml` -- and it is the stricter of
+    the two: a construct outside its subset raises rather than being skipped, so
+    a malformed profile cannot pass as an empty one.
+    """
+    from corpus import _parse_yaml
 
-        if stripped.startswith("- "):
-            item = stripped[2:].strip()
-            if not isinstance(container, list):
-                continue
-            if ":" in item and not item.startswith(("{", "[")):
-                key, value = item.split(":", 1)
-                entry = {key.strip(): _scalar(value)}
-                container.append(entry)
-                stack.append((indent, entry))
-            else:
-                container.append(_scalar(item))
-            continue
-
-        if ":" not in stripped:
-            continue
-        key, value = stripped.split(":", 1)
-        key = key.strip()
-        value = value.strip()
-
-        if value in {"", ">-", "|", "|-", ">", "|+"}:
-            # Block: decide list vs mapping by looking ahead.
-            lookahead = None
-            lines = text.splitlines()
-            idx = lines.index(raw)
-            for nxt in lines[idx + 1:]:
-                nxt_clean = _strip_comment(nxt).rstrip()
-                if not nxt_clean.strip():
-                    continue
-                if len(nxt_clean) - len(nxt_clean.lstrip()) > indent:
-                    lookahead = nxt_clean.strip()
-                break
-            new: object = [] if (lookahead or "").startswith("- ") else {}
-            if isinstance(container, dict):
-                container[key] = new
-            stack.append((indent, new))
-            pending_key[indent] = key
-        else:
-            if isinstance(container, dict):
-                container[key] = _scalar(value)
-    return root
+    return _parse_yaml(text)
 
 
 def load_profiles() -> dict[str, dict[str, dict]]:
@@ -609,8 +494,12 @@ def check_schemas(report: Report) -> None:
     schema_dir = ROOT / "references" / "schemas" / "profile"
     for kind, schema_name in PROFILE_SCHEMAS.items():
         schema_path = schema_dir / schema_name
-        profile_path = PROFILES / kind / PROFILE_FILES.get(kind, "folio-v1.yaml")
-        if not schema_path.is_file() or not profile_path.is_file():
+        # Every file in the kind's directory. A scheme stored in a second file
+        # has to be validated too, or the first thing a new colour scheme does is
+        # bypass the schema.
+        kind_dir = PROFILES / kind
+        profile_paths = sorted(kind_dir.glob("*.yaml")) if kind_dir.is_dir() else []
+        if not schema_path.is_file() or not profile_paths:
             report.warn("PROFILE.SCHEMA.MISSING", kind, "schema or profile file not found")
             continue
         try:
@@ -619,10 +508,20 @@ def check_schemas(report: Report) -> None:
         except Exception as exc:
             report.error("PROFILE.SCHEMA.INVALID", kind, f"schema is not valid: {exc}")
             continue
-        data = _load_profile_file(profile_path)
-        for error in Draft202012Validator(schema).iter_errors(data):
-            location = ".".join(str(p) for p in error.path) or "(root)"
-            report.error("PROFILE.SCHEMA.VIOLATION", f"{kind}:{location}", error.message)
+        validator = Draft202012Validator(schema)
+        for profile_path in profile_paths:
+            try:
+                data = _load_profile_file(profile_path)
+            except Exception as exc:  # noqa: BLE001 - reported as a finding
+                report.error("PROFILE.PARSE", f"{kind}/{profile_path.name}", str(exc))
+                continue
+            for error in validator.iter_errors(data):
+                location = ".".join(str(p) for p in error.path) or "(root)"
+                report.error(
+                    "PROFILE.SCHEMA.VIOLATION",
+                    f"{kind}/{profile_path.name}:{location}",
+                    error.message,
+                )
 
 
 def _load_profile_file(path: Path) -> dict:
@@ -630,6 +529,24 @@ def _load_profile_file(path: Path) -> dict:
     from corpus import _parse_yaml
 
     return _parse_yaml(path.read_text(encoding="utf-8"))
+
+
+def check_default_theme(profiles: dict[str, dict[str, dict]], report: Report) -> None:
+    """Exactly one theme carries `default: true`.
+
+    The default decides what every document that names no scheme renders in. Two
+    markings, or none, would make that an accident of ordering -- which is what
+    it was before, when a second theme changed the answer silently.
+    """
+    themes = profiles.get("theme") or {}
+    marked = sorted(name for name, body in themes.items()
+                    if isinstance(body, dict) and body.get("default"))
+    if len(marked) > 1:
+        report.error("PROFILE.THEME.DEFAULT_AMBIGUOUS", "theme",
+                     f"more than one theme is marked default: {', '.join(marked)}")
+    elif not marked and themes:
+        report.warn("PROFILE.THEME.DEFAULT_MISSING", "theme",
+                    f"no theme is marked default; {sorted(themes)[0]} applies by order")
 
 
 def run_checks() -> Report:
@@ -646,6 +563,7 @@ def run_checks() -> Report:
     }
 
     check_schemas(report)
+    check_default_theme(profiles, report)
     check_structure(profiles, report)
     check_page_contracts(profiles, report)
     check_typography_matches_templates(profiles, report)

@@ -54,6 +54,56 @@ VARIABLE_MAP: dict[str, str] = {
     "paragraph.section_gap_pt": "--folio-section-gap",
 }
 
+# Legacy CSS variable -> the colour role that now owns it. The templates read
+# these names today; the projection emits both so nothing has to change at once.
+LEGACY_ALIASES: dict[str, str] = {
+    "--parchment": "color.surface.page",
+    "--ivory": "color.surface.card",
+    "--border": "color.border.default",
+    "--border-soft": "color.border.soft",
+    "--rule-warm": "color.border.warm",
+    "--near-black": "color.text.primary",
+    "--dark-warm": "color.text.warm",
+    "--olive": "color.text.secondary",
+    "--stone": "color.text.muted",
+    "--brand": "color.accent.brand",
+    "--brand-tint": "color.accent.tint",
+    "--tag-bg": "color.accent.tag",
+    "--status-positive": "color.status.positive",
+    "--status-caution": "color.status.caution",
+    "--status-negative": "color.status.negative",
+    "--status-informative": "color.status.informative",
+    "--status-positive-tint": "color.status.positive-tint",
+    "--status-caution-tint": "color.status.caution-tint",
+    "--status-negative-tint": "color.status.negative-tint",
+    "--status-informative-tint": "color.status.informative-tint",
+}
+
+COLOUR_PREFIX = "color."
+
+
+def colour_variable(path: str) -> str:
+    """The custom property a colour role becomes.
+
+    One rule, applied to the path: `color.text.primary` is
+    `--color-text-primary`. A hand-kept table is what made every new token cost
+    two names instead of one.
+    """
+    return "--" + path.replace(".", "-").replace("_", "-")
+
+
+def colour_paths(style: Any) -> list[tuple[str, str, str]]:
+    """Every colour role, as (resolved path, variable name, value)."""
+    out: list[tuple[str, str, str]] = []
+    for path, resolved in style.values.items():
+        if not path.startswith(COLOUR_PREFIX):
+            continue
+        value = str(resolved.value).strip()
+        if value.startswith("#"):
+            out.append((path, colour_variable(path), value))
+    return out
+
+
 # Values that are not lengths and need a unit appended.
 UNIT_SUFFIX = {
     "body.size_pt": "pt",
@@ -101,11 +151,17 @@ def _css_value(path: str, value: Any) -> str | None:
     return text
 
 
-def style_projection(genre: str | None, language: str | None) -> Projection:
-    """The variable layer for a document's resolved style."""
+def style_projection(genre: str | None, language: str | None,
+                     theme: str | None = None) -> Projection:
+    """The variable layer for a document's resolved style.
+
+    `theme` names a colour scheme; `None` takes the profile marked `default`.
+    """
     import style_resolver
 
-    style = style_resolver.resolve(genre=genre, language=language)
+    style = style_resolver.resolve(
+        genre=genre, language=language, names={"theme": theme} if theme else None
+    )
     projected: dict[str, str] = {}
     sources: dict[str, str] = {}
     skipped: list[str] = []
@@ -119,6 +175,22 @@ def style_projection(genre: str | None, language: str | None) -> Projection:
         projected[variable] = css_value
         sources[variable] = style.source_of(path) or "unknown"
 
+    # Colour, by the derived name.
+    colours: dict[str, str] = {}
+    for path, variable, css_value in colour_paths(style):
+        projected[variable] = css_value
+        sources[variable] = style.source_of(path) or "unknown"
+        colours[variable] = css_value
+
+    # The names the templates read today, pointed at the roles that now own the
+    # values. Emitted only when the role actually carries a colour, so a theme
+    # that omits `status` does not emit an alias to nothing.
+    aliases: dict[str, str] = {}
+    for legacy, role in LEGACY_ALIASES.items():
+        variable = colour_variable(role)
+        if variable in colours:
+            aliases[legacy] = f"var({variable})"
+
     if not projected:
         return Projection(css="", projected={}, sources={}, skipped=skipped)
 
@@ -130,6 +202,16 @@ def style_projection(genre: str | None, language: str | None) -> Projection:
     for variable, value in sorted(projected.items()):
         lines.append(f"  {variable}: {value}; /* {sources[variable]} */")
     lines.append("}")
+    if aliases:
+        lines.append("")
+        lines.append("/* Migration aliases. The templates read these names; each one")
+        lines.append("   points at the colour role that owns the value now. An alias")
+        lines.append("   whose role is unused is deleted, so this block shrinks to")
+        lines.append("   nothing rather than becoming a second naming scheme. */")
+        lines.append(":root {")
+        for legacy, value in sorted(aliases.items()):
+            lines.append(f"  {legacy}: {value};")
+        lines.append("}")
 
     return Projection(css="\n".join(lines), projected=projected, sources=sources,
                       skipped=skipped)
@@ -240,13 +322,14 @@ def combined(
     include_policy: bool,
     include_gaps: bool = False,
     stylesheet: str | None = None,
+    theme: str | None = None,
 ) -> Projection:
     """The full injected block.
 
     The gap layer is off unless asked for: it is the only part that can move a
     page, and the templates already decide their own spacing.
     """
-    parts = [style_projection(genre, language)]
+    parts = [style_projection(genre, language, theme)]
     if include_policy:
         parts.append(policy_projection(genre))
     if include_gaps:
@@ -289,6 +372,68 @@ def inject(html: str, projection: Projection) -> str:
     return html[:match.start()] + block + html[match.start():]
 
 
+# Variables the projection emits that nothing reads yet, with the reason. A
+# variable added to this list is a decision to carry debt; one absent from it and
+# unread is a mistake.
+UNCONSUMED: dict[str, str] = {
+    # A status vocabulary, not a one-off: four meanings each with a tint, so a
+    # template that states one has the token. Three tints and `informative` are
+    # unread today.
+    "--color-data-category-1": "chart palette; the drawing theme owns the chart path",
+    "--color-data-category-2": "chart palette; the drawing theme owns the chart path",
+    "--color-data-category-3": "chart palette; the drawing theme owns the chart path",
+    "--color-data-category-4": "chart palette; the drawing theme owns the chart path",
+    "--color-data-category-5": "chart palette; the drawing theme owns the chart path",
+    "--color-data-diverging-negative": "chart palette; the drawing theme owns the chart path",
+    "--color-data-diverging-neutral": "chart palette; the drawing theme owns the chart path",
+    "--color-data-diverging-positive": "chart palette; the drawing theme owns the chart path",
+    "--color-data-sequential-1": "chart palette; the drawing theme owns the chart path",
+    "--color-data-sequential-2": "chart palette; the drawing theme owns the chart path",
+    "--color-data-sequential-3": "chart palette; the drawing theme owns the chart path",
+    "--color-data-sequential-4": "chart palette; the drawing theme owns the chart path",
+    "--color-data-sequential-5": "chart palette; the drawing theme owns the chart path",
+    "--color-status-informative": "status vocabulary",
+    "--color-status-informative-tint": "status vocabulary",
+    "--color-status-positive-tint": "status vocabulary",
+    "--color-status-negative-tint": "status vocabulary",
+    "--folio-body-size": "typography migration pending",
+    "--folio-body-leading": "typography migration pending",
+    "--folio-body-align": "typography migration pending",
+    "--folio-widows": "typography migration pending",
+    "--folio-orphans": "typography migration pending",
+    "--folio-max-hyphens": "typography migration pending",
+    "--folio-hyphens": "typography migration pending",
+    "--folio-section-gap": "typography migration pending",
+    "--color-data-category-6": "chart palette; the drawing theme owns the chart path",
+}
+
+# Templates a projected variable may be read from. Diagrams read the migration
+# aliases; documents read both.
+CONSUMER_DIRS = ("assets/templates", "assets/diagrams")
+
+
+def unconsumed_variables() -> list[str]:
+    """Projected variables no template reads."""
+    root = Path(__file__).resolve().parents[1]
+    used: set[str] = set()
+    for directory in CONSUMER_DIRS:
+        for path in (root / directory).glob("*.html"):
+            text = path.read_text(encoding="utf-8", errors="ignore")
+            used.update(re.findall(r"var\(\s*(--[a-z0-9-]+)", text))
+    projected = style_projection("one-pager", "zh-Hans-CN")
+
+    # The migration aliases carry a role to the pages that read the old name, so
+    # an alias that is read makes its target consumed.
+    for legacy, target in re.findall(r"(--[a-z0-9-]+):\s*var\((--[a-z0-9-]+)\)", projected.css):
+        if legacy in used:
+            used.add(target)
+
+    return sorted(
+        name for name in projected.projected
+        if name not in used and name not in UNCONSUMED
+    )
+
+
 def check() -> list[str]:
     """Problems with the projection layer itself."""
     issues: list[str] = []
@@ -304,6 +449,11 @@ def check() -> list[str]:
             continue
         if proj.css.count("{") != proj.css.count("}"):
             issues.append(f"{name} projection has unbalanced braces")
+
+    # A projected variable nothing reads is the failure this repository keeps
+    # repeating. Report it rather than let it accumulate.
+    for name in unconsumed_variables():
+        issues.append(f"projected but unread: {name}")
 
     # Injecting an empty projection must be a no-op.
     sample = "<html><style>body { color: red; }</style><body>x</body></html>"

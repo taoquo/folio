@@ -520,7 +520,10 @@ def embed_pptx_slot(
     run.text = caption
     run.font.name = "Charter"
     run.font.size = Pt(10)
-    run.font.color.rgb = RGBColor(0x5A, 0x4A, 0x43)
+    from drawing.theme import resolve_theme
+
+    caption_colour = resolve_theme(result.theme).olive.lstrip("#").upper()
+    run.font.color.rgb = RGBColor.from_string(caption_colour)
 
     data = accessible_data(result)
     placement_manifest = {

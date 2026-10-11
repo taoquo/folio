@@ -38,14 +38,18 @@ HEX = re.compile(r"#[0-9A-Fa-f]{6}\b")
 
 # The name each source uses for one meaning. A mismatch here is the failure the
 # survey found: two spellings of the same idea that drifted apart.
+# A meaning both themes must agree on: the document role, and the drawing
+# theme's name for it. The drawing theme is a twelve-token swap unit and keeps
+# its own field names, so the mapping is stated rather than derived.
 SHARED = {
-    "paper": "parchment",
-    "surface": "ivory",
-    "text": "near_black",
-    "brand": "brand",
-    "brand_tint": "brand_tint",
-    "border": "border",
-    "olive": "olive",
+    "surface.page": "parchment",
+    "surface.card": "ivory",
+    "text.primary": "near_black",
+    "text.muted": "stone",
+    "text.secondary": "olive",
+    "accent.brand": "brand",
+    "accent.tint": "brand_tint",
+    "border.default": "border",
 }
 
 
@@ -139,7 +143,7 @@ def check() -> Report:
 
     # A meaning shared by two sources must have one value.
     for theme_name, drawing_name in SHARED.items():
-        tv = theme.get(f"colors.{theme_name}") or theme.get(f"accent.{theme_name}")
+        tv = theme.get(f"color.{theme_name}")
         dv = drawing.get(drawing_name)
         if tv and dv and tv != dv:
             report.findings.append(Finding(
@@ -160,7 +164,54 @@ def check() -> Report:
                 severity="warning",
             ))
 
+    report.findings.extend(ledger_findings())
     return report
+
+
+def ledger_findings() -> list[Finding]:
+    """Problems with the record of what a template literal means.
+
+    The ledger is recorded rather than derived, because the default theme cannot
+    be its own reference while it is the thing being changed. That makes it
+    rot-able in two ways: a palette entry it names could be renamed, or a
+    template could be edited so the literal it records is gone. Both are checked,
+    so the bridge cannot quietly stop substituting.
+    """
+    import yaml
+
+    ledger_path = ROOT / "references" / "theme" / "template-literal-ledger.json"
+    if not ledger_path.is_file():
+        return [Finding("template-literal-ledger.json", "missing", severity="warning")]
+
+    ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
+    shipped = ledger.get("shipped") or {}
+    files = ledger.get("files") or {}
+
+    profile_path = ROOT / "references" / "profiles" / "theme" / "folio-classic-v1.yaml"
+    profile = yaml.safe_load(profile_path.read_text(encoding="utf-8"))
+    bodies = (profile.get("profiles") or {})
+    default = next((body for body in bodies.values() if body.get("default")), None)
+    palette = set((default or {}).get("palette") or {})
+
+    findings: list[Finding] = []
+    for literal, entry in sorted(shipped.items()):
+        if entry not in palette:
+            findings.append(Finding(
+                literal,
+                f"the ledger points at palette.{entry}, which no longer exists",
+            ))
+        for name in files.get(literal, []):
+            path = ROOT / name
+            if not path.is_file():
+                findings.append(Finding(literal, f"recorded file is gone: {name}"))
+                continue
+            text = path.read_text(encoding="utf-8", errors="ignore").upper()
+            if literal.upper() not in text:
+                findings.append(Finding(
+                    literal,
+                    f"{name} no longer contains it; the template was converted or edited",
+                ))
+    return findings
 
 
 def inventory() -> dict[str, Any]:

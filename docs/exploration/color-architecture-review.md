@@ -234,7 +234,49 @@ grep -c "B83D2E" assets/**/*.pdf 2>/dev/null    # 应为 0
 
 ---
 
-## 十一、复核命令
+## 十一、实施状态
+
+本节记录的清单已经落地。
+
+| 阶段 | 结果 |
+|---|---|
+| 1. PPTX 接上主题 | 已接。它的 ink 与 rule 曾是 `#24211D`/`#E5D9CE`，在别处都不存在；现在读主题 |
+| 2. `tokens.json` | 改为由色板生成，`--sync` 保留 |
+| 3. 文档 + 图表模板走投影 | 已接。文档 37 个颜色角色；图表模板经台账桥接 |
+| 4. Drawing 主题由色板派生 | 已接。12 个令牌中 7 个共享值取自文档主题 |
+| 5. `index.html` / demo 生成 | **未做**。两者是直接打开的静态文件，需构建时生成 |
+| 6. 主题升为两层 | 已做。`palette` + `color`，命名由路径派生 |
+
+另外落地：
+
+- `FOLIO_THEME` 选择色系；未设时取标记 `default` 的 profile
+- schema 校验 kind 目录下**全部**文件（此前只校验一个硬编码文件名）
+- 未读投影变量**门禁**：新变量无消费者即失败
+- 模板字面值台账 + 检查
+- 两个重复的 YAML 解析器合并为一个
+
+**验收已可复现**：
+
+```bash
+python3 scripts/theme_switch_check.py
+```
+
+实测输出（改动前后）：
+
+```
+artifact      old colour before    after  new colour before    after  verdict
+one-pager                  1021        0                  0      925  moved
+diagram                    5739        0                  0     5737  moved
+slides                       18        0                  0       18  moved
+```
+
+一条 `palette.cinnabar` 的改动让文档、图表、PPTX 三者同时改变，还原后同时复位。此前同样的一次改动让 PDF **字节不变**。
+
+**尚未落地的一项**：`index.html` 与 `assets/demos/*.html` 是读者直接用浏览器打开的静态文件，读不到 profile，必须构建时生成。它们目前在模板字面值台账里登记，但生成流程未做。
+
+---
+
+## 十二、复核命令
 
 ```bash
 # 全仓色值分布（排除构建产物）

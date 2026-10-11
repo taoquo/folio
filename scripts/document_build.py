@@ -18,6 +18,8 @@ The pipeline variable selects how the second one is produced:
   FOLIO_PIPELINE=ir-shadow   deliver the template result, also build the IR one
                              and compare them
   FOLIO_PIPELINE=ir          build from the Document IR (the default)
+  FOLIO_THEME=<name>         render in a named colour scheme; unset takes the
+                             theme profile marked `default`
 
 Both paths are real, both are runnable, and the choice is one variable. That is
 what makes a migration safe: the fallback is a configuration change, not a
@@ -33,6 +35,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import tempfile
 from dataclasses import dataclass, field
@@ -254,6 +257,9 @@ def _project(genre: str, language: str, fixture: dict[str, Any]):
     # makes it reachable: a projection nobody can turn on is a projection that
     # does not ship.
     include_gaps = _projection_enabled("FOLIO_GAP_PROJECTION", default=False)
+    # Which colour scheme the document renders in. Unset means the theme profile
+    # that marks itself `default`.
+    theme = (os.environ.get("FOLIO_THEME") or "").strip() or None
     stylesheet = None
     if include_gaps:
         template = _template_for(fixture) if fixture else None
@@ -264,6 +270,7 @@ def _project(genre: str, language: str, fixture: dict[str, Any]):
         include_policy=include_policy,
         include_gaps=include_gaps,
         stylesheet=stylesheet,
+        theme=theme,
     )
 
 

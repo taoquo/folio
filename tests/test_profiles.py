@@ -324,3 +324,32 @@ class ParserParityTests(TestCase):
                     differences.append(f"{Path(name).name}:{key}")
 
         self.assertEqual([], differences)
+
+
+class ParserParityWithCorpusTests(TestCase):
+    """The two hand-written YAML readers agree.
+
+    `corpus._parse_yaml` and `profile_check.parse_yaml` duplicate each other
+    closely, and a block sequence written at its key's own indentation was
+    misread as an empty mapping by both. The bug was found once and had to be
+    fixed twice; this fails if the next one lands in only one of them.
+    """
+
+    def test_both_readers_agree_on_a_profile_file(self) -> None:
+        import corpus
+        import profile_check
+
+        root = Path(__file__).resolve().parents[1]
+        for name in sorted((root / "references" / "profiles").rglob("*.yaml")):
+            with self.subTest(profile=name.name):
+                text = name.read_text(encoding="utf-8")
+                self.assertEqual(corpus._parse_yaml(text), profile_check.parse_yaml(text))
+
+    def test_both_accept_a_sequence_at_its_key_indentation(self) -> None:
+        import corpus
+        import profile_check
+
+        sample = "a:\n  b:\n  - one\n  - two\n  c: 1\n"
+        expected = {"a": {"b": ["one", "two"], "c": 1}}
+        self.assertEqual(expected, corpus._parse_yaml(sample))
+        self.assertEqual(expected, profile_check.parse_yaml(sample))

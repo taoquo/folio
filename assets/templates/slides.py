@@ -29,16 +29,66 @@ from drawing.hosting import add_fitted_picture
 # ═══════════════════════════════════════════════════════════
 
 # 色板
-PARCHMENT   = RGBColor(0xF6, 0xF0, 0xEA)
-IVORY       = RGBColor(0xFB, 0xF7, 0xF3)
-BRAND       = RGBColor(0xB8, 0x3D, 0x2E)
-BRAND_DEEP  = RGBColor(0x7E, 0x24, 0x1C)
-NEAR_BLACK  = RGBColor(0x19, 0x15, 0x14)
-DARK_WARM   = RGBColor(0x3A, 0x31, 0x2D)
-CHARCOAL    = RGBColor(0x4B, 0x3E, 0x39)
-OLIVE       = RGBColor(0x5A, 0x4A, 0x43)
-STONE       = RGBColor(0x85, 0x77, 0x6F)
-BORDER      = RGBColor(0xE9, 0xDE, 0xD4)
+_ROLES = {
+    "PARCHMENT": "color.surface.page",
+    "IVORY": "color.surface.card",
+    "BRAND": "color.accent.brand",
+    "NEAR_BLACK": "color.text.primary",
+    "DARK_WARM": "color.text.warm",
+    "OLIVE": "color.text.secondary",
+    "STONE": "color.text.muted",
+    "BORDER": "color.border.default",
+}
+
+
+def _theme_colours() -> dict[str, tuple[int, int, int]]:
+    """The deck's colours, from the theme profile.
+
+    Read at import so the constants below stay constants. A missing profile
+    layer leaves the literals in force, which is what keeps the generator
+    runnable on a host without the scripts on its path.
+    """
+    import os
+    import sys
+    from pathlib import Path
+
+    scripts = Path(__file__).resolve().parents[2] / "scripts"
+    if str(scripts) not in sys.path:
+        sys.path.insert(0, str(scripts))
+    try:
+        import style_resolver
+        name = (os.environ.get("FOLIO_THEME") or "").strip() or None
+        style = style_resolver.resolve(names={"theme": name} if name else None)
+    except Exception:
+        return {}
+    out: dict[str, tuple[int, int, int]] = {}
+    for constant, role in _ROLES.items():
+        value = style.get(role)
+        text = str(value).strip() if value is not None else ""
+        if text.startswith("#") and len(text) == 7:
+            out[constant] = tuple(int(text[i:i + 2], 16) for i in (1, 3, 5))
+    return out
+
+
+_THEME = _theme_colours()
+
+
+def _rgb(constant: str, fallback: tuple[int, int, int]):
+    from pptx.dml.color import RGBColor
+
+    return RGBColor(*_THEME.get(constant, fallback))
+
+
+PARCHMENT = _rgb("PARCHMENT", (0xF6, 0xF0, 0xEA))
+IVORY = _rgb("IVORY", (0xFB, 0xF7, 0xF3))
+BRAND = _rgb("BRAND", (0xB8, 0x3D, 0x2E))
+BRAND_DEEP = RGBColor(0x7E, 0x24, 0x1C)
+NEAR_BLACK = _rgb("NEAR_BLACK", (0x19, 0x15, 0x14))
+DARK_WARM = _rgb("DARK_WARM", (0x3A, 0x31, 0x2D))
+CHARCOAL = RGBColor(0x4B, 0x3E, 0x39)  # chart category; not a theme role
+OLIVE = _rgb("OLIVE", (0x5A, 0x4A, 0x43))
+STONE = _rgb("STONE", (0x85, 0x77, 0x6F))
+BORDER = _rgb("BORDER", (0xE9, 0xDE, 0xD4))
 WHITE       = RGBColor(0xff, 0xff, 0xff)
 
 # Fonts. Single serif per page. PPT falls back on the viewer's system.
