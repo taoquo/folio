@@ -345,7 +345,7 @@ FOLIO_THEME=folio-slate-v1 python3 scripts/build.py               # 文档、图
 FOLIO_THEME=folio-slate-v1 python3 scripts/build_static_theme.py  # index.html 与 demo 页
 ```
 
-不设置时，使用标记 `default` 的方案。全部定义在 `references/profiles/theme/`，一个文件就是一个完整色系：
+不设置时，使用标记 `default` 的方案，**本项目就是用 `folio-classic-v1` 构建的**：仓库里每一个示例、图表、幻灯片和页面都是默认色系。另外两套是供选择时参考的样例，不是待定的改动 —— 选择权在采用者手上，不指定 `FOLIO_THEME` 就不会用到它们。全部定义在 `references/profiles/theme/`，一个文件就是一个完整色系：
 
 - `palette` 存放原始色，每个只写一次。数字是明度阶梯上的位置：同族内编号越大越深，所以两个名字就能看出哪个更浅。
 - `color` 存放模板读取的语义角色，指向色板。`color.text.primary` 按一条规则派生出 `--color-text-primary`，所以加角色只需想一个名字。

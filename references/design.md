@@ -244,7 +244,10 @@ FOLIO_THEME=folio-slate-v1 python3 scripts/build.py
 FOLIO_THEME=folio-slate-v1 python3 scripts/build_static_theme.py
 ```
 
-Unset, the profile marked `default` is used. Adding a scheme is adding a file;
+Unset, the profile marked `default` is used, and that is the one this project builds with: every
+artifact in the repository is the default scheme. The other profiles are examples to decide from;
+choosing belongs to the adopter, and nothing selects them unless `FOLIO_THEME` names one.
+Adding a scheme is adding a file;
 `python3 scripts/check_theme_schemes.py` holds every one of them to the same bar
 -- the roles a template reads, contrast on both surfaces, the lightness ladder,
 and whether every palette entry can be reached. `color_sources.py check` compares

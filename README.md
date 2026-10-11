@@ -345,7 +345,7 @@ FOLIO_THEME=folio-slate-v1 python3 scripts/build.py               # documents, d
 FOLIO_THEME=folio-slate-v1 python3 scripts/build_static_theme.py  # index.html and the demos
 ```
 
-Unset, the profile marked `default` is used. `references/profiles/theme/` holds them all, and one file is the whole of a scheme:
+Unset, the profile marked `default` is used, and **`folio-classic-v1` is the one this project builds with**: every example, diagram, deck and page in this repository is the default scheme. The other two profiles are examples to decide from, not pending changes -- choosing is the adopter's, and nothing selects them unless `FOLIO_THEME` names one. `references/profiles/theme/` holds them all, and one file is the whole of a scheme:
 
 - `palette` holds each raw colour once. A number is a position on a lightness ladder: within a family, a higher number is darker, so two names say which colour is darker.
 - `color` holds the roles a template reads and points them at the palette. `color.text.primary` becomes `--color-text-primary` by one rule, so a new role needs one name rather than two.
