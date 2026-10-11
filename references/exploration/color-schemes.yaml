@@ -9,198 +9,367 @@
 # copying its values into `references/profiles/theme/`.
 #
 # Each scheme states a direction rather than a palette tweak, because the point
-# of the comparison is to choose a direction. Contrast ratios are computed from
-# these values and printed on the page; a scheme that fails is shown as failing
-# rather than quietly corrected.
+# of the comparison is to choose a direction. Contrast ratios, greyscale
+# separation and a colour-weakness check are computed from these values and
+# printed on the page; a scheme that fails is shown as failing rather than
+# quietly corrected.
 #
 # Conventions held constant across schemes, so the comparison isolates colour:
 #   - `status-positive` uses the scheme's own accent, the way the shipped theme
 #     does, so a reader who reads red as a gain is not silently switched to green.
-#   - `status-negative` is a cool slate in every scheme.
+#   - `status-negative` is a cool slate in every light scheme.
 #   - Body text sits on `parchment`; `ivory` is the card surface.
+#
+# Where the later schemes come from:
+#   Carbon's model is the one this repository already uses -- a theme is a full
+#   set of token values and the roles never change between themes. Carbon ships
+#   four themes spanning light and dark, so `dark-slate` is included.
+#
+#   The EU data visualisation guide is more specific: red and green weakness
+#   affects about one in twelve European men, palettes built from red, orange,
+#   brown and green are inaccessible to a significant share of readers, and the
+#   reliable axis is lightness. That is why `blue-institutional`, `blue-amber`
+#   and `lightness-ramp` exist, and why the shipped theme -- warm brown neutrals
+#   with a red accent, and positive red beside caution brown -- is worth
+#   measuring rather than assuming.
 
 version: 1
-
 schemes:
-  - id: warm-classic
-    label: 暖羊皮纸 · 朱砂（现状）
-    rationale: >-
-      当前主题。羊皮纸画布、暖中性色、朱砂作为唯一彩色。整体偏暖偏软，
-      长文档阅读舒适，但页面密度高时对比度偏弱。
-    shipped: true
-    tokens:
-      parchment: "#F6F0EA"
-      ivory: "#FBF7F3"
-      sand: "#E9DED4"
-      near-black: "#191514"
-      dark-warm: "#3A312D"
-      olive: "#5A4A43"
-      stone: "#85776F"
-      brand: "#B83D2E"
-      brand-tint: "#F7E6E1"
-      tag-bg: "#F1D2CC"
-      border: "#E9DED4"
-      border-soft: "#E8DED6"
-      rule-warm: "#e3baa9"
-      status-positive: "#B83D2E"
-      status-caution: "#A8722C"
-      status-negative: "#5A6B7A"
-      status-informative: "#4A6B7A"
-      status-positive-tint: "#F7E6E1"
-      status-caution-tint: "#F6EBD9"
-      status-negative-tint: "#E4E9ED"
-      status-informative-tint: "#E3ECEF"
-
-  - id: editorial-cool
-    label: 冷调编辑 · 深蓝
-    rationale: >-
-      画布转为中性偏冷，强调色为深蓝。层级更清晰、密度高的页面更易读，
-      适合技术文档与数据报告。代价是失去仓库当前的暖色识别。
-    tokens:
-      parchment: "#F2F3F5"
-      ivory: "#FAFBFC"
-      sand: "#E4E7EB"
-      near-black: "#14181C"
-      dark-warm: "#2C333A"
-      olive: "#4A545E"
-      stone: "#6F7A85"
-      brand: "#1F5FA8"
-      brand-tint: "#E4EDF7"
-      tag-bg: "#D3E2F2"
-      border: "#DFE3E8"
-      border-soft: "#E7EAEE"
-      rule-warm: "#C9D2DB"
-      status-positive: "#1F5FA8"
-      status-caution: "#9A6B12"
-      status-negative: "#8C3B2E"
-      status-informative: "#2A6E7A"
-      status-positive-tint: "#E4EDF7"
-      status-caution-tint: "#F5EBD8"
-      status-negative-tint: "#F3E3E0"
-      status-informative-tint: "#DFEDEF"
-
-  - id: high-contrast
-    label: 高对比 · 纯白纯黑
-    rationale: >-
-      白纸黑墨，强调色为深红。为打印与低质量输出优化，灰阶下层级最清楚。
-      代价是屏幕阅读偏硬，暖色质感完全消失。
-    tokens:
-      parchment: "#FFFFFF"
-      ivory: "#FFFFFF"
-      sand: "#EDEDED"
-      near-black: "#000000"
-      dark-warm: "#1A1A1A"
-      olive: "#333333"
-      stone: "#595959"
-      brand: "#B3001B"
-      brand-tint: "#FBE9EC"
-      tag-bg: "#F5D0D6"
-      border: "#C9C9C9"
-      border-soft: "#DCDCDC"
-      rule-warm: "#B0B0B0"
-      status-positive: "#B3001B"
-      status-caution: "#7A5000"
-      status-negative: "#1A4A7A"
-      status-informative: "#1A4A7A"
-      status-positive-tint: "#FBE9EC"
-      status-caution-tint: "#F7EEDB"
-      status-negative-tint: "#E2EAF3"
-      status-informative-tint: "#E2EAF3"
-
-  - id: ink-teal
-    label: 暖纸 · 墨青
-    rationale: >-
-      保留暖纸，但强调色换成深青。冷暖并存，既有暖色的阅读舒适，
-      又比朱砂更克制。适合研究报告与品牌文档。
-    tokens:
-      parchment: "#F4F1E9"
-      ivory: "#FBF9F4"
-      sand: "#E6E1D3"
-      near-black: "#101C1B"
-      dark-warm: "#243330"
-      olive: "#3F5350"
-      stone: "#6B7C78"
-      brand: "#0F6F6A"
-      brand-tint: "#E0F0EE"
-      tag-bg: "#C9E5E2"
-      border: "#E0DACB"
-      border-soft: "#E8E3D6"
-      rule-warm: "#C8BFA8"
-      status-positive: "#0F6F6A"
-      status-caution: "#8A5F10"
-      status-negative: "#8C3B2E"
-      status-informative: "#2A5F8A"
-      status-positive-tint: "#E0F0EE"
-      status-caution-tint: "#F4EBD6"
-      status-negative-tint: "#F3E3E0"
-      status-informative-tint: "#E1EAF3"
-
-  - id: plum-editorial
-    label: 浅梅白 · 深梅
-    rationale: >-
-      画布带极浅的梅调，强调色为深梅。偏文化与品牌气质，
-      适合作品集、宣言、品牌文档；对财务类内容可能过于柔和。
-    tokens:
-      parchment: "#F8F3F6"
-      ivory: "#FDFAFB"
-      sand: "#EDE2E9"
-      near-black: "#1A1218"
-      dark-warm: "#33222E"
-      olive: "#4E3C48"
-      stone: "#7C6B76"
-      brand: "#7A3E6B"
-      brand-tint: "#F2E3EE"
-      tag-bg: "#E6CEDF"
-      border: "#E9DCE4"
-      border-soft: "#EFE5EA"
-      rule-warm: "#D8C2CF"
-      status-positive: "#7A3E6B"
-      status-caution: "#8A5F10"
-      status-negative: "#3E5A7A"
-      status-informative: "#4A5F8A"
-      status-positive-tint: "#F2E3EE"
-      status-caution-tint: "#F4EBD6"
-      status-negative-tint: "#E2EAF3"
-      status-informative-tint: "#E6EBF5"
-
-  - id: graphite
-    label: 石墨 · 近单色
-    rationale: >-
-      完全去掉彩色，只靠字重、字号与留白建立层级，强调用深灰。
-      最克制，也最不依赖颜色；适合打印、法务与极简品牌。
-      代价是失去所有色彩识别与状态提示能力。
-    tokens:
-      parchment: "#F4F4F2"
-      ivory: "#FBFBFA"
-      sand: "#E6E6E2"
-      near-black: "#121212"
-      dark-warm: "#2A2A2A"
-      olive: "#4A4A4A"
-      stone: "#6E6E6E"
-      brand: "#2F2F2F"
-      brand-tint: "#EDEDED"
-      tag-bg: "#E0E0E0"
-      border: "#DCDCD8"
-      border-soft: "#E6E6E2"
-      rule-warm: "#C4C4C0"
-      status-positive: "#2F2F2F"
-      status-caution: "#6E6E6E"
-      status-negative: "#5A5A5A"
-      status-informative: "#4A4A4A"
-      status-positive-tint: "#EDEDED"
-      status-caution-tint: "#EAEAEA"
-      status-negative-tint: "#E4E4E4"
-      status-informative-tint: "#E6E6E6"
-
-# Contrast pairs checked for every scheme. The first two are body text; the rest
-# are the places a document puts colour on colour.
+- id: warm-classic
+  label: 暖羊皮纸 · 朱砂（现状）
+  rationale: 当前主题。羊皮纸画布、暖中性色、朱砂作为唯一彩色。整体偏暖偏软， 长文档阅读舒适，但页面密度高时对比度偏弱。
+  shipped: true
+  tokens:
+    parchment: '#F6F0EA'
+    ivory: '#FBF7F3'
+    sand: '#E9DED4'
+    near-black: '#191514'
+    dark-warm: '#3A312D'
+    olive: '#5A4A43'
+    stone: '#85776F'
+    brand: '#B83D2E'
+    brand-tint: '#F7E6E1'
+    tag-bg: '#F1D2CC'
+    border: '#E9DED4'
+    border-soft: '#E8DED6'
+    rule-warm: '#e3baa9'
+    status-positive: '#B83D2E'
+    status-caution: '#A8722C'
+    status-negative: '#5A6B7A'
+    status-informative: '#4A6B7A'
+    status-positive-tint: '#F7E6E1'
+    status-caution-tint: '#F6EBD9'
+    status-negative-tint: '#E4E9ED'
+    status-informative-tint: '#E3ECEF'
+- id: editorial-cool
+  label: 冷调编辑 · 深蓝
+  rationale: 画布转为中性偏冷，强调色为深蓝。层级更清晰、密度高的页面更易读， 适合技术文档与数据报告。代价是失去仓库当前的暖色识别。
+  tokens:
+    parchment: '#F2F3F5'
+    ivory: '#FAFBFC'
+    sand: '#E4E7EB'
+    near-black: '#14181C'
+    dark-warm: '#2C333A'
+    olive: '#4A545E'
+    stone: '#6F7A85'
+    brand: '#1F5FA8'
+    brand-tint: '#E4EDF7'
+    tag-bg: '#D3E2F2'
+    border: '#DFE3E8'
+    border-soft: '#E7EAEE'
+    rule-warm: '#C9D2DB'
+    status-positive: '#1F5FA8'
+    status-caution: '#9A6B12'
+    status-negative: '#8C3B2E'
+    status-informative: '#2A6E7A'
+    status-positive-tint: '#E4EDF7'
+    status-caution-tint: '#F5EBD8'
+    status-negative-tint: '#F3E3E0'
+    status-informative-tint: '#DFEDEF'
+- id: high-contrast
+  label: 高对比 · 纯白纯黑
+  rationale: 白纸黑墨，强调色为深红。为打印与低质量输出优化，灰阶下层级最清楚。 代价是屏幕阅读偏硬，暖色质感完全消失。
+  tokens:
+    parchment: '#FFFFFF'
+    ivory: '#FFFFFF'
+    sand: '#EDEDED'
+    near-black: '#000000'
+    dark-warm: '#1A1A1A'
+    olive: '#333333'
+    stone: '#595959'
+    brand: '#B3001B'
+    brand-tint: '#FBE9EC'
+    tag-bg: '#F5D0D6'
+    border: '#C9C9C9'
+    border-soft: '#DCDCDC'
+    rule-warm: '#B0B0B0'
+    status-positive: '#B3001B'
+    status-caution: '#7A5000'
+    status-negative: '#123A63'
+    status-informative: '#1F6E6A'
+    status-positive-tint: '#FBE9EC'
+    status-caution-tint: '#F7EEDB'
+    status-negative-tint: '#DFE7F2'
+    status-informative-tint: '#DEEFEE'
+- id: ink-teal
+  label: 暖纸 · 墨青
+  rationale: 保留暖纸，但强调色换成深青。冷暖并存，既有暖色的阅读舒适， 又比朱砂更克制。适合研究报告与品牌文档。
+  tokens:
+    parchment: '#F4F1E9'
+    ivory: '#FBF9F4'
+    sand: '#E6E1D3'
+    near-black: '#101C1B'
+    dark-warm: '#243330'
+    olive: '#3F5350'
+    stone: '#6B7C78'
+    brand: '#0F6F6A'
+    brand-tint: '#E0F0EE'
+    tag-bg: '#C9E5E2'
+    border: '#E0DACB'
+    border-soft: '#E8E3D6'
+    rule-warm: '#C8BFA8'
+    status-positive: '#0F6F6A'
+    status-caution: '#8A5F10'
+    status-negative: '#8C3B2E'
+    status-informative: '#2A5F8A'
+    status-positive-tint: '#E0F0EE'
+    status-caution-tint: '#F4EBD6'
+    status-negative-tint: '#F3E3E0'
+    status-informative-tint: '#E1EAF3'
+- id: plum-editorial
+  label: 浅梅白 · 深梅
+  rationale: 画布带极浅的梅调，强调色为深梅。偏文化与品牌气质， 适合作品集、宣言、品牌文档；对财务类内容可能过于柔和。
+  tokens:
+    parchment: '#F8F3F6'
+    ivory: '#FDFAFB'
+    sand: '#EDE2E9'
+    near-black: '#1A1218'
+    dark-warm: '#33222E'
+    olive: '#4E3C48'
+    stone: '#7C6B76'
+    brand: '#7A3E6B'
+    brand-tint: '#F2E3EE'
+    tag-bg: '#E6CEDF'
+    border: '#E9DCE4'
+    border-soft: '#EFE5EA'
+    rule-warm: '#D8C2CF'
+    status-positive: '#7A3E6B'
+    status-caution: '#8A5F10'
+    status-negative: '#3E5A7A'
+    status-informative: '#4A5F8A'
+    status-positive-tint: '#F2E3EE'
+    status-caution-tint: '#F4EBD6'
+    status-negative-tint: '#E2EAF3'
+    status-informative-tint: '#E6EBF5'
+- id: graphite
+  label: 石墨 · 近单色
+  rationale: 完全去掉彩色，只靠字重、字号与留白建立层级，强调用深灰。 最克制，也最不依赖颜色；适合打印、法务与极简品牌。 代价是失去所有色彩识别与状态提示能力。
+  tokens:
+    parchment: '#F4F4F2'
+    ivory: '#FBFBFA'
+    sand: '#E6E6E2'
+    near-black: '#121212'
+    dark-warm: '#2A2A2A'
+    olive: '#4A4A4A'
+    stone: '#6E6E6E'
+    brand: '#2F2F2F'
+    brand-tint: '#EDEDED'
+    tag-bg: '#E0E0E0'
+    border: '#DCDCD8'
+    border-soft: '#E6E6E2'
+    rule-warm: '#C4C4C0'
+    status-positive: '#2F2F2F'
+    status-caution: '#6E6E6E'
+    status-negative: '#5A5A5A'
+    status-informative: '#4A4A4A'
+    status-positive-tint: '#EDEDED'
+    status-caution-tint: '#EAEAEA'
+    status-negative-tint: '#E4E4E4'
+    status-informative-tint: '#E6E6E6'
+- id: blue-institutional
+  label: 冷白 · 机构蓝
+  rationale: 咨询与机构文档的常见方向：近白冷纸、深蓝强调、中性灰阶。色调克制、专业感强，图表与表格都干净。代价是与暖色识别完全相反。
+  tokens:
+    parchment: '#F5F7FA'
+    ivory: '#FCFDFE'
+    sand: '#E6EBF1'
+    near-black: '#0F1720'
+    dark-warm: '#26313C'
+    olive: '#47535F'
+    stone: '#6B7683'
+    brand: '#1257A0'
+    brand-tint: '#E2ECF8'
+    tag-bg: '#CFE0F4'
+    border: '#DCE3EA'
+    border-soft: '#E6EBF0'
+    rule-warm: '#C3CDD8'
+    status-positive: '#1257A0'
+    status-caution: '#A05A00'
+    status-negative: '#B03A2E'
+    status-informative: '#1F6F6A'
+    status-positive-tint: '#E2ECF8'
+    status-caution-tint: '#F6EBD8'
+    status-negative-tint: '#F6E3E0'
+    status-informative-tint: '#DFEEEC'
+- id: blue-amber
+  label: 蓝 · 琥珀（色觉友好）
+  rationale: 按 EU 数据可视化指南选的方向：彩色只用蓝与琥珀两类色相，其余靠明度分级。红绿色弱者约每十二名男性有一名，蓝-琥珀轴是唯一被指南明确推荐的组合。
+  tokens:
+    parchment: '#F7F8FA'
+    ivory: '#FDFDFE'
+    sand: '#E7E9ED'
+    near-black: '#111820'
+    dark-warm: '#2A333D'
+    olive: '#4A5560'
+    stone: '#6E7A86'
+    brand: '#1B5E9C'
+    brand-tint: '#E1EBF6'
+    tag-bg: '#CCDEF0'
+    border: '#DEE1E6'
+    border-soft: '#E8EAEE'
+    rule-warm: '#C6CBD2'
+    status-positive: '#1B5E9C'
+    status-caution: '#B26A00'
+    status-negative: '#2F4858'
+    status-informative: '#4A7FB5'
+    status-positive-tint: '#E1EBF6'
+    status-caution-tint: '#FAEBD5'
+    status-negative-tint: '#E1E6EA'
+    status-informative-tint: '#E4EFF9'
+- id: lightness-ramp
+  label: 单色蓝 · 明度分级
+  rationale: 只有一个色相，全部层级靠明度拉开。指南指出明度差是唯一在任何色觉与黑白印刷下都成立的轴 —— 这个方案把它推到极致：去掉所有色相差异，连状态色也只用明度。代价是状态色不再有直觉。
+  tokens:
+    parchment: '#FFFFFF'
+    ivory: '#F7F9FC'
+    sand: '#E8EDF4'
+    near-black: '#0B1520'
+    dark-warm: '#22303F'
+    olive: '#3E5266'
+    stone: '#64798E'
+    brand: '#0B4C8C'
+    brand-tint: '#E4EEF9'
+    tag-bg: '#CBDDF0'
+    border: '#D6DEE8'
+    border-soft: '#E2E8F0'
+    rule-warm: '#BAC7D6'
+    status-positive: '#0B4C8C'
+    status-caution: '#5A7FA8'
+    status-negative: '#2A3B4D'
+    status-informative: '#3E6E9E'
+    status-positive-tint: '#E4EEF9'
+    status-caution-tint: '#EDF3FA'
+    status-negative-tint: '#E2E7EC'
+    status-informative-tint: '#E7EFF7'
+- id: warm-blue
+  label: 暖纸 · 蓝强调
+  rationale: 保留现有的暖羊皮纸底，只把强调色从朱砂换成深蓝。暖底提供阅读舒适与识别度，蓝色是指南推荐的最安全强调色。改动最小、风险最低的一个方向。
+  tokens:
+    parchment: '#F6F1E8'
+    ivory: '#FCF9F4'
+    sand: '#EADFCF'
+    near-black: '#1A1712'
+    dark-warm: '#3A342B'
+    olive: '#5A5344'
+    stone: '#7E7565'
+    brand: '#1D5C96'
+    brand-tint: '#E3EDF7'
+    tag-bg: '#CFE1F2'
+    border: '#E7DCCB'
+    border-soft: '#EFE7DA'
+    rule-warm: '#D3C4AC'
+    status-positive: '#1D5C96'
+    status-caution: '#9A6B12'
+    status-negative: '#8C3B2E'
+    status-informative: '#2A6E7A'
+    status-positive-tint: '#E3EDF7'
+    status-caution-tint: '#F6EBD6'
+    status-negative-tint: '#F3E3E0'
+    status-informative-tint: '#DFEDEF'
+- id: oxblood-academic
+  label: 象牙纸 · 牛血红（学术）
+  rationale: 学术与法律出版的传统方向：冷象牙纸、牛血红强调、近乎无彩的中性。比朱砂更沉、更少装饰性，适合长文与引用密集的页面。
+  tokens:
+    parchment: '#F7F5F0'
+    ivory: '#FCFBF8'
+    sand: '#E8E4DA'
+    near-black: '#17150F'
+    dark-warm: '#332F26'
+    olive: '#4F4A3E'
+    stone: '#75705F'
+    brand: '#6E1F1F'
+    brand-tint: '#F1E1E1'
+    tag-bg: '#E4CCCC'
+    border: '#E2DDD0'
+    border-soft: '#EBE7DC'
+    rule-warm: '#CBC3B2'
+    status-positive: '#6E1F1F'
+    status-caution: '#8A6412'
+    status-negative: '#3E4A5A'
+    status-informative: '#47586B'
+    status-positive-tint: '#F1E1E1'
+    status-caution-tint: '#F4EBD6'
+    status-negative-tint: '#E3E7EC'
+    status-informative-tint: '#E4E8EE'
+- id: dark-slate
+  label: 深色稿 · 屏幕阅读
+  rationale: Carbon 有四套主题跨越明暗，Folio 目前只有浅色。这个方向看的是深色是否值得支持：屏幕长文更省眼，但打印几乎不可用，且需要一整套反向的对比度验证。
+  tokens:
+    parchment: '#14181C'
+    ivory: '#1C2228'
+    sand: '#2A323A'
+    near-black: '#ECF1F6'
+    dark-warm: '#C8D2DC'
+    olive: '#A9B6C2'
+    stone: '#8A97A4'
+    brand: '#E0705A'
+    brand-tint: '#3A2620'
+    tag-bg: '#4A2E27'
+    border: '#2E3740'
+    border-soft: '#262E36'
+    rule-warm: '#3A444E'
+    status-positive: '#E0705A'
+    status-caution: '#D9A23C'
+    status-negative: '#7FA8D0'
+    status-informative: '#6FB3AE'
+    status-positive-tint: '#3A2620'
+    status-caution-tint: '#3A3222'
+    status-negative-tint: '#22303C'
+    status-informative-tint: '#1E3230'
 contrast_pairs:
-  - [near-black, parchment, 4.5, 正文 / 画布]
-  - [near-black, ivory, 4.5, 正文 / 卡片]
-  - [olive, parchment, 4.5, 次级文字 / 画布]
-  - [stone, parchment, 4.5, 弱化文字 / 画布]
-  - [brand, parchment, 4.5, 强调文字 / 画布]
-  - [brand, brand-tint, 3.0, 强调文字 / 强调底]
-  - [parchment, brand, 3.0, 反白文字 / 强调块]
-  - [status-caution, parchment, 4.5, 警告文字 / 画布]
-  - [border, parchment, 1.2, 细线 / 画布]
+- - near-black
+  - parchment
+  - 4.5
+  - 正文 / 画布
+- - near-black
+  - ivory
+  - 4.5
+  - 正文 / 卡片
+- - olive
+  - parchment
+  - 4.5
+  - 次级文字 / 画布
+- - stone
+  - parchment
+  - 4.5
+  - 弱化文字 / 画布
+- - brand
+  - parchment
+  - 4.5
+  - 强调文字 / 画布
+- - brand
+  - brand-tint
+  - 3.0
+  - 强调文字 / 强调底
+- - parchment
+  - brand
+  - 3.0
+  - 反白文字 / 强调块
+- - status-caution
+  - parchment
+  - 4.5
+  - 警告文字 / 画布
+- - border
+  - parchment
+  - 1.2
+  - 细线 / 画布

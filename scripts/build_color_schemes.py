@@ -209,6 +209,137 @@ def contrast_rows(scheme: dict[str, Any], pairs: list[list[Any]]) -> list[dict[s
     return rows
 
 
+# Colour weakness, as matrices on linear RGB. Viénot's approximation of
+# protanopia and deuteranopia: the two most common, and the two the EU data
+# visualisation guide says a red-and-brown palette fails.
+_CVD_MATRICES: dict[str, tuple[tuple[float, float, float], ...]] = {
+    "protanopia": (
+        (0.11238, 0.88762, 0.0),
+        (0.11238, 0.88762, 0.0),
+        (0.00401, -0.00401, 1.0),
+    ),
+    "deuteranopia": (
+        (0.29275, 0.70725, 0.0),
+        (0.29275, 0.70725, 0.0),
+        (-0.02234, 0.02234, 1.0),
+    ),
+}
+
+# Status colours must stay apart from each other, and a reader who cannot see the
+# difference has lost the meaning. The threshold is a heuristic: the distance is
+# plain sRGB Euclidean, the full range is 441, and 25 is a screening value chosen
+# to separate the schemes that collapse from the ones that do not. It is not a
+# standard, and a scheme that fails it is not thereby unusable -- it is a scheme
+# whose status colours depend on the word beside them.
+CVD_MINIMUM_DISTANCE = 25.0
+
+
+def _rgb(colour: str) -> tuple[int, int, int]:
+    text = colour.lstrip("#")
+    return tuple(int(text[i:i + 2], 16) for i in (0, 2, 4))  # type: ignore[return-value]
+
+
+def _linear(channel: int) -> float:
+    value = channel / 255
+    return value / 12.92 if value <= 0.04045 else ((value + 0.055) / 1.055) ** 2.4
+
+
+def _encode(value: float) -> int:
+    value = min(max(value, 0.0), 1.0)
+    encoded = 12.92 * value if value <= 0.0031308 else 1.055 * value ** (1 / 2.4) - 0.055
+    return round(encoded * 255)
+
+
+def simulate(colour: str, kind: str) -> str:
+    """The colour as a reader with that colour weakness would see it."""
+    matrix = _CVD_MATRICES[kind]
+    linear = [_linear(c) for c in _rgb(colour)]
+    out = [sum(matrix[i][j] * linear[j] for j in range(3)) for i in range(3)]
+    return "#" + "".join(f"{_encode(v):02X}" for v in out)
+
+
+def distance(a: str, b: str) -> float:
+    return sum((x - y) ** 2 for x, y in zip(_rgb(a), _rgb(b))) ** 0.5
+
+
+def luminance(colour: str) -> float:
+    r, g, b = _rgb(colour)
+    return round(0.2126 * _linear(r) + 0.7152 * _linear(g) + 0.0722 * _linear(b), 4)
+
+
+def greyscale_rows(scheme: dict[str, Any]) -> list[dict[str, Any]]:
+    """The luminance of each level, which is what survives a mono print."""
+    tokens = scheme["tokens"]
+    levels = ("near-black", "olive", "stone", "sand", "border", "parchment")
+    return [
+        {"name": name, "value": tokens[name], "luminance": luminance(tokens[name])}
+        for name in levels if name in tokens
+    ]
+
+
+def greyscale_separation(scheme: dict[str, Any]) -> list[dict[str, Any]]:
+    """How far apart the three text levels are, in luminance."""
+    tokens = scheme["tokens"]
+    rows = []
+    for a, b, role, minimum in (("near-black", "olive", "正文 → 次级文字", 0.03),
+                                ("olive", "stone", "次级 → 弱化文字", 0.06),
+                                ("near-black", "stone", "正文 → 弱化文字", None)):
+        if a in tokens and b in tokens:
+            delta = abs(luminance(tokens[a]) - luminance(tokens[b]))
+            rows.append({"role": role, "delta": round(delta, 3), "minimum": minimum,
+                         # The two muted levels are the pair that merges; the other
+                         # steps are reported because the number is useful, not
+                         # because a threshold applies to them.
+                         "pass": None if minimum is None else delta >= minimum})
+    return rows
+
+
+def cvd_rows(scheme: dict[str, Any]) -> list[dict[str, Any]]:
+    """Whether the status colours stay apart for a colour-weak reader."""
+    tokens = scheme["tokens"]
+    # `brand` is deliberately the same colour as `status-positive` in every
+    # scheme, so comparing them would always report a distance of zero. What
+    # matters is whether the four status colours stay apart from each other.
+    statuses = [n for n in ("status-positive", "status-caution",
+                            "status-negative", "status-informative") if n in tokens]
+    rows = []
+    for kind in ("protanopia", "deuteranopia"):
+        shown = statuses + (["brand"] if "brand" in tokens else [])
+        seen = {name: simulate(tokens[name], kind) for name in shown}
+        pairs = []
+        for i, first in enumerate(statuses):
+            for second in statuses[i + 1:]:
+                pairs.append((first, second, round(distance(seen[first], seen[second]), 1)))
+        worst = min(pairs, key=lambda p: p[2]) if pairs else None
+        rows.append({
+            "kind": kind,
+            "samples": [{"name": name, "original": tokens[name], "value": seen[name]}
+                        for name in statuses + ["brand"] if name in tokens],
+            "pairs": [{"a": a, "b": b, "distance": d} for a, b, d in pairs],
+            "worst": {"a": worst[0], "b": worst[1], "distance": worst[2]} if worst else None,
+            "pass": bool(worst and worst[2] >= CVD_MINIMUM_DISTANCE),
+        })
+    return rows
+
+
+def scheme_group(scheme: dict[str, Any]) -> str:
+    """A family label, measured rather than declared."""
+    tokens = scheme["tokens"]
+    paper = tokens["parchment"]
+    r, _, b = _rgb(paper)
+    if luminance(paper) < 0.3:
+        return "深色"
+    brand_r, brand_g, brand_b = _rgb(tokens["brand"])
+    chroma = max(brand_r, brand_g, brand_b) - min(brand_r, brand_g, brand_b)
+    if chroma < 40:
+        return "无色"
+    if r - b > 8:
+        return "暖"
+    if b - r > 4:
+        return "冷"
+    return "中性"
+
+
 # --------------------------------------------------------------------------
 # Page
 # --------------------------------------------------------------------------
@@ -234,6 +365,10 @@ def build_page(data: dict[str, Any], images: dict[str, dict[str, str]]) -> str:
                 for name in SWATCH_ORDER if name in scheme["tokens"]
             ],
             "contrast": contrast_rows(scheme, pairs),
+            "greyscale": greyscale_rows(scheme),
+            "greyscaleSeparation": greyscale_separation(scheme),
+            "cvd": cvd_rows(scheme),
+            "group": scheme_group(scheme),
             "images": [{"doc": doc, "src": images.get(sid, {}).get(doc, "")} for doc in DOCUMENTS],
         })
 
@@ -259,10 +394,42 @@ def build_page(data: dict[str, Any], images: dict[str, dict[str, str]]) -> str:
             for r in first["contrast"]
         ),
         "overview": "".join(
-            f'<figure><figcaption>{s["label"]}</figcaption>'
+            f'<figure data-group="{s["group"]}"><figcaption>{s["label"]}'
+            f'<span class="chip-tag">{s["group"]}</span></figcaption>'
             + next((f'<img src="{i["src"]}" alt="{s["label"]}">' for i in s["images"] if i["doc"] == "one-pager" and i["src"]), "")
             + "</figure>"
             for s in payload
+        ),
+        "greyscale": "".join(
+            f'<tr><td>{r["name"]}</td><td><code>{r["value"]}</code></td>'
+            f'<td>{r["luminance"]:.3f}</td>'
+            f'<td><span class="bar" style="width:{r["luminance"] * 100:.0f}%"></span></td></tr>'
+            for r in first["greyscale"]
+        ),
+        "separation": "".join(
+            f'<tr><td>{r["role"]}</td><td>{r["delta"]:.3f}</td>'
+            f'<td>{r["minimum"] if r["minimum"] is not None else "—"}</td>'
+            f'<td class="{"muted" if r["pass"] is None else ("ok" if r["pass"] else "bad")}">'
+            f'{"参考" if r["pass"] is None else ("通过" if r["pass"] else "偏近")}</td></tr>'
+            for r in first["greyscaleSeparation"]
+        ),
+        "cvd": "".join(
+            f'<tr><td>{r["kind"]}</td>'
+            f'<td>{r["worst"]["a"]} / {r["worst"]["b"]}</td>'
+            f'<td>{r["worst"]["distance"]:.1f}</td>'
+            f'<td>{CVD_MINIMUM_DISTANCE:.0f}</td>'
+            f'<td class="{"ok" if r["pass"] else "bad"}">{"可辨" if r["pass"] else "易混"}</td></tr>'
+            for r in first["cvd"]
+        ),
+        "cvdsamples": "".join(
+            f'<div class="cvd-row"><span class="cvd-label">{row["kind"]}</span>'
+            + "".join(
+                f'<span class="cvd-chip" title="{s["name"]} {s["original"]} → {s["value"]}" '
+                f'style="background:{s["value"]}"></span>'
+                for s in row["samples"]
+            )
+            + "</div>"
+            for row in first["cvd"]
         ),
     }
 
@@ -331,10 +498,29 @@ _PAGE = r"""<!DOCTYPE html>
   tr:last-child td { border-bottom: 0; }
   code { font-family: ui-monospace, monospace; font-size: 12px; }
   .ok { color: var(--pass); font-weight: 600; }
+  .muted { color: var(--muted); }
   .bad { color: var(--fail); font-weight: 600; }
   .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 18px; }
   .grid figure { padding: 10px; }
   .grid img { border: 0; }
+  .chip-tag {
+    font-size: 10px; letter-spacing: .05em; text-transform: uppercase;
+    background: #EDE4DA; color: #5A4A43; border-radius: 3px;
+    padding: 1px 6px; margin-left: 7px;
+  }
+  .bar { display: inline-block; height: 9px; background: #B9ACA3; border-radius: 2px; min-width: 2px; }
+  .cvd-row { display: flex; align-items: center; gap: 7px; margin: 8px 0; }
+  .cvd-label {
+    font-size: 11px; letter-spacing: .05em; text-transform: uppercase;
+    color: var(--muted); width: 116px; flex: none;
+  }
+  .cvd-chip { width: 46px; height: 30px; border-radius: 4px; border: 1px solid var(--line); }
+  .filters { display: flex; flex-wrap: wrap; gap: 7px; margin: 10px 0 2px; }
+  .filter {
+    font: inherit; font-size: 13px; padding: 5px 13px; border-radius: 999px;
+    border: 1px solid var(--line); background: var(--ivory); color: #3A312D; cursor: pointer;
+  }
+  .filter.on { background: var(--accent); border-color: var(--accent); color: var(--paper); }
   footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
 </style>
 </head>
@@ -346,7 +532,7 @@ _PAGE = r"""<!DOCTYPE html>
 
 <div class="note">
   <b>这是一次探索，不是已实现的方案。</b>引擎目前还没有把主题色接到页面上 ——
-  改主题 profile 不影响任何产物。这个页面用真实的文档构建路径渲染了六个候选色系，
+  改主题 profile 不影响任何产物。这个页面用真实的文档构建路径渲染了十二个候选色系，
   供你判断方向，而不是让你从色卡上想象。
 </div>
 
@@ -367,8 +553,33 @@ _PAGE = r"""<!DOCTYPE html>
   <tbody id="contrast">__INITIAL_CONTRAST__</tbody>
 </table>
 
-<h2>六个方案总览</h2>
-<p class="sub" style="margin:0 0 10px">一页纸，六个色系并排。用于快速排除方向不对的方案。</p>
+<h2>灰阶层级</h2>
+<p class="sub" style="margin:0 0 10px">
+  黑白打印时唯一还在的信息。亮度（0–1）与三个文字层级的间距。
+</p>
+<table>
+  <thead><tr><th>令牌</th><th>值</th><th>亮度</th><th></th></tr></thead>
+  <tbody id="greyscale">__INITIAL_GREYSCALE__</tbody>
+</table>
+<table style="margin-top:14px">
+  <thead><tr><th>层级间距</th><th>实测</th><th>建议下限</th><th>结果</th></tr></thead>
+  <tbody id="separation">__INITIAL_SEPARATION__</tbody>
+</table>
+
+<h2>色觉差异</h2>
+<p class="sub" style="margin:0 0 10px">
+  红绿色弱约每十二名男性有一名。状态色之间若在这个模拟下靠得太近，
+  颜色就不再承载含义。距离为 sRGB 欧氏距离，满量程 441。
+</p>
+<div id="cvdsamples">__INITIAL_CVDSAMPLES__</div>
+<table style="margin-top:14px">
+  <thead><tr><th>模拟</th><th>最近的一对</th><th>距离</th><th>下限</th><th>结果</th></tr></thead>
+  <tbody id="cvd">__INITIAL_CVD__</tbody>
+</table>
+
+<h2>十二个方案总览</h2>
+<p class="sub" style="margin:0 0 10px">一页纸并排。用于快速排除方向不对的方案。</p>
+<div class="filters" id="filters"></div>
 <div class="grid" id="overview">__INITIAL_OVERVIEW__</div>
 
 <div class="note">
@@ -421,17 +632,55 @@ function render() {
     `<tr><td>${r.role}</td><td><code>${r.foreground}</code></td><td><code>${r.background}</code></td>` +
     `<td>${r.ratio.toFixed(2)}:1</td><td>${r.minimum}:1</td>` +
     `<td class="${r.pass ? 'ok' : 'bad'}">${r.pass ? '通过' : '不通过'}</td></tr>`).join('');
+
+  document.getElementById('greyscale').innerHTML = scheme.greyscale.map(r =>
+    `<tr><td>${r.name}</td><td><code>${r.value}</code></td><td>${r.luminance.toFixed(3)}</td>` +
+    `<td><span class="bar" style="width:${Math.round(r.luminance * 100)}%"></span></td></tr>`).join('');
+
+  document.getElementById('separation').innerHTML = scheme.greyscaleSeparation.map(r =>
+    `<tr><td>${r.role}</td><td>${r.delta.toFixed(3)}</td>` +
+    `<td>${r.minimum === null ? '—' : r.minimum}</td>` +
+    `<td class="${r.pass === null ? 'muted' : (r.pass ? 'ok' : 'bad')}">` +
+    `${r.pass === null ? '参考' : (r.pass ? '通过' : '偏近')}</td></tr>`).join('');
+
+  document.getElementById('cvd').innerHTML = scheme.cvd.map(r =>
+    `<tr><td>${r.kind}</td><td>${r.worst.a} / ${r.worst.b}</td>` +
+    `<td>${r.worst.distance.toFixed(1)}</td><td>60</td>` +
+    `<td class="${r.pass ? 'ok' : 'bad'}">${r.pass ? '可辨' : '易混'}</td></tr>`).join('');
+
+  document.getElementById('cvdsamples').innerHTML = scheme.cvd.map(r =>
+    `<div class="cvd-row"><span class="cvd-label">${r.kind}</span>` +
+    r.samples.map(s =>
+      `<span class="cvd-chip" title="${s.name} ${s.original} → ${s.value}" ` +
+      `style="background:${s.value}"></span>`).join('') +
+    `</div>`).join('');
 }
 
 select.addEventListener('change', render);
 render();
 
-const base = DATA[0];
-overview.innerHTML = DATA.map(s => {
-  const img = s.images.find(i => i.doc === 'one-pager');
-  return `<figure><figcaption>${s.label}</figcaption>` +
-    (img && img.src ? `<img src="${img.src}" alt="${s.label}">` : '') + `</figure>`;
-}).join('');
+// The overview shows every scheme at once; the chips narrow it to a family.
+const groups = [...new Set(DATA.map(s => s.group))];
+const filters = document.getElementById('filters');
+let activeGroup = '全部';
+filters.innerHTML = ['全部', ...groups].map(g =>
+  `<button class="filter${g === '全部' ? ' on' : ''}" data-group="${g}">${g}</button>`).join('');
+function paintOverview() {
+  overview.innerHTML = DATA.filter(s => activeGroup === '全部' || s.group === activeGroup).map(s => {
+    const img = s.images.find(i => i.doc === 'one-pager');
+    return `<figure data-group="${s.group}"><figcaption>${s.label}` +
+      `<span class="chip-tag">${s.group}</span></figcaption>` +
+      (img && img.src ? `<img src="${img.src}" alt="${s.label}">` : '') + `</figure>`;
+  }).join('');
+}
+filters.addEventListener('click', event => {
+  const button = event.target.closest('.filter');
+  if (!button) return;
+  activeGroup = button.dataset.group;
+  for (const other of filters.querySelectorAll('.filter')) other.classList.toggle('on', other === button);
+  paintOverview();
+});
+paintOverview();
 </script>
 </body>
 </html>
