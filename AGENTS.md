@@ -65,6 +65,8 @@ python3 scripts/projection.py check           # the style projection layer is we
 python3 scripts/color_sources.py check        # the colour sources agree, and the
                                               # template-literal ledger is intact
 python3 scripts/theme_switch_check.py         # one palette edit moves every artifact
+python3 scripts/build_static_theme.py --check # the static pages hold the palette
+python3 scripts/build_static_theme.py         # bake it into index.html and the demos
 python3 scripts/spacing_probe.py compare --genre one-pager   # rendered spacing vs the model
 ```
 
@@ -174,7 +176,7 @@ See `references/production.md` Part 4.
 5. `height: 100vh` is unreliable under `@page`: use explicit mm values.
 6. SVG marker `orient="auto"` does not rotate in WeasyPrint: draw arrowheads manually.
 7. Section body text should not use `max-width`: `.manifesto`, `.section-lede`, and similar text should fill the `.page` container. Exceptions: `.type-sample` and `.footer .colophon`.
-8. Diagram template changes must sync to index showcase SVGs: any visual fix to `assets/diagrams/*.html` must also be applied to the matching mini SVG in `index.html` and `index-zh.html`. `python3 scripts/build.py --check-index` gates this: miniature geometry must match byte for byte, only `<text>` copy may differ.
+8. Diagram template changes must sync to index showcase SVGs: any visual fix to `assets/diagrams/*.html` must also be applied to the matching mini SVG in `index.html` and `index-zh.html`. `python3 scripts/build.py --check-index` gates this: miniature geometry must match byte for byte, only `<text>` copy may differ. Colour is no longer part of that manual step: `python3 scripts/build_static_theme.py` bakes the palette into the two homepages and `assets/demos/*.html`, and `--check` fails when a page is behind it.
 
 ## Release Flow
 

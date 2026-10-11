@@ -553,12 +553,28 @@ def build_diagram_artifact(name: str, *, refresh_showcase: bool = True) -> bool:
     return True
 
 
+
+def _default_theme_name() -> str:
+    """The theme a generated static page is written in.
+
+    A generated page bakes the default scheme's values, so it says so: the bake
+    check reads the marker rather than guessing from the colours.
+    """
+    try:
+        import style_resolver
+
+        return style_resolver.default_theme_name() or "folio-classic-v1"
+    except Exception:  # pragma: no cover - depends on the host layout
+        return "folio-classic-v1"
+
+
 def _showcase_demo_html(showcase: dict[str, str], generated_png_name: str) -> str:
     eyebrow = escape(showcase["eyebrow"])
     heading = escape(showcase["heading"])
     alt = escape(showcase["alt"])
     caption = escape(showcase["caption"])
     return f"""<!DOCTYPE html>
+<!-- folio-theme: {_default_theme_name()} -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">

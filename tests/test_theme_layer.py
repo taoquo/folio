@@ -97,3 +97,73 @@ class ConsumptionTests(TestCase):
         for name, reason in projection.UNCONSUMED.items():
             with self.subTest(variable=name):
                 self.assertTrue(reason.strip())
+
+
+class StaticBakeTests(TestCase):
+    """The pages a reader opens directly carry the palette, written in.
+
+    `index.html`, `index-zh.html` and `assets/demos/*.html` have no build step at
+    view time, so their colours are baked. A marker names the theme and a sidecar
+    records the values, because replacing by value is one-way without one: once a
+    new hex is written the page no longer says which palette entry it stood for.
+    """
+
+    def setUp(self) -> None:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import build_static_theme
+
+        self.module = build_static_theme
+
+    def test_the_pages_are_where_they_are_expected(self) -> None:
+        names = {path.name for path in self.module.targets()}
+        self.assertIn("index.html", names)
+        self.assertIn("index-zh.html", names)
+        self.assertIn("demo-tesla.html", names)
+
+    def test_a_rendered_template_is_not_a_target(self) -> None:
+        # Diagram templates are retargeted at render time; writing them here
+        # would duplicate that and break the ledger check.
+        relatives = {str(path.relative_to(ROOT)) for path in self.module.targets()}
+        self.assertNotIn("assets/diagrams/bar-chart.html", relatives)
+
+    def test_every_page_says_which_theme_it_holds(self) -> None:
+        for path in self.module.targets():
+            with self.subTest(page=path.name):
+                text = path.read_text(encoding="utf-8", errors="ignore")
+                self.assertIsNotNone(self.module.baked_theme(text))
+
+    def test_the_sidecar_records_the_palette_that_was_written(self) -> None:
+        bake = self.module.read_bake()
+        self.assertEqual("folio-classic-v1", bake.get("theme"))
+        self.assertIn("cinnabar", bake.get("palette") or {})
+
+    def test_the_default_theme_needs_no_substitution(self) -> None:
+        self.assertEqual({}, self.module.substitution_for(None))
+
+    def test_a_changed_palette_produces_a_substitution(self) -> None:
+        # The sidecar holds the values in the pages; a palette entry that moved
+        # has to produce a mapping, or the pages would silently keep the old one.
+        import yaml
+
+        profile = ROOT / "references" / "profiles" / "theme" / "folio-classic-v1.yaml"
+        original = profile.read_text(encoding="utf-8")
+        try:
+            data = yaml.safe_load(original)
+            data["profiles"]["folio-classic-v1"]["palette"]["cinnabar"] = "#1F5FEB"
+            profile.write_text(
+                original[:original.index("version:")]
+                + yaml.safe_dump(data, allow_unicode=True, sort_keys=False, width=100,
+                                 default_flow_style=False),
+                encoding="utf-8",
+            )
+            mapping = self.module.substitution_for(None)
+            self.assertEqual("#1F5FEB", mapping.get("#B83D2E"))
+        finally:
+            profile.write_text(original, encoding="utf-8")
+
+    def test_checking_is_read_only(self) -> None:
+        before = {p: p.read_bytes() for p in self.module.targets()}
+        self.module.apply(None, check=True)
+        for path, content in before.items():
+            with self.subTest(page=path.name):
+                self.assertEqual(content, path.read_bytes())

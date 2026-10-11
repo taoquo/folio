@@ -1,0 +1,31 @@
+{
+  "note": "The palette as last written into index.html, index-zh.html and assets/demos/*.html. A substitution is recorded value -> wanted value, per palette entry, which covers a scheme switch and an in-place colour edit alike.",
+  "theme": "folio-classic-v1",
+  "palette": {
+    "amber-100": "#F6EBD9",
+    "amber-700": "#A8722C",
+    "amber-800": "#8A5A16",
+    "cinnabar": "#B83D2E",
+    "cinnabar-100": "#F7E6E1",
+    "cinnabar-200": "#F1D2CC",
+    "cinnabar-700": "#7E241C",
+    "coral-200": "#E5B9AE",
+    "coral-400": "#CE8474",
+    "ink": "#191514",
+    "ivory": "#FBF7F3",
+    "parchment": "#F6F0EA",
+    "plum-700": "#5C4A6B",
+    "sand": "#E9DED4",
+    "slate-100": "#E4E9ED",
+    "slate-600": "#5A6B7A",
+    "teal-100": "#E3ECEF",
+    "teal-600": "#4A6B7A",
+    "teal-800": "#3D5A63",
+    "warm-100": "#E8DED6",
+    "warm-200": "#E3BAA9",
+    "warm-500": "#85776F",
+    "warm-700": "#5A4A43",
+    "warm-800": "#3A312D",
+    "warm-900": "#4B3E39"
+  }
+}
