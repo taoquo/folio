@@ -43,13 +43,22 @@
       font-family: "LXGW WenKai", "Source Han Serif SC",
                    "Noto Serif CJK SC", "Songti SC", Georgia, serif;
       font-size: 9pt;
-      color: #85776F;
+      color: var(--stone);
     }
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
+    /* Status: what a value means, always used with a word. */
+    --status-positive: #B83D2E;
+    --status-caution: #A8722C;
+    --status-negative: #5A6B7A;
+    --status-informative: #4A6B7A;
+    --status-positive-tint: #F7E6E1;
+    --status-caution-tint: #F6EBD9;
+    --status-negative-tint: #E4E9ED;
+    --status-informative-tint: #E3ECEF;
     --parchment: #F6F0EA;
     --ivory:     #FBF7F3;
     --near-black:#191514;
@@ -60,8 +69,6 @@
     --border:    #E9DED4;
     --border-soft:#E8DED6;
     --tag-bg:    #F1D2CC;
-    --positive:  #B83D2E;
-    --negative:  #85776F;
     --serif: "LXGW WenKai", "Source Han Serif SC", "Noto Serif CJK SC", "Songti SC", "STSong", Georgia, serif;
     --sans: var(--serif);
   }
@@ -135,8 +142,8 @@
     margin-top: 2pt;
     font-variant-numeric: tabular-nums;
   }
-  .price-change.up { color: var(--positive); }
-  .price-change.down { color: var(--negative); }
+  .price-change.up { color: var(--status-positive); }
+  .price-change.down { color: var(--status-negative); }
   .price-date {
     font-size: 9pt;
     color: var(--stone);

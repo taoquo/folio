@@ -9,7 +9,11 @@ class FolioTheme:
     ivory: str = "#FBF7F3"
     near_black: str = "#191514"
     olive: str = "#5A4A43"
-    stone: str = "#74665F"
+    # Deep enough to hold an edge at diagram scale, where a label sits on the
+    # parchment canvas rather than on paper-white. Named `label` rather than
+    # `stone` because it is not the document stone (#85776F), and calling it
+    # the same thing hid a real difference between the two themes.
+    label: str = "#74665F"
     brand: str = "#B83D2E"
     brand_tint: str = "#F7E6E1"
     border: str = "#E9DED4"

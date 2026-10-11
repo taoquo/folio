@@ -196,7 +196,7 @@ def _legend_scene(drawing: DrawingPlan, grammar: ArchitectureGrammar, theme: Fol
     for index, item in enumerate(drawing.legend.items):
         if index:
             cursor_x += item_gap
-        stroke = theme.brand if item.channel == "primary-flow" else theme.stone if item.channel == "async-flow" else theme.olive
+        stroke = theme.brand if item.channel == "primary-flow" else theme.label if item.channel == "async-flow" else theme.olive
         line = ((cursor_x, baseline_y), (cursor_x + 20, baseline_y))
         items.append(SceneLegendItem(_text(item.label, cursor_x + 28, baseline_y + 4, TextRole.LEGEND, theme), line, _arrow(line, grammar.geometry.arrow_size), stroke))
         cursor_x = _snap(cursor_x + widths[index])
@@ -265,9 +265,9 @@ def resolve_scene(
         fitted = fit_node_content(node.content, box.w, box.h, reserve_right=24 if node.pictogram else 0)
         warnings.extend(f"{node.id}: {warning}" for warning in fitted.warnings)
         fill = theme.brand_tint if node.emphasis == "focal" else theme.ivory
-        strokes = {"external": theme.stone, "component": theme.near_black, "datastore": theme.olive, "cloud": theme.border}
+        strokes = {"external": theme.label, "component": theme.near_black, "datastore": theme.olive, "cloud": theme.border}
         stroke = theme.brand if node.emphasis == "focal" else strokes[node.archetype]
-        eyebrow_fill = theme.brand if node.emphasis == "focal" else theme.stone
+        eyebrow_fill = theme.brand if node.emphasis == "focal" else theme.label
         runs = [_text((node.content.eyebrow or node.archetype).upper(), box.x + 20, box.y + 20, TextRole.NODE_EYEBROW, theme, fill=eyebrow_fill)]
         if len(fitted.title) == 1:
             runs.append(_text(fitted.title[0], box.x + box.w // 2, box.y + 40, TextRole.NODE_TITLE, theme))

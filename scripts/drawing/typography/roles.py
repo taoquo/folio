@@ -94,8 +94,8 @@ def resolve_text_style(
     styles = {
         # --- Frame: large, so contrast can relax ---
         TextRole.DIAGRAM_TITLE: TextStyle(theme.serif, 24, theme.near_black, "middle"),
-        TextRole.DIAGRAM_SUBTITLE: TextStyle(theme.serif, 11, theme.stone, "middle"),
-        TextRole.REGION_LABEL: TextStyle(theme.mono, 11, theme.stone, tracking=0.08),
+        TextRole.DIAGRAM_SUBTITLE: TextStyle(theme.serif, 11, theme.label, "middle"),
+        TextRole.REGION_LABEL: TextStyle(theme.mono, 11, theme.label, tracking=0.08),
         TextRole.LANE_LABEL: TextStyle(theme.mono, 9, theme.olive, tracking=0.08),
 
         # --- Nodes: the title is the content, the rest is chrome ---

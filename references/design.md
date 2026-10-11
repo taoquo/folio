@@ -87,6 +87,67 @@ Four levels: near-black (primary) > dark-warm (secondary) > olive (subtext) > st
 --border-soft: #E8DED6;   /* Secondary border - row separators, subtle dividers */
 ```
 
+### Status
+
+Colour that says what a value means. Declared in the theme profile, never in a
+template.
+
+```css
+--status-positive:    #B83D2E;   /* a gain. The brand red, deliberately */
+--status-caution:     #A8722C;   /* something to watch */
+--status-negative:    #5A6B7A;   /* a loss, or a limit */
+--status-informative: #4A6B7A;   /* context that is neither good nor bad */
+```
+
+Each has a tint for a background behind the word: `--status-positive-tint`
+`#F7E6E1`, `--status-caution-tint` `#F6EBD9`, `--status-negative-tint`
+`#E4E9ED`, `--status-informative-tint` `#E3ECEF`.
+
+**Rules:**
+
+- A status colour is used together with a word. Colour alone is not an
+  accessible signal, and a greyscale print loses it entirely.
+- `positive` is the brand red because a Chinese financial reader reads red as a
+  gain. That is a deliberate departure from the Western convention, which is why
+  the meaning lives in a profile instead of being implied by a template literal.
+- A genre may remap a status value. The word stays the same.
+
+### Data
+
+What a chart series is, as distinct from what it means.
+
+```css
+/* Categorical: differently-coloured series, no implied order */
+--category-1..6: #B83D2E  #3D5A63  #8A5A16  #5C4A6B  #5A4A43  #4B3E39
+
+/* Sequential: ordered, light to dark */
+--sequential-1..5: #F7E6E1  #E5B9AE  #CE8474  #B83D2E  #7E241C
+
+/* Diverging: either side of a baseline */
+--diverging-negative: #5A6B7A   --diverging-neutral: #E9DED4   --diverging-positive: #B83D2E
+```
+
+**Rules:**
+
+- A category colour says "this is a different series", never "this one is
+  better". A business meaning belongs to `status`, and mixing the two is how a
+  chart lies.
+- The diverging poles are the status poles, so a chart and a callout agree.
+- Every categorical hue clears 4.5:1 on both parchment and ivory, because these
+  palettes are used for the filled mark and for the legend text that names it.
+
+### Where colour is decided
+
+`references/profiles/theme/folio-classic-v1.yaml` owns it. Templates read
+variables; they do not state values. `python3 scripts/color_sources.py check`
+compares the sources and reports a name that has drifted apart.
+
+The drawing theme (`scripts/drawing/theme/folio.py`) is a separate twelve-token
+swap unit: every token must have a counterpart in the dark and terminal themes,
+and a test asserts the count. It does not yet carry the data palette above.
+Connecting the two means extending all three drawing themes at once, and that is
+a decision rather than a refactor.
+
 ### Translucent -> Solid conversion (TAGS MUST BE SOLID)
 
 **Why**: WeasyPrint's alpha compositing for padding vs glyph areas produces a visible double rectangle on zoom. See `production.md` Part 4 Pitfall #1.

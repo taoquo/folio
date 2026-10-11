@@ -24,7 +24,7 @@ DARK_THEME = FolioTheme(
     ivory="#221C18",
     near_black="#F5EEE7",
     olive="#E2D3C6",
-    stone="#C9B7A9",
+    label="#C9B7A9",
     brand="#F08A72",
     brand_tint="#4A2A22",
     border="#33291F",
@@ -39,7 +39,7 @@ TERMINAL_THEME = FolioTheme(
     ivory="#161D1B",
     near_black="#E6F2EA",
     olive="#C7E6D2",
-    stone="#A9D2B8",
+    label="#A9D2B8",
     brand="#6BE39B",
     brand_tint="#1D3A2B",
     border="#22302B",
@@ -63,14 +63,14 @@ _TEXT_ON_SURFACE = (
     ("near_black", "brand_tint", NORMAL_TEXT_MINIMUM, "body text on accent tint"),
     ("olive", "parchment", NORMAL_TEXT_MINIMUM, "secondary text on canvas"),
     ("olive", "ivory", NORMAL_TEXT_MINIMUM, "secondary text on card"),
-    ("stone", "parchment", NORMAL_TEXT_MINIMUM, "muted text on canvas"),
-    ("stone", "ivory", NORMAL_TEXT_MINIMUM, "muted text on card"),
+    ("label", "parchment", NORMAL_TEXT_MINIMUM, "muted text on canvas"),
+    ("label", "ivory", NORMAL_TEXT_MINIMUM, "muted text on card"),
     ("brand", "parchment", NORMAL_TEXT_MINIMUM, "accent text on canvas"),
     ("brand", "ivory", NORMAL_TEXT_MINIMUM, "accent text on card"),
     ("brand", "brand_tint", LARGE_TEXT_MINIMUM, "accent text on accent tint"),
     ("parchment", "brand", LARGE_TEXT_MINIMUM, "reverse text on accent fill"),
     ("parchment", "olive", LARGE_TEXT_MINIMUM, "reverse text on olive fill"),
-    ("parchment", "stone", LARGE_TEXT_MINIMUM, "reverse text on muted fill"),
+    ("parchment", "label", LARGE_TEXT_MINIMUM, "reverse text on muted fill"),
 )
 
 _GRAPHIC_ON_SURFACE = (
@@ -78,7 +78,7 @@ _GRAPHIC_ON_SURFACE = (
     ("neutral_deep", "parchment", GRAPHIC_MINIMUM, "series stroke on canvas"),
     ("brand", "parchment", GRAPHIC_MINIMUM, "accent stroke on canvas"),
     ("olive", "parchment", GRAPHIC_MINIMUM, "structural stroke on canvas"),
-    ("stone", "parchment", GRAPHIC_MINIMUM, "structural stroke on canvas"),
+    ("label", "parchment", GRAPHIC_MINIMUM, "structural stroke on canvas"),
 )
 
 # neutral_mid and neutral_light are fill-only ramp steps. They paint bar, donut

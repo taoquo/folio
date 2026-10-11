@@ -43,6 +43,13 @@ profiles:
       heading_1: {size_pt: 28, leading: 1.15, weight: 500, keep_with_next: true}
       heading_2: {size_pt: 16, leading: 1.25, weight: 500, keep_with_next: true}
       caption: {size_pt: 9, leading: 1.4, weight: 400}
+      data:
+        family_source: body
+        numerals: tabular
+        note: >-
+          Figures in a table, a metric strip or a chart label. Tabular
+          numerals give every digit the same advance so columns of numbers
+          align, which proportional figures cannot do.
 
   folio-editorial-en-v1:
     language: en-us-v1
@@ -56,6 +63,13 @@ profiles:
       heading_1: {size_pt: 28, leading: 1.15, weight: 500, keep_with_next: true}
       heading_2: {size_pt: 16, leading: 1.25, weight: 500, keep_with_next: true}
       caption: {size_pt: 9, leading: 1.4, weight: 400}
+      data:
+        family_source: body
+        numerals: tabular
+        note: >-
+          Figures in a table, a metric strip or a chart label. Tabular
+          numerals give every digit the same advance so columns of numbers
+          align, which proportional figures cannot do.
 
   # Per-genre refinements. Sizes below are the values the templates render with
   # today; the profile makes them reviewable rather than buried in CSS.

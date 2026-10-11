@@ -59,6 +59,9 @@ DOMAIN_FIELDS: dict[str, frozenset[str]] = {
     }),
     "theme": frozenset({
         "palette", "colors", "accent", "decoration", "invariants", "overridable",
+        # What a value means, and what a chart series is. Both are colour
+        # decisions, so both belong to the theme rather than to a template.
+        "status", "data",
         "genre",
     }),
     "taste": frozenset({

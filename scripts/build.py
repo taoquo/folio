@@ -560,6 +560,15 @@ def _showcase_demo_html(showcase: dict[str, str], generated_png_name: str) -> st
 <meta charset="UTF-8">
 <title>{heading} Demo</title>
 <style>
+  /* The page names Source Serif 4; declaring it is what makes a renderer use
+     the repository's face instead of whatever the machine happens to have. */
+  @font-face {{
+    font-family: "Source Serif 4";
+    src: url("../fonts/SourceSerif4Variable-Roman.ttf") format("truetype");
+    font-weight: 200 900;
+    font-style: normal;
+  }}
+
   :root {{
     --parchment: #F6F0EA;
     --ivory: #FBF7F3;
@@ -1178,8 +1187,20 @@ def verify_target(name: str, source: str, min_pages: int, max_pages: int, src_di
 
     # font check
     embedded = _pdf_font_names(out)
+    # A recognizable font is one this project knows: a family it ships, or a
+    # host face the stacks name as a fallback. The shipped ones count because
+    # the file is in the tree -- that is a stronger guarantee than a system
+    # face, not a weaker one.
     fallback_present = any(
-        _font_name_contains(font, {"Georgia", "Palatino", "LXGWWenKai", "LXGW WenKai", "SourceHan", "Noto", "Charter", "Songti"})
+        _font_name_contains(
+            font,
+            {
+                # Shipped in assets/fonts/
+                "Source Serif 4", "JetBrains Mono", "LXGW WenKai", "LXGWWenKai",
+                # Named as fallbacks by the stacks
+                "Georgia", "Palatino", "SourceHan", "Noto", "Charter", "Songti",
+            },
+        )
         for font in embedded
     )
 

@@ -43,6 +43,9 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
+    /* Status: what a value means, always used with a word. */
+    --status-caution: #A8722C;
+    --status-caution-tint: #F6EBD9;
     --parchment: #F6F0EA;
     --ivory:     #FBF7F3;
     --near-black:#191514;
@@ -163,8 +166,8 @@
     margin-right: 3pt;
   }
   .tag.breaking {
-    background: #f0e0d8;
-    color: #8b4513;
+    background: var(--status-caution-tint);
+    color: var(--status-caution);
   }
 
   /* ========== CALLOUT ========== */

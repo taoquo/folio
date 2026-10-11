@@ -21,9 +21,12 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
+    /* The warm rule under a section head, kept at its own
+       value: the theme border is lighter and swapping them
+       changed the page. */
+    --rule-warm: #e3baa9;
     --parchment: #F6F0EA;
     --ivory:     #FBF7F3;
-    --sand:      #E9DED4;
     --border:    #E9DED4;
     --border-soft: #E8DED6;
     --near-black: #191514;
@@ -32,7 +35,6 @@
     --stone:     #85776F;
     --brand:     #B83D2E;
     --brand-tint: #F7E6E1;
-    --brand-tint-strong: #F1D2CC;
 
     --serif: "Source Serif 4", Charter, Georgia,
              Palatino, "Times New Roman", serif;
@@ -210,7 +212,7 @@
   .proj-kind { font-size: 11pt; color: var(--olive); }
   .proj-role {
     font-size: 9pt; color: var(--brand); font-weight: 500;
-    margin-left: auto; background: #F7E6E1;
+    margin-left: auto; background: var(--brand-tint);
     padding: 0.4mm 1.6mm; border-radius: 2pt; letter-spacing: 0.3pt;
     text-transform: uppercase;
   }

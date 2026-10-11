@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "approval_state": "approved",
-  "approval_reason": "letter-en 的称呼占位符从嵌套写法改为单一占位符，与中文模板一致。嵌套写法没有任何读取器能解析，导致已发布示例残留未填充槽位。这是一次模板结构修正，不改变版式：页数仍为 1，字体与页面几何未变。",
+  "approval_reason": "The changelog's breaking tag now takes its colour from the theme's status.caution instead of a literal pair, so one place decides what caution looks like. The tag is amber before and after; the values move from #f0e0d8/#8b4513 to the theme's #F6EBD9/#A8722C. Every other document renders identically: the literals lifted to variables elsewhere were replaced with variables holding the same value, and the one case where they differed keeps its own --rule-warm.",
   "raster_dpi": 160,
   "coverage": {
     "html_targets": 14,
@@ -130,8 +130,8 @@
       "source": "one-pager-en.html",
       "kind": "pdf",
       "pages": 1,
-      "pdf_sha256": "f4cb28a89f80c86b76cea4f3b1a808fa3d54e0fd98afe040b97b34c461a842fd",
-      "pdf_bytes": 141291,
+      "pdf_sha256": "e9faf85fd585c231e66d778c0d34ba9d6fae20e4bad59e90c602b4c2fd60268f",
+      "pdf_bytes": 141298,
       "fonts": [
         "ABIFDJ+Source-Serif-4-Medium",
         "APXJPG+Source-Serif-4,",
@@ -165,8 +165,8 @@
       "source": "letter-en.html",
       "kind": "pdf",
       "pages": 1,
-      "pdf_sha256": "3a69f9128a479596eb5b23a40339c8cc1049915542ce1cbf3a666a8b9ae096b6",
-      "pdf_bytes": 87337,
+      "pdf_sha256": "831eadd7af831a80dbf931f86204a23654540c2ae1243d324557a5f912b34528",
+      "pdf_bytes": 87345,
       "fonts": [
         "AEQGOU+Source-Serif-4,",
         "APXJPG+Source-Serif-4,",
@@ -199,8 +199,8 @@
       "source": "long-doc-en.html",
       "kind": "pdf",
       "pages": 7,
-      "pdf_sha256": "e9cedf87c57b67edb3618a3fede726146b3eb0c8cbb520eab29d8c2ded23439f",
-      "pdf_bytes": 304950,
+      "pdf_sha256": "7d932b1409fa5aa3d8ab95e385f93e8d7fff28d8d400e1e8b1ceff507e013afa",
+      "pdf_bytes": 304962,
       "fonts": [
         "ABIFDJ+Source-Serif-4-Medium",
         "AEQGOU+Source-Serif-4,",
@@ -241,8 +241,8 @@
       "source": "portfolio-en.html",
       "kind": "pdf",
       "pages": 6,
-      "pdf_sha256": "5c9be5e2d842c8d5b118959aa4930a9e94d4950666efb407b50240856bae0d9b",
-      "pdf_bytes": 190990,
+      "pdf_sha256": "c58b3e50e287925914096b88ce9e9c917430f739ee1e4ca1cd4e5160bc574cb7",
+      "pdf_bytes": 191018,
       "fonts": [
         "AEQGOU+Source-Serif-4,",
         "ANMTLV+Source-Serif-4-Medium",
@@ -281,8 +281,8 @@
       "source": "resume-en.html",
       "kind": "pdf",
       "pages": 2,
-      "pdf_sha256": "f74a1c5ce4cf6dc29eda12d04ca1f2680df95c4ea6520f479e50b66cacc36347",
-      "pdf_bytes": 433665,
+      "pdf_sha256": "71bd638c955064627005dd54e494663032a7182ce786ea7822e588707d61504b",
+      "pdf_bytes": 433670,
       "fonts": [
         "BNGNVZ+Source-Serif-4,",
         "CJNLRQ+Source-Serif-4-Medium",
@@ -340,8 +340,8 @@
       "source": "equity-report-en.html",
       "kind": "pdf",
       "pages": 3,
-      "pdf_sha256": "a6625d0c730a64af6f546748f9d90026ebe877cbb05f78eb9c9d6925627c874a",
-      "pdf_bytes": 169975,
+      "pdf_sha256": "0e2dc27946560be3b22e665de45c7a4159acd4079692177ee97e28f5a696fc44",
+      "pdf_bytes": 169985,
       "fonts": [
         "AEQGOU+Source-Serif-4,",
         "BDSDKE+Source-Serif-4-Medium",
@@ -377,8 +377,8 @@
       "source": "changelog.html",
       "kind": "pdf",
       "pages": 2,
-      "pdf_sha256": "a2273fcf92235e5d83282ccf69da712a3b7e41b258cf52ba3a313ec7a46b449c",
-      "pdf_bytes": 69425,
+      "pdf_sha256": "ab659df67a336e063a04e4c00f3635958b290d6c39f3824995183c7e94df6b6f",
+      "pdf_bytes": 69427,
       "fonts": [
         "GULCQG+LXGW-WenKai-Medium",
         "MHZCTQ+LXGW-WenKai"
@@ -389,8 +389,8 @@
         "Producer": "WeasyPrint 68.1",
         "Creator": "Folio"
       },
-      "preview_sha256": "7cde610d1fd16a6a6c19e680fdab85a323db8388120fa312f41c3206a696421e",
-      "preview_bytes": 207462,
+      "preview_sha256": "c2a9b7d00be874235c6fbd64a70148a13816f92ee7eedc7c8b4c5543349d4cb2",
+      "preview_bytes": 207358,
       "text_sha256": "ec57eaacf05ed87868ae4d47d57b48d966c6a642e23fd78f266c983d8138888a",
       "text_excerpt": "{{项目名}}\n\n               {{版本号}} {{版本名称}}\n                             {{一句话版本亮点}}\n                               {{发布日期}}\n\n\n\n\n {{SECTION_CHANGELOG}}\n\n{{SECTION_BREAKING}}\n 1. Breaking   {{破坏性变更描述}}\n\n\n{{SECTION_FEATURES}}\n 1. {{新功能 1：一句话描述}}\n 2. {{新功能 2：一句话描述}}\n 3. {{新功能 3：一句话描述}}\n\n\n{{SECTION_FIXES}}\n 1. {{修复 1：一句话描述}}\n 2. {{修复 2：一句话描述}}\n 3. {{修复 3：一句话描述}}\n\n\n\n {{SECTION_CHANGELOG_ZH}}\n\n{{SECTION_BR",
       "error": null
@@ -400,8 +400,8 @@
       "source": "changelog-en.html",
       "kind": "pdf",
       "pages": 1,
-      "pdf_sha256": "b5e190b6f6e96ba1cdfc8c9910fa9561b3dd1f034dda5d2349db1b02a0e180eb",
-      "pdf_bytes": 77350,
+      "pdf_sha256": "e0b664d7ab960014c48a352395fcb8152ed8acf7aae81dc1060f06b2bb7f4e3c",
+      "pdf_bytes": 77343,
       "fonts": [
         "APXJPG+Source-Serif-4,",
         "HLGPHA+Source-Serif-4-Medium",
@@ -420,8 +420,8 @@
         "Producer": "WeasyPrint 68.1",
         "Creator": "Folio"
       },
-      "preview_sha256": "f255cb11a81dae848c02b72f6af22caaf845fd8e7a0c3f0c0bc0e0738b5ed7d9",
-      "preview_bytes": 166334,
+      "preview_sha256": "91679a9073c9e62458f38714ce075f174d9b747b579b696ddd77ee64c2b51dd0",
+      "preview_bytes": 166298,
       "text_sha256": "09dfbfee51510dc1966ebf1847ab7eed1cf25badbbeffd15fd5e6867e8177fe0",
       "text_excerpt": "{{ P R O J E C T_ NA M E }}\n\n      {{VERSION}} {{RELEASE_NAME}}\n                                {{One-line release highlight.}}\n                                        {{RELEASE_DATE}}\n\n\n\n\n {{SECTION_CHANGELOG}}\n\n{{SECTION_BREAKING}}\n 1. BREAKING        {{Breaking change description.}}\n\n\n{{SECTION_FEATURES}}\n 1. {{New feature 1: one-line description.}}\n 2. {{New feature 2: one-line description.}}\n",
       "error": null
@@ -431,7 +431,7 @@
       "source": "slides.py",
       "kind": "pptx",
       "pages": 9,
-      "pdf_sha256": "9244dffcef206318cede631e2c18b9dfe00de56cf6a4e753d8bd6a710c72d14f",
+      "pdf_sha256": "a2a8b412f9471671d67cf254946a07fff5d21619f16f5023e2eb27551016a137",
       "pdf_bytes": 40308,
       "fonts": [],
       "metadata": {},
@@ -446,7 +446,7 @@
       "source": "slides-en.py",
       "kind": "pptx",
       "pages": 9,
-      "pdf_sha256": "d6c02d89c57e92b06ac6de30ba0c265b168f7978502c78ace78e627a153da433",
+      "pdf_sha256": "d19e49510a018f8bef3b159693d76c95dafe8563b9611f02cad6fe42a98d584b",
       "pdf_bytes": 39994,
       "fonts": [],
       "metadata": {},

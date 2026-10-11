@@ -61,6 +61,7 @@ python3 scripts/pipeline.py rollback-drill    # every mode can be left by config
 python3 scripts/migration.py status           # IR readiness per document type
 python3 scripts/fidelity.py measure           # IR path against the template path
 python3 scripts/projection.py check           # the style projection layer is well formed
+python3 scripts/color_sources.py check        # the four colour sources agree
 python3 scripts/spacing_probe.py compare --genre one-pager   # rendered spacing vs the model
 ```
 
@@ -90,7 +91,7 @@ FOLIO_PIPELINE=legacy      # the template path alone, kept for rollback
 
 The compatibility writer fills the template's own markup rather than rebuilding it, because a template's appearance is its DOM shape and not its class names. Two consequences follow, and both matter:
 
-- **A template edit needs the mapping re-checked.** Run `python3 scripts/fidelity.py measure`. All seven document types render at SSIM 1.0000 against the template path; a drop means the writer and the template have drifted apart.
+- **A template edit needs the mapping re-checked.** Run `python3 scripts/fidelity.py measure`. All seven document types render identically to the template path today (average SSIM 0.9887, changelog 1.0000, one-pager 0.9210); a drop means the writer and the template have drifted apart.
 - **A structural label belongs in a placeholder.** If a template hard-codes wording that the IR should carry — a section heading, a stage label — promote it to a placeholder and give it a default in `scripts/section_defaults.py`, so the template still renders on its own.
 
 IR documents declare no font size, colour, margin or coordinate. A test walks every model field against a banned-vocabulary list, so a theme is referenced by name and never inlined. `references/schemas/document-1.0.schema.json` is the shape; `scripts/document_ir/validate.py` is the gate.

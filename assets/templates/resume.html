@@ -37,9 +37,12 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
+    /* The warm rule under a section head, kept at its own
+       value: the theme border is lighter and swapping them
+       changed the page. */
+    --rule-warm: #e3baa9;
     --parchment: #F6F0EA;
     --ivory:     #FBF7F3;
-    --sand:      #E9DED4;
     --border:    #E9DED4;
     --border-soft: #E8DED6;
     --near-black: #191514;
@@ -48,7 +51,6 @@
     --stone:     #85776F;
     --brand:     #B83D2E;
     --brand-tint: #F7E6E1;          /* solid equivalent of rgba(184,61,46, 0.08), avoids tag double-rectangle bug */
-    --brand-tint-strong: #F1D2CC;   /* solid equivalent of rgba(184,61,46, 0.14) */
     --serif: "LXGW WenKai", "Source Han Serif SC", "Noto Serif CJK SC", "Songti SC", "STSong", Georgia, serif;
     --sans: var(--serif);
   }
@@ -84,7 +86,7 @@
     justify-content: space-between;
     padding-bottom: 3mm;
     margin-bottom: 3mm;
-    border-bottom: 0.5pt solid #e3baa9;
+    border-bottom: 0.5pt solid var(--rule-warm);
   }
   .header > div:first-child { flex-shrink: 0; }
   .name {
@@ -235,7 +237,7 @@
   .proj-kind { font-size: 11pt; color: var(--olive); }
   .proj-role {
     font-size: 9pt; color: var(--brand); font-weight: 500;
-    margin-left: auto; background: #F7E6E1;
+    margin-left: auto; background: var(--brand-tint);
     padding: 0.4mm 1.2mm; border-radius: 2pt; letter-spacing: 0.05pt;
   }
   .proj-lines { display: table; width: 100%; }

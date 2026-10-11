@@ -20,7 +20,7 @@ def resolve_connector_style(channel: str, emphasis: str, theme: FolioTheme) -> C
     if channel == "primary-flow":
         return ConnectorStyle(theme.near_black, 1.4)
     if channel == "async-flow":
-        return ConnectorStyle(theme.stone, 1.0, (5, 4))
+        return ConnectorStyle(theme.label, 1.0, (5, 4))
     if emphasis == "background":
-        return ConnectorStyle(theme.stone, 1.0)
+        return ConnectorStyle(theme.label, 1.0)
     return ConnectorStyle(theme.olive, 1.2)

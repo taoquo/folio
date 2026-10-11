@@ -238,7 +238,7 @@ def _resolve_timeline(plan: TimelinePlan, layout: TimelineLayout) -> ResolvedSce
         focal = item_id == plan.focus or item.get("importance") == "focal"
         direction = 1 if box.y > y else -1
         children: list[object] = [
-            SceneLine(f"tick:{item_id}", (x, y - 8), (x, y + 8), SceneStyle(stroke=theme.brand if focal else theme.stone, stroke_width=1.2)),
+            SceneLine(f"tick:{item_id}", (x, y - 8), (x, y + 8), SceneStyle(stroke=theme.brand if focal else theme.label, stroke_width=1.2)),
             SceneLine(f"leader:{item_id}", (x, y + direction * 8), (x, box.y if direction > 0 else box.y + box.h), SceneStyle(stroke=theme.border, stroke_width=1)),
             SceneCircle(f"mark:{item_id}", x, y, 5 if focal else 4, SceneStyle(theme.brand if focal else theme.ivory, theme.brand if focal else theme.olive, 1.2)),
             role_text(item["date"], x, box.y + 16, TextRole.AXIS_LABEL, theme, emphasis="focal" if focal else "normal", anchor="middle"),
@@ -462,7 +462,7 @@ def _resolve_venn(plan: VennPlan, layout: VennLayout) -> ResolvedScene:
         cx, cy, radius = layout.circles[item["id"]]
         focal = item["id"] in plan.focus
         fill = theme.brand_tint if focal or index == 0 else theme.ivory
-        stroke = theme.brand if focal else theme.stone
+        stroke = theme.brand if focal else theme.label
         x, y = layout.text_positions[item["id"]]
         children: list[object] = [
             SceneCircle(f"circle:{item['id']}", cx, cy, radius, SceneStyle(fill, stroke, 1.2, fill_opacity=0.58)),

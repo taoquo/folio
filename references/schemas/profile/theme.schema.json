@@ -4,44 +4,90 @@
   "title": "Folio Theme Profile",
   "description": "Appearance only: colour and strokes. Deliberately carries no type size, leading or page rule, so switching a theme cannot reflow a document.",
   "type": "object",
-  "required": ["version", "profiles"],
+  "required": [
+    "version",
+    "profiles"
+  ],
   "additionalProperties": false,
   "properties": {
-    "version": {"const": 1},
-    "invariants": {"type": "object", "additionalProperties": true},
+    "version": {
+      "const": 1
+    },
+    "invariants": {
+      "type": "object",
+      "additionalProperties": true
+    },
     "profiles": {
       "type": "object",
       "minProperties": 1,
       "additionalProperties": {
         "type": "object",
-        "required": ["colors"],
+        "required": [
+          "colors"
+        ],
         "additionalProperties": false,
         "properties": {
-          "genre": {"type": "string"},
+          "genre": {
+            "type": "string"
+          },
           "colors": {
             "type": "object",
             "minProperties": 1,
-            "additionalProperties": {"$ref": "#/$defs/colour"}
+            "additionalProperties": {
+              "$ref": "#/$defs/colour"
+            }
           },
           "accent": {
             "type": "object",
-            "additionalProperties": {"$ref": "#/$defs/colour"}
+            "additionalProperties": {
+              "$ref": "#/$defs/colour"
+            }
           },
           "decoration": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "rule_width_pt": {"type": "number", "minimum": 0},
-              "corner_radius_pt": {"type": "number", "minimum": 0},
-              "hairline": {"$ref": "#/$defs/colour"}
+              "rule_width_pt": {
+                "type": "number",
+                "minimum": 0
+              },
+              "corner_radius_pt": {
+                "type": "number",
+                "minimum": 0
+              },
+              "hairline": {
+                "$ref": "#/$defs/colour"
+              }
             }
           },
-          "overridable": {"type": "array", "items": {"type": "string"}}
+          "overridable": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/$defs/colour"
+            },
+            "description": "What a value means: positive, caution, negative, informative, and a tint for each. Used together with a word, never alone."
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/$defs/colour"
+            },
+            "description": "What a chart series is. Categorical hues imply no order, the sequential ramp is ordered, the diverging poles sit either side of a baseline."
+          }
         }
       }
     }
   },
   "$defs": {
-    "colour": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}$"}
+    "colour": {
+      "type": "string",
+      "pattern": "^#[0-9A-Fa-f]{6}$"
+    }
   }
 }

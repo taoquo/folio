@@ -38,6 +38,47 @@ profiles:
       tint: "#F7E6E1"
       tint_strong: "#F1D2CC"
       tag_bg: "#F1D2CC"
+    # What a value means, not how it looks. A status colour is only used
+    # together with a word: colour alone is not an accessible signal, and a
+    # greyscale print loses it entirely.
+    #
+    # `positive` is the brand red because a Chinese financial reader reads red
+    # as a gain. That is a deliberate departure from the Western convention, and
+    # it is why the meaning belongs in a profile rather than in a template.
+    status:
+      positive: "#B83D2E"
+      caution: "#A8722C"
+      negative: "#5A6B7A"
+      informative: "#4A6B7A"
+      # Tints for a background behind status text, paired with the same word.
+      positive_tint: "#F7E6E1"
+      caution_tint: "#F6EBD9"
+      negative_tint: "#E4E9ED"
+      informative_tint: "#E3ECEF"
+
+    # What a chart series is. A category colour says "this is a different
+    # series", never "this one is better"; a business meaning belongs to
+    # `status` and mixing the two is how a chart lies.
+    data:
+      # Categorical: distinguishable, no implied order.
+      category_1: "#B83D2E"
+      category_2: "#3D5A63"
+      category_3: "#8A5A16"
+      category_4: "#5C4A6B"
+      category_5: "#5A4A43"
+      category_6: "#4B3E39"
+      # Sequential: ordered, light to dark, for a value that only grows.
+      sequential_1: "#F7E6E1"
+      sequential_2: "#E5B9AE"
+      sequential_3: "#CE8474"
+      sequential_4: "#B83D2E"
+      sequential_5: "#7E241C"
+      # Diverging: a deviation either side of a baseline. The poles match the
+      # status colours so a chart and a callout agree.
+      diverging_negative: "#5A6B7A"
+      diverging_neutral: "#E9DED4"
+      diverging_positive: "#B83D2E"
+
     decoration:
       rule_width_pt: 0.5
       corner_radius_pt: 0
@@ -48,6 +89,12 @@ profiles:
       - accent.brand
       - accent.tint
       - accent.tint_strong
+      # A genre with its own convention may remap a status meaning; the words
+      # stay the same, so a reader is never left with a colour alone.
+      - status.positive
+      - status.caution
+      - status.negative
+      - status.informative
 
 # Constraint carried over from the design system: brand colour may be changed,
 # but the warm palette (parchment plus warm neutrals) stays in force. A theme

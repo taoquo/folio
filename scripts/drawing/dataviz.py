@@ -439,7 +439,7 @@ def _reference_primitives(items: tuple[dict[str, Any], ...], plot: SceneBox, sca
     for item in items:
         item_id = f"reference:{item['id']}"
         y = _y(float(item["value"]), scale, plot)
-        primitives.append(SceneLine(item_id, (plot.x, y), (plot.x + plot.w, y), SceneStyle(stroke=theme.stone, stroke_width=1, dash=(6, 4))))
+        primitives.append(SceneLine(item_id, (plot.x, y), (plot.x + plot.w, y), SceneStyle(stroke=theme.label, stroke_width=1, dash=(6, 4))))
         # Right-align the label inside the plot: the left edge collides with the y-axis ticks.
         # Then pick the first vertical slot that clears every rule and every label already placed,
         # so neither the dashes nor a neighbouring caption strikes through the text.
@@ -681,7 +681,7 @@ def _resolve_bars(plan: BarPlan, layout: ChartLayout, source: str | None) -> Res
             SceneStyle(theme.parchment, "none"),
         )
 
-    palette = (theme.olive, theme.stone, theme.neutral_mid)
+    palette = (theme.olive, theme.label, theme.neutral_mid)
     # Bars paint in series order, so a label emitted inside the loop would sit under the
     # next series' mark. Collect the numbers and lay them over the finished bars instead.
     pending_labels: list[tuple[str, str, int, int, int]] = []
@@ -884,7 +884,7 @@ def _resolve_lines(plan: LinePlan, layout: ChartLayout, source: str | None) -> R
     reading: list[str] = []
     # Line series are drawn at 1.6px, so every palette entry must clear the WCAG
     # non-text contrast bar on its own. Bars carry a labeled key instead.
-    palette = (theme.olive, theme.stone, theme.neutral_deep)
+    palette = (theme.olive, theme.label, theme.neutral_deep)
     for series_index, item in enumerate(plan.series):
         color = theme.brand if item["id"] == plan.focus_series or (plan.focus_series is None and series_index == 0) else palette[min(series_index, 2)]
         dash = (6, 4) if series_index == 2 else (4, 3) if series_index == 1 else ()
@@ -992,7 +992,7 @@ def _donut_path(cx: int, cy: int, outer: int, inner: int, start: float, end: flo
 
 def _resolve_donut(plan: DonutPlan, layout: ChartLayout, source: str | None) -> ResolvedScene:
     theme = DEFAULT_FOLIO_THEME
-    palette = (theme.olive, theme.stone, theme.neutral_mid, theme.neutral_light, theme.brand_tint, theme.neutral_deep)
+    palette = (theme.olive, theme.label, theme.neutral_mid, theme.neutral_light, theme.brand_tint, theme.neutral_deep)
     primitives: list[object] = []
     reading: list[str] = []
     geometry = _donut_geometry(plan.height, len(plan.segments))
@@ -1112,7 +1112,7 @@ def _resolve_candles(plan: CandlestickPlan, layout: ChartLayout, source: str | N
         mark_id = f"candle:{item['id']}"
         mark = layout.marks[mark_id]
         up = float(item["close"]) >= float(item["open"])
-        color = theme.near_black if up else theme.stone
+        color = theme.near_black if up else theme.label
         children = (
             SceneLine(f"wick:{item['id']}", (mark["x"], mark["high_y"]), (mark["x"], mark["low_y"]), SceneStyle(stroke=color, stroke_width=1.2)),
             SceneRect(f"body:{item['id']}", mark["body"], SceneStyle(color if up else theme.parchment, color, 1.2, radius=1)),
@@ -1245,7 +1245,7 @@ def _resolve_waterfall(plan: WaterfallPlan, layout: ChartLayout, source: str | N
             theme.brand if mark_id == "waterfall:end"
             else theme.near_black if role in {"total", "subtotal"}
             else theme.olive if role == "positive"
-            else theme.stone
+            else theme.label
         )
         primitives.append(SceneRect(mark_id, mark["box"], SceneStyle(color, "none", radius=2)))
         # Category labels get one column of room each. Wrap to two lines instead of letting long

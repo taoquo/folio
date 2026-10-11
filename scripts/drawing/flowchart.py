@@ -430,7 +430,7 @@ def resolve_flowchart_scene(plan: FlowchartDrawingPlan, layout: LayoutResult, th
                 raise ValueError(f"flowchart edge has no layout route: {edge.id}")
             route = matches.pop(0)
         points = tuple(route.points)
-        stroke = theme.near_black if edge.channel == "conditional-flow" else theme.stone if edge.channel == "exception-flow" else theme.olive
+        stroke = theme.near_black if edge.channel == "conditional-flow" else theme.label if edge.channel == "exception-flow" else theme.olive
         dash = (6, 4) if edge.channel == "exception-flow" else ()
         arrow = _arrow(points)
         label = None

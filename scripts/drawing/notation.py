@@ -198,7 +198,7 @@ def _resolve_sequence(plan: NotationPlan, focus: str | None) -> tuple[NotationLa
         y = first_message_y + index * message_pitch
         start, end = (x_by_id[item["source"]], y), (x_by_id[item["target"]], y)
         relations[item["id"]] = (start, end)
-        color = theme.near_black if item["kind"] == "sync" else theme.stone if item["kind"] == "return" else theme.olive
+        color = theme.near_black if item["kind"] == "sync" else theme.label if item["kind"] == "return" else theme.olive
         dash = (5, 4) if item["kind"] == "return" else ()
         head = _chevron(f"message-head:{item['id']}", start, end, color)
         primitives.append(SceneGroup(f"message:{item['id']}", (

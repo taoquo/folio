@@ -390,7 +390,7 @@ def resolve_graph_scene(
         points = tuple(route.points)
         focal = edge.channel == "focal"
         exceptional = edge.channel in {"exceptional", "reset", "response", "async"}
-        stroke = theme.brand if focal else theme.stone if exceptional else theme.olive
+        stroke = theme.brand if focal else theme.label if exceptional else theme.olive
         label = None
         label_box = SceneBox(**asdict(route.label_box)) if route.label_box else None
         if route.label and route.label_box:

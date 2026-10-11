@@ -117,14 +117,14 @@ class DrawingQualityV5Tests(TestCase):
         self.assertAlmostEqual(1.0, contrast_ratio("#ABCDEF", "#ABCDEF"), places=6)
         self.assertIsNone(contrast_ratio("none", "#FFFFFF"))
 
-    def test_default_stone_is_accessible_on_supported_light_surfaces(self) -> None:
+    def test_default_label_is_accessible_on_supported_light_surfaces(self) -> None:
         for surface in (
             DEFAULT_FOLIO_THEME.parchment,
             DEFAULT_FOLIO_THEME.ivory,
             DEFAULT_FOLIO_THEME.brand_tint,
         ):
             with self.subTest(surface=surface):
-                self.assertGreaterEqual(contrast_ratio(DEFAULT_FOLIO_THEME.stone, surface), 4.5)
+                self.assertGreaterEqual(contrast_ratio(DEFAULT_FOLIO_THEME.label, surface), 4.5)
 
     def test_all_registered_kinds_pass_through_the_quality_gate(self) -> None:
         sentinel = DrawingDiagnostic("TASTE", "VQ999", "quality gate sentinel")
