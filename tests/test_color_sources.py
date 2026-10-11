@@ -94,19 +94,24 @@ class ThemeDomainTests(TestCase):
         import style_resolver
 
         style = style_resolver.resolve(genre="one-pager")
-        for name in ("positive", "caution", "negative", "informative"):
+        for name in ("positive", "caution", "negative"):
             with self.subTest(name=name):
                 value = style.values.get(f"color.status.{name}")
                 self.assertIsNotNone(value)
                 self.assertTrue(str(value.value).startswith("#"))
 
-    def test_every_status_colour_has_a_tint(self) -> None:
+    def test_a_status_that_is_painted_as_a_badge_has_a_tint(self) -> None:
+        # Only caution is: the changelog renders it as a badge, which needs a
+        # background. The other statuses colour text, which does not. Tints for
+        # them existed and were read by no template, so they were removed rather
+        # than given a badge to justify them.
         import style_resolver
 
         style = style_resolver.resolve(genre="one-pager")
-        for name in ("positive", "caution", "negative", "informative"):
+        self.assertIn("color.status.caution-tint", style.values)
+        for name in ("positive", "negative", "informative"):
             with self.subTest(name=name):
-                self.assertIn(f"color.status.{name}-tint", style.values)
+                self.assertNotIn(f"color.status.{name}-tint", style.values)
 
     def test_the_document_theme_carries_no_chart_palette(self) -> None:
         # A chart palette lived here with fourteen roles and no consumer: the
@@ -138,9 +143,7 @@ class PaletteLayerTests(TestCase):
         # The accent and the positive status are one colour with two meanings.
         self.assertEqual("cinnabar-600", origins["color.accent.brand"])
         self.assertEqual("cinnabar-600", origins["color.status.positive"])
-        # And so are their tints.
         self.assertEqual("cinnabar-100", origins["color.accent.brand-tint"])
-        self.assertEqual("cinnabar-100", origins["color.status.positive-tint"])
 
     def test_a_role_resolves_to_the_palette_value(self) -> None:
         import style_resolver

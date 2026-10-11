@@ -4,7 +4,6 @@
     "#191514": "ink",
     "#3A312D": "warm-850",
     "#4A6B52": "sage-600",
-    "#4A6B7A": "teal-600",
     "#4B3E39": "warm-800",
     "#5A4A43": "warm-700",
     "#5A6B7A": "slate-600",
@@ -16,8 +15,6 @@
     "#B9ACA3": "warm-350",
     "#C97A63": "cinnabar-500",
     "#E3BAA9": "warm-300",
-    "#E3ECEF": "teal-100",
-    "#E4E9ED": "slate-100",
     "#E5DBCD": "warm-200",
     "#E6DACD": "sand",
     "#F1D2CC": "cinnabar-200",
@@ -108,10 +105,6 @@
       "assets/templates/equity-report-en.html",
       "assets/templates/equity-report.html"
     ],
-    "#4A6B7A": [
-      "assets/templates/equity-report-en.html",
-      "assets/templates/equity-report.html"
-    ],
     "#4B3E39": [
       "assets/diagrams/waterfall.html",
       "index-zh.html",
@@ -168,6 +161,20 @@
       "assets/templates/equity-report.html"
     ],
     "#756A63": [
+      "assets/demos/demo-agent-ops-longdoc.html",
+      "assets/demos/demo-agent-slides.html",
+      "assets/demos/demo-architecture.html",
+      "assets/demos/demo-board-letter.html",
+      "assets/demos/demo-data-platform.html",
+      "assets/demos/demo-flowchart-v2.html",
+      "assets/demos/demo-folio-changelog.html",
+      "assets/demos/demo-musk-resume.html",
+      "assets/demos/demo-nvidia-equity-report.html",
+      "assets/demos/demo-orbit-onepager.html",
+      "assets/demos/demo-ridge-portfolio.html",
+      "assets/demos/demo-tesla.html",
+      "assets/demos/demo-uml-class.html",
+      "assets/demos/demo-workflow-engine.html",
       "assets/diagrams/architecture.html",
       "assets/diagrams/bar-chart.html",
       "assets/diagrams/candlestick.html",
@@ -195,7 +202,9 @@
       "assets/templates/portfolio-en.html",
       "assets/templates/portfolio.html",
       "assets/templates/resume-en.html",
-      "assets/templates/resume.html"
+      "assets/templates/resume.html",
+      "index-zh.html",
+      "index.html"
     ],
     "#7E241C": [
       "assets/demos/demo-ridge-portfolio.html"
@@ -281,15 +290,15 @@
       "assets/templates/resume-en.html",
       "assets/templates/resume.html"
     ],
-    "#E3ECEF": [
-      "assets/templates/equity-report-en.html",
-      "assets/templates/equity-report.html"
-    ],
-    "#E4E9ED": [
-      "assets/templates/equity-report-en.html",
-      "assets/templates/equity-report.html"
-    ],
     "#E5DBCD": [
+      "assets/demos/demo-agent-ops-longdoc.html",
+      "assets/demos/demo-board-letter.html",
+      "assets/demos/demo-folio-changelog.html",
+      "assets/demos/demo-musk-resume.html",
+      "assets/demos/demo-nvidia-equity-report.html",
+      "assets/demos/demo-orbit-onepager.html",
+      "assets/demos/demo-ridge-portfolio.html",
+      "assets/demos/demo-tesla.html",
       "assets/templates/changelog-en.html",
       "assets/templates/changelog.html",
       "assets/templates/equity-report-en.html",
@@ -306,6 +315,20 @@
       "assets/templates/resume.html"
     ],
     "#E6DACD": [
+      "assets/demos/demo-agent-ops-longdoc.html",
+      "assets/demos/demo-agent-slides.html",
+      "assets/demos/demo-architecture.html",
+      "assets/demos/demo-board-letter.html",
+      "assets/demos/demo-data-platform.html",
+      "assets/demos/demo-flowchart-v2.html",
+      "assets/demos/demo-folio-changelog.html",
+      "assets/demos/demo-musk-resume.html",
+      "assets/demos/demo-nvidia-equity-report.html",
+      "assets/demos/demo-orbit-onepager.html",
+      "assets/demos/demo-ridge-portfolio.html",
+      "assets/demos/demo-tesla.html",
+      "assets/demos/demo-uml-class.html",
+      "assets/demos/demo-workflow-engine.html",
       "assets/diagrams/architecture.html",
       "assets/diagrams/bar-chart.html",
       "assets/diagrams/candlestick.html",
@@ -333,7 +356,9 @@
       "assets/templates/portfolio-en.html",
       "assets/templates/portfolio.html",
       "assets/templates/resume-en.html",
-      "assets/templates/resume.html"
+      "assets/templates/resume.html",
+      "index-zh.html",
+      "index.html"
     ],
     "#F1D2CC": [
       "assets/demos/demo-agent-ops-longdoc.html",
@@ -428,8 +453,6 @@
       "assets/diagrams/tree.html",
       "assets/diagrams/venn.html",
       "assets/diagrams/waterfall.html",
-      "assets/templates/equity-report-en.html",
-      "assets/templates/equity-report.html",
       "assets/templates/resume-en.html",
       "assets/templates/resume.html",
       "index-zh.html",
@@ -488,20 +511,6 @@
       "index.html"
     ],
     "#85776F": [
-      "assets/demos/demo-agent-ops-longdoc.html",
-      "assets/demos/demo-agent-slides.html",
-      "assets/demos/demo-architecture.html",
-      "assets/demos/demo-board-letter.html",
-      "assets/demos/demo-data-platform.html",
-      "assets/demos/demo-flowchart-v2.html",
-      "assets/demos/demo-folio-changelog.html",
-      "assets/demos/demo-musk-resume.html",
-      "assets/demos/demo-nvidia-equity-report.html",
-      "assets/demos/demo-orbit-onepager.html",
-      "assets/demos/demo-ridge-portfolio.html",
-      "assets/demos/demo-tesla.html",
-      "assets/demos/demo-uml-class.html",
-      "assets/demos/demo-workflow-engine.html",
       "assets/diagrams/architecture.html",
       "assets/diagrams/bar-chart.html",
       "assets/diagrams/candlestick.html",
@@ -518,8 +527,6 @@
       "assets/diagrams/waterfall.html",
       "assets/templates/equity-report-en.html",
       "assets/templates/equity-report.html",
-      "index-zh.html",
-      "index.html",
       "references/fixtures/hosting/a4-chinese.html",
       "references/fixtures/hosting/a4-long-doc.html",
       "references/fixtures/hosting/letter-document.html"
@@ -552,42 +559,16 @@
       "assets/diagrams/line-chart.html",
       "assets/diagrams/waterfall.html"
     ],
-    "#E8DED6": [
-      "assets/demos/demo-agent-ops-longdoc.html",
-      "assets/demos/demo-board-letter.html",
-      "assets/demos/demo-folio-changelog.html",
-      "assets/demos/demo-musk-resume.html",
-      "assets/demos/demo-nvidia-equity-report.html",
-      "assets/demos/demo-orbit-onepager.html",
-      "assets/demos/demo-ridge-portfolio.html",
-      "assets/demos/demo-tesla.html"
-    ],
     "#E8E5DA": [
       "assets/demos/demo-agent-slides.html"
     ],
     "#E9DED4": [
-      "assets/demos/demo-agent-ops-longdoc.html",
-      "assets/demos/demo-agent-slides.html",
-      "assets/demos/demo-architecture.html",
-      "assets/demos/demo-board-letter.html",
-      "assets/demos/demo-data-platform.html",
-      "assets/demos/demo-flowchart-v2.html",
-      "assets/demos/demo-folio-changelog.html",
-      "assets/demos/demo-musk-resume.html",
-      "assets/demos/demo-nvidia-equity-report.html",
-      "assets/demos/demo-orbit-onepager.html",
-      "assets/demos/demo-ridge-portfolio.html",
-      "assets/demos/demo-tesla.html",
-      "assets/demos/demo-uml-class.html",
-      "assets/demos/demo-workflow-engine.html",
       "assets/diagrams/swimlane.html",
       "assets/diagrams/timeline.html",
       "assets/templates/equity-report-en.html",
       "assets/templates/equity-report.html",
       "assets/templates/portfolio-en.html",
-      "assets/templates/portfolio.html",
-      "index-zh.html",
-      "index.html"
+      "assets/templates/portfolio.html"
     ],
     "#EBC7C0": [
       "index-zh.html",

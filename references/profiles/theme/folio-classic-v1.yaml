@@ -84,16 +84,8 @@ profiles:
           palette: amber-600
         negative:
           palette: slate-600
-        informative:
-          palette: teal-600
-        positive-tint:
-          palette: cinnabar-100
         caution-tint:
           palette: amber-100
-        negative-tint:
-          palette: slate-100
-        informative-tint:
-          palette: teal-100
     decoration:
       rule_width_pt: 0.5
       corner_radius_pt: 0
