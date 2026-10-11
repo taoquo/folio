@@ -130,9 +130,32 @@ def main(argv: list[str]) -> int:
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--format", choices=("text", "json"), default="text")
     parser.add_argument("--dry-run", action="store_true", help="report without writing")
+    parser.add_argument("--check", action="store_true",
+                        help="fail when the ledger is behind; write nothing")
     args = parser.parse_args(argv)
 
     ledger = scan()
+
+    if args.check:
+        # A literal the ledger has not recorded is one that silently stops
+        # following a colour scheme: the substitution has nothing to map it by.
+        # Nothing else catches that, so the ledger is compared to a fresh scan.
+        if not LEDGER.is_file():
+            print(f"ERROR: {LEDGER.relative_to(ROOT)}: missing")
+            return 1
+        recorded = json.loads(LEDGER.read_text(encoding="utf-8"))
+        if recorded.get("shipped") != ledger["shipped"]:
+            added = sorted(set(ledger["shipped"]) - set(recorded.get("shipped") or {}))
+            removed = sorted(set(recorded.get("shipped") or {}) - set(ledger["shipped"]))
+            if added:
+                print(f"ERROR: {len(added)} literal(s) are in a template and not in the ledger: "
+                      f"{', '.join(added[:6])}")
+            if removed:
+                print(f"ERROR: {len(removed)} recorded literal(s) are no longer in any template: "
+                      f"{', '.join(removed[:6])}")
+            return 1
+        print(f"OK: the ledger records all {len(ledger['shipped'])} literal(s)")
+        return 0
     if args.format == "json":
         print(json.dumps(ledger, indent=2, ensure_ascii=False))
     else:

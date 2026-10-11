@@ -69,7 +69,10 @@ python3 scripts/theme_switch_check.py         # one palette edit moves every art
 python3 scripts/build_static_theme.py --check # the static pages hold the palette
 python3 scripts/build_static_theme.py         # bake it into index.html and the demos
 python3 scripts/check_palette_scale.py        # a higher number is a darker colour
-python3 scripts/build_color_reference.py      # the palette and role reference page
+python3 scripts/build_color_reference.py --design        # the reference page and the
+                                              # tables in references/design.md
+python3 scripts/build_color_reference.py --design --check # both are current
+python3 scripts/build_literal_ledger.py --check # every literal is recorded
 python3 scripts/check_theme_schemes.py        # every scheme: roles, contrast, ladder
 python3 scripts/build_scheme_comparison.py    # every scheme, side by side
 python3 scripts/build_scheme_comparison.py --inject   # the homepage galleries
@@ -168,7 +171,7 @@ magick /tmp/stacked.png -gravity Center -background '#F6F0EA' -extent 1241x1754 
 
 ## Change Rules
 
-- Style changes: update the theme profile in `references/profiles/theme/`, then run `python3 scripts/build_color_reference.py` to regenerate the tables in `references/design.md`, `build.py` to confirm page counts stay stable, and `build.py --sync` to confirm the templates' own declarations match. A new colour goes in `palette` once and is named by its lightness; roles point at it. A scheme needs the six `color.series.*` roles as well, and `check_theme_schemes.py` will say so: the drawing theme reads them, so their absence is a chart that ignores the scheme.
+- Style changes: update the theme profile in `references/profiles/theme/`, then run `python3 scripts/build_color_reference.py --design` to regenerate the tables in `references/design.md`, `build.py` to confirm page counts stay stable, and `build.py --sync` to confirm the templates' own declarations match. A new colour goes in `palette` once and is named by its lightness; roles point at it. A scheme needs the six `color.series.*` roles as well, and `check_theme_schemes.py` will say so: the drawing theme reads them, so their absence is a chart that ignores the scheme.
 - Content changes: keep CSS unchanged, edit only the body, then run `build.py`.
 - New templates: copy the nearest existing template, keep it aligned with `design.md`, add routing to `SKILL.md`, and add demos.
 

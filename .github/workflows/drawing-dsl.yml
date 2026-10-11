@@ -152,6 +152,10 @@ jobs:
         run: python scripts/check_theme_schemes.py
       - name: Check the homepage galleries match the profiles
         run: python scripts/build_scheme_comparison.py --check
+      - name: Check the template-literal ledger records every literal
+        run: python scripts/build_literal_ledger.py --check
+      - name: Check the colour reference and the spec tables are current
+        run: python scripts/build_color_reference.py --design --check
       - name: Build a document with the projection and confirm the page count
         run: |
           python scripts/document_build.py build --genre one-pager --lang zh --out dist/projected

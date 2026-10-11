@@ -128,6 +128,31 @@ def _resolve(name: str):
 
 
 
+
+def swap_map_collisions(source: dict[str, str],
+                        target: dict[str, str]) -> list[tuple[str, list[str], set[str]]]:
+    """Source colours that map to more than one target colour.
+
+    A collision is harmless when the colliding fields name the same target -- that
+    is what the series tokens are, aliases of the tokens they replace. It is not
+    harmless when they differ, because the swap keeps one entry per colour value
+    and the later field wins, so one of the two loses its meaning.
+    """
+    groups: dict[str, list[str]] = {}
+    for field, value in source.items():
+        if isinstance(value, str) and value.startswith("#"):
+            groups.setdefault(value.lower(), []).append(field)
+
+    out: list[tuple[str, list[str], set[str]]] = []
+    for value, fields in sorted(groups.items()):
+        if len(fields) < 2:
+            continue
+        targets = {target[field] for field in fields}
+        if len(targets) > 1:
+            out.append((value, fields, targets))
+    return out
+
+
 def drawing_bridge_findings(name: str) -> list[dict[str, str]]:
     """Whether a scheme's drawing theme can be swapped without losing a meaning.
 
@@ -142,29 +167,19 @@ def drawing_bridge_findings(name: str) -> list[dict[str, str]]:
     from drawing.theme.folio import folio_theme_for
     from drawing.theme.profiles import THEME_PROFILE_NAMES, resolve_theme
 
-    themed = folio_theme_for(name)
-    source = asdict(themed)
-    groups: dict[str, list[str]] = {}
-    for field, value in source.items():
-        if isinstance(value, str) and value.startswith("#"):
-            groups.setdefault(value.lower(), []).append(field)
-
+    source = asdict(folio_theme_for(name))
     findings: list[dict[str, str]] = []
     for target_name in THEME_PROFILE_NAMES:
         if target_name == "folio":
             continue
         target = asdict(resolve_theme(target_name))
-        for value, fields in sorted(groups.items()):
-            if len(fields) < 2:
-                continue
-            targets = {target[field] for field in fields}
-            if len(targets) > 1:
-                findings.append({
-                    "kind": "bridge", "subject": value,
-                    "detail": (f"{' and '.join(fields)} share {value} under {name}, but "
-                               f"{target_name} gives them {sorted(targets)}; one of them "
-                               f"would lose its meaning"),
-                })
+        for value, fields, targets in swap_map_collisions(source, target):
+            findings.append({
+                "kind": "bridge", "subject": value,
+                "detail": (f"{' and '.join(fields)} share {value} under {name}, but "
+                           f"{target_name} gives them {sorted(targets)}; one of them "
+                           f"would lose its meaning"),
+            })
     return findings
 
 

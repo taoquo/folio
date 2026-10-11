@@ -430,8 +430,71 @@ class SeriesBridgeTests(TestCase):
         slate = projection.retarget_literals(f'fill="{literal}"', "folio-slate-v1")
         self.assertNotEqual(classic, slate)
 
-    def test_a_scheme_whose_swap_map_breaks_is_rejected(self) -> None:
-        # A scheme may not give a series the value of a token whose targets differ,
-        # or one of the two loses its meaning under dark and terminal.
-        findings = self.schemes.drawing_bridge_findings("folio-classic-v1")
-        self.assertEqual([], findings, "the shipped schemes must satisfy the rule")
+    def test_the_shipped_schemes_satisfy_the_swap_rule(self) -> None:
+        for name in self.schemes.profiles():
+            with self.subTest(scheme=name):
+                self.assertEqual([], self.schemes.drawing_bridge_findings(name))
+
+    def test_the_swap_rule_fires_on_a_collision_that_differs(self) -> None:
+        # Driven on a constructed pair, so the test fails if the rule is deleted
+        # rather than passing because the shipped schemes happen to be sound.
+        source = {"a": "#111111", "b": "#111111", "c": "#222222"}
+        target = {"a": "#AAAAAA", "b": "#BBBBBB", "c": "#CCCCCC"}
+        collisions = self.schemes.swap_map_collisions(source, target)
+        self.assertEqual(1, len(collisions))
+        value, fields, targets = collisions[0]
+        self.assertEqual("#111111", value)
+        self.assertEqual(["a", "b"], fields)
+        self.assertEqual({"#AAAAAA", "#BBBBBB"}, targets)
+
+    def test_the_swap_rule_allows_an_alias(self) -> None:
+        # The series tokens are aliases in dark and terminal: same source colour,
+        # same target colour, so nothing is lost.
+        source = {"a": "#111111", "b": "#111111"}
+        target = {"a": "#AAAAAA", "b": "#AAAAAA"}
+        self.assertEqual([], self.schemes.swap_map_collisions(source, target))
+
+
+class GeneratedFileTests(TestCase):
+    """The files that are written from the profiles must not fall behind them.
+
+    Each was a script in a temporary directory at some point, or had no staleness
+    check at all: the ledger records what a template literal means, and a literal
+    it has not recorded is one that silently stops following a scheme.
+    """
+
+    def setUp(self) -> None:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import build_color_reference
+        import build_literal_ledger
+
+        self.reference = build_color_reference
+        self.ledger = build_literal_ledger
+
+    def test_the_ledger_records_every_literal(self) -> None:
+        import json
+
+        recorded = json.loads(self.ledger.LEDGER.read_text(encoding="utf-8"))
+        self.assertEqual(recorded["shipped"], self.ledger.scan()["shipped"])
+
+    def test_the_reference_page_is_current(self) -> None:
+        data = self.reference.collect(self.reference._style())
+        page = ROOT / "docs" / "acceptance" / "color-system.html"
+        self.assertEqual(self.reference.render(data), page.read_text(encoding="utf-8"))
+
+    def test_the_spec_tables_are_current(self) -> None:
+        data = self.reference.collect(self.reference._style())
+        text = self.reference.DESIGN.read_text(encoding="utf-8")
+        start = text.index(self.reference.DESIGN_START)
+        end = text.index(self.reference.DESIGN_END)
+        current = text[start:end]
+        generated = self.reference.design_block(data)
+        self.assertEqual(generated.rstrip(), current.rstrip())
+
+    def test_the_design_block_names_the_series_bridge(self) -> None:
+        # The block used to end with a paragraph about a chart palette that no
+        # longer exists and a twelve-token drawing theme that now has eighteen.
+        data = self.reference.collect(self.reference._style())
+        block = self.reference.design_block(data)
+        self.assertIn("Chart series follow the scheme", block)
+        self.assertNotIn("twelve-token", block)
