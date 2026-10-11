@@ -6,7 +6,7 @@
 
 **分支**：`dev/document-engine`
 **日期**：2026-10-11
-**前置**：`color-scheme-storage-design.md`（存哪里）、`color-font-support-audit.md`（为什么不生效）
+**前置**：`color-scheme-storage-design.md`（存哪里）。支持度审计是一份本地笔记，未随仓库发布。
 
 ---
 

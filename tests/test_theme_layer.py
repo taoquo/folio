@@ -498,3 +498,40 @@ class GeneratedFileTests(TestCase):
         block = self.reference.design_block(data)
         self.assertIn("Chart series follow the scheme", block)
         self.assertNotIn("twelve-token", block)
+
+
+class LinkIntegrityTests(TestCase):
+    """Every relative link in a tracked document resolves.
+
+    The repository removes things in bulk -- 257 files once, 23 again -- and each
+    pass was verified by hand. Hand verification does not survive the next
+    removal, and a broken link is the visible form of an accidental deletion.
+    """
+
+    def setUp(self) -> None:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import check_links
+
+        self.module = check_links
+
+    def test_every_link_resolves(self) -> None:
+        findings = self.module.check()
+        detail = "; ".join(f"{f['document']}: {f['target']}" for f in findings)
+        self.assertEqual([], findings, detail)
+
+    def test_an_unfilled_placeholder_is_not_a_link(self) -> None:
+        self.assertEqual([], self.module.candidates('<a href="{{URL}}">x</a>', ".html"))
+
+    def test_a_commented_out_example_is_not_a_link(self) -> None:
+        text = '<!-- Replace with: <img src="missing.png" alt=""> -->'
+        self.assertEqual([], self.module.candidates(text, ".html"))
+
+    def test_a_code_sample_is_not_a_link(self) -> None:
+        # `result = tools[action.name](action.args)` is highlighted code in an
+        # HTML page, and the Markdown pattern read it as a link.
+        self.assertEqual([], self.module.candidates("result = tools[action.name](action.args)", ".html"))
+
+    def test_a_real_link_is_found(self) -> None:
+        self.assertEqual(["docs/releases/RELEASE_NOTES_V6.0.md"],
+                         self.module.candidates("see [notes](docs/releases/RELEASE_NOTES_V6.0.md)",
+                                                ".md"))

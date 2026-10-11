@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/images/folio-mark.svg" width="96" alt="Folio">
+  <img src="../../assets/images/folio-mark.svg" width="96" alt="Folio">
 </p>
 
 <h1 align="center">Folio Drawing DSL V4.2</h1>

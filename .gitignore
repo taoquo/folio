@@ -46,3 +46,19 @@ docs/superpowers/
 # Exploration: rendered colour-scheme pages are intermediate, the comparison
 # page keeps its own copies.
 dist/color-schemes/
+
+# Local engineering process records. Plans, task lists, status reports and the
+# audit trail that produced them: in-progress engineering logic rather than the
+# design a reader needs, which is the same reason /docs/plans/ is out.
+/docs/architecture/
+
+# The colour and font investigation's working notes. The design that came out of
+# it is stated in references/design.md and the three documents kept beside it;
+# these are the trail, and they stay local.
+/docs/exploration/color-architecture-review.md
+/docs/exploration/color-font-current-state.md
+/docs/exploration/color-font-research.md
+/docs/exploration/color-font-support-audit.md
+/docs/exploration/color-font-prototype-report.md
+/docs/exploration/color-font-remediation-plan.md
+/docs/exploration/drawing-series-bridge-plan.md

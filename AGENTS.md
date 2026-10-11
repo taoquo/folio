@@ -73,6 +73,7 @@ python3 scripts/build_color_reference.py --design        # the reference page an
                                               # tables in references/design.md
 python3 scripts/build_color_reference.py --design --check # both are current
 python3 scripts/build_literal_ledger.py --check # every literal is recorded
+python3 scripts/check_links.py                # every relative link resolves
 python3 scripts/check_theme_schemes.py        # every scheme: roles, contrast, ladder
 python3 scripts/build_scheme_comparison.py    # every scheme, side by side
 python3 scripts/build_scheme_comparison.py --inject   # the homepage galleries
@@ -209,7 +210,7 @@ Release notes must follow this project format:
 
 Do not mix English and Chinese inside the same numbered item. Keep both lists aligned by number, use 5-8 items, and write one concise sentence per item. Do not use graphic emoticons in the release title or body unless the user explicitly asks for them.
 
-Keep the current release note as `RELEASE_NOTES_V<version>.md` at the repository root, move the superseded one into `docs/releases/`, and add a matching section at the top of `CHANGELOG.md`. `scripts/package-skill.sh` bundles both locations.
+Keep the current release note as `RELEASE_NOTES_V<version>.md` at the repository root, move the superseded one into `docs/releases/`, and add a matching section at the top of `CHANGELOG.md`. Fix its relative paths when you move it: the note is one directory deeper, so `assets/images/folio-mark.svg` becomes `../../assets/images/folio-mark.svg`. Five notes were moved without that and their logo was broken until `check_links.py` found them. `scripts/package-skill.sh` bundles both locations.
 
 ## Fonts
 
