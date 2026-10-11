@@ -26,6 +26,7 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 | `scripts/pipeline.py` | Chooses the render path via `FOLIO_PIPELINE` | Low |
 | `scripts/fidelity.py` | Measures the IR path against the template path, per document type | Medium |
 | `scripts/projection.py` | Projects the resolved style and layout policy into a document's stylesheet | Medium |
+| `styles.css` | The two homepages' stylesheet; baked with the scheme like any other static page | Medium |
 | `scripts/document_build.py` | Builds a finished document from content, choosing the path by configuration | Medium |
 | `scripts/spacing_probe.py` | Reads a rendered document's spacing back and compares it with the model | Low |
 | `scripts/package-skill.sh` | Codex Desktop ZIP packager, excluding large fonts | Low |
@@ -71,6 +72,8 @@ python3 scripts/check_palette_scale.py        # a higher number is a darker colo
 python3 scripts/build_color_reference.py      # the palette and role reference page
 python3 scripts/check_theme_schemes.py        # every scheme: roles, contrast, ladder
 python3 scripts/build_scheme_comparison.py    # every scheme, side by side
+python3 scripts/build_scheme_comparison.py --inject   # the homepage galleries
+python3 scripts/build_literal_ledger.py      # record what a template literal means
 python3 scripts/spacing_probe.py compare --genre one-pager   # rendered spacing vs the model
 ```
 

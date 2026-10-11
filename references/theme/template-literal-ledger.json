@@ -71,7 +71,8 @@
       "index.html",
       "references/fixtures/hosting/a4-chinese.html",
       "references/fixtures/hosting/a4-long-doc.html",
-      "references/fixtures/hosting/letter-document.html"
+      "references/fixtures/hosting/letter-document.html",
+      "styles.css"
     ],
     "#3A312D": [
       "assets/demos/demo-agent-ops-longdoc.html",
@@ -98,7 +99,8 @@
       "assets/templates/resume-en.html",
       "assets/templates/resume.html",
       "index-zh.html",
-      "index.html"
+      "index.html",
+      "styles.css"
     ],
     "#4A6B52": [
       "assets/demos/demo-nvidia-equity-report.html",
@@ -154,7 +156,8 @@
       "assets/templates/resume-en.html",
       "assets/templates/resume.html",
       "index-zh.html",
-      "index.html"
+      "index.html",
+      "styles.css"
     ],
     "#5A6B7A": [
       "assets/templates/equity-report-en.html",
@@ -204,7 +207,8 @@
       "assets/templates/resume-en.html",
       "assets/templates/resume.html",
       "index-zh.html",
-      "index.html"
+      "index.html",
+      "styles.css"
     ],
     "#7E241C": [
       "assets/demos/demo-ridge-portfolio.html"
@@ -264,7 +268,8 @@
       "assets/templates/resume-en.html",
       "assets/templates/resume.html",
       "index-zh.html",
-      "index.html"
+      "index.html",
+      "styles.css"
     ],
     "#B9ACA3": [
       "assets/demos/demo-nvidia-equity-report.html",
@@ -312,7 +317,8 @@
       "assets/templates/portfolio-en.html",
       "assets/templates/portfolio.html",
       "assets/templates/resume-en.html",
-      "assets/templates/resume.html"
+      "assets/templates/resume.html",
+      "styles.css"
     ],
     "#E6DACD": [
       "assets/demos/demo-agent-ops-longdoc.html",
@@ -358,7 +364,8 @@
       "assets/templates/resume-en.html",
       "assets/templates/resume.html",
       "index-zh.html",
-      "index.html"
+      "index.html",
+      "styles.css"
     ],
     "#F1D2CC": [
       "assets/demos/demo-agent-ops-longdoc.html",
@@ -379,7 +386,8 @@
       "assets/templates/portfolio-en.html",
       "assets/templates/portfolio.html",
       "index-zh.html",
-      "index.html"
+      "index.html",
+      "styles.css"
     ],
     "#F6EBD9": [
       "assets/templates/changelog-en.html",
@@ -434,7 +442,8 @@
       "index.html",
       "references/fixtures/hosting/a4-chinese.html",
       "references/fixtures/hosting/a4-long-doc.html",
-      "references/fixtures/hosting/letter-document.html"
+      "references/fixtures/hosting/letter-document.html",
+      "styles.css"
     ],
     "#F7E6E1": [
       "assets/demos/demo-agent-slides.html",
@@ -456,7 +465,8 @@
       "assets/templates/resume-en.html",
       "assets/templates/resume.html",
       "index-zh.html",
-      "index.html"
+      "index.html",
+      "styles.css"
     ],
     "#FBF7F3": [
       "assets/demos/demo-agent-ops-longdoc.html",
@@ -502,13 +512,15 @@
       "assets/templates/resume-en.html",
       "assets/templates/resume.html",
       "index-zh.html",
-      "index.html"
+      "index.html",
+      "styles.css"
     ]
   },
   "unmatched": {
     "#2E2521": [
       "index-zh.html",
-      "index.html"
+      "index.html",
+      "styles.css"
     ],
     "#85776F": [
       "assets/diagrams/architecture.html",
@@ -538,9 +550,16 @@
       "index-zh.html",
       "index.html"
     ],
+    "#A93428": [
+      "styles.css"
+    ],
+    "#B0AEA5": [
+      "styles.css"
+    ],
     "#D06A5E": [
       "index-zh.html",
-      "index.html"
+      "index.html",
+      "styles.css"
     ],
     "#D7CBC2": [
       "assets/diagrams/bar-chart.html",
@@ -548,7 +567,8 @@
     ],
     "#E2B3A8": [
       "index-zh.html",
-      "index.html"
+      "index.html",
+      "styles.css"
     ],
     "#E6D9D1": [
       "assets/demos/demo-nvidia-equity-report.html",

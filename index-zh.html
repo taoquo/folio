@@ -222,7 +222,43 @@ bash scripts/package-skill.sh   # 构建 dist/folio.zip 后本地安装</pre>
       <div class="tint"><span class="flag">&nbsp;</span><span class="sample" style="background:#EBC7C0">Tag sample</span><p class="opacity">0.22</p><span class="hex">#EBC7C0</span></div>
       <div class="tint"><span class="flag">&nbsp;</span><span class="sample" style="background:#E2B3A8">Tag sample</span><p class="opacity">0.30</p><span class="hex">#E2B3A8</span></div>
     </div>
-  </section>
+  
+    <!-- folio-schemes:start -->
+      <h3 class="subhead">切换色系</h3>
+      <p style="font-size:14px;color:var(--color-text-secondary);margin:0 0 18px;line-height:1.6;">内置三套色系，每套一个文件，放在 <code>references/profiles/theme/</code>。<code>FOLIO_THEME</code> 指定其中一套，作用于文档、图表、幻灯片和这些页面。每套色系都过同一套标准：文字在两个底面上都达到 4.5:1，细线保持可见，同族编号跟随明度。</p>
+      <div class="schemes">
+      <article class="scheme">
+        <div class="scheme-head">
+          <p class="scheme-name">典籍</p>
+          <code class="scheme-id">folio-classic-v1</code>
+          <span class="scheme-flag">默认</span>
+        </div>
+        <p class="scheme-note">暖羊皮纸画布，朱砂强调。系统自己的声音。</p>
+        <div class="scheme-chips"><span class="scheme-chip" style="background:#F6F0EA"></span><span class="scheme-chip" style="background:#FBF7F3"></span><span class="scheme-chip" style="background:#191514"></span><span class="scheme-chip" style="background:#B83D2E"></span><span class="scheme-chip" style="background:#F7E6E1"></span></div>
+        <p class="scheme-count">21 palette entries · 16 roles</p>
+      </article>
+      <article class="scheme">
+        <div class="scheme-head">
+          <p class="scheme-name">林间</p>
+          <code class="scheme-id">folio-forest-v1</code>
+        </div>
+        <p class="scheme-note">暖骨白画布，深林绿强调。适合编辑与长文。</p>
+        <div class="scheme-chips"><span class="scheme-chip" style="background:#F5F2EA"></span><span class="scheme-chip" style="background:#FCFAF5"></span><span class="scheme-chip" style="background:#161813"></span><span class="scheme-chip" style="background:#2F5D46"></span><span class="scheme-chip" style="background:#E3EDE6"></span></div>
+        <p class="scheme-count">11 palette entries · 16 roles</p>
+      </article>
+      <article class="scheme">
+        <div class="scheme-head">
+          <p class="scheme-name">石板</p>
+          <code class="scheme-id">folio-slate-v1</code>
+        </div>
+        <p class="scheme-note">冷中性画布，深天青强调。适合机构研究。</p>
+        <div class="scheme-chips"><span class="scheme-chip" style="background:#F1F3F6"></span><span class="scheme-chip" style="background:#FAFBFC"></span><span class="scheme-chip" style="background:#14181D"></span><span class="scheme-chip" style="background:#1F4E8C"></span><span class="scheme-chip" style="background:#E4EBF4"></span></div>
+        <p class="scheme-count">12 palette entries · 16 roles</p>
+      </article>
+      </div>
+      <p class="scheme-foot"><code>FOLIO_THEME=folio-slate-v1 python3 scripts/build.py</code> 用指定色系渲染；<code>python3 scripts/check_theme_schemes.py</code> 校验每套色系是否达标。不设置时使用标记 <code>default</code> 的那一套。</p>
+      <!-- folio-schemes:end -->
+</section>
 
   <!-- ============ 04 TYPE ============ -->
   <section id="type">

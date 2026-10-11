@@ -53,12 +53,33 @@ BAKE = ROOT / "references" / "theme" / "static-bake.json"
 STATIC_SOURCES = (
     "index.html",
     "index-zh.html",
+    "styles.css",
     "assets/demos",
 )
 
 
-MARKER = "<!-- folio-theme: {name} -->"
-MARKER_PATTERN = re.compile(r"<!--\s*folio-theme:\s*([A-Za-z0-9._-]+)\s*-->")
+# A page marks itself with an HTML comment and a stylesheet with a CSS one: the
+# marker has to be something the file's own syntax carries, or the file cannot
+# say which scheme it holds.
+MARKERS = {
+    ".html": "<!-- folio-theme: {name} -->",
+    ".svg": "<!-- folio-theme: {name} -->",
+    ".css": "/* folio-theme: {name} */",
+}
+MARKER_PATTERN = re.compile(
+    r"(?:<!--|/\*)\s*folio-theme:\s*([A-Za-z0-9._-]+)\s*(?:-->|\*/)")
+
+# A region the bake must not touch. The scheme gallery shows every scheme's own
+# swatches, so those values are data about other schemes rather than this page's
+# colours: selecting one must not repaint the card describing another.
+# `build_scheme_comparison.py` writes what goes here.
+EXEMPT = re.compile(
+    r"<!--\s*folio-schemes:start\s*-->.*?<!--\s*folio-schemes:end\s*-->",
+    re.DOTALL)
+
+
+def marker_for(path: Path, name: str) -> str:
+    return MARKERS.get(path.suffix.lower(), MARKERS[".html"]).format(name=name)
 
 
 def _style(theme: str | None):
@@ -98,7 +119,7 @@ def targets() -> list[Path]:
         if not any(name == source or name.startswith(f"{source}/") for source in STATIC_SOURCES):
             continue
         path = ROOT / name
-        if path.is_file() and path.suffix.lower() in {".html", ".svg"}:
+        if path.is_file() and path.suffix.lower() in {".html", ".svg", ".css"}:
             out.append(path)
     return out
 
@@ -129,6 +150,24 @@ def substitution_for(target_theme: str | None) -> dict[str, str]:
     return out
 
 
+def substitute_outside_exempt(text: str, substitution: dict[str, str]) -> str:
+    """Replace values everywhere except inside an exempt region."""
+    out: list[str] = []
+    last = 0
+    for match in EXEMPT.finditer(text):
+        out.append(_replace(text[last:match.start()], substitution))
+        out.append(match.group(0))
+        last = match.end()
+    out.append(_replace(text[last:], substitution))
+    return "".join(out)
+
+
+def _replace(chunk: str, substitution: dict[str, str]) -> str:
+    for value, replacement in substitution.items():
+        chunk = re.sub(re.escape(value), replacement, chunk, flags=re.IGNORECASE)
+    return chunk
+
+
 def apply(target_theme: str | None, check: bool = False) -> int:
     wanted = target_theme or _default_name()
     if not wanted:
@@ -140,7 +179,9 @@ def apply(target_theme: str | None, check: bool = False) -> int:
     for path in targets():
         text = path.read_text(encoding="utf-8")
         held = baked_theme(text)
-        touched = sum(len(re.findall(re.escape(value), text, flags=re.IGNORECASE))
+        # Only what is outside an exempt region counts as behind.
+        editable = EXEMPT.sub("", text)
+        touched = sum(len(re.findall(re.escape(value), editable, flags=re.IGNORECASE))
                       for value in substitution)
         if held == wanted and not touched:
             continue
@@ -150,15 +191,16 @@ def apply(target_theme: str | None, check: bool = False) -> int:
             changed += 1
             continue
 
-        for value, replacement in substitution.items():
-            text = re.sub(re.escape(value), replacement, text, flags=re.IGNORECASE)
+        text = substitute_outside_exempt(text, substitution)
 
-        marker = MARKER.format(name=wanted)
+        marker = marker_for(path, wanted)
         if MARKER_PATTERN.search(text):
             text = MARKER_PATTERN.sub(marker, text, count=1)
+        elif path.suffix.lower() == ".css":
+            text = f"{marker}\n{text}"
         else:
-            # After the doctype, before anything a reader sees.
-            # A doctype may be written in any case, and this repository has both.
+            # After the doctype, before anything a reader sees. A doctype may be
+            # written in any case, and this repository has both.
             text = re.sub(r"(<!doctype html>[^\n]*\n)", rf"\1{marker}\n", text,
                           count=1, flags=re.IGNORECASE)
         path.write_text(text, encoding="utf-8")

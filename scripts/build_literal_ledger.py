@@ -1,0 +1,122 @@
+#!/usr/bin/env python3
+"""folio template-literal ledger
+
+Records which palette entry each hand-written colour literal stands for.
+
+Some markup paints a colour rather than reading a variable: a diagram template
+states `fill="#B83D2E"` in an SVG attribute, a document template draws its chart
+the same way, and the homepage stylesheet declares its canvas in `:root`.
+Measured: this renderer ignores a CSS rule that would override a presentation
+attribute and does not resolve `var()` inside one, so the literal has to be
+replaced in the markup.
+
+The map is recorded rather than derived, because the default theme is the thing
+being changed and cannot be its own reference. Entries disappear as templates are
+converted to variables; `color_sources.py check` fails when a recorded literal is
+no longer in the file it came from, so the ledger cannot quietly rot.
+
+    python3 scripts/build_literal_ledger.py
+    python3 scripts/build_literal_ledger.py --format json
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+LEDGER = ROOT / "references" / "theme" / "template-literal-ledger.json"
+HEX = re.compile(r"#[0-9A-Fa-f]{6}\b")
+
+# Markup and stylesheets a reader or a renderer opens directly. `generated` holds
+# rebuilt artifacts, whose colours come from their templates rather than being
+# authored, so it is skipped.
+DIRECTORIES = (
+    "assets/templates", "assets/diagrams", "assets/demos", "references/fixtures/hosting",
+    "index.html", "index-zh.html", "styles.css",
+)
+SUFFIXES = {".html", ".svg", ".css"}
+SKIP_PARTS = {"generated", "__pycache__"}
+
+
+def palette() -> dict[str, str]:
+    import yaml
+
+    path = ROOT / "references" / "profiles" / "theme" / "folio-classic-v1.yaml"
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    bodies = data.get("profiles") or {}
+    default = next((body for body in bodies.values() if body.get("default")), None)
+    if default is None:
+        default = next(iter(bodies.values()), {})
+    return {name: str(value).upper() for name, value in (default.get("palette") or {}).items()}
+
+
+def scan() -> dict:
+    by_value = {value: name for name, value in palette().items()}
+    shipped: dict[str, dict] = {}
+    unmatched: dict[str, list[str]] = {}
+
+    for target in DIRECTORIES:
+        path = ROOT / target
+        paths = [path] if path.is_file() else sorted(p for p in path.rglob("*") if p.is_file())
+        for candidate in paths:
+            if candidate.suffix.lower() not in SUFFIXES:
+                continue
+            if SKIP_PARTS & set(candidate.parts):
+                continue
+            relative = str(candidate.relative_to(ROOT))
+            text = candidate.read_text(encoding="utf-8", errors="ignore")
+            for value in sorted({h.upper() for h in HEX.findall(text)}):
+                if value in by_value:
+                    body = shipped.setdefault(value, {"palette": by_value[value], "files": []})
+                    body["files"].append(relative)
+                else:
+                    unmatched.setdefault(value, []).append(relative)
+
+    return {
+        "shipped": {value: body["palette"] for value, body in sorted(shipped.items())},
+        "files": {value: sorted(set(body["files"])) for value, body in sorted(shipped.items())},
+        "unmatched": {value: sorted(set(paths)) for value, paths in sorted(unmatched.items())},
+    }
+
+
+def write(ledger: dict) -> None:
+    LEDGER.write_text(json.dumps({
+        "note": (
+            "Which palette entry each hand-written colour literal in a pre-palette "
+            "template stands for. Recorded rather than derived: the default theme is "
+            "the thing being changed, so its values cannot serve as the reference. "
+            "Entries disappear as templates are converted to variables."
+        ),
+        **ledger,
+    }, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def main(argv: list[str]) -> int:
+    parser = argparse.ArgumentParser(description=__doc__,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--format", choices=("text", "json"), default="text")
+    parser.add_argument("--dry-run", action="store_true", help="report without writing")
+    args = parser.parse_args(argv)
+
+    ledger = scan()
+    if args.format == "json":
+        print(json.dumps(ledger, indent=2, ensure_ascii=False))
+    else:
+        print(f"  {len(ledger['shipped'])} literal(s) map to a palette entry")
+        print(f"  {len(ledger['unmatched'])} literal(s) belong to no entry")
+        for value, paths in sorted(ledger["unmatched"].items()):
+            print(f"    {value}  {len(paths)} file(s)")
+        if not args.dry_run:
+            write(ledger)
+            print(f"OK: wrote {LEDGER.relative_to(ROOT)}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

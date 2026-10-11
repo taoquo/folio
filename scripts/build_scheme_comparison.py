@@ -156,11 +156,152 @@ page = f"""<!DOCTYPE html>
 </body>
 </html>
 """
+
+# What each scheme is called on a page, and why a reader would pick it. The
+# profile knows the colours; the copy is the one thing it cannot carry.
+COPY = {
+    "folio-classic-v1": {
+        "en": ("Folio Classic", "Warm parchment canvas, cinnabar accent. The system's own voice."),
+        "zh": ("典籍", "暖羊皮纸画布，朱砂强调。系统自己的声音。"),
+    },
+    "folio-slate-v1": {
+        "en": ("Folio Slate", "Cool neutral canvas, deep azure accent. Institutional research."),
+        "zh": ("石板", "冷中性画布，深天青强调。适合机构研究。"),
+    },
+    "folio-forest-v1": {
+        "en": ("Folio Forest", "Warm bone canvas, deep forest accent. Editorial and long-form."),
+        "zh": ("林间", "暖骨白画布，深林绿强调。适合编辑与长文。"),
+    },
+}
+
+# The five that say what a scheme looks like at a glance.
+CHIPS = ("color.surface.page", "color.surface.card", "color.text.primary",
+         "color.accent.brand", "color.accent.brand-tint")
+
+LEAD = {
+    "en": ("Three schemes ship, one file each in <code>references/profiles/theme/</code>. "
+           "<code>FOLIO_THEME</code> selects one, and it reaches documents, diagrams, "
+           "slide decks and these pages. Every scheme is held to the same bar: text at "
+           "4.5:1 on both surfaces, a hairline that stays visible, and ramp numbers that "
+           "follow lightness."),
+    "zh": ("内置三套色系，每套一个文件，放在 <code>references/profiles/theme/</code>。"
+           "<code>FOLIO_THEME</code> 指定其中一套，作用于文档、图表、幻灯片和这些页面。"
+           "每套色系都过同一套标准：文字在两个底面上都达到 4.5:1，细线保持可见，"
+           "同族编号跟随明度。"),
+}
+
+HEADING = {"en": "Choosing a Scheme", "zh": "切换色系"}
+FOOT = {
+    "en": ("<code>FOLIO_THEME=folio-slate-v1 python3 scripts/build.py</code> renders in a "
+           "scheme; <code>python3 scripts/check_theme_schemes.py</code> holds every scheme "
+           "to the bar. Unset, the profile marked <code>default</code> is used."),
+    "zh": ("<code>FOLIO_THEME=folio-slate-v1 python3 scripts/build.py</code> 用指定色系渲染；"
+           "<code>python3 scripts/check_theme_schemes.py</code> 校验每套色系是否达标。"
+           "不设置时使用标记 <code>default</code> 的那一套。"),
+}
+
+DEFAULT_LABEL = {"en": "Default", "zh": "默认"}
+USAGE_LABEL = {"en": "Use", "zh": "用法"}
+
+TARGETS = ("index.html", "index-zh.html")
+START, END = "<!-- folio-schemes:start -->", "<!-- folio-schemes:end -->"
+
+
+def render_gallery(language: str) -> str:
+    """The block that goes between the markers on the homepages."""
+    import yaml
+
+    cards = []
+    for name in sorted(schemes.profiles()):
+        body = schemes.profiles()[name]
+        profile = (yaml.safe_load(
+            (ROOT / "references" / "profiles" / "theme" / f"{name}.yaml").read_text(encoding="utf-8")
+        ).get("profiles") or {}).get(name) or {}
+        palette = profile.get("palette") or {}
+        result = schemes.check_scheme(name)
+        values = result["values"]
+        title, note = COPY.get(name, {}).get(language, (name, ""))
+
+        lines = [
+            '      <article class="scheme">',
+            '        <div class="scheme-head">',
+            f'          <p class="scheme-name">{title}</p>',
+            f'          <code class="scheme-id">{name}</code>',
+        ]
+        if body.get("default"):
+            lines.append(f'          <span class="scheme-flag">{DEFAULT_LABEL[language]}</span>')
+        lines += [
+            "        </div>",
+            f'        <p class="scheme-note">{note}</p>',
+            '        <div class="scheme-chips">'
+            + "".join(f'<span class="scheme-chip" style="background:'
+                      f'{values.get(role, "#000000")}"></span>' for role in CHIPS)
+            + "</div>",
+            f'        <p class="scheme-count">{len(palette)} palette entries · '
+            f'{result["metrics"]["roles"]} roles</p>',
+            "      </article>",
+        ]
+        cards.append("\n".join(lines))
+
+    return "\n".join([
+        START,
+        f'      <h3 class="subhead">{HEADING[language]}</h3>',
+        '      <p style="font-size:14px;color:var(--color-text-secondary);margin:0 0 18px;'
+        f'line-height:1.6;">{LEAD[language]}</p>',
+        '      <div class="schemes">',
+        "\n".join(cards),
+        "      </div>",
+        f'      <p class="scheme-foot">{FOOT[language]}</p>',
+        f'      {END}',
+    ])
+
+
+def inject(check: bool = False) -> int:
+    """Write the gallery into both homepages, replacing what is between the markers."""
+    import re
+
+    failures = 0
+    for relative in TARGETS:
+        path = ROOT / relative
+        text = path.read_text(encoding="utf-8")
+        language = "zh" if "zh" in relative else "en"
+        block = render_gallery(language)
+        pattern = re.compile(re.escape(START) + r".*?" + re.escape(END), re.DOTALL)
+        found = pattern.search(text)
+        if not found:
+            print(f"ERROR: {relative}: the markers {START} / {END} are not in the file")
+            failures += 1
+            continue
+        updated = text[:found.start()] + block + text[found.end():]
+        if check:
+            if updated != text:
+                print(f"  {relative}: the gallery is behind the profiles")
+                failures += 1
+            continue
+        if updated != text:
+            path.write_text(updated, encoding="utf-8")
+            print(f"  {relative}: gallery written")
+    return failures
+
+
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--out", default="docs/acceptance/theme-schemes.html")
+    parser.add_argument("--inject", action="store_true",
+                        help="write the gallery into index.html and index-zh.html")
+    parser.add_argument("--check", action="store_true",
+                        help="report whether the gallery is behind the profiles")
     args = parser.parse_args(argv)
+
+    if args.inject or args.check:
+        failures = inject(check=args.check)
+        if args.check:
+            if failures:
+                print(f"ERROR: {failures} homepage(s) behind the profiles")
+            else:
+                print(f"OK: {len(TARGETS)} gallery(ies) match the profiles")
+        return 1 if failures else 0
 
     out = ROOT / args.out
     out.parent.mkdir(parents=True, exist_ok=True)

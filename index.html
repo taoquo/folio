@@ -222,7 +222,43 @@ bash scripts/package-skill.sh   # build dist/folio.zip, then install locally</pr
       <div class="tint"><span class="flag">&nbsp;</span><span class="sample" style="background:#EBC7C0">Tag sample</span><p class="opacity">0.22</p><span class="hex">#EBC7C0</span></div>
       <div class="tint"><span class="flag">&nbsp;</span><span class="sample" style="background:#E2B3A8">Tag sample</span><p class="opacity">0.30</p><span class="hex">#E2B3A8</span></div>
     </div>
-  </section>
+  
+    <!-- folio-schemes:start -->
+      <h3 class="subhead">Choosing a Scheme</h3>
+      <p style="font-size:14px;color:var(--color-text-secondary);margin:0 0 18px;line-height:1.6;">Three schemes ship, one file each in <code>references/profiles/theme/</code>. <code>FOLIO_THEME</code> selects one, and it reaches documents, diagrams, slide decks and these pages. Every scheme is held to the same bar: text at 4.5:1 on both surfaces, a hairline that stays visible, and ramp numbers that follow lightness.</p>
+      <div class="schemes">
+      <article class="scheme">
+        <div class="scheme-head">
+          <p class="scheme-name">Folio Classic</p>
+          <code class="scheme-id">folio-classic-v1</code>
+          <span class="scheme-flag">Default</span>
+        </div>
+        <p class="scheme-note">Warm parchment canvas, cinnabar accent. The system's own voice.</p>
+        <div class="scheme-chips"><span class="scheme-chip" style="background:#F6F0EA"></span><span class="scheme-chip" style="background:#FBF7F3"></span><span class="scheme-chip" style="background:#191514"></span><span class="scheme-chip" style="background:#B83D2E"></span><span class="scheme-chip" style="background:#F7E6E1"></span></div>
+        <p class="scheme-count">21 palette entries · 16 roles</p>
+      </article>
+      <article class="scheme">
+        <div class="scheme-head">
+          <p class="scheme-name">Folio Forest</p>
+          <code class="scheme-id">folio-forest-v1</code>
+        </div>
+        <p class="scheme-note">Warm bone canvas, deep forest accent. Editorial and long-form.</p>
+        <div class="scheme-chips"><span class="scheme-chip" style="background:#F5F2EA"></span><span class="scheme-chip" style="background:#FCFAF5"></span><span class="scheme-chip" style="background:#161813"></span><span class="scheme-chip" style="background:#2F5D46"></span><span class="scheme-chip" style="background:#E3EDE6"></span></div>
+        <p class="scheme-count">11 palette entries · 16 roles</p>
+      </article>
+      <article class="scheme">
+        <div class="scheme-head">
+          <p class="scheme-name">Folio Slate</p>
+          <code class="scheme-id">folio-slate-v1</code>
+        </div>
+        <p class="scheme-note">Cool neutral canvas, deep azure accent. Institutional research.</p>
+        <div class="scheme-chips"><span class="scheme-chip" style="background:#F1F3F6"></span><span class="scheme-chip" style="background:#FAFBFC"></span><span class="scheme-chip" style="background:#14181D"></span><span class="scheme-chip" style="background:#1F4E8C"></span><span class="scheme-chip" style="background:#E4EBF4"></span></div>
+        <p class="scheme-count">12 palette entries · 16 roles</p>
+      </article>
+      </div>
+      <p class="scheme-foot"><code>FOLIO_THEME=folio-slate-v1 python3 scripts/build.py</code> renders in a scheme; <code>python3 scripts/check_theme_schemes.py</code> holds every scheme to the bar. Unset, the profile marked <code>default</code> is used.</p>
+      <!-- folio-schemes:end -->
+</section>
 
   <!-- ============ 04 TYPE ============ -->
   <section id="type">

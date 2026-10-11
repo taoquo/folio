@@ -295,3 +295,57 @@ class SchemeScaffoldTests(TestCase):
                     built["palette"],
                     committed["profiles"][name]["palette"],
                 )
+
+
+class HomepageGalleryTests(TestCase):
+    """The homepages show every scheme, generated from the profiles.
+
+    The gallery's swatches are other schemes' colours, so they must survive a
+    bake: selecting slate must not repaint the card describing classic. That is
+    what the exempt region is for, and it is the part worth testing.
+    """
+
+    def setUp(self) -> None:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import build_scheme_comparison
+        import build_static_theme
+
+        self.gallery = build_scheme_comparison
+        self.bake = build_static_theme
+
+    def test_both_homepages_carry_the_markers(self) -> None:
+        for relative in self.gallery.TARGETS:
+            with self.subTest(page=relative):
+                text = (ROOT / relative).read_text(encoding="utf-8")
+                self.assertIn(self.gallery.START, text)
+                self.assertIn(self.gallery.END, text)
+
+    def test_the_gallery_matches_the_profiles(self) -> None:
+        self.assertEqual(0, self.gallery.inject(check=True))
+
+    def test_every_scheme_appears_in_both_languages(self) -> None:
+        for language, relative in (("en", "index.html"), ("zh", "index-zh.html")):
+            text = (ROOT / relative).read_text(encoding="utf-8")
+            for name in self.gallery.schemes.profiles():
+                with self.subTest(language=language, scheme=name):
+                    self.assertIn(name, text)
+
+    def test_the_baked_page_keeps_the_gallery_untouched(self) -> None:
+        # Substituting another scheme's values into the page must not reach the
+        # region that shows every scheme's own colours.
+        text = (ROOT / "index.html").read_text(encoding="utf-8")
+        block = self.gallery.render_gallery("en")
+        substitution = {"#F6F0EA": "#000000", "#B83D2E": "#000000"}
+        baked = self.bake.substitute_outside_exempt(text, substitution)
+        self.assertIn(block, baked)
+        self.assertNotIn("#F6F0EA", baked.split(self.gallery.START)[0])
+
+    def test_the_stylesheet_marks_itself_in_its_own_syntax(self) -> None:
+        # An HTML comment cannot live in a stylesheet, so a stylesheet would never
+        # record which scheme it holds and would read as behind on every check.
+        path = ROOT / "styles.css"
+        self.assertEqual("folio-classic-v1", self.bake.baked_theme(path.read_text(encoding="utf-8")))
+
+    def test_a_stylesheet_is_a_bake_target(self) -> None:
+        names = {path.name for path in self.bake.targets()}
+        self.assertIn("styles.css", names)

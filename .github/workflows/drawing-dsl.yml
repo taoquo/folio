@@ -150,6 +150,8 @@ jobs:
         run: python scripts/check_palette_scale.py
       - name: Check every colour scheme clears the same bar
         run: python scripts/check_theme_schemes.py
+      - name: Check the homepage galleries match the profiles
+        run: python scripts/build_scheme_comparison.py --check
       - name: Build a document with the projection and confirm the page count
         run: |
           python scripts/document_build.py build --genre one-pager --lang zh --out dist/projected
