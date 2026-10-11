@@ -210,39 +210,50 @@ Each has a tint for a background behind the word: `--status-positive-tint`
 
 ### Data
 
-What a chart series is, as distinct from what it means.
+There is no chart palette in the document theme, and that is deliberate.
 
-```css
-/* Categorical: differently-coloured series, no implied order */
---category-1..6: #B83D2E  #3D5A63  #8A5A16  #5C4A6B  #5A4A43  #4B3E39
+A fourteen-role `data` domain lived here -- categorical, sequential and
+diverging. It reached no reader: a document template draws its chart inline, and
+a standalone diagram reads the drawing theme, which has its own twelve-token
+palette across three schemes. Fourteen roles resolved, were projected, and
+painted nothing.
 
-/* Sequential: ordered, light to dark */
---sequential-1..5: #F7E6E1  #E5B9AE  #CE8474  #B83D2E  #7E241C
+Chart colour belongs to `scripts/drawing/theme/folio.py`. A document scheme still
+reaches a diagram through the seven tokens the two share -- canvas, ink, accent,
+borders -- so changing scheme changes a diagram's frame and its brand mark, and
+not the hues of its series. Bridging the series colours means authoring them for
+all three drawing themes at once, which is a decision rather than a refactor.
 
-/* Diverging: either side of a baseline */
---diverging-negative: #5A6B7A   --diverging-neutral: #E9DED4   --diverging-positive: #B83D2E
-```
-
-**Rules:**
-
-- A category colour says "this is a different series", never "this one is
-  better". A business meaning belongs to `status`, and mixing the two is how a
-  chart lies.
-- The diverging poles are the status poles, so a chart and a callout agree.
-- Every categorical hue clears 4.5:1 on both parchment and ivory, because these
-  palettes are used for the filled mark and for the legend text that names it.
+When a document does draw a chart, it draws it the way a diagram template does:
+literals in the markup, mapped to palette entries by
+`references/theme/template-literal-ledger.json`, so a scheme reaches it.
+`projection.retarget_literals` applies that to document templates as well as
+diagram ones.
 
 ### Where colour is decided
 
-`references/profiles/theme/folio-classic-v1.yaml` owns it. Templates read
-variables; they do not state values. `python3 scripts/color_sources.py check`
-compares the sources and reports a name that has drifted apart.
+`references/profiles/theme/` owns it, one file per scheme. Templates read the
+variables the projection derives; they do not state values of their own beyond
+the copy in `:root` that lets a template render standalone, which
+`python3 scripts/build.py --sync` keeps equal to the scheme.
+
+A scheme is selected by name and by nothing else:
+
+```bash
+FOLIO_THEME=folio-slate-v1 python3 scripts/build.py
+FOLIO_THEME=folio-slate-v1 python3 scripts/build_static_theme.py
+```
+
+Unset, the profile marked `default` is used. Adding a scheme is adding a file;
+`python3 scripts/check_theme_schemes.py` holds every one of them to the same bar
+-- the roles a template reads, contrast on both surfaces, the lightness ladder,
+and whether every palette entry can be reached. `color_sources.py check` compares
+the four sources of colour for a name that has drifted apart, and
+`build_scheme_comparison.py` renders them side by side.
 
 The drawing theme (`scripts/drawing/theme/folio.py`) is a separate twelve-token
 swap unit: every token must have a counterpart in the dark and terminal themes,
-and a test asserts the count. It does not yet carry the data palette above.
-Connecting the two means extending all three drawing themes at once, and that is
-a decision rather than a refactor.
+and a test asserts the count.
 
 ### Translucent -> Solid conversion (TAGS MUST BE SOLID)
 

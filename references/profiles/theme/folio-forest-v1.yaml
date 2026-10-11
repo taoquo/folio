@@ -1,0 +1,54 @@
+version: 2
+profiles:
+  folio-forest-v1:
+    palette:
+      amber-100: '#F5EBD8'
+      amber-600: '#8A5A16'
+      forest-100: '#E3EDE6'
+      forest-200: '#BFD5C7'
+      forest-300: '#C4C2BB'
+      forest-600: '#6A6157'
+      forest-700: '#2F5D46'
+      forest-800: '#43443E'
+      ink: '#161813'
+      ivory: '#FCFAF5'
+      parchment: '#F5F2EA'
+    color:
+      accent:
+        brand:
+          palette: forest-700
+        brand-tint:
+          palette: forest-100
+        tag:
+          palette: forest-200
+      border:
+        default:
+          palette: forest-300
+        soft:
+          palette: forest-200
+        warm:
+          palette: forest-200
+      status:
+        caution:
+          palette: amber-600
+        caution-tint:
+          palette: amber-100
+        negative:
+          palette: forest-600
+        positive:
+          palette: forest-700
+      surface:
+        card:
+          palette: ivory
+        page:
+          palette: parchment
+      text:
+        muted:
+          palette: forest-600
+        primary:
+          palette: ink
+        secondary:
+          palette: forest-600
+        warm:
+          palette: forest-800
+

@@ -20,7 +20,7 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 | `scripts/build.py` | PDF / PPTX build and verification script, plus placeholder / orphan / rhythm checks | Low |
 | `scripts/folio.py` | Drawing DSL CLI, routing, render, import, catalog | Low |
 | `scripts/page_contracts.py` | Single source for page-count contracts, consumed by every checker | Low |
-| `references/profiles/theme/` | Colour schemes: a palette of raw values and the semantic roles that point at it | Medium |
+| `references/profiles/theme/` | Colour schemes, one file each: a palette of raw values and the roles that point at it. `FOLIO_THEME` selects one | Medium |
 | `scripts/document_ir/` | Document IR: model, validator, readers, HTML and PPTX writers | Medium |
 | `scripts/renderers/` | Renderer protocol and the WeasyPrint adapter | Low |
 | `scripts/pipeline.py` | Chooses the render path via `FOLIO_PIPELINE` | Low |
@@ -69,6 +69,8 @@ python3 scripts/build_static_theme.py --check # the static pages hold the palett
 python3 scripts/build_static_theme.py         # bake it into index.html and the demos
 python3 scripts/check_palette_scale.py        # a higher number is a darker colour
 python3 scripts/build_color_reference.py      # the palette and role reference page
+python3 scripts/check_theme_schemes.py        # every scheme: roles, contrast, ladder
+python3 scripts/build_scheme_comparison.py    # every scheme, side by side
 python3 scripts/spacing_probe.py compare --genre one-pager   # rendered spacing vs the model
 ```
 

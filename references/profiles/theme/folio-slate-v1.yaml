@@ -1,0 +1,55 @@
+version: 2
+profiles:
+  folio-slate-v1:
+    palette:
+      amber-100: '#F5EBD8'
+      amber-600: '#8A5A16'
+      azure-100: '#E4EBF4'
+      azure-200: '#C3D2E6'
+      azure-700: '#1F4E8C'
+      ink: '#14181D'
+      ivory: '#FAFBFC'
+      parchment: '#F1F3F6'
+      slate-200: '#D6D9DC'
+      slate-300: '#C0C3C6'
+      slate-600: '#5C6672'
+      slate-800: '#404448'
+    color:
+      accent:
+        brand:
+          palette: azure-700
+        brand-tint:
+          palette: azure-100
+        tag:
+          palette: azure-200
+      border:
+        default:
+          palette: slate-300
+        soft:
+          palette: slate-200
+        warm:
+          palette: slate-200
+      status:
+        caution:
+          palette: amber-600
+        caution-tint:
+          palette: amber-100
+        negative:
+          palette: slate-600
+        positive:
+          palette: azure-700
+      surface:
+        card:
+          palette: ivory
+        page:
+          palette: parchment
+      text:
+        muted:
+          palette: slate-600
+        primary:
+          palette: ink
+        secondary:
+          palette: slate-600
+        warm:
+          palette: slate-800
+

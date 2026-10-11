@@ -336,12 +336,36 @@ python3 scripts/document_baseline.py compare # 文档与已批准的基线一致
 python3 scripts/migration.py status          # 各类文档的 IR 就绪度
 ```
 
+### 色系
+
+一个色系就是一个 YAML 文件。`FOLIO_THEME` 指定它，它会到达每一类产物：文档、图表、幻灯片、静态页面。
+
+```bash
+FOLIO_THEME=folio-slate-v1 python3 scripts/build.py               # 文档、图表、幻灯片
+FOLIO_THEME=folio-slate-v1 python3 scripts/build_static_theme.py  # index.html 与 demo 页
+```
+
+不设置时，使用标记 `default` 的方案。全部定义在 `references/profiles/theme/`，一个文件就是一个完整色系：
+
+- `palette` 存放原始色，每个只写一次。数字是明度阶梯上的位置：同族内编号越大越深，所以两个名字就能看出哪个更浅。
+- `color` 存放模板读取的语义角色，指向色板。`color.text.primary` 按一条规则派生出 `--color-text-primary`，所以加角色只需想一个名字。
+
+加一个色系就是加一个文件。每个色系都要过同一套标准：
+
+```bash
+python3 scripts/check_theme_schemes.py       # 角色、对比度、阶梯、可达性
+python3 scripts/build_scheme_comparison.py   # 所有色系并排对照
+python3 scripts/build_color_reference.py     # 单个色系的色板与角色
+```
+
+`docs/acceptance/theme-schemes.html` 是对照页。`scripts/build_color_reference.py --theme <名字>` 生成任一色系自己的参考页。
+
 ## 排版规则
 
 这些是最值得守住的最低规则集。
 
-1. 页面底色固定为 parchment `#F6F0EA`，不要用纯白。
-2. 全文只保留一个强调色：cinnabar-coral `#B83D2E`。
+1. 页面底色使用所选色系的画布色，不要用纯白。默认色系是 parchment `#F6F0EA`。
+2. 全文只保留一个强调色，即色系的 `color.accent.brand`。默认色系是 cinnabar-coral `#B83D2E`。
 3. 默认一页一套 serif，除非模板本身已经定义了其他视觉语言。
 4. Serif 正文保持 400，标题保持 500，避免 synthetic bold。
 5. 中文印刷正文通常带少量字距，英文正文保持 0。

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>色系对照 · Folio</title>
+<style>
+  :root { --paper:#F6F0EA; --ivory:#FBF7F3; --ink:#191514; --muted:#756A63;
+           --line:#E6DACD; --accent:#B83D2E; --ok:#2F6B4F; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink);
+         font-family:"Source Serif 4",Charter,Georgia,serif; line-height:1.6; }
+  .wrap { max-width:1180px; margin:0 auto; padding:44px 40px 96px; }
+  h1 { font-size:30px; margin:0 0 6px; }
+  .sub { color:var(--muted); font-size:14.5px; margin-bottom:26px; }
+  h2 { font-size:19px; margin:38px 0 8px; }
+  table { width:100%; border-collapse:collapse; background:var(--ivory);
+           border:1px solid var(--line); border-radius:8px; overflow:hidden; margin-bottom:8px; }
+  th, td { padding:8px 10px; border-bottom:1px solid var(--line); font-size:13px;
+            text-align:left; vertical-align:middle; }
+  thead th { background:#F1EAE2; font-size:12px; }
+  th.row { text-align:right; color:var(--muted); font-weight:400; font-size:12px;
+            white-space:nowrap; width:150px; }
+  tr:last-child td, tr:last-child th { border-bottom:0; }
+  code { font-family:ui-monospace,monospace; font-size:11.5px; }
+  .chip { display:inline-block; width:22px; height:22px; border-radius:4px;
+           border:1px solid var(--line); vertical-align:-5px; margin-right:7px; }
+  .ok { color:var(--ok); font-weight:600; }
+  .bad { color:var(--accent); font-weight:600; }
+  .min { color:var(--muted); font-weight:400; font-size:11px; }
+  .num { text-align:right; font-variant-numeric:tabular-nums; }
+  .note { color:var(--muted); font-size:13.5px; }
+  footer { margin-top:48px; padding-top:18px; border-top:1px solid var(--line);
+            color:var(--muted); font-size:13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>色系对照</h1>
+<div class="sub">每个方案用同一套标准测量。选一个，然后 <code>FOLIO_THEME=&lt;名字&gt;</code> 就是它。</div>
+
+<h2>标准</h2>
+<table><thead><tr><th class="row">方案</th><th>角色</th><th>色板</th><th>检查</th></tr></thead>
+<tbody><tr><td><code>folio-classic-v1</code></td><td class="num">35</td><td class="num">21</td><td class="ok">通过</td></tr><tr><td><code>folio-forest-v1</code></td><td class="num">25</td><td class="num">11</td><td class="ok">通过</td></tr><tr><td><code>folio-slate-v1</code></td><td class="num">26</td><td class="num">12</td><td class="ok">通过</td></tr></tbody></table>
+
+<h2>关键角色并排</h2>
+<p class="note">颜色本身不是信号：状态色永远与文字同时出现，灰阶打印或色觉差异下仍然可读。</p>
+<table><thead><tr><th class="row">用途</th><th>folio-classic-v1</th><th>folio-forest-v1</th><th>folio-slate-v1</th></tr></thead><tbody><tr><th class="row">画布<br><code>color.surface.page</code></th><td><span class="chip" style="background:#F6F0EA"></span><code>#F6F0EA</code></td><td><span class="chip" style="background:#F5F2EA"></span><code>#F5F2EA</code></td><td><span class="chip" style="background:#F1F3F6"></span><code>#F1F3F6</code></td></tr><tr><th class="row">卡片<br><code>color.surface.card</code></th><td><span class="chip" style="background:#FBF7F3"></span><code>#FBF7F3</code></td><td><span class="chip" style="background:#FCFAF5"></span><code>#FCFAF5</code></td><td><span class="chip" style="background:#FAFBFC"></span><code>#FAFBFC</code></td></tr><tr><th class="row">正文<br><code>color.text.primary</code></th><td><span class="chip" style="background:#191514"></span><code>#191514</code></td><td><span class="chip" style="background:#161813"></span><code>#161813</code></td><td><span class="chip" style="background:#14181D"></span><code>#14181D</code></td></tr><tr><th class="row">次级<br><code>color.text.secondary</code></th><td><span class="chip" style="background:#5A4A43"></span><code>#5A4A43</code></td><td><span class="chip" style="background:#6A6157"></span><code>#6A6157</code></td><td><span class="chip" style="background:#5C6672"></span><code>#5C6672</code></td></tr><tr><th class="row">弱化<br><code>color.text.muted</code></th><td><span class="chip" style="background:#756A63"></span><code>#756A63</code></td><td><span class="chip" style="background:#6A6157"></span><code>#6A6157</code></td><td><span class="chip" style="background:#5C6672"></span><code>#5C6672</code></td></tr><tr><th class="row">标题<br><code>color.text.warm</code></th><td><span class="chip" style="background:#3A312D"></span><code>#3A312D</code></td><td><span class="chip" style="background:#43443E"></span><code>#43443E</code></td><td><span class="chip" style="background:#404448"></span><code>#404448</code></td></tr><tr><th class="row">品牌<br><code>color.accent.brand</code></th><td><span class="chip" style="background:#B83D2E"></span><code>#B83D2E</code></td><td><span class="chip" style="background:#2F5D46"></span><code>#2F5D46</code></td><td><span class="chip" style="background:#1F4E8C"></span><code>#1F4E8C</code></td></tr><tr><th class="row">浅底<br><code>color.accent.brand-tint</code></th><td><span class="chip" style="background:#F7E6E1"></span><code>#F7E6E1</code></td><td><span class="chip" style="background:#E3EDE6"></span><code>#E3EDE6</code></td><td><span class="chip" style="background:#E4EBF4"></span><code>#E4EBF4</code></td></tr><tr><th class="row">正/负向<br><code>color.status.negative</code></th><td><span class="chip" style="background:#5A6B7A"></span><code>#5A6B7A</code></td><td><span class="chip" style="background:#6A6157"></span><code>#6A6157</code></td><td><span class="chip" style="background:#5C6672"></span><code>#5C6672</code></td></tr><tr><th class="row">警告<br><code>color.status.caution</code></th><td><span class="chip" style="background:#906327"></span><code>#906327</code></td><td><span class="chip" style="background:#8A5A16"></span><code>#8A5A16</code></td><td><span class="chip" style="background:#8A5A16"></span><code>#8A5A16</code></td></tr><tr><th class="row">细线<br><code>color.border.default</code></th><td><span class="chip" style="background:#E6DACD"></span><code>#E6DACD</code></td><td><span class="chip" style="background:#C4C2BB"></span><code>#C4C2BB</code></td><td><span class="chip" style="background:#C0C3C6"></span><code>#C0C3C6</code></td></tr></tbody></table>
+
+<h2>对比度</h2>
+<p class="note">文字需 4.5:1，细线需 1.2:1。每个文字色都在画布与卡片两个底面上测。</p>
+<table><thead><tr><th class="row">用途</th><th>folio-classic-v1</th><th>folio-forest-v1</th><th>folio-slate-v1</th></tr></thead><tbody><tr><th class="row">body on canvas</th><td class="ok">16.03:1<span class="min"> / 4.5</span></td><td class="ok">15.99:1<span class="min"> / 4.5</span></td><td class="ok">16.03:1<span class="min"> / 4.5</span></td></tr><tr><th class="row">body on card</th><td class="ok">17.00:1<span class="min"> / 4.5</span></td><td class="ok">17.15:1<span class="min"> / 4.5</span></td><td class="ok">17.20:1<span class="min"> / 4.5</span></td></tr><tr><th class="row">secondary on canvas</th><td class="ok">7.44:1<span class="min"> / 4.5</span></td><td class="ok">5.42:1<span class="min"> / 4.5</span></td><td class="ok">5.25:1<span class="min"> / 4.5</span></td></tr><tr><th class="row">secondary on card</th><td class="ok">7.90:1<span class="min"> / 4.5</span></td><td class="ok">5.82:1<span class="min"> / 4.5</span></td><td class="ok">5.63:1<span class="min"> / 4.5</span></td></tr><tr><th class="row">muted on canvas</th><td class="ok">4.64:1<span class="min"> / 4.5</span></td><td class="ok">5.42:1<span class="min"> / 4.5</span></td><td class="ok">5.25:1<span class="min"> / 4.5</span></td></tr><tr><th class="row">muted on card</th><td class="ok">4.93:1<span class="min"> / 4.5</span></td><td class="ok">5.82:1<span class="min"> / 4.5</span></td><td class="ok">5.63:1<span class="min"> / 4.5</span></td></tr><tr><th class="row">warm on canvas</th><td class="ok">11.21:1<span class="min"> / 4.5</span></td><td class="ok">8.79:1<span class="min"> / 4.5</span></td><td class="ok">8.83:1<span class="min"> / 4.5</span></td></tr><tr><th class="row">warm on card</th><td class="ok">11.89:1<span class="min"> / 4.5</span></td><td class="ok">9.43:1<span class="min"> / 4.5</span></td><td class="ok">9.48:1<span class="min"> / 4.5</span></td></tr><tr><th class="row">accent on canvas</th><td class="ok">4.96:1<span class="min"> / 4.5</span></td><td class="ok">6.76:1<span class="min"> / 4.5</span></td><td class="ok">7.48:1<span class="min"> / 4.5</span></td></tr><tr><th class="row">accent on card</th><td class="ok">5.26:1<span class="min"> / 4.5</span></td><td class="ok">7.25:1<span class="min"> / 4.5</span></td><td class="ok">8.02:1<span class="min"> / 4.5</span></td></tr><tr><th class="row">positive on canvas</th><td class="ok">4.96:1<span class="min"> / 4.5</span></td><td class="ok">6.76:1<span class="min"> / 4.5</span></td><td class="ok">7.48:1<span class="min"> / 4.5</span></td></tr><tr><th class="row">caution on canvas</th><td class="ok">4.64:1<span class="min"> / 4.5</span></td><td class="ok">5.28:1<span class="min"> / 4.5</span></td><td class="ok">5.31:1<span class="min"> / 4.5</span></td></tr><tr><th class="row">negative on canvas</th><td class="ok">4.86:1<span class="min"> / 4.5</span></td><td class="ok">5.42:1<span class="min"> / 4.5</span></td><td class="ok">5.25:1<span class="min"> / 4.5</span></td></tr><tr><th class="row">hairline on canvas</th><td class="ok">1.22:1<span class="min"> / 1.2</span></td><td class="ok">1.59:1<span class="min"> / 1.2</span></td><td class="ok">1.59:1<span class="min"> / 1.2</span></td></tr><tr><th class="row">soft hairline on canvas</th><td class="ok">1.21:1<span class="min"> / 1.2</span></td><td class="ok">1.38:1<span class="min"> / 1.2</span></td><td class="ok">1.27:1<span class="min"> / 1.2</span></td></tr></tbody></table>
+
+<h2>怎么用</h2>
+<p class="note">
+<code>FOLIO_THEME=folio-slate-v1 python3 scripts/build.py</code><br>
+<code>FOLIO_THEME=folio-slate-v1 python3 scripts/build.py</code> ·
+<code>FOLIO_THEME=folio-slate-v1 python3 scripts/build_static_theme.py</code><br>
+未设 <code>FOLIO_THEME</code> 时用标记 <code>default</code> 的那个方案。
+</p>
+
+<footer>
+生成：<code>python3 scripts/build_scheme_comparison.py</code> ·
+定义：<code>references/profiles/theme/*.yaml</code>
+</footer>
+</div>
+</body>
+</html>

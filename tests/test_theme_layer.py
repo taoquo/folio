@@ -207,3 +207,91 @@ class PaletteScaleTests(TestCase):
         for name in self.module.NAMED:
             with self.subTest(entry=name):
                 self.assertTrue(name in self.module.palette() or True)
+
+
+class SchemeCatalogueTests(TestCase):
+    """Every scheme is held to the same bar, and the bar is checked.
+
+    The mechanism for a second scheme existed before a second scheme did, so
+    nothing had asked whether one could ship unreadable. `check_theme_schemes`
+    asks it of every file in the directory -- not of one name, which is the fault
+    `profile_check` had and this would have repeated.
+    """
+
+    def setUp(self) -> None:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import check_theme_schemes
+
+        self.module = check_theme_schemes
+
+    def test_the_catalogue_is_read_from_the_directory(self) -> None:
+        names = set(self.module.profiles())
+        self.assertIn("folio-classic-v1", names)
+        self.assertGreater(len(names), 1, "a second scheme is what exercises this path")
+
+    def test_every_scheme_clears_the_bar(self) -> None:
+        report = self.module.check_all()
+        detail = "; ".join(f"{f['theme']} {f['subject']}: {f['detail']}"
+                           for f in report["findings"])
+        self.assertEqual([], report["findings"], detail)
+
+    def test_exactly_one_scheme_is_the_default(self) -> None:
+        defaults = [n for n, b in self.module.profiles().items() if b.get("default")]
+        self.assertEqual(["folio-classic-v1"], defaults)
+
+    def test_a_missing_role_is_reported(self) -> None:
+        # The check has to fail a scheme that omits a role a template reads,
+        # or it would pass the schemes that break a page.
+        original = self.module.REQUIRED_ROLES
+        try:
+            self.module.REQUIRED_ROLES = (*original, "color.text.nonexistent")
+            findings = self.module.check_scheme("folio-classic-v1")["findings"]
+            self.assertTrue(any(f["kind"] == "shape" for f in findings))
+        finally:
+            self.module.REQUIRED_ROLES = original
+
+    def test_no_entry_is_defined_and_unreachable(self) -> None:
+        # Reachable means a role points at it or a template paints it as a literal
+        # the ledger maps. An entry that is neither is a colour nothing can use.
+        for name in self.module.profiles():
+            kinds = {f["kind"] for f in self.module.check_scheme(name)["findings"]}
+            with self.subTest(theme=name):
+                self.assertNotIn("reach", kinds)
+
+    def test_a_second_scheme_resolves_by_name(self) -> None:
+        style = style_resolver.resolve(names={"theme": "folio-slate-v1"})
+        self.assertEqual("folio-slate-v1", style.domains["theme"])
+        self.assertNotEqual(
+            style.values["color.surface.page"].value,
+            style_resolver.resolve().values["color.surface.page"].value,
+        )
+
+
+class SchemeScaffoldTests(TestCase):
+    """The two demonstration schemes are generated, not typed.
+
+    A scheme's numbers have to satisfy rules that are easy to get wrong by hand:
+    text at 4.5:1 on two surfaces, a hairline that stays visible, ramp numbers
+    that follow lightness. `scaffold_theme_scheme.py` solves for them. If the
+    committed profiles and the generator ever disagree, the generator is the one
+    that was checked, so the test says which.
+    """
+
+    def setUp(self) -> None:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import scaffold_theme_scheme
+
+        self.module = scaffold_theme_scheme
+
+    def test_the_committed_schemes_are_what_the_generator_writes(self) -> None:
+        import yaml
+
+        for name, spec in self.module.SCHEMES.items():
+            with self.subTest(scheme=name):
+                built = self.module.build(name, spec)
+                path = ROOT / "references" / "profiles" / "theme" / f"{name}.yaml"
+                committed = yaml.safe_load(path.read_text(encoding="utf-8"))
+                self.assertEqual(
+                    built["palette"],
+                    committed["profiles"][name]["palette"],
+                )

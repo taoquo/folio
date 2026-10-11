@@ -41,22 +41,28 @@ One-page quick reference. Scan before filling a template or tweaking a detail. F
 
 ## Color
 
+The default scheme, `folio-classic-v1`. Every value below belongs to it, and
+every one is one edit away: `FOLIO_THEME=<name> python3 scripts/build.py` renders
+a different scheme, and `docs/acceptance/theme-schemes.html` compares them.
 
 | Role         | Hex           | Use                                                 |
 | ------------ | ------------- | --------------------------------------------------- |
-| Parchment    | `#F6F0EA`     | Page background                                     |
-| Ivory        | `#FBF7F3`     | Card / lifted container                             |
-| Warm Sand    | `#E9DED4`     | Button / interactive surface                        |
-| Dark Surface | `#2E2521`     | Dark container                                      |
-| Deep Dark    | `#191514`     | Dark page background                                |
-| **Brand**    | `**#B83D2E`** | **Accent · CTA · title left bar (≤ 5% of surface)** |
-| Coral Light   | `#D06A5E`     | Links on dark surfaces                              |
-| Near Black   | `#191514`     | Primary text                                        |
-| Dark Warm    | `#3A312D`     | Secondary text · table headers · links              |
-| Olive        | `#5A4A43`     | Subtext · descriptions                              |
-| Stone        | `#85776F`     | Tertiary · metadata                                 |
-| Border       | `#E9DED4`     | Primary border · section divider                    |
-| Border Soft  | `#E8DED6`     | Secondary border · row separator                    |
+| Canvas       | `#F6F0EA`     | Page background                                     |
+| Card         | `#FBF7F3`     | Card / lifted container                             |
+| Ink          | `#191514`     | Primary text                                        |
+| Warm         | `#3A312D`     | Headings · emphasis                                 |
+| Secondary    | `#5A4A43`     | Secondary text · table headers · links              |
+| Muted        | `#756A63`     | Tertiary · metadata                                 |
+| **Brand**    | `**#B83D2E`** | **Accent · CTA · title left bar (<= 5% of surface)** |
+| Brand Tint   | `#F7E6E1`     | Tag background                                      |
+| Border       | `#E6DACD`     | Primary border · section divider                    |
+| Border Soft  | `#E5DBCD`     | Secondary border · row separator                    |
+| Caution      | `#906327`     | Warning text                                        |
+| Negative     | `#5A6B7A`     | Negative text                                       |
+
+Templates read roles, never these values: `color.text.muted` becomes
+`--color-text-muted`. A scheme states each colour once in `palette` and points the
+roles at it, so changing the brand moves every role that shares it.
 
 
 **rgba -> solid** (parchment base + cinnabar-coral):

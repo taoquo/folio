@@ -336,12 +336,36 @@ python3 scripts/document_baseline.py compare # documents match the approved base
 python3 scripts/migration.py status          # IR readiness per document type
 ```
 
+### Colour schemes
+
+A scheme is one YAML file. `FOLIO_THEME` names it, and it reaches every artifact: documents, diagrams, the slide deck, and the static pages.
+
+```bash
+FOLIO_THEME=folio-slate-v1 python3 scripts/build.py               # documents, diagrams, deck
+FOLIO_THEME=folio-slate-v1 python3 scripts/build_static_theme.py  # index.html and the demos
+```
+
+Unset, the profile marked `default` is used. `references/profiles/theme/` holds them all, and one file is the whole of a scheme:
+
+- `palette` holds each raw colour once. A number is a position on a lightness ladder: within a family, a higher number is darker, so two names say which colour is darker.
+- `color` holds the roles a template reads and points them at the palette. `color.text.primary` becomes `--color-text-primary` by one rule, so a new role needs one name rather than two.
+
+Adding a scheme is adding a file. Every scheme is held to the same bar:
+
+```bash
+python3 scripts/check_theme_schemes.py       # roles, contrast, ladder, reachability
+python3 scripts/build_scheme_comparison.py   # every scheme, side by side
+python3 scripts/build_color_reference.py     # one scheme's palette and roles
+```
+
+`docs/acceptance/theme-schemes.html` is the comparison. `scripts/build_color_reference.py --theme <name>` renders any single scheme's own reference.
+
 ## Layout Rules
 
 These are the minimum rules that matter most.
 
-1. Page background stays parchment `#F6F0EA`, never pure white.
-2. Use one accent only: cinnabar-coral `#B83D2E`.
+1. Page background uses the scheme's canvas, never pure white. The default is parchment `#F6F0EA`.
+2. Use one accent only, the scheme's `color.accent.brand`. The default is cinnabar-coral `#B83D2E`.
 3. One serif per page by default; do not introduce a second visual language unless the template already does.
 4. Serif body stays at 400, headings at 500. Avoid synthetic bold.
 5. Chinese print body usually carries light tracking; English body stays at 0.
