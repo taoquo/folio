@@ -252,6 +252,39 @@ no scheme defines, such as a chart's up-candle green. Recoding them against role
 rather than palette entry names is what lets them follow a scheme at all --
 `warm-700` exists in one profile and nowhere else.
 
+### Where colour is decided
+
+`references/profiles/theme/` owns it, one file per scheme. Templates read the
+variables the projection derives; they do not state values of their own beyond the
+copy in `:root` that lets a template render standalone, which
+`python3 scripts/build.py --sync` keeps equal to the scheme.
+
+A scheme is selected by name and by nothing else:
+
+```bash
+FOLIO_THEME=folio-slate-v1 python3 scripts/build.py
+FOLIO_THEME=folio-slate-v1 python3 scripts/build_static_theme.py
+```
+
+Unset, the profile marked `default` is used, and that is the one this project
+builds with: every artifact in the repository is the default scheme. The other
+profiles are examples to decide from; choosing belongs to the adopter, and nothing
+selects them unless `FOLIO_THEME` names one. Adding a scheme is adding a file, and
+`python3 scripts/check_theme_schemes.py` holds every one of them to the same bar --
+the roles a template reads, contrast on both surfaces, the lightness ladder,
+whether every palette entry can be reached, and whether the drawing theme's swap
+stays a function. `color_sources.py check` compares the four sources of colour for
+a name that has drifted apart, and `build_scheme_comparison.py` renders them side
+by side. The gallery the two homepages carry is shown in
+`docs/acceptance/homepage-schemes-en.png` and
+`docs/acceptance/homepage-schemes-zh.png`; the same one-pager in each scheme is
+`docs/acceptance/theme-schemes-preview.png`.
+
+The drawing theme (`scripts/drawing/theme/folio.py`) is a separate eighteen-token
+swap unit: every token must have a counterpart in the dark and terminal themes, and
+a test asserts the count. Its six series tokens read `color.series.*`, which is how
+a scheme reaches a chart's series.
+
 ### Translucent -> Solid conversion (TAGS MUST BE SOLID)
 
 **Why**: WeasyPrint's alpha compositing for padding vs glyph areas produces a visible double rectangle on zoom. See `production.md` Part 4 Pitfall #1.

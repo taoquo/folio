@@ -358,7 +358,11 @@ python3 scripts/build_scheme_comparison.py   # 所有色系并排对照
 python3 scripts/build_color_reference.py     # 单个色系的色板与角色
 ```
 
-色系不仅作用于画布，也作用于图表的系列色：绘图主题读取 `color.series.1` … `color.series.6`，其中折线图描边的前三个位置有 3:1 的非文字对比度下限，因为它们是 1.6px 的描边。`docs/acceptance/theme-schemes.html` 是对照页。`scripts/build_color_reference.py --theme <名字>` 生成任一色系自己的参考页。
+色系不仅作用于画布，也作用于图表的系列色：绘图主题读取 `color.series.1` … `color.series.6`，其中折线图描边的前三个位置有 3:1 的非文字对比度下限，因为它们是 1.6px 的描边。`docs/acceptance/theme-schemes.html` 是对照页。
+
+同一份一页纸在三套色系下的渲染：
+
+![Schemes over one document](docs/acceptance/theme-schemes-preview.png)`scripts/build_color_reference.py --theme <名字>` 生成任一色系自己的参考页。
 
 ## 排版规则
 

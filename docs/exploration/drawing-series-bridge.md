@@ -210,7 +210,8 @@ palette entry it happened to match.
 
 The default scheme renders byte-identically -- every generated SVG is unchanged --
 and the measurement is the same chart built in each scheme, in
-`docs/acceptance/series-by-scheme.png`.
+`docs/acceptance/series-by-scheme.png`, with the whole report in
+`docs/acceptance/document-by-scheme.png`.
 
 ## Reproduce
 
