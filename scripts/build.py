@@ -1419,7 +1419,11 @@ def check_placeholders(paths: list[str]) -> int:
             failures += 1
             continue
         text = path.read_text(encoding="utf-8", errors="replace")
-        hits = list(dict.fromkeys(PLACEHOLDER.findall(text)))
+        # A comment is not rendered, so a placeholder inside one never reaches a
+        # page. Usage notes mention `{{VAR}}` by name, and reading that as an
+        # unfilled slot reported a complete file as incomplete.
+        scannable = re.sub(r"<!--.*?-->", "", text, flags=re.DOTALL)
+        hits = list(dict.fromkeys(PLACEHOLDER.findall(scannable)))
         rel = path.relative_to(ROOT) if path.is_relative_to(ROOT) else path
         if hits:
             print(f"ERROR: {rel}: unfilled placeholder(s): {', '.join(hits)}")
