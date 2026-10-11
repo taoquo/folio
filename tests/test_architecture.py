@@ -108,3 +108,39 @@ class ReportTests(TestCase):
         for counts in rows.values():
             self.assertIn("production", counts)
             self.assertIn("tests", counts)
+
+
+class ImportFormTests(TestCase):
+    """Every way this repository imports a module is followed.
+
+    The check reported the pipeline as unreachable while `document_build.py`
+    called `pipeline_module.resolve(...)`, because it handled `from x import y`
+    and not `import x as y`. A check that reports a problem where there is none
+    teaches the reader to ignore it.
+    """
+
+    def test_import_as_is_followed(self) -> None:
+        text = "import pipeline as pipeline_module\npipeline_module.resolve()\n"
+        self.assertTrue(architecture._used(text, "pipeline"))
+
+    def test_import_as_without_a_call_is_not_use(self) -> None:
+        text = "import pipeline as pipeline_module\nX = 1\n"
+        self.assertFalse(architecture._used(text, "pipeline"))
+
+    def test_a_plain_attribute_call_counts(self) -> None:
+        self.assertTrue(architecture._used("pipeline.resolve()\n", "pipeline"))
+
+    def test_a_from_import_of_a_submodule_counts(self) -> None:
+        text = "from document_ir import bridge\nbridge.read(x)\n"
+        self.assertTrue(architecture._used(text, "document_ir"))
+
+    def test_the_content_path_is_reachable_now(self) -> None:
+        # The connection this check was written to establish.
+        result = architecture.reachability()
+        errors = [f.subject for f in result.findings if f.severity == "error"]
+        self.assertNotIn("scripts/document_build.py: renderers", errors)
+        self.assertNotIn("scripts/document_build.py: pipeline", errors)
+
+    def test_the_content_path_does_not_call_the_library_directly(self) -> None:
+        text = architecture._read("scripts/document_build.py")
+        self.assertNotIn("from weasyprint", text)

@@ -114,8 +114,49 @@ def validate(document: Document) -> ValidationReport:
     _check_headings(document, report)
     _check_tables(document, report)
     _check_raw_fallback(document, report)
+    _check_containers(document, report)
 
     return report
+
+
+def _check_containers(document: Document, report: ValidationReport) -> None:
+    """Whether a container's members can be emitted as one region.
+
+    A container is rendered as a wrapper around its members, so its members have
+    to be consecutive. Two members separated by a block that belongs elsewhere
+    cannot be wrapped without moving that block, and moving content to satisfy a
+    layout is not something a release should do quietly.
+    """
+    from document_ir import containers as container_rules
+
+    block_ids = [
+        node.id for node in document.walk()
+        if getattr(node, "id", "") and container_rules.container_for(node.id) is not None
+    ]
+    if not block_ids:
+        return
+
+    # Members of one container must sit next to each other in document order.
+    order = {block_id: index for index, block_id in enumerate(
+        node.id for node in document.walk() if getattr(node, "id", "")
+    )}
+
+    by_container: dict[str, list[str]] = {}
+    for block_id in block_ids:
+        rule = container_rules.container_for(block_id)
+        if rule is not None:
+            by_container.setdefault(rule.id, []).append(block_id)
+
+    for container_id, members in by_container.items():
+        positions = sorted(order.get(m, -1) for m in members)
+        span = positions[-1] - positions[0] + 1 if positions else 0
+        if span != len(members):
+            report.warning(
+                "DOC-CONTAINER.SPLIT",
+                container_id,
+                f"the members of {container_id} are not consecutive in document "
+                f"order, so they cannot be rendered as one region",
+            )
 
 
 def _check_identity(document: Document, report: ValidationReport) -> None:

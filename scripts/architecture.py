@@ -154,6 +154,13 @@ def _used(text: str, module: str) -> bool:
     name = module.split(".")[-1]
     if re.search(rf"\b{re.escape(name)}\.[a-zA-Z_]", text):
         return True
+
+    # `import x as y` binds `y`, and the call is made through that name.
+    for match in re.finditer(rf"^\s*import\s+[\w.]*{re.escape(name)}\s+as\s+(\w+)",
+                             text, re.MULTILINE):
+        alias = match.group(1)
+        if re.search(rf"\b{re.escape(alias)}\.[a-zA-Z_]", text):
+            return True
     # `from x import y` binds `y`, which may then be called or used as a
     # namespace: `y()`, or `y.thing()` for a submodule.
     for match in re.finditer(rf"from\s+[\w.]*{re.escape(name)}\s+import\s+([^\n]+)", text):
@@ -254,6 +261,72 @@ def declared_defaults() -> Census:
     return census
 
 
+# The document engine's own modules. The drawing DSL is reached through
+# `folio.py` and is a separate program; reporting it here said nothing about the
+# engine and hid the modules that do matter.
+ENGINE_MODULES = (
+    "document_ir", "bridge", "containers", "layout_policy", "migrations",
+    "model", "validate", "renderers", "weasy", "pipeline", "projection",
+    "style_resolver", "spacing", "spacing_probe", "box_inspector",
+    "artifact_inspector", "quality_vector", "build_manifest",
+    "document_baseline", "assets", "diagnostics", "corpus", "corpus_matrix",
+    "language_support", "migration", "fidelity", "shadow", "determinism",
+    "visual_diff", "review_pair", "document_build", "section_defaults",
+    # Reached through the package rather than by name, and each holds a
+    # connection that matters.
+    "readers", "structured", "html", "skeleton", "pptx", "article",
+)
+
+
+def _module_file(name: str) -> Path | None:
+    """Where a module's source lives, if it is one of ours."""
+    for candidate in (ROOT / "scripts" / f"{name}.py",
+                      ROOT / "scripts" / "document_ir" / f"{name}.py",
+                      ROOT / "scripts" / "renderers" / f"{name}.py",
+                      ROOT / "scripts" / "document_ir" / "writers" / f"{name}.py",
+                      # A package's source is its `__init__`.
+                      ROOT / "scripts" / "document_ir" / name / "__init__.py",
+                      ROOT / "scripts" / name / "__init__.py"):
+        if candidate.is_file():
+            return candidate
+    if name == "document_ir":
+        return ROOT / "scripts" / "document_ir" / "__init__.py"
+    return None
+
+
+def reachable_modules() -> dict[str, str]:
+    """Which engine modules a production path reaches, and by what route.
+
+    Follows the chain. A module named only by another module that is itself
+    reachable does reach the page, and counting direct references alone called
+    `style_resolver` unshipped while `projection.py` called it.
+    """
+    reached: dict[str, str] = {}
+    frontier: list[tuple[str, str]] = []
+
+    for path in PRODUCTION_PATHS:
+        frontier.append((Path(path).stem, "a production path"))
+
+    seen: set[str] = set()
+    while frontier:
+        name, route = frontier.pop()
+        if name in seen:
+            continue
+        seen.add(name)
+        source = _module_file(name)
+        if source is None:
+            continue
+        reached[name] = route
+        text = _read(source.relative_to(ROOT))
+        for other in ENGINE_MODULES:
+            if other in seen or other == name:
+                continue
+            if re.search(rf"\b{re.escape(other)}\b", text):
+                frontier.append((other, f"via {name}"))
+
+    return reached
+
+
 def module_reachability() -> dict[str, dict[str, int]]:
     """How often each module is named by production, tests and tools."""
     production = "\n".join(_read(p) for p in PRODUCTION_PATHS)
@@ -261,11 +334,16 @@ def module_reachability() -> dict[str, dict[str, int]]:
     for path in (ROOT / "tests").glob("*.py"):
         test_text += _read(path.relative_to(ROOT))
 
+    reached = reachable_modules()
     rows: dict[str, dict[str, int]] = {}
-    for name in _module_names():
+    for name in ENGINE_MODULES:
+        if _module_file(name) is None:
+            continue
         pattern = rf"\b{re.escape(name)}\b"
         rows[name] = {
             "production": len(re.findall(pattern, production)),
+            "reachable": 1 if name in reached else 0,
+            "route": reached.get(name, ""),
             "tests": len(re.findall(pattern, test_text)),
         }
     return rows
@@ -283,22 +361,25 @@ def render_text(census: Census, command: str) -> str:
     if command == "reachability":
         rows = module_reachability()
         lines = ["Reachability", ""]
-        lines.append(f"  {'module':<28}{'production':>11}{'tests':>7}  state")
-        lines.append("  " + "-" * 58)
+        lines.append(f"  {'module':<26}{'reachable':>10}{'direct':>7}  how")
+        lines.append("  " + "-" * 66)
         for name, counts in sorted(rows.items()):
-            if counts["production"]:
-                state = "reachable"
-            elif counts["tests"]:
-                state = "built, unreachable"
-            else:
-                continue
+            state = counts["route"] or "unreachable"
             lines.append(
-                f"  {name:<28}{counts['production']:>11}{counts['tests']:>7}  {state}"
+                f"  {name:<26}{('yes' if counts['reachable'] else 'no'):>10}"
+                f"{counts['production']:>7}  {state[:30]}"
             )
+        unreachable = [n for n, c in rows.items() if not c["reachable"]]
         lines.append("")
         lines.append("  'production' counts references in the paths that produce a")
         lines.append("  deliverable. A module with tests and no production reference is")
         lines.append("  correct, covered, and not shipped.")
+        lines.append("")
+        lines.append(f"  {len(unreachable)} engine module(s) are built and unreachable.")
+        lines.append("")
+        lines.append("  Inspection tools are expected here: a probe observes an artifact")
+        lines.append("  and is run by a person or by CI, so it has no production caller.")
+        lines.append("  A model or a resolver with no caller is a different matter.")
         return "\n".join(lines)
 
     result = check() if command == "check" else (

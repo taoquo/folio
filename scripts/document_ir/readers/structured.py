@@ -394,6 +394,35 @@ def _block(data: Any, *, source_id: str, fallback_id: str) -> Block:
     )
 
 
+def _migrate(data: dict, source_id: str) -> dict:
+    """Bring a payload to the current version, or refuse it.
+
+    A document does not have to be current to be readable, but it does have to
+    be a version this engine knows how to move forward. Reading an older payload
+    as though it were current would interpret its fields by the wrong rules.
+    """
+    from document_ir import migrations
+
+    version = migrations.version_of(data)
+    if migrations.is_current(version):
+        return data
+
+    if not migrations.is_readable(version):
+        suffix = f" (from {source_id})" if source_id else ""
+        raise DocumentReadError(
+            f"document declares version {version!r}, which this engine cannot read{suffix}",
+            source=source_id,
+        )
+
+    try:
+        return migrations.migrate(data)
+    except Exception as exc:
+        raise DocumentReadError(
+            f"could not migrate a version {version!r} document: {exc}",
+            source=source_id,
+        ) from exc
+
+
 def document_from_data(data: dict, *, source_id: str = "<memory>") -> Document:
     """Build a Document from parsed data. Raises only when the shape is wrong."""
     if not isinstance(data, dict):
@@ -467,12 +496,13 @@ def read_json(path: Path) -> Document:
         data = json.loads(text)
     except json.JSONDecodeError as exc:
         raise DocumentReadError(f"invalid JSON: {exc}", source=str(path)) from exc
-    return document_from_data(data, source_id=str(path))
+    return document_from_data(_migrate(data, str(path)), source_id=str(path))
 
 
 def read_yaml(path: Path) -> Document:
     text = path.read_text(encoding="utf-8")
-    return document_from_data(_parse_yaml(text), source_id=str(path))
+    data = _parse_yaml(text)
+    return document_from_data(_migrate(data, str(path)), source_id=str(path))
 
 
 def read(path: Path) -> Document:

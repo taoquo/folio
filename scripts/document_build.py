@@ -100,6 +100,51 @@ def _template_for(fixture: dict[str, Any]) -> Path:
     return path
 
 
+def _render_html(html: str, base_url: Path, output: Path) -> None:
+    """Render HTML through the renderer boundary.
+
+    The boundary is what makes a backend replaceable and what records a
+    capability downgrade. Calling the library directly skips both, and this
+    module did that while `build.py` used the boundary -- so the path that
+    produces a deliverable was the one without the guarantees.
+    """
+    from renderers.base import CapabilityRequirement, RenderRequest
+    from renderers.weasy import WeasyPrintRenderer
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    request = RenderRequest(
+        source=html,
+        base_url=base_url,
+        output=output,
+        # Paged media is what makes this a document rather than a web page, so
+        # it is required. Everything else the engine can express is reported by
+        # the boundary rather than demanded of it.
+        requirements=(
+            CapabilityRequirement(
+                feature="paged_media",
+                strength="hard",
+                reason="the engine produces pages, not a scrollable view",
+            ),
+        ),
+        strict=False,
+        metadata={"producer": "document_build"},
+    )
+
+    renderer = WeasyPrintRenderer()
+    report = renderer.validate_request(request)
+    if not report.ok:
+        # The report carries the reason; retelling it here would be a second
+        # account that can drift from the first.
+        import pipeline as pipeline_module
+
+        missing = ", ".join(sorted(r.feature for r in report.missing))
+        raise pipeline_module.PipelineError(
+            f"the renderer cannot honour: {missing}"
+        )
+
+    renderer.render(request)
+
+
 def build_legacy(fixture: dict[str, Any], output: Path) -> BuildOutcome:
     """Fill the template and render it, without the IR.
 
@@ -107,14 +152,12 @@ def build_legacy(fixture: dict[str, Any], output: Path) -> BuildOutcome:
     kept independent of the IR modules.
     """
     from shadow import _legacy_html
-    from weasyprint import HTML
 
     template_path = _template_for(fixture)
     template_text = template_path.read_text(encoding="utf-8")
     html = _legacy_html(template_text, fixture.get("content") or {})
 
-    output.parent.mkdir(parents=True, exist_ok=True)
-    HTML(string=html, base_url=str(template_path.parent)).write_pdf(str(output))
+    _render_html(html, template_path.parent, output)
     return BuildOutcome(
         document_id=str(fixture.get("id", output.stem)),
         path=str(output), pipeline="legacy", primary="template",
@@ -132,7 +175,6 @@ def build_ir(fixture: dict[str, Any], output: Path) -> BuildOutcome:
     from document_ir.bridge import bridge_template, default_map_for
     from document_ir.validate import validate
     from document_ir.writers.skeleton import attach_ids, fill_template
-    from weasyprint import HTML
 
     template_path = _template_for(fixture)
     template_text = template_path.read_text(encoding="utf-8")
@@ -164,8 +206,7 @@ def build_ir(fixture: dict[str, Any], output: Path) -> BuildOutcome:
     if projected is not None:
         html = _inject(html, projected)
 
-    output.parent.mkdir(parents=True, exist_ok=True)
-    HTML(string=html, base_url=str(template_path.parent)).write_pdf(str(output))
+    _render_html(html, template_path.parent, output)
 
     manifest_path = None
     if _projection_enabled("FOLIO_BUILD_MANIFEST", default=True):
@@ -209,7 +250,21 @@ def _project(genre: str, language: str, fixture: dict[str, Any]):
     import projection
 
     include_policy = _projection_enabled("FOLIO_LAYOUT_POLICY", default=True)
-    return projection.combined(genre, language, include_policy=include_policy)
+    # The spacing layer can move a page, so it is opt-in. The switch is what
+    # makes it reachable: a projection nobody can turn on is a projection that
+    # does not ship.
+    include_gaps = _projection_enabled("FOLIO_GAP_PROJECTION", default=False)
+    stylesheet = None
+    if include_gaps:
+        template = _template_for(fixture) if fixture else None
+        if template is not None and template.is_file():
+            stylesheet = template.read_text(encoding="utf-8")
+    return projection.combined(
+        genre, language,
+        include_policy=include_policy,
+        include_gaps=include_gaps,
+        stylesheet=stylesheet,
+    )
 
 
 def _inject(html: str, projected: Any) -> str:
@@ -245,6 +300,62 @@ def _page_count(pdf: Path) -> int | None:
         return len(PdfReader(str(pdf)).pages)
     except Exception:
         return None
+
+
+
+def build_from_ir(
+    ir_path: Path, output: Path, *, genre: str | None = None, language: str | None = None
+) -> BuildOutcome:
+    """Render a document that already exists as IR.
+
+    The IR is read through the reader, which checks its version and migrates an
+    older one. That is what makes the IR a format rather than an internal step:
+    a document written by an earlier version of the engine, or by hand, can be
+    rendered without going through a template.
+    """
+    from document_ir.readers import read
+    from document_ir.validate import validate
+    from document_ir.writers.skeleton import attach_ids, fill_template
+
+    document = read(ir_path)
+    document_genre = genre or getattr(document, "genre", None)
+    document_language = language or getattr(document, "language", None)
+
+    report = validate(document)
+    if report.errors:
+        return BuildOutcome(
+            document_id=document.id, path=str(output), pipeline="ir", primary="ir",
+            error=f"validation failed: {report.errors[0].code}",
+        )
+
+    template_path = _template_for({"genre": document_genre, "language": document_language})
+    if template_path is None or not template_path.is_file():
+        return BuildOutcome(
+            document_id=document.id, path=str(output), pipeline="ir", primary="ir",
+            error=f"no template for genre {document_genre!r}",
+        )
+
+    template_text = template_path.read_text(encoding="utf-8")
+    filled = fill_template(template_text, document)
+    html = attach_ids(filled.html, document)
+
+    projected = _project(document_genre, document_language, {"genre": document_genre})
+    if projected is not None:
+        html = _inject(html, projected)
+
+    _render_html(html, template_path.parent, output)
+
+    manifest_path = None
+    if _projection_enabled("FOLIO_BUILD_MANIFEST", default=True):
+        manifest_path = _write_manifest(output, document.id, template_path)
+
+    outcome = BuildOutcome(
+        document_id=document.id, path=str(output), pipeline="ir", primary="ir",
+        pages=_page_count(output), filled=filled.filled, missing=filled.missing,
+    )
+    if manifest_path:
+        outcome.manifest_path = str(manifest_path)
+    return outcome
 
 
 def build(
@@ -321,6 +432,8 @@ def main(argv: list[str]) -> int:
                             ("compare", "build both paths and compare")):
         cmd = sub.add_parser(name, help=help_text)
         cmd.add_argument("--fixture", type=Path)
+        cmd.add_argument("--ir", type=Path,
+                         help="build from an IR file instead of a fixture")
         cmd.add_argument("--genre")
         cmd.add_argument("--lang")
         cmd.add_argument("--out", type=Path, default=ROOT / "dist" / "documents")
@@ -329,6 +442,19 @@ def main(argv: list[str]) -> int:
         cmd.add_argument("--format", choices=("text", "json"), default="text")
 
     args = parser.parse_args(argv)
+
+    if getattr(args, "ir", None) is not None:
+        ir_path = args.ir if args.ir.is_absolute() else ROOT / args.ir
+        if not ir_path.is_file():
+            print(f"ERROR: IR file not found: {ir_path}")
+            return 2
+        output = args.out / f"{ir_path.stem}.pdf"
+        outcome = build_from_ir(ir_path, output, genre=args.genre, language=args.lang)
+        if args.format == "json":
+            print(json.dumps(outcome.to_json(), indent=2, ensure_ascii=False))
+        else:
+            print(render_text(outcome))
+        return 0 if not outcome.error else 1
 
     fixture_path = args.fixture
     if fixture_path is None:
