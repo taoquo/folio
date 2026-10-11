@@ -8,7 +8,7 @@
         {
           "format": "pdf",
           "path": "assets/diagrams/generated/pdf/agent-runtime-demo.pdf",
-          "sha256": "81552469b0f877da35deb5a555128835ec511ee45bfbefbc2605991fc6eb41ad",
+          "sha256": "eb61e3db083a6beb74faba4ec84cbf516bd32a1f36bcc23a9eab6a8267badab2",
           "media_type": "application/pdf"
         },
         {
@@ -34,7 +34,7 @@
         {
           "format": "pdf",
           "path": "assets/diagrams/generated/pdf/data-platform-demo.pdf",
-          "sha256": "f2b05786810b8da5408a28ad69f3228656eaf9d1ed440c10e751df886775db57",
+          "sha256": "900275e372f060836d14c036d1bb86e61eaf29d825e118b65c8d7a9f67af807f",
           "media_type": "application/pdf"
         },
         {
@@ -60,7 +60,7 @@
         {
           "format": "pdf",
           "path": "assets/diagrams/generated/pdf/flowchart-v2-demo.pdf",
-          "sha256": "2adcf9123c28e2a673aafa621fcb840a0eb6e1cdd0c4e882605b299471f4616a",
+          "sha256": "839ef3cb1f37fea0b09789811b21a29b3ec6fa047588b0e000ea3ab6a6a8f314",
           "media_type": "application/pdf"
         },
         {
@@ -98,7 +98,7 @@
         {
           "format": "pdf",
           "path": "assets/diagrams/generated/pdf/uml-class-demo.pdf",
-          "sha256": "e35ee2e8711416085816d55d49a88246130aeb7c4d3ec04050897fec62e34c2b",
+          "sha256": "d10143b0a93a26a464ad434ddf207c369dd5eb24bff615ae9fd5841b29ea7949",
           "media_type": "application/pdf"
         },
         {
@@ -124,7 +124,7 @@
         {
           "format": "pdf",
           "path": "assets/diagrams/generated/pdf/workflow-engine-demo.pdf",
-          "sha256": "88faf52b31e37675dce31b39c9a29163beed1e26849aa7a5b087d8c327a2baba",
+          "sha256": "ef809bd4f918a623d791e78be8a5e335b091bf77fd663c61adcc09476db85bac",
           "media_type": "application/pdf"
         },
         {
