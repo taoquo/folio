@@ -138,6 +138,28 @@ def _scalar(text: str):
     return text
 
 
+
+def _strip_comment(line: str) -> str:
+    """The line with its trailing comment removed.
+
+    A `#` begins a comment only outside quotes. Splitting on the first one
+    anywhere removes the `#` of a hex colour, which is how every value in the
+    theme profile came to load as an empty string.
+    """
+    quote: str | None = None
+    for index, char in enumerate(line):
+        if quote:
+            if char == quote:
+                quote = None
+            continue
+        if char in "\"'":
+            quote = char
+            continue
+        if char == "#":
+            return line[:index]
+    return line
+
+
 def parse_yaml(text: str) -> dict:
     """Parse the profile subset. Comments and blank lines are ignored."""
     root: dict = {}
@@ -146,7 +168,7 @@ def parse_yaml(text: str) -> dict:
     pending_key: dict[int, str] = {}
 
     for raw in text.splitlines():
-        line = raw.split("#", 1)[0].rstrip() if not raw.lstrip().startswith("#") else ""
+        line = _strip_comment(raw).rstrip()
         if not line.strip():
             continue
         indent = len(line) - len(line.lstrip())
@@ -181,7 +203,7 @@ def parse_yaml(text: str) -> dict:
             lines = text.splitlines()
             idx = lines.index(raw)
             for nxt in lines[idx + 1:]:
-                nxt_clean = nxt.split("#", 1)[0].rstrip()
+                nxt_clean = _strip_comment(nxt).rstrip()
                 if not nxt_clean.strip():
                     continue
                 if len(nxt_clean) - len(nxt_clean.lstrip()) > indent:

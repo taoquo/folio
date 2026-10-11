@@ -237,3 +237,90 @@ class ParagraphRuleTests(TestCase):
             if rules.get("widows") is None:
                 report.error("PROFILE.PARAGRAPH.NOT_SET", "test", "no widows declared")
         self.assertTrue(any(f.code == "PROFILE.PARAGRAPH.NOT_SET" for f in report.errors))
+
+
+class CommentStrippingTests(TestCase):
+    """A hash inside a string is not a comment.
+
+    The profile parser removed comments with `split("#", 1)[0]`, which also cut
+    a `#` inside a quoted value. Every hex colour in the theme profile is
+    written `paper: "#F6F0EA"`, so all fifteen loaded as empty strings: the
+    profile was defined, read, and had no effect on a page.
+    """
+
+    def test_a_quoted_hash_survives(self) -> None:
+        from profile_check import parse_yaml
+
+        parsed = parse_yaml('paper: "#F6F0EA"\n')
+        self.assertEqual("#F6F0EA", parsed["paper"])
+
+    def test_a_trailing_comment_still_goes(self) -> None:
+        from profile_check import parse_yaml
+
+        parsed = parse_yaml('paper: "#F6F0EA"   # the canvas\n')
+        self.assertEqual("#F6F0EA", parsed["paper"])
+
+    def test_a_hash_inside_a_flow_mapping_survives(self) -> None:
+        from profile_check import parse_yaml
+
+        parsed = parse_yaml('rule: {ink: "#191514", paper: "#F6F0EA"}  # colours\n')
+        self.assertEqual("#191514", parsed["rule"]["ink"])
+        self.assertEqual("#F6F0EA", parsed["rule"]["paper"])
+
+    def test_an_unquoted_hash_still_starts_a_comment(self) -> None:
+        from profile_check import parse_yaml
+
+        parsed = parse_yaml("note: plain   # explanation\n")
+        self.assertEqual("plain", parsed["note"])
+
+    def test_a_whole_line_comment_is_ignored(self) -> None:
+        from profile_check import parse_yaml
+
+        parsed = parse_yaml("# leading comment\nkey: value\n")
+        self.assertEqual({"key": "value"}, parsed)
+
+    def test_single_quotes_are_tracked_too(self) -> None:
+        from profile_check import parse_yaml
+
+        parsed = parse_yaml("paper: '#F6F0EA'  # ok\n")
+        self.assertEqual("#F6F0EA", parsed["paper"])
+
+
+class ParserParityTests(TestCase):
+    """The profile parser and a standards parser agree on every shipped file.
+
+    The parser is hand-written, so nothing stops it drifting from YAML. Where
+    the two disagree the file is ambiguous and a reader would guess, which is
+    worth knowing before it reaches a profile.
+    """
+
+    def test_every_profile_parses_the_same_way(self) -> None:
+        import glob
+
+        import profile_check
+        import yaml
+
+        def flatten(node, path=""):
+            out = {}
+            if isinstance(node, dict):
+                for key, value in node.items():
+                    out.update(flatten(value, f"{path}.{key}" if path else key))
+            elif isinstance(node, list):
+                for index, value in enumerate(node):
+                    out.update(flatten(value, f"{path}[{index}]"))
+            else:
+                out[path] = node
+            return out
+
+        root = Path(__file__).resolve().parents[1]
+        differences = []
+        for name in sorted(glob.glob(str(root / "references" / "profiles" / "**" / "*.yaml"),
+                                     recursive=True)):
+            text = Path(name).read_text(encoding="utf-8")
+            mine = flatten(profile_check.parse_yaml(text))
+            theirs = flatten(yaml.safe_load(text))
+            for key, value in theirs.items():
+                if key in mine and mine[key] != value:
+                    differences.append(f"{Path(name).name}:{key}")
+
+        self.assertEqual([], differences)

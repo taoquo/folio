@@ -100,6 +100,6 @@ profiles:
 
   slide-16x9-v1:
     genre: slides
-    page: {size: 16:9, orientation: landscape}
+    page: {size: "16:9", orientation: landscape}
     # Contract is 4-10 slides. Target 7 with tolerance 3 spans exactly that.
     page_count: {mode: soft, target: 7, tolerance_pages: 3}
