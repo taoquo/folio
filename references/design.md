@@ -218,59 +218,35 @@ a standalone diagram reads the drawing theme, which has its own twelve-token
 palette across three schemes. Fourteen roles resolved, were projected, and
 painted nothing.
 
-Chart colour belongs to `scripts/drawing/theme/folio.py`. A document scheme still
-reaches a diagram through the seven tokens the two share -- canvas, ink, accent,
-borders -- so changing scheme changes a diagram's frame and the first two of its
-series, which are drawn on shared tokens today.
+### Chart series follow the scheme
 
-The series palette is six named drawing tokens, not scattered literals:
-`brand`, `olive`, `label`, `neutral_mid`, `neutral_light`, `brand_tint`. Three of
-the six already follow a scheme. All twelve tokens are already defined in all
-three themes, so bridging does not mean authoring values for dark and terminal.
+A chart's series colours are six drawing-theme tokens, `series_1` … `series_6`,
+named for the donut because it paints all six in order. A bar chart takes 1-3 and
+a line chart 1, 2 and 6.
 
-What it does mean is adding six dedicated series tokens, because `olive`,
-`label` and `brand_tint` are shared with text and fills and cannot be
-repurposed; and the swap keys by colour value, so two fields holding the same
-value collapse into one entry. That is checked now, and it is why a bridge has to
-give colliding tokens the same value in every theme.
+The `folio` drawing theme reads them from `color.series.*`, so a document colour
+scheme reaches a chart's series the way it reaches its canvas. `dark` and
+`terminal` carry them as aliases of the tokens they replace, because the drawing
+swap keys by colour value: a pair that shares a value in the source must share one
+in every target, or one of the two silently loses its meaning.
+`python3 scripts/check_theme_schemes.py` rejects a scheme that breaks that.
 
-`docs/exploration/drawing-series-bridge.md` has the full measurement, both routes,
-and why the recommendation is to keep the design and not build it while this
-repository builds with the default scheme.
+**The obligation is not the same for all six.** A line chart strokes 1, 2 and 6 at
+1.6px, so those carry a non-text contrast minimum of 3:1 against the canvas.
+Positions 3, 4 and 5 are fills that always ship beside a labelled key, which is
+what lets the classic scheme's 1.96:1 and 1.41:1 ship; the label carries the
+meaning, not the contrast. A scheme may improve them.
 
-When a document does draw a chart, it draws it the way a diagram template does:
-literals in the markup, mapped to palette entries by
-`references/theme/template-literal-ledger.json`, so a scheme reaches it.
-`projection.retarget_literals` applies that to document templates as well as
-diagram ones.
+The drawing theme's remaining tokens -- `label`, `muted_stroke`, and the neutral
+ramp used for structure -- stay literal. They are tuned for diagram-scale
+legibility, and `label` is deliberately not the document's muted text.
 
-### Where colour is decided
-
-`references/profiles/theme/` owns it, one file per scheme. Templates read the
-variables the projection derives; they do not state values of their own beyond
-the copy in `:root` that lets a template render standalone, which
-`python3 scripts/build.py --sync` keeps equal to the scheme.
-
-A scheme is selected by name and by nothing else:
-
-```bash
-FOLIO_THEME=folio-slate-v1 python3 scripts/build.py
-FOLIO_THEME=folio-slate-v1 python3 scripts/build_static_theme.py
-```
-
-Unset, the profile marked `default` is used, and that is the one this project builds with: every
-artifact in the repository is the default scheme. The other profiles are examples to decide from;
-choosing belongs to the adopter, and nothing selects them unless `FOLIO_THEME` names one.
-Adding a scheme is adding a file;
-`python3 scripts/check_theme_schemes.py` holds every one of them to the same bar
--- the roles a template reads, contrast on both surfaces, the lightness ladder,
-and whether every palette entry can be reached. `color_sources.py check` compares
-the four sources of colour for a name that has drifted apart, and
-`build_scheme_comparison.py` renders them side by side.
-
-The drawing theme (`scripts/drawing/theme/folio.py`) is a separate twelve-token
-swap unit: every token must have a counterpart in the dark and terminal themes,
-and a test asserts the count.
+**Literal colours in a diagram template** follow a scheme through
+`references/theme/template-literal-ledger.json`, which records what each one
+*means*: a role path, which every scheme defines, or `palette:<name>` for a colour
+no scheme defines, such as a chart's up-candle green. Recoding them against roles
+rather than palette entry names is what lets them follow a scheme at all --
+`warm-700` exists in one profile and nowhere else.
 
 ### Translucent -> Solid conversion (TAGS MUST BE SOLID)
 

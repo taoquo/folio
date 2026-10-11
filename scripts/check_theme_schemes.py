@@ -40,6 +40,10 @@ REQUIRED_ROLES = (
     "color.accent.brand", "color.accent.brand-tint",
     "color.status.positive", "color.status.caution", "color.status.negative",
     "color.status.caution-tint",
+    # The drawing theme reads these. A scheme that omits one leaves that chart
+    # series on a literal, which is the failure the bridge exists to prevent.
+    "color.series.1", "color.series.2", "color.series.3",
+    "color.series.4", "color.series.5", "color.series.6",
 )
 
 # (foreground, background, minimum, purpose). Both surfaces a document uses, so a
@@ -111,13 +115,57 @@ def ledger_entries() -> set[str]:
         ledger = json.loads(path.read_text(encoding="utf-8"))
     except Exception:  # pragma: no cover - a broken ledger must not stop a check
         return set()
-    return set((ledger.get("shipped") or {}).values())
+    # Only the palette-form targets name an entry here; a role target is reached
+    # by the role itself, which the palette table already counts.
+    return {target.split(":", 1)[1] for target in (ledger.get("shipped") or {}).values()
+            if target.startswith("palette:")}
 
 
 def _resolve(name: str):
     import style_resolver
 
     return style_resolver.resolve(names={"theme": name})
+
+
+
+def drawing_bridge_findings(name: str) -> list[dict[str, str]]:
+    """Whether a scheme's drawing theme can be swapped without losing a meaning.
+
+    Every diagram artefact is painted with the `folio` drawing theme and then
+    rethemed by substituting colour values, so the map from `folio` onto each
+    other theme has to be a function: one source colour, one target colour. Two
+    tokens sharing a value in the source collapse into a single entry, and the
+    later field wins -- which is correct only when both name the same target.
+    """
+    from dataclasses import asdict
+
+    from drawing.theme.folio import folio_theme_for
+    from drawing.theme.profiles import THEME_PROFILE_NAMES, resolve_theme
+
+    themed = folio_theme_for(name)
+    source = asdict(themed)
+    groups: dict[str, list[str]] = {}
+    for field, value in source.items():
+        if isinstance(value, str) and value.startswith("#"):
+            groups.setdefault(value.lower(), []).append(field)
+
+    findings: list[dict[str, str]] = []
+    for target_name in THEME_PROFILE_NAMES:
+        if target_name == "folio":
+            continue
+        target = asdict(resolve_theme(target_name))
+        for value, fields in sorted(groups.items()):
+            if len(fields) < 2:
+                continue
+            targets = {target[field] for field in fields}
+            if len(targets) > 1:
+                findings.append({
+                    "kind": "bridge", "subject": value,
+                    "detail": (f"{' and '.join(fields)} share {value} under {name}, but "
+                               f"{target_name} gives them {sorted(targets)}; one of them "
+                               f"would lose its meaning"),
+                })
+    return findings
 
 
 def check_scheme(name: str) -> dict[str, Any]:
@@ -191,6 +239,8 @@ def check_scheme(name: str) -> dict[str, Any]:
     for entry in sorted(set(palette) - used):
         findings.append({"kind": "reach", "subject": entry,
                          "detail": "no role points at it, so nothing can reach this colour"})
+
+    findings.extend(drawing_bridge_findings(name))
 
     return {
         "theme": name,

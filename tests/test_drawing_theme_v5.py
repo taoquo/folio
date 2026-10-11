@@ -86,7 +86,10 @@ class DrawingThemeProfileTests(TestCase):
     def test_v5_every_theme_token_is_a_full_palette(self) -> None:
         reference = asdict(DEFAULT_FOLIO_THEME)
         colors = {key for key, value in reference.items() if value.startswith("#")}
-        self.assertEqual(12, len(colors))
+        # 12 palette tokens plus 6 series tokens. The series are copies of six of
+        # the twelve, which is what keeps the swap map a function while letting
+        # `folio` read them from the document scheme.
+        self.assertEqual(18, len(colors))
         for name in BUILT_IN:
             tokens = asdict(resolve_theme(name))
             with self.subTest(theme=name):

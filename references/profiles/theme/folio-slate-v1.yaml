@@ -5,6 +5,7 @@ profiles:
       amber-100: '#F5EBD8'
       amber-600: '#8A5A16'
       azure-100: '#E4EBF4'
+      azure-150: '#D4DEED'
       azure-200: '#C3D2E6'
       azure-700: '#1F4E8C'
       ink: '#14181D'
@@ -12,8 +13,11 @@ profiles:
       parchment: '#F1F3F6'
       slate-200: '#D6D9DC'
       slate-300: '#C0C3C6'
-      slate-600: '#5C6672'
-      slate-800: '#404448'
+      slate-500: '#898B8F'
+      slate-600: '#6B6E72'
+      slate-650: '#5C6672'
+      slate-700: '#53565A'
+      slate-800: '#3E4246'
     color:
       accent:
         brand:
@@ -29,13 +33,26 @@ profiles:
           palette: slate-200
         warm:
           palette: slate-200
+      series:
+        1:
+          palette: slate-700
+        2:
+          palette: slate-500
+        3:
+          palette: azure-200
+        4:
+          palette: azure-150
+        5:
+          palette: azure-100
+        6:
+          palette: slate-600
       status:
         caution:
           palette: amber-600
         caution-tint:
           palette: amber-100
         negative:
-          palette: slate-600
+          palette: slate-650
         positive:
           palette: azure-700
       surface:
@@ -49,7 +66,7 @@ profiles:
         primary:
           palette: ink
         secondary:
-          palette: slate-600
+          palette: slate-700
         warm:
           palette: slate-800
 

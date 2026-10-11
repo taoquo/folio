@@ -681,7 +681,7 @@ def _resolve_bars(plan: BarPlan, layout: ChartLayout, source: str | None) -> Res
             SceneStyle(theme.parchment, "none"),
         )
 
-    palette = (theme.olive, theme.label, theme.neutral_mid)
+    palette = (theme.series_1, theme.series_2, theme.series_3)
     # Bars paint in series order, so a label emitted inside the loop would sit under the
     # next series' mark. Collect the numbers and lay them over the finished bars instead.
     pending_labels: list[tuple[str, str, int, int, int]] = []
@@ -884,7 +884,7 @@ def _resolve_lines(plan: LinePlan, layout: ChartLayout, source: str | None) -> R
     reading: list[str] = []
     # Line series are drawn at 1.6px, so every palette entry must clear the WCAG
     # non-text contrast bar on its own. Bars carry a labeled key instead.
-    palette = (theme.olive, theme.label, theme.neutral_deep)
+    palette = (theme.series_1, theme.series_2, theme.series_6)
     for series_index, item in enumerate(plan.series):
         color = theme.brand if item["id"] == plan.focus_series or (plan.focus_series is None and series_index == 0) else palette[min(series_index, 2)]
         dash = (6, 4) if series_index == 2 else (4, 3) if series_index == 1 else ()
@@ -992,7 +992,8 @@ def _donut_path(cx: int, cy: int, outer: int, inner: int, start: float, end: flo
 
 def _resolve_donut(plan: DonutPlan, layout: ChartLayout, source: str | None) -> ResolvedScene:
     theme = DEFAULT_FOLIO_THEME
-    palette = (theme.olive, theme.label, theme.neutral_mid, theme.neutral_light, theme.brand_tint, theme.neutral_deep)
+    palette = (theme.series_1, theme.series_2, theme.series_3,
+               theme.series_4, theme.series_5, theme.series_6)
     primitives: list[object] = []
     reading: list[str] = []
     geometry = _donut_geometry(plan.height, len(plan.segments))

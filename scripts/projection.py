@@ -337,8 +337,12 @@ def retarget_literals(html: str, theme: str | None = None) -> str:
     except Exception:  # pragma: no cover - a broken profile must not stop a build
         return html
 
-    for literal, entry in ledger.items():
-        value = style.get(f"palette.{entry}")
+    for literal, target in ledger.items():
+        # A role, which every scheme defines, or a palette entry for a colour no
+        # scheme defines. Resolving through the role is what makes a literal
+        # follow a scheme: a palette entry name belongs to one scheme.
+        path = target if target.startswith("color.") else f"palette.{target.split(':', 1)[-1]}"
+        value = style.get(path)
         replacement = str(value).strip() if value is not None else ""
         if replacement.startswith("#") and replacement.upper() != literal.upper():
             html = re.sub(re.escape(literal), replacement, html, flags=re.IGNORECASE)
@@ -400,6 +404,12 @@ UNCONSUMED: dict[str, str] = {
     "--folio-hyphens": "typography migration pending",
     "--folio-section-gap": "typography migration pending",
     "--color-data-category-6": "chart palette; the drawing theme owns the chart path",
+    "--color-series-1": "chart series; the drawing theme reads it through style_resolver, not through CSS",
+    "--color-series-2": "chart series; the drawing theme reads it through style_resolver, not through CSS",
+    "--color-series-3": "chart series; the drawing theme reads it through style_resolver, not through CSS",
+    "--color-series-4": "chart series; the drawing theme reads it through style_resolver, not through CSS",
+    "--color-series-5": "chart series; the drawing theme reads it through style_resolver, not through CSS",
+    "--color-series-6": "chart series; the drawing theme reads it through style_resolver, not through CSS",
 }
 
 # Templates a projected variable may be read from. Diagrams read the migration

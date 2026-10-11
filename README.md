@@ -358,7 +358,7 @@ python3 scripts/build_scheme_comparison.py   # every scheme, side by side
 python3 scripts/build_color_reference.py     # one scheme's palette and roles
 ```
 
-`docs/acceptance/theme-schemes.html` is the comparison. `scripts/build_color_reference.py --theme <name>` renders any single scheme's own reference.
+A scheme reaches a chart's series colours as well as its canvas: the drawing theme reads `color.series.1` … `color.series.6`, and a line chart's first three positions carry a 3:1 non-text contrast minimum because it strokes them at 1.6px. `docs/acceptance/theme-schemes.html` is the comparison. `scripts/build_color_reference.py --theme <name>` renders any single scheme's own reference.
 
 ## Layout Rules
 

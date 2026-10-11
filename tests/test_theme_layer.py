@@ -349,3 +349,89 @@ class HomepageGalleryTests(TestCase):
     def test_a_stylesheet_is_a_bake_target(self) -> None:
         names = {path.name for path in self.bake.targets()}
         self.assertIn("styles.css", names)
+
+
+class SeriesBridgeTests(TestCase):
+    """A colour scheme reaches a chart's series colours, not just its canvas.
+
+    The six series tokens are copies of the tokens they replaced in dark and
+    terminal, because the drawing swap keys by colour value; `folio` reads them
+    from the document scheme, which is what makes a chart follow it.
+    """
+
+    def setUp(self) -> None:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import check_theme_schemes
+        import style_resolver
+
+        from drawing.theme.folio import folio_theme_for
+
+        self.schemes = check_theme_schemes
+        self.style_resolver = style_resolver
+        self.folio_theme_for = folio_theme_for
+
+    def test_the_folio_theme_takes_its_series_from_the_scheme(self) -> None:
+        for name in self.schemes.profiles():
+            style = self.style_resolver.resolve(names={"theme": name})
+            themed = self.folio_theme_for(name)
+            for index in range(1, 7):
+                with self.subTest(scheme=name, series=index):
+                    self.assertEqual(
+                        str(style.get(f"color.series.{index}")).strip().lower(),
+                        getattr(themed, f"series_{index}").lower(),
+                    )
+
+    def test_two_schemes_give_a_chart_different_series(self) -> None:
+        self.assertNotEqual(self.folio_theme_for("folio-classic-v1").series_1,
+                            self.folio_theme_for("folio-slate-v1").series_1)
+
+    def test_the_default_scheme_reproduces_the_drawing_tokens(self) -> None:
+        # The bridge was introduced with no visual change: each series token holds
+        # the value of the drawing token it stands in for.
+        themed = self.folio_theme_for(None)
+        for series, token in (("series_1", "olive"), ("series_2", "label"),
+                              ("series_3", "neutral_mid"), ("series_4", "neutral_light"),
+                              ("series_5", "brand_tint"), ("series_6", "neutral_deep")):
+            with self.subTest(series=series):
+                self.assertEqual(getattr(themed, token).lower(), getattr(themed, series).lower())
+
+    def test_every_stroked_series_clears_the_non_text_bar(self) -> None:
+        # A line chart strokes positions 1, 2 and 6 at 1.6px.
+        from drawing.theme.contrast import GRAPHIC_MINIMUM, contrast_ratio
+
+        for name in self.schemes.profiles():
+            themed = self.folio_theme_for(name)
+            for index in (1, 2, 6):
+                with self.subTest(scheme=name, series=index):
+                    ratio = contrast_ratio(getattr(themed, f"series_{index}"), themed.parchment)
+                    self.assertGreaterEqual(round(ratio, 2), GRAPHIC_MINIMUM)
+
+    def test_the_ledger_records_a_meaning_not_a_palette_name(self) -> None:
+        # A palette entry name belongs to one scheme -- `warm-700` exists in the
+        # classic profile and nowhere else -- so a literal mapped to one followed
+        # no other scheme. A role does.
+        import json
+
+        ledger = json.loads((ROOT / "references" / "theme"
+                             / "template-literal-ledger.json").read_text(encoding="utf-8"))
+        targets = list(ledger["shipped"].values())
+        self.assertTrue(all(t.startswith("color.") or t.startswith("palette:") for t in targets))
+        self.assertGreater(sum(1 for t in targets if t.startswith("color.")), 10)
+
+    def test_a_ledger_role_follows_a_scheme(self) -> None:
+        import json
+
+        import projection
+
+        ledger = json.loads((ROOT / "references" / "theme"
+                             / "template-literal-ledger.json").read_text(encoding="utf-8"))
+        literal = next(v for v, t in ledger["shipped"].items() if t == "color.text.secondary")
+        classic = projection.retarget_literals(f'fill="{literal}"', "folio-classic-v1")
+        slate = projection.retarget_literals(f'fill="{literal}"', "folio-slate-v1")
+        self.assertNotEqual(classic, slate)
+
+    def test_a_scheme_whose_swap_map_breaks_is_rejected(self) -> None:
+        # A scheme may not give a series the value of a token whose targets differ,
+        # or one of the two loses its meaning under dark and terminal.
+        findings = self.schemes.drawing_bridge_findings("folio-classic-v1")
+        self.assertEqual([], findings, "the shipped schemes must satisfy the rule")

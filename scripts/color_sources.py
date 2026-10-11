@@ -193,12 +193,29 @@ def ledger_findings() -> list[Finding]:
     default = next((body for body in bodies.values() if body.get("default")), None)
     palette = set((default or {}).get("palette") or {})
 
+    import style_resolver
+
+    style = style_resolver.resolve()
+
     findings: list[Finding] = []
-    for literal, entry in sorted(shipped.items()):
-        if entry not in palette:
+    for literal, target in sorted(shipped.items()):
+        if target.startswith("palette:"):
+            entry = target.split(":", 1)[1]
+            if entry not in palette:
+                findings.append(Finding(
+                    literal,
+                    f"the ledger points at palette.{entry}, which no longer exists",
+                ))
+        elif target.startswith("color."):
+            value = style.get(target)
+            if value is None or not str(value).strip().startswith("#"):
+                findings.append(Finding(
+                    literal,
+                    f"the ledger points at {target}, which no longer resolves",
+                ))
+        else:
             findings.append(Finding(
-                literal,
-                f"the ledger points at palette.{entry}, which no longer exists",
+                literal, f"the ledger target {target!r} is neither a role nor a palette entry",
             ))
         for name in files.get(literal, []):
             path = ROOT / name

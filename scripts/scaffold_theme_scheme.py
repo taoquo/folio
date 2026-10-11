@@ -53,6 +53,13 @@ def number_for(value: str) -> int:
     return band(luminance(value))
 
 
+def mix(first: str, second: str, weight: float = 0.5) -> str:
+    """Blend two colours, half and half by default."""
+    a = [int(first[i:i + 2], 16) for i in (1, 3, 5)]
+    b = [int(second[i:i + 2], 16) for i in (1, 3, 5)]
+    return "#" + "".join(f"{round(x + (y - x) * weight):02X}" for x, y in zip(a, b))
+
+
 def darken_until(value: str, surfaces: tuple[str, ...], floor: float) -> str:
     """Move a colour toward black until it clears `floor` on every surface."""
     red, green, blue = (int(value[i:i + 2], 16) for i in (1, 3, 5))
@@ -120,38 +127,62 @@ def build(name: str, spec: dict) -> dict:
     warm_raw, secondary_raw, muted_raw = blend(0.20), blend(0.34), blend(0.46)
     # Two borders, the stronger line first, both darkened only to stay visible.
     border_raw, border_soft_raw = blend(0.78), blend(0.88)
+    # A chart's second series: lighter than the text levels, dark enough to be
+    # stroked at 1.6px.
+    series_mid_raw = blend(0.60)
 
     family = name.split("-")[1]
-    accent_family = {"folio-slate-v1": "azure", "folio-forest-v1": "forest"}[name]
+    # Distinct from the neutral ramp's name: sharing one meant the accent and the
+    # ramp wrote to the same namespace and the later entry won.
+    accent_family = {"folio-slate-v1": "azure", "folio-forest-v1": "pine"}[name]
 
-    # Darkened only as far as the floor requires, so the hierarchy survives.
-    warm = darken_until(warm_raw, surfaces, 4.5)
-    secondary = darken_until(secondary_raw, surfaces, 4.5)
+    # Each level has its own floor. Darkening all three to the same one collapsed
+    # `secondary` and `muted` into one colour, because both converged on the value
+    # that just clears the bar -- a flat hierarchy nobody had measured.
+    warm = darken_until(warm_raw, surfaces, 9.0)
+    secondary = darken_until(secondary_raw, surfaces, 6.5)
     muted = darken_until(muted_raw, surfaces, 4.5)
     border = darken_until(border_raw, surfaces, 1.30)
     border_soft = darken_until(border_soft_raw, surfaces, 1.21)
+    # 1, 2 and 6 are stroked by a line chart, so they answer to the non-text bar.
+    series_mid = darken_until(series_mid_raw, surfaces, 3.0)
+    # Two lighter steps for the fill-only series positions. They come from the
+    # accent tints rather than from the borders: a border value is shared with a
+    # drawing token, and dark's border is nearly its canvas.
+    accent_pale = mix(spec["accent_light"], spec["accent_mid"])
     accent = darken_until(spec["accent"], surfaces, 4.5)
     caution = darken_until(spec["caution"], surfaces, 4.5)
     negative = darken_until(spec["negative"], surfaces, 4.5)
 
+    # Every ramp step, by family, before anything is named.
+    ramps: dict[str, list[str]] = {
+        family: [secondary, muted, warm, border, border_soft, negative, series_mid],
+        accent_family: [accent, spec["accent_mid"], accent_pale, spec["accent_light"]],
+        "amber": [caution, spec["caution_light"]],
+    }
+
+    def number_families() -> dict[tuple[str, str], str]:
+        """Name each family in one pass: lightest first, half a step inside a band."""
+        names: dict[tuple[str, str], str] = {}
+        for base, values in ramps.items():
+            used: dict[int, int] = {}
+            for value in sorted(set(values), key=lambda item: -luminance(item)):
+                step = band(luminance(value))
+                taken = used.get(step, 0)
+                used[step] = taken + 1
+                names[(base, value)] = f"{base}-{step + taken * 50}"
+        return names
+
+    names = number_families()
+
     def numbered(base: str, value: str) -> str:
-        return f"{base}-{number_for(value)}"
+        return names[(base, value)]
 
     entries = {
         "parchment": canvas,
         "ivory": card,
         "ink": ink,
-        numbered(family, secondary): secondary,
-        numbered(family, muted): muted,
-        numbered(family, warm): warm,
-        numbered(family, border): border,
-        numbered(family, border_soft): border_soft,
-        numbered(accent_family, accent): accent,
-        numbered(accent_family, spec["accent_mid"]): spec["accent_mid"],
-        numbered(accent_family, spec["accent_light"]): spec["accent_light"],
-        numbered("amber", caution): caution,
-        numbered("amber", spec["caution_light"]): spec["caution_light"],
-        numbered(family, negative): negative,
+        **{name: value for (base, value), name in names.items()},
     }
 
     return {
@@ -173,6 +204,15 @@ def build(name: str, spec: dict) -> dict:
             "status.caution": numbered("amber", caution),
             "status.caution-tint": numbered("amber", spec["caution_light"]),
             "status.negative": numbered(family, negative),
+            # A chart series has no meaning beyond being a different series.
+            # 1, 2 and 6 are stroked by a line chart; 3, 4 and 5 are fills that
+            # always ship beside a labelled key.
+            "series.1": numbered(family, secondary),
+            "series.2": numbered(family, series_mid),
+            "series.3": numbered(accent_family, spec["accent_mid"]),
+            "series.4": numbered(accent_family, accent_pale),
+            "series.5": numbered(accent_family, spec["accent_light"]),
+            "series.6": numbered(family, muted),
         },
     }
 

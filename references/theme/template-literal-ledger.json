@@ -1,27 +1,28 @@
 {
-  "note": "Which palette entry each hand-written colour literal in a pre-palette template stands for. Recorded rather than derived: the default theme is the thing being changed, so its values cannot serve as the reference. Entries disappear as templates are converted to variables.",
+  "note": "What each hand-written colour literal in a pre-palette template means. A target is a role path (`color.text.secondary`), which every scheme defines, or `palette:<name>` for a colour no scheme defines -- a chart's up-candle green, say. Recorded rather than derived: the default scheme is the thing being changed, so its values cannot serve as the reference. Entries disappear as templates are converted to variables.",
   "shipped": {
-    "#191514": "ink",
-    "#3A312D": "warm-850",
-    "#4A6B52": "sage-600",
-    "#4B3E39": "warm-800",
-    "#5A4A43": "warm-700",
-    "#5A6B7A": "slate-600",
-    "#756A63": "warm-600",
-    "#7E241C": "cinnabar-800",
-    "#8B8078": "warm-500",
-    "#906327": "amber-600",
-    "#B83D2E": "cinnabar-600",
-    "#B9ACA3": "warm-350",
-    "#C97A63": "cinnabar-500",
-    "#E3BAA9": "warm-300",
-    "#E5DBCD": "warm-200",
-    "#E6DACD": "sand",
-    "#F1D2CC": "cinnabar-200",
-    "#F6EBD9": "amber-100",
-    "#F6F0EA": "parchment",
-    "#F7E6E1": "cinnabar-100",
-    "#FBF7F3": "ivory"
+    "#191514": "color.text.primary",
+    "#3A312D": "color.text.warm",
+    "#4A6B52": "palette:sage-600",
+    "#4B3E39": "palette:warm-800",
+    "#5A4A43": "color.text.secondary",
+    "#5A6B7A": "color.status.negative",
+    "#756A63": "color.text.muted",
+    "#7E241C": "palette:cinnabar-800",
+    "#8B8078": "color.series.6",
+    "#906327": "color.status.caution",
+    "#B83D2E": "color.accent.brand",
+    "#B9ACA3": "color.series.3",
+    "#C97A63": "palette:cinnabar-500",
+    "#D7CBC2": "color.series.4",
+    "#E3BAA9": "color.border.warm",
+    "#E5DBCD": "color.border.soft",
+    "#E6DACD": "color.border.default",
+    "#F1D2CC": "color.accent.tag",
+    "#F6EBD9": "color.status.caution-tint",
+    "#F6F0EA": "color.surface.page",
+    "#F7E6E1": "color.accent.brand-tint",
+    "#FBF7F3": "color.surface.card"
   },
   "files": {
     "#191514": [
@@ -291,6 +292,10 @@
       "assets/templates/portfolio-en.html",
       "assets/templates/portfolio.html"
     ],
+    "#D7CBC2": [
+      "assets/diagrams/bar-chart.html",
+      "assets/diagrams/donut-chart.html"
+    ],
     "#E3BAA9": [
       "assets/templates/resume-en.html",
       "assets/templates/resume.html"
@@ -517,10 +522,26 @@
     ]
   },
   "unmatched": {
+    "#14181D": [
+      "index-zh.html",
+      "index.html"
+    ],
+    "#161813": [
+      "index-zh.html",
+      "index.html"
+    ],
+    "#1F4E8C": [
+      "index-zh.html",
+      "index.html"
+    ],
     "#2E2521": [
       "index-zh.html",
       "index.html",
       "styles.css"
+    ],
+    "#2F5D46": [
+      "index-zh.html",
+      "index.html"
     ],
     "#85776F": [
       "assets/diagrams/architecture.html",
@@ -561,14 +582,18 @@
       "index.html",
       "styles.css"
     ],
-    "#D7CBC2": [
-      "assets/diagrams/bar-chart.html",
-      "assets/diagrams/donut-chart.html"
-    ],
     "#E2B3A8": [
       "index-zh.html",
       "index.html",
       "styles.css"
+    ],
+    "#E3EDE6": [
+      "index-zh.html",
+      "index.html"
+    ],
+    "#E4EBF4": [
+      "index-zh.html",
+      "index.html"
     ],
     "#E6D9D1": [
       "assets/demos/demo-nvidia-equity-report.html",
@@ -603,7 +628,23 @@
     "#F0EFE8": [
       "assets/diagrams/layer-stack.html"
     ],
+    "#F1F3F6": [
+      "index-zh.html",
+      "index.html"
+    ],
     "#F3F4F6": [
+      "index-zh.html",
+      "index.html"
+    ],
+    "#F5F2EA": [
+      "index-zh.html",
+      "index.html"
+    ],
+    "#FAFBFC": [
+      "index-zh.html",
+      "index.html"
+    ],
+    "#FCFAF5": [
       "index-zh.html",
       "index.html"
     ],

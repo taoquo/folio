@@ -1,5 +1,8 @@
 # Implementation plan: making the drawing series palette follow the scheme
 
+**Executed.** All seven phases are in, and the last section records what the
+work turned up that the plan did not anticipate.
+
 Route A, from `drawing-series-bridge.md`. The goal is that a document colour
 scheme reaches a standalone diagram's **series colours**, which today it reaches
 only for the first two positions.
@@ -265,6 +268,31 @@ must return byte-identical.
 | The default output shifts through a rounding or ordering difference | Low | `asdict` order is preserved by appending fields; the diagram baseline and the document baseline both gate it |
 | Scheme authors must now supply six more colours | Certain | `scaffold_theme_scheme.py` generates them and solves for the contrast floor |
 | The lighter three positions are visually weak as fills | Pre-existing | Unchanged by this work; recorded, and a scheme may now improve them |
+
+## What the work turned up
+
+**A generator that could not name two colours in the same band.** `numbered(base,
+value)` derived a name from the value alone, so forest's accent tint and its mid
+tint both became `pine-100` and one overwrote the other. The generator now numbers
+a whole family in one pass, lightest first, half a step inside a band -- the rule
+the default palette already follows.
+
+**A namespace collision.** Forest's accent family was named `forest`, the same as
+its neutral ramp, so the two wrote to one namespace and the scheme's `brand` came
+out equal to its `text.secondary`.
+
+**Two text levels that had collapsed.** Darkening `secondary` and `muted` to the
+same 4.5:1 floor converged them on one colour, so the two demonstration schemes
+had a flat text hierarchy. Each level has its own floor now.
+
+**The ledger mapped literals to palette entry names, which belongs to one
+scheme.** This is the one that mattered: a diagram template's *canvas* arrived as
+a CSS variable and followed a scheme, while its *series* were painted as literals
+whose ledger target was `warm-700` -- a name the classic profile has and no other
+does. Under slate the lookup found nothing and the colours stayed put, so the
+bridge would have been invisible on every template-rendered diagram. The ledger
+records a role where one exists (18 of 22 entries) and `palette:<name>` for a
+colour no scheme defines (4: a chart's up-candle green and three warm steps).
 
 ## Rollback
 

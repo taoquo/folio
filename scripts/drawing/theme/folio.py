@@ -21,6 +21,19 @@ class FolioTheme:
     neutral_mid: str = "#B9ACA3"
     neutral_light: str = "#D7CBC2"
     neutral_deep: str = "#8B8078"
+    # A chart's series colours, named for the donut because it paints all six in
+    # order. The values are the ones these charts already use -- `series_3` is
+    # `neutral_mid` and so on -- so introducing them moves nothing. The point is
+    # that `folio` now reads them from the document scheme, which is what makes a
+    # chart follow it. A line chart strokes 1, 2 and 6 at 1.6px, so those three
+    # carry a non-text contrast obligation; 3, 4 and 5 are fills that always ship
+    # beside a labelled key.
+    series_1: str = "#5A4A43"
+    series_2: str = "#74665F"
+    series_3: str = "#B9ACA3"
+    series_4: str = "#D7CBC2"
+    series_5: str = "#F7E6E1"
+    series_6: str = "#8B8078"
     # The repository ships Source Serif 4; listing it first is what makes a
     # diagram render the same on a machine that has never seen Charter.
     serif: str = '"Source Serif 4", Charter, Georgia, serif'
@@ -37,10 +50,16 @@ _SHARED_WITH_DOCUMENT = {
     "brand": "color.accent.brand",
     "brand_tint": "color.accent.brand-tint",
     "border": "color.border.default",
+    "series_1": "color.series.1",
+    "series_2": "color.series.2",
+    "series_3": "color.series.3",
+    "series_4": "color.series.4",
+    "series_5": "color.series.5",
+    "series_6": "color.series.6",
 }
 
 
-def shared_from_document_theme() -> dict[str, str]:
+def shared_from_document_theme(theme: str | None = None) -> dict[str, str]:
     """The colours both themes state, read from the document theme.
 
     Returns an empty mapping when the profile layer cannot be read, so the
@@ -61,7 +80,7 @@ def shared_from_document_theme() -> dict[str, str]:
     except Exception:  # pragma: no cover - depends on the host layout
         return {}
 
-    name = (os.environ.get("FOLIO_THEME") or "").strip() or None
+    name = theme or (os.environ.get("FOLIO_THEME") or "").strip() or None
     try:
         style = style_resolver.resolve(names={"theme": name} if name else None)
     except Exception:  # pragma: no cover - a broken profile must not stop a drawing
@@ -84,4 +103,13 @@ def shared_from_document_theme() -> dict[str, str]:
     return out
 
 
-DEFAULT_FOLIO_THEME = FolioTheme(**shared_from_document_theme())
+def folio_theme_for(theme: str | None = None) -> FolioTheme:
+    """The folio drawing theme as a named document scheme would produce it.
+
+    The rest of the fields keep their literals: only the shared tokens follow a
+    scheme, and the series are six of them.
+    """
+    return FolioTheme(**shared_from_document_theme(theme))
+
+
+DEFAULT_FOLIO_THEME = folio_theme_for()

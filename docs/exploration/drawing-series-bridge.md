@@ -200,6 +200,18 @@ than an oversight.
 
 ---
 
+## Outcome
+
+Built. Six series tokens on the drawing theme, read from `color.series.*` for the
+`folio` profile and aliased to their old tokens in dark and terminal; three call
+sites; six document roles; a rule that rejects a scheme whose swap map stops being
+a function; and a ledger that records what a literal *means* rather than which
+palette entry it happened to match.
+
+The default scheme renders byte-identically -- every generated SVG is unchanged --
+and the measurement is the same chart built in each scheme, in
+`docs/acceptance/series-by-scheme.png`.
+
 ## Reproduce
 
 ```bash

@@ -60,6 +60,15 @@ a different scheme, and `docs/acceptance/theme-schemes.html` compares them.
 | Caution      | `#906327`     | Warning text                                        |
 | Negative     | `#5A6B7A`     | Negative text                                       |
 
+Chart series, read by the drawing theme rather than by a template. A scheme needs
+all six; `python3 scripts/check_theme_schemes.py` says so when one is missing.
+
+| Role | Use | Obligation |
+| ---- | --- | ---------- |
+| `color.series.1` … `.3` | bar series, and the donut's first segments | 1 and 2 are stroked by a line chart: 3:1 on the canvas |
+| `color.series.4` … `.5` | donut fills | none; a labelled key carries the meaning |
+| `color.series.6` | the line chart's third stroke, the donut's last segment | 3:1 on the canvas |
+
 Templates read roles, never these values: `color.text.muted` becomes
 `--color-text-muted`. A scheme states each colour once in `palette` and points the
 roles at it, so changing the brand moves every role that shares it.

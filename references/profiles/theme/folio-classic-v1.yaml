@@ -45,6 +45,8 @@ profiles:
       sage-600: '#4A6B52'
       warm-500: '#8B8078'
       warm-200: '#E5DBCD'
+      warm-650: '#74665F'
+      warm-250: '#D7CBC2'
     color:
       surface:
         page:
@@ -83,6 +85,19 @@ profiles:
           palette: slate-600
         caution-tint:
           palette: amber-100
+      series:
+        '1':
+          palette: warm-700
+        '2':
+          palette: warm-650
+        '3':
+          palette: warm-350
+        '4':
+          palette: warm-250
+        '5':
+          palette: cinnabar-100
+        '6':
+          palette: warm-500
     decoration:
       rule_width_pt: 0.5
       corner_radius_pt: 0

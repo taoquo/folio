@@ -32,6 +32,15 @@ DARK_THEME = FolioTheme(
     neutral_mid="#A99383",
     neutral_light="#8A7565",
     neutral_deep="#CBBAAB",
+    # Aliases of the tokens above. The swap keys by colour value, so a pair that
+    # shares a value in the source must share one in every target; giving these
+    # the same value as the token each replaces is what keeps the map a function.
+    series_1="#E2D3C6",
+    series_2="#C9B7A9",
+    series_3="#A99383",
+    series_4="#8A7565",
+    series_5="#4A2A22",
+    series_6="#CBBAAB",
 )
 
 TERMINAL_THEME = FolioTheme(
@@ -47,6 +56,12 @@ TERMINAL_THEME = FolioTheme(
     neutral_mid="#8FB49E",
     neutral_light="#6F9280",
     neutral_deep="#B6D9C3",
+    series_1="#C7E6D2",
+    series_2="#A9D2B8",
+    series_3="#8FB49E",
+    series_4="#6F9280",
+    series_5="#1D3A2B",
+    series_6="#B6D9C3",
 )
 
 _PROFILES: dict[str, FolioTheme] = {
@@ -79,6 +94,12 @@ _GRAPHIC_ON_SURFACE = (
     ("brand", "parchment", GRAPHIC_MINIMUM, "accent stroke on canvas"),
     ("olive", "parchment", GRAPHIC_MINIMUM, "structural stroke on canvas"),
     ("label", "parchment", GRAPHIC_MINIMUM, "structural stroke on canvas"),
+    # A line chart strokes these three at 1.6px, so each has to stand on its own.
+    # Series 3, 4 and 5 are fills behind a labelled key, which is why they are
+    # not listed: the label carries the meaning, not the contrast.
+    ("series_1", "parchment", GRAPHIC_MINIMUM, "series 1 stroke on canvas"),
+    ("series_2", "parchment", GRAPHIC_MINIMUM, "series 2 stroke on canvas"),
+    ("series_6", "parchment", GRAPHIC_MINIMUM, "series 6 stroke on canvas"),
 )
 
 # neutral_mid and neutral_light are fill-only ramp steps. They paint bar, donut

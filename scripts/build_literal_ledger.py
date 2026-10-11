@@ -56,8 +56,30 @@ def palette() -> dict[str, str]:
     return {name: str(value).upper() for name, value in (default.get("palette") or {}).items()}
 
 
+ORDER = ("color.text.", "color.surface.", "color.accent.", "color.border.",
+         "color.status.", "color.series.")
+
+
+def role_for(value: str, style) -> str | None:
+    """The role a colour means, where a scheme-independent one exists.
+
+    Several roles can share a value; the preference order picks the semantic
+    meaning rather than, say, a chart slot that happens to hold the same colour.
+    """
+    candidates = [path for path, entry in style.values.items()
+                  if path.startswith("color.") and str(entry.value).upper() == value.upper()]
+    if not candidates:
+        return None
+    return sorted(candidates, key=lambda path: next(
+        (index for index, prefix in enumerate(ORDER) if path.startswith(prefix)), 99))[0]
+
+
 def scan() -> dict:
-    by_value = {value: name for name, value in palette().items()}
+    import style_resolver
+
+    profile = palette()
+    by_value = {value: name for name, value in profile.items()}
+    style = style_resolver.resolve()
     shipped: dict[str, dict] = {}
     unmatched: dict[str, list[str]] = {}
 
@@ -73,13 +95,17 @@ def scan() -> dict:
             text = candidate.read_text(encoding="utf-8", errors="ignore")
             for value in sorted({h.upper() for h in HEX.findall(text)}):
                 if value in by_value:
-                    body = shipped.setdefault(value, {"palette": by_value[value], "files": []})
+                    body = shipped.setdefault(
+                        value,
+                        {"target": role_for(value, style) or f"palette:{by_value[value]}",
+                         "files": []},
+                    )
                     body["files"].append(relative)
                 else:
                     unmatched.setdefault(value, []).append(relative)
 
     return {
-        "shipped": {value: body["palette"] for value, body in sorted(shipped.items())},
+        "shipped": {value: body["target"] for value, body in sorted(shipped.items())},
         "files": {value: sorted(set(body["files"])) for value, body in sorted(shipped.items())},
         "unmatched": {value: sorted(set(paths)) for value, paths in sorted(unmatched.items())},
     }
@@ -88,8 +114,10 @@ def scan() -> dict:
 def write(ledger: dict) -> None:
     LEDGER.write_text(json.dumps({
         "note": (
-            "Which palette entry each hand-written colour literal in a pre-palette "
-            "template stands for. Recorded rather than derived: the default theme is "
+            "What each hand-written colour literal in a pre-palette template means. "
+            "A target is a role path (`color.text.secondary`), which every scheme "
+            "defines, or `palette:<name>` for a colour no scheme defines -- a chart's "
+            "up-candle green, say. Recorded rather than derived: the default scheme is "
             "the thing being changed, so its values cannot serve as the reference. "
             "Entries disappear as templates are converted to variables."
         ),
@@ -108,7 +136,9 @@ def main(argv: list[str]) -> int:
     if args.format == "json":
         print(json.dumps(ledger, indent=2, ensure_ascii=False))
     else:
-        print(f"  {len(ledger['shipped'])} literal(s) map to a palette entry")
+        roles = sum(1 for target in ledger["shipped"].values() if target.startswith("color."))
+        print(f"  {len(ledger['shipped'])} literal(s) mapped: {roles} to a role, "
+              f"{len(ledger['shipped']) - roles} to a palette entry")
         print(f"  {len(ledger['unmatched'])} literal(s) belong to no entry")
         for value, paths in sorted(ledger["unmatched"].items()):
             print(f"    {value}  {len(paths)} file(s)")
