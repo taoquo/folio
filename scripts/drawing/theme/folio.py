@@ -35,7 +35,7 @@ _SHARED_WITH_DOCUMENT = {
     "near_black": "color.text.primary",
     "olive": "color.text.secondary",
     "brand": "color.accent.brand",
-    "brand_tint": "color.accent.tint",
+    "brand_tint": "color.accent.brand-tint",
     "border": "color.border.default",
 }
 
@@ -44,7 +44,10 @@ def shared_from_document_theme() -> dict[str, str]:
     """The colours both themes state, read from the document theme.
 
     Returns an empty mapping when the profile layer cannot be read, so the
-    literals above stay in force and a diagram can always be drawn.
+    literals above stay in force and a diagram can always be drawn. A role that
+    does not resolve is reported rather than dropped: dropping it put the literal
+    back in force without saying so, which is how a role rename here went
+    unnoticed and left the accent tint on the default value.
     """
     import os
     import sys
@@ -65,11 +68,19 @@ def shared_from_document_theme() -> dict[str, str]:
         return {}
 
     out: dict[str, str] = {}
+    unresolved: list[str] = []
     for field, role in _SHARED_WITH_DOCUMENT.items():
         value = style.get(role)
         text = str(value).strip() if value is not None else ""
         if text.startswith("#"):
             out[field] = text
+        else:
+            unresolved.append(f"{field} <- {role}")
+    if unresolved and os.environ.get("FOLIO_STRICT_THEME"):
+        raise ValueError(
+            "the drawing theme names roles the document theme does not carry: "
+            + ", ".join(unresolved)
+        )
     return out
 
 

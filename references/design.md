@@ -220,9 +220,23 @@ painted nothing.
 
 Chart colour belongs to `scripts/drawing/theme/folio.py`. A document scheme still
 reaches a diagram through the seven tokens the two share -- canvas, ink, accent,
-borders -- so changing scheme changes a diagram's frame and its brand mark, and
-not the hues of its series. Bridging the series colours means authoring them for
-all three drawing themes at once, which is a decision rather than a refactor.
+borders -- so changing scheme changes a diagram's frame and the first two of its
+series, which are drawn on shared tokens today.
+
+The series palette is six named drawing tokens, not scattered literals:
+`brand`, `olive`, `label`, `neutral_mid`, `neutral_light`, `brand_tint`. Three of
+the six already follow a scheme. All twelve tokens are already defined in all
+three themes, so bridging does not mean authoring values for dark and terminal.
+
+What it does mean is adding six dedicated series tokens, because `olive`,
+`label` and `brand_tint` are shared with text and fills and cannot be
+repurposed; and the swap keys by colour value, so two fields holding the same
+value collapse into one entry. That is checked now, and it is why a bridge has to
+give colliding tokens the same value in every theme.
+
+`docs/exploration/drawing-series-bridge.md` has the full measurement, both routes,
+and why the recommendation is to keep the design and not build it while this
+repository builds with the default scheme.
 
 When a document does draw a chart, it draws it the way a diagram template does:
 literals in the markup, mapped to palette entries by

@@ -269,3 +269,61 @@ class DrawingThemeCliTests(TestCase):
             folio.build_parser().parse_args([
                 "render-drawing", "x.json", "--theme", "sepia", "--output", "x.svg",
             ])
+
+
+class DrawingTokenBridgeTests(TestCase):
+    """The drawing theme's link to the document scheme, and the swap's soundness.
+
+    Two properties nobody had written down. The first broke silently when a
+    document role was renamed: the mapping kept the old name, the lookup returned
+    nothing, and the field quietly fell back to its literal. The second is what
+    `theme_token_map` rests on -- it keys by colour value, so two fields holding
+    the same value in the source collapse into one entry.
+    """
+
+    def test_every_shared_role_resolves(self) -> None:
+        from drawing.theme.folio import _SHARED_WITH_DOCUMENT, shared_from_document_theme
+
+        resolved = shared_from_document_theme()
+        missing = [f"{field} <- {role}" for field, role in _SHARED_WITH_DOCUMENT.items()
+                   if field not in resolved]
+        self.assertEqual([], missing, "a renamed role silently falls back to the literal")
+
+    def test_the_shared_tokens_come_from_the_document_scheme(self) -> None:
+        import style_resolver
+
+        from drawing.theme.folio import _SHARED_WITH_DOCUMENT, shared_from_document_theme
+
+        style = style_resolver.resolve()
+        for field, role in _SHARED_WITH_DOCUMENT.items():
+            with self.subTest(field=field):
+                self.assertEqual(str(style.get(role)).strip().upper(),
+                                 shared_from_document_theme()[field].upper())
+
+    def test_the_swap_map_is_a_function(self) -> None:
+        # A colour value in the source must map to exactly one value in the
+        # target. Two fields sharing a source value with different target values
+        # means one of them loses its meaning, and which one depends on field
+        # order -- demonstrated by giving `muted_stroke` the value of
+        # `neutral_mid` and watching the map keep only the later field.
+        from dataclasses import asdict
+
+        from drawing.theme.profiles import THEME_PROFILE_NAMES, resolve_theme
+
+        for source_name in THEME_PROFILE_NAMES:
+            source = resolve_theme(source_name)
+            source_tokens = asdict(source)
+            for target_name in THEME_PROFILE_NAMES:
+                target_tokens = asdict(resolve_theme(target_name))
+                groups: dict[str, list[str]] = {}
+                for key, value in source_tokens.items():
+                    if isinstance(value, str) and value.startswith("#"):
+                        groups.setdefault(value.lower(), []).append(key)
+                for value, keys in groups.items():
+                    if len(keys) < 2:
+                        continue
+                    with self.subTest(source=source_name, target=target_name, value=value):
+                        self.assertEqual(
+                            1, len({target_tokens[key] for key in keys}),
+                            f"{keys} share {value} in {source_name} but differ in {target_name}",
+                        )
