@@ -26,29 +26,28 @@ profiles:
     palette:
       parchment: '#F6F0EA'
       ivory: '#FBF7F3'
-      sand: '#E9DED4'
-      warm-100: '#E8DED6'
+      sand: '#E6DACD'
       ink: '#191514'
-      warm-800: '#3A312D'
+      warm-850: '#3A312D'
       warm-700: '#5A4A43'
-      warm-500: '#85776F'
-      cinnabar: '#B83D2E'
+      warm-600: '#756A63'
+      cinnabar-600: '#B83D2E'
       cinnabar-100: '#F7E6E1'
       cinnabar-200: '#F1D2CC'
-      amber-700: '#A8722C'
+      amber-600: '#906327'
       slate-600: '#5A6B7A'
       teal-600: '#4A6B7A'
       amber-100: '#F6EBD9'
       slate-100: '#E4E9ED'
       teal-100: '#E3ECEF'
-      teal-800: '#3D5A63'
-      amber-800: '#8A5A16'
-      plum-700: '#5C4A6B'
-      coral-200: '#E5B9AE'
-      coral-400: '#CE8474'
-      cinnabar-700: '#7E241C'
-      warm-200: '#e3baa9'
-      warm-900: '#4B3E39'
+      cinnabar-800: '#7E241C'
+      warm-300: '#e3baa9'
+      warm-800: '#4B3E39'
+      cinnabar-500: '#C97A63'
+      warm-350: '#B9ACA3'
+      sage-600: '#4A6B52'
+      warm-500: '#8B8078'
+      warm-200: '#E5DBCD'
     color:
       surface:
         page:
@@ -61,28 +60,28 @@ profiles:
         secondary:
           palette: warm-700
         muted:
-          palette: warm-500
+          palette: warm-600
         warm:
-          palette: warm-800
+          palette: warm-850
       border:
         default:
           palette: sand
         soft:
-          palette: warm-100
-        warm:
           palette: warm-200
+        warm:
+          palette: warm-300
       accent:
         brand:
-          palette: cinnabar
-        tint:
+          palette: cinnabar-600
+        brand-tint:
           palette: cinnabar-100
         tag:
           palette: cinnabar-200
       status:
         positive:
-          palette: cinnabar
+          palette: cinnabar-600
         caution:
-          palette: amber-700
+          palette: amber-600
         negative:
           palette: slate-600
         informative:
@@ -95,42 +94,13 @@ profiles:
           palette: slate-100
         informative-tint:
           palette: teal-100
-      data:
-        category-1:
-          palette: cinnabar
-        category-2:
-          palette: teal-800
-        category-3:
-          palette: amber-800
-        category-4:
-          palette: plum-700
-        category-5:
-          palette: warm-700
-        category-6:
-          palette: warm-900
-        sequential-1:
-          palette: cinnabar-100
-        sequential-2:
-          palette: coral-200
-        sequential-3:
-          palette: coral-400
-        sequential-4:
-          palette: cinnabar
-        sequential-5:
-          palette: cinnabar-700
-        diverging-negative:
-          palette: slate-600
-        diverging-neutral:
-          palette: sand
-        diverging-positive:
-          palette: cinnabar
     decoration:
       rule_width_pt: 0.5
       corner_radius_pt: 0
       hairline: '#E9DED4'
     overridable:
     - accent.brand
-    - accent.tint
+    - accent.brand-tint
     - status.positive
     - status.caution
     - status.negative

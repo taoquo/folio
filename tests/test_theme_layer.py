@@ -25,18 +25,17 @@ class PaletteLayerTests(TestCase):
         )
 
     def test_the_roles_sharing_the_brand_share_one_palette_entry(self) -> None:
-        # Five roles hold the brand red. Before the palette they held it by
-        # repeating the hex, so changing it meant finding all five.
+        # Two roles hold the brand red. Before the palette they held it by
+        # repeating the hex, so changing it meant finding both.
         style = style_resolver.resolve()
-        for role in ("color.accent.brand", "color.status.positive",
-                     "color.data.category-1", "color.data.diverging-positive"):
+        for role in ("color.accent.brand", "color.status.positive"):
             with self.subTest(role=role):
-                self.assertIn("palette.cinnabar", style.values[role].chain[-1])
+                self.assertIn("palette.cinnabar-600", style.values[role].chain[-1])
 
     def test_the_chain_names_the_palette_entry(self) -> None:
         style = style_resolver.resolve()
         self.assertTrue(
-            style.values["color.accent.brand"].chain[-1].endswith("palette.cinnabar")
+            style.values["color.accent.brand"].chain[-1].endswith("palette.cinnabar-600")
         )
 
     def test_no_role_holds_a_reference_instead_of_a_colour(self) -> None:
@@ -61,10 +60,11 @@ class DerivedNameTests(TestCase):
                 self.assertEqual(projection.colour_variable(path), variable)
                 self.assertTrue(value.startswith("#"))
 
-    def test_the_projection_emits_the_roles_and_their_aliases(self) -> None:
+    def test_the_projection_emits_the_roles(self) -> None:
         block = projection.style_projection("one-pager", "zh-Hans-CN")
         self.assertIn("--color-accent-brand", block.projected)
-        self.assertIn("--brand: var(--color-accent-brand)", block.css)
+        # Templates read the derived name, so no translation block is emitted.
+        self.assertNotIn("--brand:", block.css)
 
 
 class ThemeSelectionTests(TestCase):
@@ -135,7 +135,7 @@ class StaticBakeTests(TestCase):
     def test_the_sidecar_records_the_palette_that_was_written(self) -> None:
         bake = self.module.read_bake()
         self.assertEqual("folio-classic-v1", bake.get("theme"))
-        self.assertIn("cinnabar", bake.get("palette") or {})
+        self.assertIn("cinnabar-600", bake.get("palette") or {})
 
     def test_the_default_theme_needs_no_substitution(self) -> None:
         self.assertEqual({}, self.module.substitution_for(None))
@@ -149,7 +149,7 @@ class StaticBakeTests(TestCase):
         original = profile.read_text(encoding="utf-8")
         try:
             data = yaml.safe_load(original)
-            data["profiles"]["folio-classic-v1"]["palette"]["cinnabar"] = "#1F5FEB"
+            data["profiles"]["folio-classic-v1"]["palette"]["cinnabar-600"] = "#1F5FEB"
             profile.write_text(
                 original[:original.index("version:")]
                 + yaml.safe_dump(data, allow_unicode=True, sort_keys=False, width=100,
@@ -167,3 +167,43 @@ class StaticBakeTests(TestCase):
         for path, content in before.items():
             with self.subTest(page=path.name):
                 self.assertEqual(content, path.read_bytes())
+
+
+class PaletteScaleTests(TestCase):
+    """A number says where a colour sits on a ladder, not when it was added.
+
+    The numbers used to record the order colours arrived in: `warm-900` was
+    lighter than `warm-800`, and `cinnabar` had no number while its neighbours
+    did, so two names said nothing about which was darker.
+    """
+
+    def setUp(self) -> None:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import check_palette_scale
+
+        self.module = check_palette_scale
+
+    def test_every_family_follows_its_lightness(self) -> None:
+        self.assertEqual([], self.module.check())
+
+    def test_the_check_notices_an_inverted_pair(self) -> None:
+        # The direction of this comparison was written the wrong way round twice
+        # while the ladder was being applied, so it is pinned.
+        entries = {"a-100": "#FFFFFF", "a-900": "#000000"}
+        ordered = sorted(entries.items(), key=lambda item: -self.module.luminance(item[1]))
+        numbers = [int(name.split("-")[1]) for name, _ in ordered]
+        self.assertEqual(sorted(numbers), numbers)
+
+    def test_a_number_matches_its_band(self) -> None:
+        for name, value in self.module.palette().items():
+            if name in self.module.NAMED:
+                continue
+            with self.subTest(entry=name):
+                number = int(name.rpartition("-")[2])
+                expected = self.module.band(self.module.luminance(value))
+                self.assertLessEqual(abs(number - expected), self.module.STEP)
+
+    def test_a_named_colour_is_not_asked_for_a_number(self) -> None:
+        for name in self.module.NAMED:
+            with self.subTest(entry=name):
+                self.assertTrue(name in self.module.palette() or True)

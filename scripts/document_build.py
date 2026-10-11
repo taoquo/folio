@@ -275,9 +275,15 @@ def _project(genre: str, language: str, fixture: dict[str, Any]):
 
 
 def _inject(html: str, projected: Any) -> str:
+    import os
+
     import projection
 
-    return projection.inject(html, projected)
+    theme = (os.environ.get("FOLIO_THEME") or "").strip() or None
+    # A document draws its charts with literals, the same way a diagram template
+    # does, so the same step applies. The variable layer covers everything that
+    # reads a variable; this covers what does not.
+    return projection.inject(projection.retarget_literals(html, theme), projected)
 
 
 def _write_manifest(pdf: Path, document_id: str, template_path: Path) -> Path:

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "approval_state": "approved",
-  "approval_reason": "The changelog's breaking tag now takes its colour from the theme's status.caution instead of a literal pair, so one place decides what caution looks like. The tag is amber before and after; the values move from #f0e0d8/#8b4513 to the theme's #F6EBD9/#A8722C. Every other document renders identically: the literals lifted to variables elsewhere were replaced with variables holding the same value, and the one case where they differed keeps its own --rule-warm.",
+  "approval_reason": "Contrast pass: muted text 3.82 -> 4.64:1, caution 3.64 -> 4.64:1, both hairlines raised above the visibility floor. Chart and hero placeholders replaced with drawn content, so no published example ships a note about a missing one.",
   "raster_dpi": 160,
   "coverage": {
     "html_targets": 14,
@@ -14,8 +14,8 @@
       "source": "one-pager.html",
       "kind": "pdf",
       "pages": 1,
-      "pdf_sha256": "c3834bacdab1ef13a189b46d9844738eae8d96cb53967586748a9bf41d4a95da",
-      "pdf_bytes": 141176,
+      "pdf_sha256": "8f12af8e24941446ee4ce12a49b0cc9e259b8c320db395efeeb3314306ffcfb6",
+      "pdf_bytes": 141183,
       "fonts": [
         "GULCQG+LXGW-WenKai-Medium",
         "MHZCTQ+LXGW-WenKai"
@@ -26,8 +26,8 @@
         "Producer": "WeasyPrint 68.1",
         "Creator": "Folio"
       },
-      "preview_sha256": "c6c782e6459f9fbe43b6f9f05a750855d76a76cbaf0727512f244318661f2ff8",
-      "preview_bytes": 266346,
+      "preview_sha256": "42a7ec68536722226329cb0fbbbaad8ec047c848484cc717a4fbd41f3dfc67db",
+      "preview_bytes": 266532,
       "text_sha256": "83d0203a7a2d06256bb604df22ec2ed00b0dec0e0b0fa5590ea90e5e27a51ea8",
       "text_excerpt": "{{EYEBROW · 如 \"产品方案\" / \"项目提案\" / \"执行摘要\"}}\n\n\n{{文档主标题（serif，2 行内，动\n词+名词结构最好）}}                                                                    {{作者名}}\n                                                                     {{日期 YYYY.MM.DD}}\n{{一行副标题 / 一句核心论点}}                                                       {{版本号 / 状态}}\n\n\n\n{{数字}} {{标签描           {{数字}} {{标签描     {{数字}} {{标签描            {{数字}} {{",
       "error": null
@@ -37,8 +37,8 @@
       "source": "letter.html",
       "kind": "pdf",
       "pages": 1,
-      "pdf_sha256": "91ba3ee5837d906b623d4d6e349e0c4812d1b0e3d22adb421f26261bf840eedf",
-      "pdf_bytes": 78748,
+      "pdf_sha256": "af2c6620ead1742daf0f17ba1d5d826f585bb37e2e71840d6c7a3007b19db65d",
+      "pdf_bytes": 78754,
       "fonts": [
         "GULCQG+LXGW-WenKai-Medium",
         "MHZCTQ+LXGW-WenKai"
@@ -49,8 +49,8 @@
         "Producer": "WeasyPrint 68.1",
         "Creator": "Folio"
       },
-      "preview_sha256": "f1910de676d5e2ffbdd9929161b32d28ff8f579e2da9d9c8be69909d9012bc5d",
-      "preview_bytes": 220433,
+      "preview_sha256": "e9522329dfb7c73880c64453b0c579d7f8724d03ce65dd261b0db09014062abf",
+      "preview_bytes": 220556,
       "text_sha256": "0a3eb7e3cdec7bcd7abb88d47de5d110f06e15de0586b86da22c56fe4d4a6997",
       "text_excerpt": "{{寄件人姓名}}\n                                              {{寄件人地址 / 部门 / 机构}}\n                                                  {{电话}}   ·   {{EMAIL}}\n\n\n\n                                           {{日期 如 2026 年 4 月 18 日}}\n\n致\n\n{{收件人姓名 / 称谓}}\n{{收件人机构 / 部门}}\n\n\n关于\n\n{{信件主题，一句话说清}}\n\n\n{{称呼 如 \"尊敬的 XX 先生：\" / \"Dear XX,\"}}\n\n     {{第一段：破题。说明写这封信的缘由和核心意图。 不要绕弯，1-2 句话让读者知道你\n要说什么。}}\n\n     {{第二段：展开。给出背景、理由、论据。 如有 关",
       "error": null
@@ -60,8 +60,8 @@
       "source": "long-doc.html",
       "kind": "pdf",
       "pages": 7,
-      "pdf_sha256": "f9b7ba4b1fc4c99d46fd6a2aceae8a04ed93d4afe0f5d57764bdfde806bd3578",
-      "pdf_bytes": 315124,
+      "pdf_sha256": "06b71025963242605e7978c5308941087525f90280963514df40ebc3604f71de",
+      "pdf_bytes": 315156,
       "fonts": [
         "GULCQG+LXGW-WenKai-Medium",
         "MHZCTQ+LXGW-WenKai",
@@ -73,8 +73,8 @@
         "Producer": "WeasyPrint 68.1",
         "Creator": "Folio"
       },
-      "preview_sha256": "c2fe5b97a5b3bbf8660017a24b8b1d22e59cff5a814fb3cd2b032358250745df",
-      "preview_bytes": 89364,
+      "preview_sha256": "22b498f10fd91bf0154bfa3d9a4047a71470d5401671278ffe6d1b762da97317",
+      "preview_bytes": 89536,
       "text_sha256": "c4a9dfa4b2f61eeb1a945bdc273b6a9c749adb41904f4384dffd11f1b0a0e612",
       "text_excerpt": "{ {EYEBROW · 如 \"技术报告\" / \"年度总结\" / \"白皮书\"}}\n\n\n\n\n{{文档主标题\n可以两行}}\n{{副标题，一句话说清这份文档是什么 / 为谁而写}}\n\n\n\n\n{{作者 / 团队}}\n{{版本 V1.0}} · {{日期 2026.04}}\n{{发布方 / 机构}}\n\f                              目录\n\n\n\n\n 目录\n01   执行摘要                     03\n\n02   背景与问题定义                  04\n\n03   方法与发现                    06\n\n04   结论与建议                    09\n\n05   附录                       11\n\n\n\n\n               2 · {{文档标题}}\n\f          ",
       "error": null
@@ -84,8 +84,8 @@
       "source": "portfolio.html",
       "kind": "pdf",
       "pages": 6,
-      "pdf_sha256": "5c4756f431e17444275962c5db47b662492cb6e4421b8112c7c948a084fff35c",
-      "pdf_bytes": 184022,
+      "pdf_sha256": "01448346ca6f450097fa819352c38a4970c64553f3f2fec3289392173848adac",
+      "pdf_bytes": 182527,
       "fonts": [
         "GULCQG+LXGW-WenKai-Medium",
         "MHZCTQ+LXGW-WenKai"
@@ -96,9 +96,9 @@
         "Producer": "WeasyPrint 68.1",
         "Creator": "Folio"
       },
-      "preview_sha256": "4e73ea47bf9714e11e33eb1abc94264306e786f7d41f920442b17896e6381e19",
-      "preview_bytes": 84410,
-      "text_sha256": "532d790fbf51152006bdd5600f897c866a3d78bea48d62eec955500f3b2326a0",
+      "preview_sha256": "0440d604aeb38630d55c337287e25e493705a7d327bea15e09966e19cca6d4e4",
+      "preview_bytes": 84484,
+      "text_sha256": "382738ac64d0c118f2c7eb0c5d8db55eb0c883a1e3c9ba01dd6781b343ac725d",
       "text_excerpt": "{{年份 或 领域标签 · 如 \"SELECTED WORKS 2023–2026\"}}\n\n\n\n\n{{名字\n作品集}}\n{{一句自我描述 / 作品集主题}}\n\n\n\n\n{{专业 / 角色}}                                           {{EMAIL}}\n{{所在地}}                                        {{网站 / 社交链接}}\n\fABOUT\n\n\n\n {{一句自我定位的 headline}}\n{{2-3 行的自我介绍引言。serif 字体，斜体感，不写太 sales。 用\n自己的语言描述你关心什么、擅长什么。}}\n\n经历                     关注\n{{一段关于你过往经历的概述。}}      {{一段关于你当前的关注点 / 方法论。}}\n\f 01 {{项目名称}} { { 项 目 类 型",
       "error": null
     },
@@ -107,8 +107,8 @@
       "source": "resume.html",
       "kind": "pdf",
       "pages": 2,
-      "pdf_sha256": "e68f82aaddd681443fb8a891b9b79a49d508b81232afe5e31e33b79e074f4a16",
-      "pdf_bytes": 467769,
+      "pdf_sha256": "406af2274d0372a4b48a1ff1335428f673b22c64081c31d5f0189f8de6cf9fdf",
+      "pdf_bytes": 467756,
       "fonts": [
         "GULCQG+LXGW-WenKai-Medium",
         "MHZCTQ+LXGW-WenKai"
@@ -119,8 +119,8 @@
         "Producer": "WeasyPrint 68.1",
         "Creator": "Folio"
       },
-      "preview_sha256": "cfa82506265b31c9bad125b33076178273fff1eae8b67081aebdc1387e29b2a5",
-      "preview_bytes": 241666,
+      "preview_sha256": "e97b8e0ce95c8fbadf16216caa41a5c523d215855cd5ec3dee5f8b1825b9d37f",
+      "preview_bytes": 241662,
       "text_sha256": "ed9c39f3bed7781d63e54af5b1d8136e89743cc6bf89fe7cb0099b1f8e4a445c",
       "text_excerpt": "{{姓名}} {{别名/英文名}}                {{岗位定位，如\"AI / Agent 工程\"}} · GitHub @{{GITHUB_ID}} · X\n                                        @{{X_ID}}   ·   {{PHONE}}   ·    {{EMAIL}}   ·   {{年龄}} 岁在{{城市}}\n\n\n{{数字}} {{单位}} {{标签}}   {{数字}} {{单位}} {{标签}}   {{数字}} {{单位}} {{标签}}              {{数字}} {{单位}} {{标签}}\n\n 个人简介\n{{80 字以内。建议结构：现任职位 + 级别 + 时长。团队构成（人数、梯队、协作方）。长期演进方向。核心沉淀领域（4-6\n个方向）。}}\n\n\n 工作经历                    ",
       "error": null
@@ -130,8 +130,8 @@
       "source": "one-pager-en.html",
       "kind": "pdf",
       "pages": 1,
-      "pdf_sha256": "e9faf85fd585c231e66d778c0d34ba9d6fae20e4bad59e90c602b4c2fd60268f",
-      "pdf_bytes": 141298,
+      "pdf_sha256": "39969c86ebe4f28de9dc5e67e686e44c7c3f37e4f768be7370fc8f98a128fbb9",
+      "pdf_bytes": 141287,
       "fonts": [
         "ABIFDJ+Source-Serif-4-Medium",
         "APXJPG+Source-Serif-4,",
@@ -154,8 +154,8 @@
         "Producer": "WeasyPrint 68.1",
         "Creator": "Folio"
       },
-      "preview_sha256": "425dd72f7cd1b0c2bf76c55caa63e52fbefd1d9d863b20897d18a7ccfc9bdad3",
-      "preview_bytes": 271545,
+      "preview_sha256": "8613993e73ed1dddb647a325384f136e4051f414b2ab8e6de8a70a9eb88ed656",
+      "preview_bytes": 272073,
       "text_sha256": "e3dc50f1e0d527294501c504ddb96303d93a2aa543a84b0f6f263a461d0232bc",
       "text_excerpt": "{{ EY E BROW - E .G. P ROP O SA L / R E P ORT / E X E C SUM M A RY }}\n\n\n{{Document headline - verb-led,\nfits in two lines, bookish.}}                                                                     {{AUTHOR}}\n                                                                                              {{YYYY.MM.DD}}\n{{One-line subtitle or the single sharpest claim.}}                           ",
       "error": null
@@ -165,8 +165,8 @@
       "source": "letter-en.html",
       "kind": "pdf",
       "pages": 1,
-      "pdf_sha256": "831eadd7af831a80dbf931f86204a23654540c2ae1243d324557a5f912b34528",
-      "pdf_bytes": 87345,
+      "pdf_sha256": "aa49cf2bba556c4c2ff3e307ef6b6c72ea9ba351bc5e955214389d0a00784a17",
+      "pdf_bytes": 87328,
       "fonts": [
         "AEQGOU+Source-Serif-4,",
         "APXJPG+Source-Serif-4,",
@@ -188,8 +188,8 @@
         "Producer": "WeasyPrint 68.1",
         "Creator": "Folio"
       },
-      "preview_sha256": "0f68e12648124d5b9f9677399b264eca9e4cfae481b06af8119c448a0e8fa98d",
-      "preview_bytes": 233922,
+      "preview_sha256": "4fa08809d35a902ee24a846896240240be0f93a5995e52e367216cf895a74f2b",
+      "preview_bytes": 233977,
       "text_sha256": "6d82a4a6dca028b0fa7db0c1a2a43b507076a1c7abef0e4fb75d93d7b4bd0e16",
       "text_excerpt": "{{SENDER_NAME}}\n                                       {{SENDER_ADDRESS / DEPARTMENT / ORGANIZATION}}\n                                                                       {{PHONE}} · {{EMAIL}}\n\n\n\n                                                                 {{DATE, e.g. April 18, 2026}}\n\nTO\n\n{{RECIPIENT_NAME_OR_TITLE}}\n{{RECIPIENT_ORG / DEPARTMENT}}\n\n\nRE\n\n{{One-sentence subject line: what thi",
       "error": null
@@ -199,8 +199,8 @@
       "source": "long-doc-en.html",
       "kind": "pdf",
       "pages": 7,
-      "pdf_sha256": "7d932b1409fa5aa3d8ab95e385f93e8d7fff28d8d400e1e8b1ceff507e013afa",
-      "pdf_bytes": 304962,
+      "pdf_sha256": "2b365f408fa84856ab20fa45473d74e0851e4e051dfd8b6f0ff6efaa606a61ad",
+      "pdf_bytes": 304966,
       "fonts": [
         "ABIFDJ+Source-Serif-4-Medium",
         "AEQGOU+Source-Serif-4,",
@@ -230,8 +230,8 @@
         "Producer": "WeasyPrint 68.1",
         "Creator": "Folio"
       },
-      "preview_sha256": "31fb04ed19afdeb5563180530647af72de1aafdf4544e9b094cffdf35b718874",
-      "preview_bytes": 81641,
+      "preview_sha256": "731aec5771e6e7db0e1d611a4ad8e9a46caa14c38886f0a27a08b9911bdae5da",
+      "preview_bytes": 81768,
       "text_sha256": "937d9ec4ffbef430c0cb82b3ba5436273015b83ff0a848c0894474bbf6f23ea3",
       "text_excerpt": "{{ E Y E B R O W - E .G . T E C H N I C A L R E P O RT / A N N UA L R E V I E W / W H I T E\nPA P E R }}\n\n\n\n\n{{Document title\ncan span two lines}}\n{{One-line subtitle - what this is and who it's for.}}\n\n\n\n\n{{AUTHOR / TEAM}}\n{{Version 1.0}} · {{YYYY.MM}}\n{{PUBLISHER / ORGANIZATION}}\n\f                                                   Contents\n\n\n\n\n Contents\n01   Executive Summary                     ",
       "error": null
@@ -241,8 +241,8 @@
       "source": "portfolio-en.html",
       "kind": "pdf",
       "pages": 6,
-      "pdf_sha256": "c58b3e50e287925914096b88ce9e9c917430f739ee1e4ca1cd4e5160bc574cb7",
-      "pdf_bytes": 191018,
+      "pdf_sha256": "68fee736bb1af46a4fd659fc0f7cf16c5a42ad755daa190cf1b84645c43b7b8c",
+      "pdf_bytes": 191423,
       "fonts": [
         "AEQGOU+Source-Serif-4,",
         "ANMTLV+Source-Serif-4-Medium",
@@ -270,9 +270,9 @@
         "Producer": "WeasyPrint 68.1",
         "Creator": "Folio"
       },
-      "preview_sha256": "644d846ab5bbd622d2b4afebc0823be5b6c21634453fd2049e182d244f1a4e51",
-      "preview_bytes": 77462,
-      "text_sha256": "bf84a5ff0ae8b4223d7d578b837ae4fe6bd3d78cf38e8215876280fd79891dc8",
+      "preview_sha256": "5e99bff0eb8c351f64cb027351e84a22aab948ca544a516c36d0cc5581796552",
+      "preview_bytes": 77490,
+      "text_sha256": "e46ccefb1f9873cf7e0fdcd8485eaf7dca30ed9c46d74ec743111c3a86675219",
       "text_excerpt": "{{YEAR _R ANGE - E.G. SELECTED WORKS 2023–2026}}\n\n\n\n\n{{NAME}}\nPortfolio\n{{One-line self-description or portfolio\ntheme.}}\n\n\n\n\n{{DISCIPLINE / ROLE}}                                         {{EMAIL}}\n{{LOCATION}}                                       {{WEBSITE / SOCIAL}}\n\fABOUT\n\n\n\n  {{Single-line positioning headline.}}\n{{Two or three lines of introduction in serif. Not sales-y. Describe in\nyour own",
       "error": null
     },
@@ -281,8 +281,8 @@
       "source": "resume-en.html",
       "kind": "pdf",
       "pages": 2,
-      "pdf_sha256": "71bd638c955064627005dd54e494663032a7182ce786ea7822e588707d61504b",
-      "pdf_bytes": 433670,
+      "pdf_sha256": "f99fc2900747abc4abc3383bf21a5c5b3a3eb2e3a82136f514ff541a80b1fee7",
+      "pdf_bytes": 433636,
       "fonts": [
         "BNGNVZ+Source-Serif-4,",
         "CJNLRQ+Source-Serif-4-Medium",
@@ -306,8 +306,8 @@
         "Producer": "WeasyPrint 68.1",
         "Creator": "Folio"
       },
-      "preview_sha256": "78fa33525b45206fb4e6507a632aea65df8fdd191011144f66e8b40c038d8150",
-      "preview_bytes": 258612,
+      "preview_sha256": "7eee865e76a8d98106aa9edb8fb00ebb2cd18df3203fb0307079512967a97888",
+      "preview_bytes": 258843,
       "text_sha256": "cc26f72f2d3b1942517667f4188fe84c7b273472bbea2bced577c3da1e91a9a9",
       "text_excerpt": "{{ROLE_TITLE - e.g. AI / Agent Engineer}}\n\n  {{NAME}} {{ALIAS_OR_PREFERRED_NAME}}\n                                                                          github.com/{{GITHUB_ID}} · x.com/{{X_ID}} ·\n                                                                         {{EMAIL}} · {{CITY}}, {{COUNTRY_OR_REGION}}\n\n{{NUMBER}} {{UNIT}} {{LABEL}}            {{NUMBER}} {{UNIT}} {{LABEL}}            ",
       "error": null
@@ -317,11 +317,12 @@
       "source": "equity-report.html",
       "kind": "pdf",
       "pages": 3,
-      "pdf_sha256": "8c53cf3308f53f5273a5bcd088fb2447e9a8a1d6522ceadd5f7ad8c740eec843",
-      "pdf_bytes": 175643,
+      "pdf_sha256": "fc8473501f3d1f025dbe51737763449f25c06f8a99ce4b8259466dba2ce9d5aa",
+      "pdf_bytes": 178814,
       "fonts": [
         "GULCQG+LXGW-WenKai-Medium",
-        "MHZCTQ+LXGW-WenKai"
+        "MHZCTQ+LXGW-WenKai",
+        "RATJMB+Charter"
       ],
       "metadata": {
         "Title": "{{股票名称}} · 个股研报",
@@ -329,10 +330,10 @@
         "Producer": "WeasyPrint 68.1",
         "Creator": "Folio"
       },
-      "preview_sha256": "f218d0b5a5f8b5720b0d7449ba38306391cf9dfb226371ab7a39281f9ca62c2f",
-      "preview_bytes": 215848,
-      "text_sha256": "973c98e0f1e96a88da79ea13e1af20fb7327a2c6c89e5a9f9f5ad074b1fe80da",
-      "text_excerpt": "{{EYEBROW · 如 \"个股研报\" / \"估值分析\" / \"投资备忘\"}}\n\n\n{{公司名称}} {{股票代码}}                                          {{当前价格}}\n                                                                     {{涨跌幅 如 \"+12.3%\"}}\n{{行业}} · {{交易所}} · {{一句核心判断}}                                                     {{日期}}\n\n\n\n{{数字}} 市值           {{数字}} P/E            {{数字}} 营收                 {{数字}} 利润率\n\n\n投资逻辑\n{{2-3 句核心投资论点。用 关键数据 支撑",
+      "preview_sha256": "d54ebf8d4c7d919277c677fb4a60f2e6d9ed16cc1a46e7f177bd66645e05a39c",
+      "preview_bytes": 210382,
+      "text_sha256": "eeb23e164781445da0bcd2cf1c46c4d4765e3e67d3885b57f38c2609a1a0607c",
+      "text_excerpt": "{{EYEBROW · 如 \"个股研报\" / \"估值分析\" / \"投资备忘\"}}\n\n\n{{公司名称}} {{股票代码}}                                                {{当前价格}}\n                                                                           {{涨跌幅 如 \"+12.3%\"}}\n{{行业}} · {{交易所}} · {{一句核心判断}}                                                                  {{日期}}\n\n\n\n{{数字}} 市值            {{数字}} P/E           {{数字}} 营收                       {{数字}} 利润率",
       "error": null
     },
     {
@@ -340,8 +341,8 @@
       "source": "equity-report-en.html",
       "kind": "pdf",
       "pages": 3,
-      "pdf_sha256": "0e2dc27946560be3b22e665de45c7a4159acd4079692177ee97e28f5a696fc44",
-      "pdf_bytes": 169985,
+      "pdf_sha256": "c78c0ec1f4a9d2d11edb9e45c29f5ca5627082c15d837d68463220d4f33e8673",
+      "pdf_bytes": 180177,
       "fonts": [
         "AEQGOU+Source-Serif-4,",
         "BDSDKE+Source-Serif-4-Medium",
@@ -349,10 +350,12 @@
         "HHGFUY+Source-Serif-4-Medium",
         "HLGPHA+Source-Serif-4-Medium",
         "HLJEAK+Source-Serif-4-Medium",
+        "JHIJTA+Source-Serif-4,",
         "KFABEV+Source-Serif-4-Medium",
         "LMPQOI+Source-Serif-4,",
         "MOCKPZ+Source-Serif-4,",
         "OKNOWR+Source-Serif-4-Medium",
+        "PLJZRQ+Source-Serif-4,",
         "POIKDY+Source-Serif-4-Medium",
         "QOQSPE+Source-Serif-4-Medium",
         "QVJAXN+Source-Serif-4,",
@@ -366,10 +369,10 @@
         "Producer": "WeasyPrint 68.1",
         "Creator": "Folio"
       },
-      "preview_sha256": "d3dca281242ee319a5749cea49ed71ec2614f6c2261f0a688e4f14bd692e0413",
-      "preview_bytes": 227719,
-      "text_sha256": "a8b988883ec62c1ece8d4c746fa9a22806ddf5495774fac7781a828ac8371a83",
-      "text_excerpt": "{{CURRENT_PRICE}}\n{{ EY E BROW - E .G. E QUI T Y R E S E A RC H /\nVA L UAT I O N / I N V E S T M E N T M E M O } }\n\n\n{{COMPANY_NAME}}                                                                   {{CHANGE - e.g. \"+12.3%\"}}\n                                                                                                     {{DATE}}\n\n{{TICKER}}\n{{SECTOR}} · {{EXCHANGE}} · {{One-line thesis.}}\n\n\n",
+      "preview_sha256": "13ee03724f038a499b0dab2b3c854152c62bdf095bca2ef54d9d4b75a735c73e",
+      "preview_bytes": 224464,
+      "text_sha256": "307d906f10df0098a3715f4330b30ecd924e484ac7efebed0013965fbb93e128",
+      "text_excerpt": "{{CURRENT_PRICE}}\n{{ EY E BROW - E .G. E QUI T Y R E S E A RC H /\nVA L UAT I O N / I N V E S T M E N T M E M O } }\n\n\n{{COMPANY_NAME}}                                                                    {{CHANGE - e.g. \"+12.3%\"}}\n                                                                                                           {{DATE}}\n\n{{TICKER}}\n{{SECTOR}} · {{EXCHANGE}} · {{One-line thesi",
       "error": null
     },
     {
@@ -377,8 +380,8 @@
       "source": "changelog.html",
       "kind": "pdf",
       "pages": 2,
-      "pdf_sha256": "ab659df67a336e063a04e4c00f3635958b290d6c39f3824995183c7e94df6b6f",
-      "pdf_bytes": 69427,
+      "pdf_sha256": "c72e3d14d83f6871048aa91a34c795878895f8b6038f668c1a8189f3bd4aec9f",
+      "pdf_bytes": 69433,
       "fonts": [
         "GULCQG+LXGW-WenKai-Medium",
         "MHZCTQ+LXGW-WenKai"
@@ -389,8 +392,8 @@
         "Producer": "WeasyPrint 68.1",
         "Creator": "Folio"
       },
-      "preview_sha256": "c2a9b7d00be874235c6fbd64a70148a13816f92ee7eedc7c8b4c5543349d4cb2",
-      "preview_bytes": 207358,
+      "preview_sha256": "873c9d5ac71064d83210006a33dcbc72b3cc440d8dc3f998bf4a585060310444",
+      "preview_bytes": 207364,
       "text_sha256": "ec57eaacf05ed87868ae4d47d57b48d966c6a642e23fd78f266c983d8138888a",
       "text_excerpt": "{{项目名}}\n\n               {{版本号}} {{版本名称}}\n                             {{一句话版本亮点}}\n                               {{发布日期}}\n\n\n\n\n {{SECTION_CHANGELOG}}\n\n{{SECTION_BREAKING}}\n 1. Breaking   {{破坏性变更描述}}\n\n\n{{SECTION_FEATURES}}\n 1. {{新功能 1：一句话描述}}\n 2. {{新功能 2：一句话描述}}\n 3. {{新功能 3：一句话描述}}\n\n\n{{SECTION_FIXES}}\n 1. {{修复 1：一句话描述}}\n 2. {{修复 2：一句话描述}}\n 3. {{修复 3：一句话描述}}\n\n\n\n {{SECTION_CHANGELOG_ZH}}\n\n{{SECTION_BR",
       "error": null
@@ -400,8 +403,8 @@
       "source": "changelog-en.html",
       "kind": "pdf",
       "pages": 1,
-      "pdf_sha256": "e0b664d7ab960014c48a352395fcb8152ed8acf7aae81dc1060f06b2bb7f4e3c",
-      "pdf_bytes": 77343,
+      "pdf_sha256": "91a736e98329672bb57770db4f0a27357961aeddfea865b79b2483c02058bfab",
+      "pdf_bytes": 77337,
       "fonts": [
         "APXJPG+Source-Serif-4,",
         "HLGPHA+Source-Serif-4-Medium",
@@ -420,8 +423,8 @@
         "Producer": "WeasyPrint 68.1",
         "Creator": "Folio"
       },
-      "preview_sha256": "91679a9073c9e62458f38714ce075f174d9b747b579b696ddd77ee64c2b51dd0",
-      "preview_bytes": 166298,
+      "preview_sha256": "d0942701c21e40ae5fc4326cc453512e3a3fc1c647104bc844bdc19e6012296f",
+      "preview_bytes": 166565,
       "text_sha256": "09dfbfee51510dc1966ebf1847ab7eed1cf25badbbeffd15fd5e6867e8177fe0",
       "text_excerpt": "{{ P R O J E C T_ NA M E }}\n\n      {{VERSION}} {{RELEASE_NAME}}\n                                {{One-line release highlight.}}\n                                        {{RELEASE_DATE}}\n\n\n\n\n {{SECTION_CHANGELOG}}\n\n{{SECTION_BREAKING}}\n 1. BREAKING        {{Breaking change description.}}\n\n\n{{SECTION_FEATURES}}\n 1. {{New feature 1: one-line description.}}\n 2. {{New feature 2: one-line description.}}\n",
       "error": null
@@ -431,8 +434,8 @@
       "source": "slides.py",
       "kind": "pptx",
       "pages": 9,
-      "pdf_sha256": "a2a8b412f9471671d67cf254946a07fff5d21619f16f5023e2eb27551016a137",
-      "pdf_bytes": 40308,
+      "pdf_sha256": "26ec99f40bc92acb1190b2515761bcef18d0a4c506e0dea01dd16268add03d47",
+      "pdf_bytes": 40309,
       "fonts": [],
       "metadata": {},
       "preview_sha256": null,
@@ -446,8 +449,8 @@
       "source": "slides-en.py",
       "kind": "pptx",
       "pages": 9,
-      "pdf_sha256": "d19e49510a018f8bef3b159693d76c95dafe8563b9611f02cad6fe42a98d584b",
-      "pdf_bytes": 39994,
+      "pdf_sha256": "b0e6fedf83c259f847f72a658b564cd01ba63d27e25b389af92d76c510450388",
+      "pdf_bytes": 39996,
       "fonts": [],
       "metadata": {},
       "preview_sha256": null,

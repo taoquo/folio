@@ -27,25 +27,25 @@
       content: counter(page) "  ·  NVIDIA Equity Report";
       font-family: var(--serif);
       font-size: 9pt;
-      color: #85776F;
+      color: #756A63;
     }
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --parchment: #F6F0EA;
-    --ivory:     #FBF7F3;
-    --near-black:#191514;
-    --dark-warm: #3A312D;
-    --olive:     #5A4A43;
-    --stone:     #85776F;
-    --brand:     #B83D2E;
-    --border:    #E9DED4;
-    --border-soft:#E8DED6;
-    --tag-bg:    #F1D2CC;
+    --color-surface-page: #F6F0EA;
+    --color-surface-card:     #FBF7F3;
+    --color-text-primary:#191514;
+    --color-text-warm: #3A312D;
+    --color-text-secondary:     #5A4A43;
+    --color-text-muted:     #756A63;
+    --color-accent-brand:     #B83D2E;
+    --color-border-default:    #E6DACD;
+    --color-border-soft:#E5DBCD;
+    --color-accent-tag:    #F1D2CC;
     --positive:  #B83D2E;
-    --negative:  #85776F;
+    --negative:  #756A63;
 
     --serif: "Source Serif 4", Charter, Georgia,
              Palatino, "Times New Roman", serif;
@@ -54,14 +54,14 @@
              Consolas, Monaco, monospace;
   }
 
-  html, body { background: var(--parchment); }
+  html, body { background: var(--color-surface-page); }
 
   @media screen {
     body { max-width: 210mm; margin: 0 auto; padding: 16mm 18mm 18mm 18mm; }
   }
 
   body {
-    color: var(--near-black);
+    color: var(--color-text-primary);
     font-family: var(--serif);
     font-size: 9.8pt;
     line-height: 1.45;
@@ -72,7 +72,7 @@
   }
 
   strong { font-weight: 500; }
-  .hl { color: var(--brand); font-weight: 500; }
+  .hl { color: var(--color-accent-brand); font-weight: 500; }
 
   /* HEADER */
   .report-header {
@@ -81,13 +81,13 @@
     align-items: flex-start;
     margin-bottom: 12pt;
     padding-bottom: 8pt;
-    border-bottom: 1pt solid var(--near-black);
+    border-bottom: 1pt solid var(--color-text-primary);
   }
   .ticker-block { flex: 1; }
   .ticker-eyebrow {
     font-family: var(--sans);
     font-size: 9pt;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     letter-spacing: 1.5pt;
     text-transform: uppercase;
     font-weight: 500;
@@ -97,14 +97,14 @@
     font-family: var(--serif);
     font-size: 26pt;
     font-weight: 500;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     line-height: 1.12;
     letter-spacing: -0.3pt;
     margin-bottom: 4pt;
   }
   .ticker-sub {
     font-size: 10pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     line-height: 1.4;
   }
   .price-block {
@@ -115,7 +115,7 @@
     font-family: var(--serif);
     font-size: 30pt;
     font-weight: 500;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     line-height: 1;
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.5pt;
@@ -130,7 +130,7 @@
   .price-change.down { color: var(--negative); }
   .price-date {
     font-size: 9pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     margin-top: 2pt;
     font-variant-numeric: tabular-nums;
   }
@@ -141,8 +141,8 @@
     gap: 10pt;
     margin-bottom: 14pt;
     padding: 6pt 0;
-    border-top: 0.5pt solid var(--border);
-    border-bottom: 0.5pt solid var(--border);
+    border-top: 0.5pt solid var(--color-border-default);
+    border-bottom: 0.5pt solid var(--color-border-default);
   }
   .metric {
     flex: 1;
@@ -154,7 +154,7 @@
     font-family: var(--serif);
     font-size: 18pt;
     font-weight: 500;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     line-height: 1;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
@@ -162,7 +162,7 @@
   }
   .metric-label {
     font-size: 9pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     line-height: 1.3;
   }
 
@@ -171,7 +171,7 @@
     font-family: var(--serif);
     font-size: 16pt;
     font-weight: 500;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     margin: 18pt 0 6pt 0;
     break-after: avoid;
   }
@@ -179,7 +179,7 @@
   h3 {
     font-size: 13pt;
     font-weight: 500;
-    color: var(--dark-warm);
+    color: var(--color-text-warm);
     margin: 12pt 0 4pt 0;
     break-after: avoid;
   }
@@ -191,14 +191,14 @@
     padding-left: 18pt;
     line-height: 1.5;
   }
-  ul li::marker { color: var(--brand); }
-  ol li::marker { color: var(--brand); font-weight: 500; }
+  ul li::marker { color: var(--color-accent-brand); }
+  ol li::marker { color: var(--color-accent-brand); font-weight: 500; }
 
   /* TAG */
   .tag {
     display: inline-block;
-    background: var(--tag-bg);
-    color: var(--brand);
+    background: var(--color-accent-tag);
+    color: var(--color-accent-brand);
     font-family: var(--sans);
     font-size: 9pt;
     font-weight: 500;
@@ -221,15 +221,15 @@
     text-align: left;
     font-family: var(--sans);
     font-weight: 500;
-    color: var(--dark-warm);
+    color: var(--color-text-warm);
     padding: 4pt 6pt;
-    border-top: 0.8pt solid var(--near-black);
-    border-bottom: 0.5pt solid var(--border);
+    border-top: 0.8pt solid var(--color-text-primary);
+    border-bottom: 0.5pt solid var(--color-border-default);
     background: transparent;
   }
   table td, .folio-table td {
     padding: 3pt 6pt;
-    border-bottom: 0.3pt solid var(--border-soft);
+    border-bottom: 0.3pt solid var(--color-border-soft);
     vertical-align: top;
   }
   table.compact th, .folio-table.compact th { padding: 3pt 6pt; font-size: 8pt; }
@@ -239,17 +239,17 @@
   }
   table.financial th:not(:first-child), .folio-table.financial th:not(:first-child) { text-align: right; }
   table.striped tbody tr:nth-child(even) td, .folio-table.striped tbody tr:nth-child(even) td {
-    background: var(--ivory);
+    background: var(--color-surface-card);
   }
   table .total td, .folio-table .total td {
-    font-weight: 500; border-top: 1pt solid var(--brand); border-bottom: none; color: var(--near-black);
+    font-weight: 500; border-top: 1pt solid var(--color-accent-brand); border-bottom: none; color: var(--color-text-primary);
   }
 
   /* CALLOUT */
   .callout {
     background: transparent;
-    border-top: 0.8pt solid var(--brand);
-    border-bottom: 0.3pt dotted var(--border);
+    border-top: 0.8pt solid var(--color-accent-brand);
+    border-bottom: 0.3pt dotted var(--color-border-default);
     padding: 6pt 0;
     border-radius: 0;
     margin: 10pt 0;
@@ -262,7 +262,7 @@
   figcaption {
     font-family: var(--sans);
     font-size: 9pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     margin-top: 4pt;
     text-align: left;
   }
@@ -280,18 +280,18 @@
     gap: 8pt;
     margin: 8pt 0;
     padding: 5pt 0;
-    border-top: 0.5pt solid var(--border);
-    border-bottom: 0.3pt dotted var(--border);
+    border-top: 0.5pt solid var(--color-border-default);
+    border-bottom: 0.3pt dotted var(--color-border-default);
   }
   .data-strip .label {
     font-size: 8pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     letter-spacing: 0.5pt;
     text-transform: uppercase;
   }
   .data-strip .value {
     font-size: 13pt;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     font-weight: 500;
     font-variant-numeric: tabular-nums;
   }
@@ -306,7 +306,7 @@
   .risk-item {
     padding: 5pt 0;
     background: transparent;
-    border-top: 0.3pt solid var(--border);
+    border-top: 0.3pt solid var(--color-border-default);
     border-radius: 0;
     break-inside: avoid;
   }
@@ -314,14 +314,14 @@
     font-family: var(--sans);
     font-size: 9pt;
     font-weight: 500;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     letter-spacing: 0.3pt;
     text-transform: uppercase;
     margin-bottom: 2pt;
   }
   .risk-desc {
     font-size: 9pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     line-height: 1.45;
   }
 
@@ -335,7 +335,7 @@
   /* ANALYST SUMMARY */
   .analyst-box {
     background: transparent;
-    border-top: 1pt solid var(--near-black);
+    border-top: 1pt solid var(--color-text-primary);
     border-radius: 0;
     padding: 8pt 0 0 0;
     margin: 12pt 0;
@@ -344,18 +344,18 @@
 
   /* CHART PLACEHOLDER */
   .chart-placeholder {
-    background: var(--ivory);
+    background: var(--color-surface-card);
     border-radius: 4pt;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--stone);
+    color: var(--color-text-muted);
     font-size: 9pt;
   }
   .analyst-label {
     font-family: var(--sans);
     font-size: 9pt;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     letter-spacing: 1pt;
     text-transform: uppercase;
     font-weight: 500;
@@ -366,9 +366,9 @@
   .report-footer {
     margin-top: 16pt;
     padding-top: 6pt;
-    border-top: 0.3pt dotted var(--border);
+    border-top: 0.3pt dotted var(--color-border-default);
     font-size: 9pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     display: flex;
     justify-content: space-between;
     font-variant-numeric: tabular-nums;
@@ -383,7 +383,7 @@
 <div class="report-header">
   <div class="ticker-block">
     <div class="ticker-eyebrow">EQUITY RESEARCH</div>
-    <div class="ticker-name">NVIDIA <span style="font-size: 14pt; color: var(--stone);">NVIDIA</span></div>
+    <div class="ticker-name">NVIDIA <span style="font-size: 14pt; color: var(--color-text-muted);">NVIDIA</span></div>
     <div class="ticker-sub">Semiconductors · NASDAQ · NASDAQ: NVDA · Hold with upside bias: the business is still compounding, but the multiple already assumes near-perfect execution.</div>
   </div>
   <div class="price-block">
@@ -437,9 +437,9 @@
     <line x1="56" y1="210" x2="716" y2="210" stroke="#E6D9D1" stroke-width="0.8"/>
     <line x1="56" y1="115" x2="716" y2="115" stroke="#E6D9D1" stroke-width="0.5" stroke-dasharray="3 4"/>
     <line x1="56" y1="20" x2="716" y2="20" stroke="#E6D9D1" stroke-width="0.5" stroke-dasharray="3 4"/>
-    <text x="48" y="214" fill="#85776F" font-size="9" text-anchor="end" font-family="'Source Serif 4',Charter,Georgia,serif">102</text>
-    <text x="48" y="119" fill="#85776F" font-size="9" text-anchor="end" font-family="'Source Serif 4',Charter,Georgia,serif">118</text>
-    <text x="48" y="24" fill="#85776F" font-size="9" text-anchor="end" font-family="'Source Serif 4',Charter,Georgia,serif">134</text>
+    <text x="48" y="214" fill="#756A63" font-size="9" text-anchor="end" font-family="'Source Serif 4',Charter,Georgia,serif">102</text>
+    <text x="48" y="119" fill="#756A63" font-size="9" text-anchor="end" font-family="'Source Serif 4',Charter,Georgia,serif">118</text>
+    <text x="48" y="24" fill="#756A63" font-size="9" text-anchor="end" font-family="'Source Serif 4',Charter,Georgia,serif">134</text>
 
     <!-- 20 根蜡烛：波动后回升，2 月重置，3 月修复 -->
     <g stroke="#B83D2E" fill="#B83D2E">
@@ -503,19 +503,19 @@
     <g font-family="'Source Serif 4',Charter,Georgia,serif" font-size="10" fill="#5A4A43">
       <text x="56" y="42">Data Center</text>
       <rect x="180" y="30" width="400" height="16" fill="#B83D2E" rx="2"/>
-      <text x="592" y="42" fill="#85776F">$115.2B</text>
+      <text x="592" y="42" fill="#756A63">$115.2B</text>
 
       <text x="56" y="84">Gaming</text>
       <rect x="180" y="72" width="62" height="16" fill="#C97A63" rx="2"/>
-      <text x="254" y="84" fill="#85776F">$17.8B</text>
+      <text x="254" y="84" fill="#756A63">$17.8B</text>
 
       <text x="56" y="126">Professional Visualisation</text>
       <rect x="180" y="114" width="34" height="16" fill="#8B8078" rx="2"/>
-      <text x="226" y="126" fill="#85776F">$9.7B</text>
+      <text x="226" y="126" fill="#756A63">$9.7B</text>
 
       <text x="56" y="168">Automotive &amp; Other</text>
       <rect x="180" y="156" width="20" height="16" fill="#B9ACA3" rx="2"/>
-      <text x="212" y="168" fill="#85776F">$5.8B</text>
+      <text x="212" y="168" fill="#756A63">$5.8B</text>
     </g>
   </svg>
   <figcaption>Figure 2. Revenue by segment. Data center carries the majority of the total; networking and software are the incremental contribution.</figcaption>

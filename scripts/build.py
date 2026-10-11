@@ -590,7 +590,7 @@ def _showcase_demo_html(showcase: dict[str, str], generated_png_name: str) -> st
   }}
 
   :root {{
-    --parchment: #F6F0EA;
+    --color-surface-page: #F6F0EA;
     --ivory: #FBF7F3;
     --near-black: #191514;
     --olive: #5A4A43;
@@ -603,7 +603,7 @@ def _showcase_demo_html(showcase: dict[str, str], generated_png_name: str) -> st
   body {{
     margin: 0;
     padding: 32px 24px;
-    background: var(--parchment);
+    background: var(--color-surface-page);
     color: var(--near-black);
     font-family: "Source Serif 4", Charter, Georgia, serif;
   }}
@@ -743,45 +743,14 @@ def _inject_theme_colours(html: str) -> str:
 
 
 def _retarget_literal_colours(html: str, theme: str | None = None) -> str:
-    """Swap a pre-palette template's literals for the selected theme's values.
+    """Move a pre-palette literal onto the selected scheme.
 
-    A diagram template states `fill="#B83D2E"` rather than reading a variable.
-    Measured: this renderer ignores a CSS rule that would override a presentation
-    attribute and does not resolve `var()` inside one, so the literal has to be
-    replaced in the markup.
-
-    What each literal means is read from
-    `references/theme/template-literal-ledger.json` -- recorded rather than
-    derived, because the default theme is the thing being changed and cannot be
-    its own reference. With the default theme selected the mapping is the
-    identity, so nothing moves.
+    The rule lives in `projection`, because the document templates need it too:
+    their charts are drawn with literals the same way a diagram's are.
     """
-    try:
-        import json
+    import projection
 
-        import style_resolver
-    except Exception:  # pragma: no cover - depends on the host layout
-        return html
-
-    ledger_path = ROOT / "references" / "theme" / "template-literal-ledger.json"
-    if not ledger_path.is_file():
-        return html
-    try:
-        ledger = json.loads(ledger_path.read_text(encoding="utf-8")).get("shipped") or {}
-    except Exception:  # pragma: no cover - a broken ledger must not stop a build
-        return html
-
-    try:
-        style = style_resolver.resolve(names={"theme": theme} if theme else None)
-    except Exception:  # pragma: no cover - a broken profile must not stop a build
-        return html
-
-    for literal, entry in ledger.items():
-        value = style.get(f"palette.{entry}")
-        replacement = str(value).strip() if value is not None else ""
-        if replacement.startswith("#") and replacement.upper() != literal.upper():
-            html = re.sub(re.escape(literal), replacement, html, flags=re.IGNORECASE)
-    return html
+    return projection.retarget_literals(html, theme)
 
 
 def build_all() -> int:
@@ -967,14 +936,14 @@ PY_RGB = re.compile(
 )
 # Python const name -> tokens.json key. Only constants that mirror a CSS token.
 PY_TOKEN_MAP = {
-    "PARCHMENT": "--parchment",
-    "IVORY": "--ivory",
-    "BRAND": "--brand",
-    "NEAR_BLACK": "--near-black",
-    "DARK_WARM": "--dark-warm",
-    "CHARCOAL": "--charcoal",
-    "OLIVE": "--olive",
-    "STONE": "--stone",
+    "PARCHMENT": "--color-surface-page",
+    "IVORY": "--color-surface-card",
+    "BRAND": "--color-accent-brand",
+    "NEAR_BLACK": "--color-text-primary",
+    "DARK_WARM": "--color-text-warm",
+    "OLIVE": "--color-text-secondary",
+    "STONE": "--color-text-muted",
+    "BORDER": "--color-border-default",
 }
 
 
@@ -1529,13 +1498,54 @@ def check_placeholders(paths: list[str]) -> int:
         # unfilled slot reported a complete file as incomplete.
         scannable = re.sub(r"<!--.*?-->", "", text, flags=re.DOTALL)
         hits = list(dict.fromkeys(PLACEHOLDER.findall(scannable)))
+        notes = [
+            note for note in BRACKET_NOTE.findall(scannable)
+            if any(word in note.lower() for word in NOTE_WORDS)
+        ]
         rel = path.relative_to(ROOT) if path.is_relative_to(ROOT) else path
-        if hits:
-            print(f"ERROR: {rel}: unfilled placeholder(s): {', '.join(hits)}")
+        if hits or notes:
+            detail = ", ".join(hits + notes)
+            print(f"ERROR: {rel}: unfilled placeholder(s): {detail}")
             failures += 1
         else:
             print(f"OK: {rel}: no placeholders")
 
+    return 0 if failures == 0 else 1
+
+
+# A note to the template's author, left in the markup. It reaches a page when
+# nothing replaces it, so it is scanned for the way a `{{}}` slot is.
+BRACKET_NOTE = re.compile(r"\[[^\]\n]{15,140}\]")
+NOTE_WORDS = ("placeholder", "占位", "replace with", "替换为", "compiled by the drawing dsl")
+
+
+def check_bracket_notes(paths: list[str] | None = None) -> int:
+    """Report a bracketed note left in markup a reader can see."""
+    if not paths:
+        roots = [ROOT / "assets" / "templates", ROOT / "assets" / "diagrams",
+                 ROOT / "assets" / "demos"]
+        candidates: list[Path] = []
+        for root in roots:
+            candidates.extend(sorted(root.glob("*.html")))
+        paths = [str(path.relative_to(ROOT)) for path in candidates]
+
+    failures = 0
+    for raw in paths:
+        path = Path(raw)
+        if not path.is_absolute():
+            path = ROOT / path
+        if not path.exists():
+            continue
+        text = path.read_text(encoding="utf-8", errors="replace")
+        scannable = re.sub(r"<!--.*?-->", "", text, flags=re.DOTALL)
+        found = [
+            note for note in BRACKET_NOTE.findall(scannable)
+            if any(word in note.lower() for word in NOTE_WORDS)
+        ]
+        if found:
+            rel = path.relative_to(ROOT) if path.is_relative_to(ROOT) else path
+            print(f"ERROR: {rel}: note left in the markup: {found[0]}")
+            failures += 1
     return 0 if failures == 0 else 1
 
 

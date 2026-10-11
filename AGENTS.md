@@ -67,6 +67,8 @@ python3 scripts/color_sources.py check        # the colour sources agree, and th
 python3 scripts/theme_switch_check.py         # one palette edit moves every artifact
 python3 scripts/build_static_theme.py --check # the static pages hold the palette
 python3 scripts/build_static_theme.py         # bake it into index.html and the demos
+python3 scripts/check_palette_scale.py        # a higher number is a darker colour
+python3 scripts/build_color_reference.py      # the palette and role reference page
 python3 scripts/spacing_probe.py compare --genre one-pager   # rendered spacing vs the model
 ```
 
@@ -161,7 +163,7 @@ magick /tmp/stacked.png -gravity Center -background '#F6F0EA' -extent 1241x1754 
 
 ## Change Rules
 
-- Style changes: update `references/design.md` and the matching template `<style>` tokens, then run `build.py` and confirm page counts stay stable.
+- Style changes: update the theme profile in `references/profiles/theme/`, then run `python3 scripts/build_color_reference.py` to regenerate the tables in `references/design.md`, `build.py` to confirm page counts stay stable, and `build.py --sync` to confirm the templates' own declarations match. A new colour goes in `palette` once and is named by its lightness; roles point at it.
 - Content changes: keep CSS unchanged, edit only the body, then run `build.py`.
 - New templates: copy the nearest existing template, keep it aligned with `design.md`, add routing to `SKILL.md`, and add demos.
 

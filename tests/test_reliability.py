@@ -294,6 +294,6 @@ class TokenConsistencyTests(TestCase):
     def test_changed_token_drives_compositing(self):
         with TemporaryDirectory() as temp:
             tokens = Path(temp) / "tokens.json"
-            tokens.write_text(json.dumps({"--parchment": "#EEDDBB"}))
+            tokens.write_text(json.dumps({"--color-surface-page": "#EEDDBB"}))
             with mock.patch.object(stabilize, "TOKENS_FILE", tokens):
                 self.assertEqual("#EEDDBB", stabilize.blend_rgba_on_parchment(0, 0, 0, 0))

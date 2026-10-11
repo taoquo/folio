@@ -178,7 +178,7 @@
 
 <span class="c"># Codex</span>
 bash scripts/package-skill.sh   # build dist/folio.zip, then install locally</pre>
-    <p class="section-lede" style="font-size:14px;">Claude Desktop: build <span style="color:var(--brand); font-weight:500;">dist/folio.zip</span> with <span style="color:var(--brand); font-weight:500;">scripts/package-skill.sh</span>, then upload it in Customize &gt; Skills &gt; "+" &gt; Create skill.</p>
+    <p class="section-lede" style="font-size:14px;">Claude Desktop: build <span style="color:var(--color-accent-brand); font-weight:500;">dist/folio.zip</span> with <span style="color:var(--color-accent-brand); font-weight:500;">scripts/package-skill.sh</span>, then upload it in Customize &gt; Skills &gt; "+" &gt; Create skill.</p>
   </section>
 
   <!-- ============ 03 COLOR ============ -->
@@ -193,7 +193,7 @@ bash scripts/package-skill.sh   # build dist/folio.zip, then install locally</pr
     <div class="swatches">
       <div class="swatch"><div class="chip" style="background:#F6F0EA"></div><div class="info"><p class="name">Parchment</p><p class="role">Page background, the emotional foundation</p><span class="hex">#F6F0EA</span></div></div>
       <div class="swatch"><div class="chip" style="background:#FBF7F3"></div><div class="info"><p class="name">Ivory</p><p class="role">Cards / elevated surfaces</p><span class="hex">#FBF7F3</span></div></div>
-      <div class="swatch"><div class="chip" style="background:#E9DED4"></div><div class="info"><p class="name">Warm Sand</p><p class="role">Button default / interactive surfaces</p><span class="hex">#E9DED4</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#E6DACD"></div><div class="info"><p class="name">Warm Sand</p><p class="role">Button default / interactive surfaces</p><span class="hex">#E6DACD</span></div></div>
       <div class="swatch dark"><div class="chip" style="background:#191514"></div><div class="info"><p class="name" style="color:var(--deep-dark)">Deep Dark</p><p class="role">Dark theme page base, brown-charcoal instead of pure black</p><span class="hex">#191514</span></div></div>
     </div>
 
@@ -210,11 +210,11 @@ bash scripts/package-skill.sh   # build dist/folio.zip, then install locally</pr
       <div class="swatch"><div class="chip" style="background:#191514"></div><div class="info"><p class="name">Near Black</p><span class="hex">#191514</span></div></div>
       <div class="swatch"><div class="chip" style="background:#3A312D"></div><div class="info"><p class="name">Dark Warm</p><span class="hex">#3A312D</span></div></div>
       <div class="swatch"><div class="chip" style="background:#5A4A43"></div><div class="info"><p class="name">Olive</p><span class="hex">#5A4A43</span></div></div>
-      <div class="swatch"><div class="chip" style="background:#85776F"></div><div class="info"><p class="name">Stone</p><span class="hex">#85776F</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#756A63"></div><div class="info"><p class="name">Stone</p><span class="hex">#756A63</span></div></div>
     </div>
 
     <h3 class="subhead">Tag Tints: rgba to solid hex</h3>
-    <p style="font-size:14px; color: var(--olive); margin: 0 0 16px; line-height: 1.55;">Solid hex equivalents of cinnabar-coral <code style="font-family:var(--mono);font-size:12px;background:#F7E6E1;color:var(--brand);padding:1px 5px;border-radius:2px">#B83D2E</code> on parchment. Tags use solid hex instead of <code style="font-family:var(--mono);font-size:12px;background:#F7E6E1;color:var(--brand);padding:1px 5px;border-radius:2px">rgba()</code> to avoid a WeasyPrint double-rectangle rendering bug.</p>
+    <p style="font-size:14px; color: var(--color-text-secondary); margin: 0 0 16px; line-height: 1.55;">Solid hex equivalents of cinnabar-coral <code style="font-family:var(--mono);font-size:12px;background:#F7E6E1;color:var(--color-accent-brand);padding:1px 5px;border-radius:2px">#B83D2E</code> on parchment. Tags use solid hex instead of <code style="font-family:var(--mono);font-size:12px;background:#F7E6E1;color:var(--color-accent-brand);padding:1px 5px;border-radius:2px">rgba()</code> to avoid a WeasyPrint double-rectangle rendering bug.</p>
     <div class="tint-strip">
       <div class="tint"><span class="flag">&nbsp;</span><span class="sample" style="background:#F7E6E1">Tag sample</span><p class="opacity">0.08</p><span class="hex">#F7E6E1</span></div>
       <div class="tint"><span class="flag">&nbsp;</span><span class="sample" style="background:#F1D2CC">Tag sample</span><p class="opacity">0.14</p><span class="hex">#F1D2CC</span></div>
@@ -318,11 +318,11 @@ bash scripts/package-skill.sh   # build dist/folio.zip, then install locally</pr
     </div>
 
     <h3 class="subhead">Depth: Three Shadow Methods</h3>
-    <p style="font-size:14px; color: var(--olive); margin: 0 0 12px; line-height: 1.55;">Folio avoids traditional hard shadows. Depth comes from ring shadows, whisper shadows, and light-dark alternation.</p>
+    <p style="font-size:14px; color: var(--color-text-secondary); margin: 0 0 12px; line-height: 1.55;">Folio avoids traditional hard shadows. Depth comes from ring shadows, whisper shadows, and light-dark alternation.</p>
     <div class="shadow-row">
       <div class="shadow-demo sd-ring">
         <p class="t">Ring Shadow</p>
-        <p class="s">0 0 0 1pt var(--border)<br>&nbsp;<br>Buttons · focus rings</p>
+        <p class="s">0 0 0 1pt var(--color-border-default)<br>&nbsp;<br>Buttons · focus rings</p>
       </div>
       <div class="shadow-demo sd-whisper">
         <p class="t">Whisper Shadow</p>
@@ -405,8 +405,8 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
         <h4>Featured Card</h4>
         <p class="hint">quiet artifact surface + 16pt radius</p>
         <div class="demo featured-card">
-          <p style="font-family:var(--serif); font-weight:500; font-size:15px; margin:0 0 6px; color:var(--near-black);">Tesla Company Profile · One-Pager</p>
-          <p style="font-size:12px; color:var(--olive); margin:0 0 10px; line-height:1.5;">Single A4 page · 4 metric cards + 3 body sections + timeline</p>
+          <p style="font-family:var(--serif); font-weight:500; font-size:15px; margin:0 0 6px; color:var(--color-text-primary);">Tesla Company Profile · One-Pager</p>
+          <p style="font-size:12px; color:var(--color-text-secondary); margin:0 0 10px; line-height:1.5;">Single A4 page · 4 metric cards + 3 body sections + timeline</p>
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <span class="tag calm">English</span>
             <span class="tag calm">A4 x 1</span>
@@ -431,14 +431,14 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
         <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" style="font-family:inherit">
           <rect width="280" height="160" fill="#F6F0EA"/>
           <!-- Browser → API -->
-          <line x1="84" y1="80" x2="107" y2="80" stroke="#85776F" stroke-width="1.2" stroke-linecap="round"/>
-          <path d="M 101 76 L 107 80 L 101 84" fill="none" stroke="#85776F" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="84" y1="80" x2="107" y2="80" stroke="#756A63" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M 101 76 L 107 80 L 101 84" fill="none" stroke="#756A63" stroke-width="1.2" stroke-linecap="round"/>
           <!-- API → Database -->
           <line x1="172" y1="80" x2="195" y2="80" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
           <path d="M 189 76 L 195 80 L 189 84" fill="none" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
           <!-- Node: Client -->
-          <rect x="20" y="58" width="64" height="44" rx="3" fill="#F6F0EA" stroke="#85776F" stroke-width="0.8"/>
-          <text x="52" y="76" text-anchor="middle" font-size="7" letter-spacing="0.5" fill="#85776F">CLIENT</text>
+          <rect x="20" y="58" width="64" height="44" rx="3" fill="#F6F0EA" stroke="#756A63" stroke-width="0.8"/>
+          <text x="52" y="76" text-anchor="middle" font-size="7" letter-spacing="0.5" fill="#756A63">CLIENT</text>
           <text x="52" y="91" text-anchor="middle" font-size="9" font-weight="600" fill="#191514">Browser</text>
           <!-- Node: API (focal) -->
           <rect x="108" y="58" width="64" height="44" rx="3" fill="#F7E6E1" stroke="#B83D2E" stroke-width="1"/>
@@ -446,7 +446,7 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
           <text x="140" y="91" text-anchor="middle" font-size="9" font-weight="600" fill="#191514">API</text>
           <!-- Node: Database -->
           <rect x="196" y="58" width="64" height="44" rx="3" fill="#F6F0EA" stroke="#5A4A43" stroke-width="0.8"/>
-          <text x="228" y="76" text-anchor="middle" font-size="7" letter-spacing="0.5" fill="#85776F">DATA</text>
+          <text x="228" y="76" text-anchor="middle" font-size="7" letter-spacing="0.5" fill="#756A63">DATA</text>
           <text x="228" y="91" text-anchor="middle" font-size="9" font-weight="600" fill="#191514">Database</text>
         </svg>
         <p class="chart-caption">System components and connections, one focal node</p>
@@ -473,7 +473,7 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
           <line x1="140" y1="92" x2="140" y2="116" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
           <path d="M 136 108 L 140 116 L 144 108" fill="none" stroke="#5A4A43" stroke-width="1.2" stroke-linecap="round"/>
           <text x="151" y="106" font-size="8" fill="#5A4A43">No</text>
-          <rect x="96" y="116" width="88" height="32" rx="4" fill="#F6F0EA" stroke="#85776F" stroke-width="0.8"/>
+          <rect x="96" y="116" width="88" height="32" rx="4" fill="#F6F0EA" stroke="#756A63" stroke-width="0.8"/>
           <text x="140" y="134" text-anchor="middle" font-size="9" fill="#5A4A43">Reject</text>
         </svg>
         <p class="chart-caption">Decision branches, yes/no paths, focal on success</p>
@@ -483,15 +483,15 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
         <div class="chart-label">Bar Chart</div>
         <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" style="font-family:inherit">
           <rect width="280" height="160" fill="#F6F0EA"/>
-          <rect x="18" y="78" width="42" height="50" rx="3" fill="#85776F"/>
+          <rect x="18" y="78" width="42" height="50" rx="3" fill="#756A63"/>
           <rect x="78" y="62" width="42" height="66" rx="3" fill="#5A4A43"/>
           <rect x="138" y="44" width="42" height="84" rx="3" fill="#3A312D"/>
           <rect x="198" y="30" width="42" height="98" rx="3" fill="#B83D2E"/>
-          <text x="39" y="145" text-anchor="middle" font-size="10" fill="#85776F">Q1</text>
+          <text x="39" y="145" text-anchor="middle" font-size="10" fill="#756A63">Q1</text>
           <text x="99" y="145" text-anchor="middle" font-size="10" fill="#5A4A43">Q2</text>
           <text x="159" y="145" text-anchor="middle" font-size="10" fill="#4B3E39">Q3</text>
           <text x="219" y="145" text-anchor="middle" font-size="10" fill="#4B3E39">Q4</text>
-          <text x="39" y="73" text-anchor="middle" font-size="9" font-weight="600" fill="#85776F">180</text>
+          <text x="39" y="73" text-anchor="middle" font-size="9" font-weight="600" fill="#756A63">180</text>
           <text x="99" y="57" text-anchor="middle" font-size="9" font-weight="600" fill="#5A4A43">220</text>
           <text x="159" y="39" text-anchor="middle" font-size="9" font-weight="600" fill="#3A312D">195</text>
           <text x="219" y="25" text-anchor="middle" font-size="9" font-weight="600" fill="#B83D2E">240</text>
@@ -505,41 +505,41 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
           <rect width="280" height="160" fill="#F6F0EA"/>
           <path d="M 80,25 A 55,55 0 1,1 47.7,124.5 L 62.4,104.3 A 30,30 0 1,0 80,50 Z" fill="#B83D2E" stroke="white" stroke-width="1.5"/>
           <path d="M 47.7,124.5 A 55,55 0 0,1 35.5,47.7 L 55.7,62.4 A 30,30 0 0,0 62.4,104.3 Z" fill="#5A4A43" stroke="white" stroke-width="1.5"/>
-          <path d="M 35.5,47.7 A 55,55 0 0,1 80,25 L 80,50 A 30,30 0 0,0 55.7,62.4 Z" fill="#85776F" stroke="white" stroke-width="1.5"/>
+          <path d="M 35.5,47.7 A 55,55 0 0,1 80,25 L 80,50 A 30,30 0 0,0 55.7,62.4 Z" fill="#756A63" stroke="white" stroke-width="1.5"/>
           <text x="80" y="77" text-anchor="middle" font-size="13" font-weight="600" fill="#B83D2E">60%</text>
           <text x="80" y="92" text-anchor="middle" font-size="10" fill="#5A4A43">Primary</text>
           <rect x="150" y="46" width="10" height="10" rx="2" fill="#B83D2E"/>
           <text x="165" y="55" font-size="11" fill="#4B3E39">Core revenue · 60%</text>
           <rect x="150" y="72" width="10" height="10" rx="2" fill="#5A4A43"/>
           <text x="165" y="81" font-size="11" fill="#4B3E39">Services · 25%</text>
-          <rect x="150" y="98" width="10" height="10" rx="2" fill="#85776F"/>
+          <rect x="150" y="98" width="10" height="10" rx="2" fill="#756A63"/>
           <text x="165" y="107" font-size="11" fill="#4B3E39">Other · 15%</text>
         </svg>
         <p class="chart-caption">Revenue structure breakdown, supports 3–6 segments</p>
       </div>
       <div class="chart-card">
         <div class="chart-label">Agent Runtime</div>
-        <a href="assets/demos/demo-architecture.pdf" target="_blank"><img src="assets/diagrams/generated/png/agent-runtime-demo.png" alt="Architecture artifact preview" style="display:block; width:100%; border:1px solid var(--border-soft);"></a>
+        <a href="assets/demos/demo-architecture.pdf" target="_blank"><img src="assets/diagrams/generated/png/agent-runtime-demo.png" alt="Architecture artifact preview" style="display:block; width:100%; border:1px solid var(--color-border-soft);"></a>
         <p class="chart-caption">Request-driven runtime case for gateway ingress, planning, model execution, tool use, retrieval memory, and observability.</p>
       </div>
       <div class="chart-card">
         <div class="chart-label">Workflow Engine</div>
-        <a href="assets/demos/demo-workflow-engine.pdf" target="_blank"><img src="assets/diagrams/generated/png/workflow-engine-demo.png" alt="Workflow engine artifact preview" style="display:block; width:100%; border:1px solid var(--border-soft);"></a>
+        <a href="assets/demos/demo-workflow-engine.pdf" target="_blank"><img src="assets/diagrams/generated/png/workflow-engine-demo.png" alt="Workflow engine artifact preview" style="display:block; width:100%; border:1px solid var(--color-border-soft);"></a>
         <p class="chart-caption">Workflow orchestration case for ingress, orchestration, worker execution, state persistence, and event-based continuation.</p>
       </div>
       <div class="chart-card">
         <div class="chart-label">Data Platform</div>
-        <a href="assets/demos/demo-data-platform.pdf" target="_blank"><img src="assets/diagrams/generated/png/data-platform-demo.png" alt="Data platform artifact preview" style="display:block; width:100%; border:1px solid var(--border-soft);"></a>
+        <a href="assets/demos/demo-data-platform.pdf" target="_blank"><img src="assets/diagrams/generated/png/data-platform-demo.png" alt="Data platform artifact preview" style="display:block; width:100%; border:1px solid var(--color-border-soft);"></a>
         <p class="chart-caption">Policy-driven layout case for pipeline spine, warehouse serving, and supporting read paths rendered from one reusable grammar.</p>
       </div>
       <div class="chart-card">
         <div class="chart-label">Agent Session Model</div>
-        <a href="assets/demos/demo-uml-class.pdf" target="_blank"><img src="assets/diagrams/generated/png/uml-class-demo.png" alt="Agent Session Model UML artifact preview" style="display:block; width:100%; border:1px solid var(--border-soft);"></a>
+        <a href="assets/demos/demo-uml-class.pdf" target="_blank"><img src="assets/diagrams/generated/png/uml-class-demo.png" alt="Agent Session Model UML artifact preview" style="display:block; width:100%; border:1px solid var(--color-border-soft);"></a>
         <p class="chart-caption">UML domain model case with interfaces, enum lifecycle state, composition, aggregation, and retrieval-memory associations.</p>
       </div>
       <div class="chart-card">
         <div class="chart-label">Drawing Review Flow</div>
-        <a href="assets/demos/demo-flowchart-v2.pdf" target="_blank"><img src="assets/diagrams/generated/png/flowchart-v2-demo.png" alt="Drawing review flowchart preview" style="display:block; width:100%; border:1px solid var(--border-soft);"></a>
+        <a href="assets/demos/demo-flowchart-v2.pdf" target="_blank"><img src="assets/diagrams/generated/png/flowchart-v2-demo.png" alt="Drawing review flowchart preview" style="display:block; width:100%; border:1px solid var(--color-border-soft);"></a>
         <p class="chart-caption">Drawing DSL case with typed decisions, labelled branches, orthogonal routing, and accessible SVG metadata.</p>
       </div>
     </div>
@@ -615,12 +615,12 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
       <tr><th>Task</th><th>How</th></tr>
       <tr><td class="task">Large headline</td><td class="how">serif <code>500</code>, size by hierarchy, line-height <code>1.10-1.30</code></td></tr>
       <tr><td class="task">Reading body</td><td class="how">serif <code>400</code>, <code>9.5-10 pt</code>, line-height <code>1.55</code></td></tr>
-      <tr><td class="task">Emphasize a number</td><td class="how"><code>color: var(--brand)</code>, not bold</td></tr>
+      <tr><td class="task">Emphasize a number</td><td class="how"><code>color: var(--color-accent-brand)</code>, not bold</td></tr>
       <tr><td class="task">Separate two sections</td><td class="how"><code>2.5pt</code> brand left bar, or <code>0.5pt</code> warm-gray dashed</td></tr>
       <tr><td class="task">Quote someone</td><td class="how">Left <code>2pt</code> brand solid + olive text</td></tr>
       <tr><td class="task">Show code</td><td class="how">Ivory bg + <code>0.5pt</code> border + <code>6pt</code> radius + mono font</td></tr>
       <tr><td class="task">Primary vs secondary</td><td class="how">Primary: brand fill + ivory text; Secondary: warm-sand + charcoal</td></tr>
-      <tr><td class="task">Mark a special card</td><td class="how"><code>border: 0.5pt solid var(--brand)</code> or <code>border-left: 3pt</code></td></tr>
+      <tr><td class="task">Mark a special card</td><td class="how"><code>border: 0.5pt solid var(--color-accent-brand)</code> or <code>border-left: 3pt</code></td></tr>
       <tr><td class="task">Begin a section</td><td class="how">Serif <code>500</code> · <code>15pt</code> · size-led hierarchy, optional brand left bar when emphasis helps</td></tr>
       <tr><td class="task">Document cover</td><td class="how">Single page, Display size + right-aligned author/date + generous whitespace</td></tr>
       <tr><td class="task">Data card</td><td class="how">Ivory bg + <code>8pt</code> radius + serif large number, cinnabar-coral + sans small label</td></tr>
@@ -682,7 +682,7 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
     </div>
     <div class="colophon">
       <div>One-Pager · Long Doc · Letter · Portfolio · Resume · Slides · Equity Report · Changelog</div>
-      <div style="margin-top:8px; color: var(--olive); font-family: var(--serif);">
+      <div style="margin-top:8px; color: var(--color-text-secondary); font-family: var(--serif);">
         Serif carries authority, sans function, warm grays rhythm, cinnabar-coral focus.
       </div>
     </div>

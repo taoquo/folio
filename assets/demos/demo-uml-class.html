@@ -15,12 +15,12 @@
   }
 
   :root {
-    --parchment: #F6F0EA;
-    --ivory: #FBF7F3;
-    --near-black: #191514;
-    --olive: #5A4A43;
-    --stone: #85776F;
-    --brand: #B83D2E;
+    --color-surface-page: #F6F0EA;
+    --color-surface-card: #FBF7F3;
+    --color-text-primary: #191514;
+    --color-text-secondary: #5A4A43;
+    --color-text-muted: #756A63;
+    --color-accent-brand: #B83D2E;
   }
 
   * { box-sizing: border-box; }
@@ -28,8 +28,8 @@
   body {
     margin: 0;
     padding: 32px 24px;
-    background: var(--parchment);
-    color: var(--near-black);
+    background: var(--color-surface-page);
+    color: var(--color-text-primary);
     font-family: "Source Serif 4", Charter, Georgia, serif;
   }
 
@@ -40,7 +40,7 @@
 
   .eyebrow {
     margin: 0 0 8px;
-    color: var(--stone);
+    color: var(--color-text-muted);
     font-size: 12px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -55,8 +55,8 @@
 
   .frame {
     padding: 20px;
-    background: var(--ivory);
-    border: 1px solid #E9DED4;
+    background: var(--color-surface-card);
+    border: 1px solid #E6DACD;
   }
 
   img {
@@ -67,7 +67,7 @@
 
   .caption {
     margin: 14px 0 0;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     font-size: 15px;
   }
 </style>

@@ -47,28 +47,28 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --parchment: #F6F0EA;
-    --ivory:     #FBF7F3;
-    --near-black:#191514;
-    --dark-warm: #3A312D;
-    --olive:     #5A4A43;
-    --stone:     #85776F;
-    --brand:     #B83D2E;
-    --border:    #E9DED4;
-    --border-soft:#E8DED6;
-    --tag-bg:    #F1D2CC;
+    --color-surface-page: #F6F0EA;
+    --color-surface-card:     #FBF7F3;
+    --color-text-primary:#191514;
+    --color-text-warm: #3A312D;
+    --color-text-secondary:     #5A4A43;
+    --color-text-muted: #756A63;
+    --color-accent-brand:     #B83D2E;
+    --color-border-default: #E6DACD;
+    --color-border-soft: #E5DBCD;
+    --color-accent-tag:    #F1D2CC;
     --serif: "LXGW WenKai", "Source Han Serif SC", "Noto Serif CJK SC", "Songti SC", "STSong", Georgia, serif;
     --sans: var(--serif);
   }
 
-  html, body { background: var(--parchment); }
+  html, body { background: var(--color-surface-page); }
 
   @media screen {
     body { max-width: 210mm; margin: 0 auto; padding: 12mm 15mm; }
   }
 
   body {
-    color: var(--near-black);
+    color: var(--color-text-primary);
     font-family: var(--serif);
     font-size: 10pt;
     line-height: 1.45;
@@ -96,7 +96,7 @@
   .cover-top {
     font-family: var(--serif);
     font-size: 10pt;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     letter-spacing: 2pt;
     text-transform: uppercase;
   }
@@ -110,20 +110,20 @@
     font-size: 58pt;
     font-weight: 500;
     line-height: 1.05;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     letter-spacing: 1pt;
   }
   .cover-tagline {
     font-family: var(--serif);
     font-size: 18pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     line-height: 1.4;
     max-width: 72%;
   }
   .cover-line {
     width: 80pt;
     height: 2pt;
-    background: var(--brand);
+    background: var(--color-accent-brand);
     margin: 18pt 0 4pt 0;
   }
   .cover-meta {
@@ -131,10 +131,10 @@
     justify-content: space-between;
     align-items: flex-end;
     font-size: 10pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
   }
   .cover-meta strong {
-    color: var(--dark-warm);
+    color: var(--color-text-warm);
     font-weight: 500;
   }
 
@@ -145,7 +145,7 @@
   }
   .about-eyebrow {
     font-size: 9pt;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     letter-spacing: 1pt;
     text-transform: uppercase;
     margin-bottom: 8pt;
@@ -156,7 +156,7 @@
     font-weight: 500;
     line-height: 1.2;
     margin-bottom: 20pt;
-    border-left: 2.5pt solid var(--brand);
+    border-left: 2.5pt solid var(--color-accent-brand);
     border-radius: 1.5pt;
     padding-left: 8pt;
   }
@@ -164,7 +164,7 @@
     font-family: var(--serif);
     font-size: 15pt;
     line-height: 1.5;
-    color: var(--dark-warm);
+    color: var(--color-text-warm);
     margin-bottom: 24pt;
     max-width: 90%;
   }
@@ -181,7 +181,7 @@
     font-family: var(--serif);
     font-size: 13pt;
     font-weight: 500;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     margin-bottom: 6pt;
   }
 
@@ -196,7 +196,7 @@
     align-items: flex-start;
     justify-content: space-between;
     margin-bottom: 14pt;
-    border-left: 2.5pt solid var(--brand);
+    border-left: 2.5pt solid var(--color-accent-brand);
     border-radius: 1.5pt;
     padding-left: 8pt;
   }
@@ -204,7 +204,7 @@
     font-family: var(--serif);
     font-size: 42pt;
     font-weight: 500;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     line-height: 1;
     margin-right: 18pt;
   }
@@ -214,7 +214,7 @@
   }
   .project-type {
     font-size: 9pt;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     letter-spacing: 1pt;
     text-transform: uppercase;
     margin-bottom: 3pt;
@@ -223,19 +223,19 @@
     font-family: var(--serif);
     font-size: 22pt;
     font-weight: 500;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     line-height: 1.2;
     margin-bottom: 4pt;
   }
   .project-subtitle {
     font-size: 11pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     line-height: 1.4;
   }
   .project-date {
     text-align: right;
     font-size: 9pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
     min-width: 80pt;
@@ -250,8 +250,8 @@
     margin-bottom: 14pt;
   }
   .tag {
-    background: var(--tag-bg);
-    color: var(--brand);
+    background: var(--color-accent-tag);
+    color: var(--color-accent-brand);
     font-size: 9pt;
     font-weight: 500;
     padding: 2pt 7pt;
@@ -262,14 +262,14 @@
   .project-hero {
     width: 100%;
     height: 128mm;
-    background: var(--ivory);
+    background: var(--color-surface-card);
     border-radius: 2pt;
     margin-bottom: 16pt;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--stone);
+    color: var(--color-text-muted);
     font-size: 10pt;
   }
   .project-hero img {
@@ -288,24 +288,24 @@
     font-family: var(--serif);
     font-size: 11pt;
     font-weight: 500;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     margin-bottom: 4pt;
     letter-spacing: 0.3pt;
   }
   .project-block p {
     font-size: 9.5pt;
     line-height: 1.45;
-    color: var(--dark-warm);
+    color: var(--color-text-warm);
   }
   .project-block .hl {
-    color: var(--brand);
+    color: var(--color-accent-brand);
     font-weight: 500;
   }
 
   .project-statement {
     font-size: 13pt;
     line-height: 1.45;
-    color: var(--near-black);
+    color: var(--color-text-primary);
   }
   .project-notes {
     display: grid;
@@ -318,7 +318,7 @@
     gap: 14pt;
     margin-top: 14pt;
     padding-top: 10pt;
-    border-top: 0.5pt dotted var(--border);
+    border-top: 0.5pt dotted var(--color-border-default);
   }
   .result-item {
     flex: 1;
@@ -327,13 +327,13 @@
     font-family: var(--serif);
     font-size: 18pt;
     font-weight: 500;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     line-height: 1.1;
     font-variant-numeric: tabular-nums;
   }
   .result-label {
     font-size: 9pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     margin-top: 2pt;
     line-height: 1.3;
   }
@@ -360,7 +360,7 @@
     font-size: 24pt;
     font-weight: 500;
     margin-bottom: 16pt;
-    border-left: 2.5pt solid var(--brand);
+    border-left: 2.5pt solid var(--color-accent-brand);
     border-radius: 1.5pt;
     padding-left: 8pt;
   }
@@ -369,13 +369,13 @@
     grid-template-columns: 40pt 1fr 80pt;
     gap: 12pt;
     padding: 8pt 0;
-    border-bottom: 0.3pt dotted var(--border);
+    border-bottom: 0.3pt dotted var(--color-border-default);
     align-items: baseline;
   }
   .work-item:last-of-type { border-bottom: none; }
   .work-year {
     font-family: var(--serif);
-    color: var(--brand);
+    color: var(--color-accent-brand);
     font-size: 11pt;
     white-space: nowrap;
   }
@@ -383,17 +383,17 @@
     font-family: var(--serif);
     font-size: 11pt;
     font-weight: 500;
-    color: var(--near-black);
+    color: var(--color-text-primary);
   }
   .work-title-block .desc {
     font-size: 9pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     margin-top: 1pt;
   }
   .work-link {
     text-align: right;
     font-size: 9pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
   }
 
   /* ════════════ CONTACT ════════════ */
@@ -407,7 +407,7 @@
   }
   .contact-eyebrow {
     font-size: 10pt;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     letter-spacing: 2pt;
     text-transform: uppercase;
     margin-bottom: 12pt;
@@ -418,21 +418,21 @@
     font-weight: 500;
     line-height: 1.1;
     margin-bottom: 20pt;
-    color: var(--near-black);
+    color: var(--color-text-primary);
   }
   .contact-line {
     width: 80pt;
     height: 2pt;
-    background: var(--brand);
+    background: var(--color-accent-brand);
     margin-bottom: 24pt;
   }
   .contact-list {
     font-size: 12pt;
     line-height: 1.55;
-    color: var(--dark-warm);
+    color: var(--color-text-warm);
   }
   .contact-list strong {
-    color: var(--stone);
+    color: var(--color-text-muted);
     font-weight: 500;
     font-size: 10pt;
     letter-spacing: 0.5pt;
@@ -442,7 +442,7 @@
     text-transform: uppercase;
   }
   .contact-list a {
-    color: var(--brand);
+    color: var(--color-accent-brand);
     text-decoration: none;
   }
 
@@ -457,14 +457,14 @@
   table th, .folio-table th {
     text-align: left;
     font-weight: 500;
-    color: var(--dark-warm);
+    color: var(--color-text-warm);
     padding: 5pt 8pt;
-    border-bottom: 1pt solid var(--border);
+    border-bottom: 1pt solid var(--color-border-default);
     background: transparent;
   }
   table td, .folio-table td {
     padding: 4pt 8pt;
-    border-bottom: 0.3pt solid var(--border-soft);
+    border-bottom: 0.3pt solid var(--color-border-soft);
     vertical-align: top;
   }
   table.compact th, .folio-table.compact th { padding: 3pt 6pt; font-size: 8pt; }
@@ -474,10 +474,10 @@
   }
   table.financial th:not(:first-child), .folio-table.financial th:not(:first-child) { text-align: right; }
   table.striped tbody tr:nth-child(even) td, .folio-table.striped tbody tr:nth-child(even) td {
-    background: var(--ivory);
+    background: var(--color-surface-card);
   }
   table .total td, .folio-table .total td {
-    font-weight: 500; border-top: 1pt solid var(--brand); border-bottom: none; color: var(--near-black);
+    font-weight: 500; border-top: 1pt solid var(--color-accent-brand); border-bottom: none; color: var(--color-text-primary);
   }
 </style>
 </head>
@@ -546,7 +546,19 @@
   <!-- 主图 -->
   <div class="project-hero">
     <!-- 替换为：<img src="project-01-hero.png" alt=""> -->
-    [项目主图占位 · 替换为 &lt;img src="xxx.png"&gt;]
+    <svg viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="项目主图底纹" preserveAspectRatio="xMidYMid slice">
+      <rect width="900" height="480" fill="#FBF7F3"/>
+      <g fill="none" stroke="#E9DED4" stroke-width="1">
+        <circle cx="640" cy="150" r="90"/><circle cx="640" cy="150" r="140"/>
+        <circle cx="640" cy="150" r="190"/><circle cx="640" cy="150" r="240"/>
+      </g>
+      <rect x="70" y="330" width="300" height="14" rx="3" fill="#B83D2E"/>
+      <rect x="70" y="356" width="220" height="14" rx="3" fill="#C97A63"/>
+      <rect x="70" y="382" width="160" height="14" rx="3" fill="#B9ACA3"/>
+      <circle cx="700" cy="360" r="56" fill="#F1D2CC"/>
+      <circle cx="700" cy="360" r="24" fill="#B83D2E"/>
+    </svg>
   </div>
 
   <div class="project-body">

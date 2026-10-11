@@ -86,16 +86,12 @@ def collect(style) -> dict:
             roles[path] = {"value": text, "origin": origin}
 
     used = usage()
-    alias_for = {v: k for k, v in projection.LEGACY_ALIASES.items()}
 
     role_rows = {}
     for path, body in roles.items():
         variable = projection.colour_variable(path)
-        legacy = alias_for.get(path)
         names = set(used.get(variable, ()))
-        if legacy:
-            names |= set(used.get(legacy, ()))
-        role_rows[path] = {**body, "variable": variable, "legacy": legacy,
+        role_rows[path] = {**body, "variable": variable,
                            "templates": sorted(names), "count": len(names)}
 
     palette_rows = {}
@@ -139,19 +135,17 @@ def render(data: dict) -> str:
         for path in sorted(paths):
             body = roles[path]
             mark = "" if body["count"] else '<span class="bad">未被引用</span>'
-            legacy = f'<code>{html.escape(body["legacy"])}</code>' if body["legacy"] else "—"
             rows.append(
                 f'<tr><td><span class="dot" style="background:{html.escape(body["value"])}"></span>'
                 f'<code>{html.escape(path)}</code></td>'
                 f'<td><code>{html.escape(body["variable"])}</code></td>'
                 f'<td><code>{html.escape(body["value"])}</code></td>'
                 f'<td>{html.escape(body["origin"]) or "—"}</td>'
-                f'<td>{legacy}</td>'
-                f'<td class="num">{body["count"] or mark}</td></tr>'
+                        f'<td class="num">{body["count"] or mark}</td></tr>'
             )
         return (
             '<table><thead><tr><th>角色</th><th>CSS 变量</th><th>值</th>'
-            '<th>色板来源</th><th>旧名（迁移期）</th><th>模板</th></tr></thead><tbody>'
+            '<th>色板来源</th><th>模板</th></tr></thead><tbody>'
             + "".join(rows) + "</tbody></table>"
         )
 
@@ -174,13 +168,6 @@ def render(data: dict) -> str:
         for c in data["contrasts"]
     )
 
-    alias_rows = "".join(
-        f'<tr><td><code>{html.escape(legacy)}</code></td>'
-        f'<td><code>{html.escape(role)}</code></td>'
-        f'<td>{len(roles.get(role, {}).get("templates", []))}</td></tr>'
-        for legacy, role in sorted(projection.LEGACY_ALIASES.items())
-    )
-
     unused_list = "".join(f'<li><code>{html.escape(p)}</code></li>' for p in sorted(unused)) or "<li>无</li>"
 
     families: dict[str, list[str]] = defaultdict(list)
@@ -196,8 +183,6 @@ def render(data: dict) -> str:
         groups=group_sections,
         palette=palette_cards,
         contrasts=contrast_rows,
-        aliases=alias_rows,
-        alias_count=len(projection.LEGACY_ALIASES),
         unused=unused_list,
         families=", ".join(f"{k} ×{len(v)}" for k, v in sorted(families.items())),
     )
@@ -256,7 +241,6 @@ _PAGE = """<!DOCTYPE html>
   <div class="stat"><b>{palette_count}</b><span>色板原始色</span></div>
   <div class="stat"><b>{role_count}</b><span>语义角色</span></div>
   <div class="stat"><b>{unused_count}</b><span>未被模板引用</span></div>
-  <div class="stat"><b>{alias_count}</b><span>迁移别名</span></div>
 </div>
 
 <h2>怎么读这套颜色</h2>
@@ -288,14 +272,6 @@ _PAGE = """<!DOCTYPE html>
 消费门禁要求它们显式登记理由。
 </p>
 <ul>{unused}</ul>
-
-<h2>迁移别名 · {alias_count} 条</h2>
-<p class="note">
-模板目前读的是旧变量名，投影把旧名指向新角色。模板逐个迁移后，别名逐条删除；
-一条检查会在别名无人读取时报错，防止它变成第二套命名。
-</p>
-<table><thead><tr><th>旧变量</th><th>现在指向的角色</th><th>使用模板数</th></tr></thead>
-<tbody>{aliases}</tbody></table>
 
 <footer>
 生成：<code>python3 scripts/build_color_reference.py</code> ·

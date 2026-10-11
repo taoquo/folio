@@ -26,7 +26,7 @@
       content: counter(page) "  ·  {{COMPANY_NAME}} Report";
       font-family: var(--serif);
       font-size: 9pt;
-      color: var(--stone);
+      color: var(--color-text-muted);
     }
   }
 
@@ -34,24 +34,24 @@
 
   :root {
     /* Status: what a value means, always used with a word. */
-    --status-positive: #B83D2E;
-    --status-caution: #A8722C;
-    --status-negative: #5A6B7A;
-    --status-informative: #4A6B7A;
-    --status-positive-tint: #F7E6E1;
-    --status-caution-tint: #F6EBD9;
-    --status-negative-tint: #E4E9ED;
-    --status-informative-tint: #E3ECEF;
-    --parchment: #F6F0EA;
-    --ivory:     #FBF7F3;
-    --near-black:#191514;
-    --dark-warm: #3A312D;
-    --olive:     #5A4A43;
-    --stone:     #85776F;
-    --brand:     #B83D2E;
-    --border:    #E9DED4;
-    --border-soft:#E8DED6;
-    --tag-bg:    #F1D2CC;
+    --color-status-positive: #B83D2E;
+    --color-status-caution: #906327;
+    --color-status-negative: #5A6B7A;
+    --color-status-informative: #4A6B7A;
+    --color-status-positive-tint: #F7E6E1;
+    --color-status-caution-tint: #F6EBD9;
+    --color-status-negative-tint: #E4E9ED;
+    --color-status-informative-tint: #E3ECEF;
+    --color-surface-page: #F6F0EA;
+    --color-surface-card:     #FBF7F3;
+    --color-text-primary:#191514;
+    --color-text-warm: #3A312D;
+    --color-text-secondary:     #5A4A43;
+    --color-text-muted: #756A63;
+    --color-accent-brand:     #B83D2E;
+    --color-border-default: #E6DACD;
+    --color-border-soft: #E5DBCD;
+    --color-accent-tag:    #F1D2CC;
 
     --serif: "Source Serif 4", Charter, Georgia,
              Palatino, "Times New Roman", serif;
@@ -60,14 +60,14 @@
              Consolas, Monaco, monospace;
   }
 
-  html, body { background: var(--parchment); }
+  html, body { background: var(--color-surface-page); }
 
   @media screen {
     body { max-width: 210mm; margin: 0 auto; padding: 16mm 18mm 18mm 18mm; }
   }
 
   body {
-    color: var(--near-black);
+    color: var(--color-text-primary);
     font-family: var(--serif);
     font-size: 9.8pt;
     line-height: 1.45;
@@ -78,7 +78,7 @@
   }
 
   strong { font-weight: 500; }
-  .hl { color: var(--brand); font-weight: 500; }
+  .hl { color: var(--color-accent-brand); font-weight: 500; }
 
   /* HEADER */
   .report-header {
@@ -87,13 +87,13 @@
     align-items: flex-start;
     margin-bottom: 12pt;
     padding-bottom: 8pt;
-    border-bottom: 1pt solid var(--near-black);
+    border-bottom: 1pt solid var(--color-text-primary);
   }
   .ticker-block { flex: 1; }
   .ticker-eyebrow {
     font-family: var(--sans);
     font-size: 9pt;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     letter-spacing: 1.5pt;
     text-transform: uppercase;
     font-weight: 500;
@@ -103,14 +103,14 @@
     font-family: var(--serif);
     font-size: 26pt;
     font-weight: 500;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     line-height: 1.12;
     letter-spacing: -0.3pt;
     margin-bottom: 4pt;
   }
   .ticker-sub {
     font-size: 10pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     line-height: 1.4;
   }
   .price-block {
@@ -121,7 +121,7 @@
     font-family: var(--serif);
     font-size: 30pt;
     font-weight: 500;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     line-height: 1;
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.5pt;
@@ -132,11 +132,11 @@
     margin-top: 2pt;
     font-variant-numeric: tabular-nums;
   }
-  .price-change.up { color: var(--status-positive); }
-  .price-change.down { color: var(--status-negative); }
+  .price-change.up { color: var(--color-status-positive); }
+  .price-change.down { color: var(--color-status-negative); }
   .price-date {
     font-size: 9pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     margin-top: 2pt;
     font-variant-numeric: tabular-nums;
   }
@@ -147,8 +147,8 @@
     gap: 10pt;
     margin-bottom: 14pt;
     padding: 6pt 0;
-    border-top: 0.5pt solid var(--border);
-    border-bottom: 0.5pt solid var(--border);
+    border-top: 0.5pt solid var(--color-border-default);
+    border-bottom: 0.5pt solid var(--color-border-default);
   }
   .metric {
     flex: 1;
@@ -160,7 +160,7 @@
     font-family: var(--serif);
     font-size: 18pt;
     font-weight: 500;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     line-height: 1;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
@@ -168,7 +168,7 @@
   }
   .metric-label {
     font-size: 9pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     line-height: 1.3;
   }
 
@@ -177,7 +177,7 @@
     font-family: var(--serif);
     font-size: 16pt;
     font-weight: 500;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     margin: 18pt 0 6pt 0;
     break-after: avoid;
   }
@@ -185,7 +185,7 @@
   h3 {
     font-size: 13pt;
     font-weight: 500;
-    color: var(--dark-warm);
+    color: var(--color-text-warm);
     margin: 12pt 0 4pt 0;
     break-after: avoid;
   }
@@ -197,14 +197,14 @@
     padding-left: 18pt;
     line-height: 1.5;
   }
-  ul li::marker { color: var(--brand); }
-  ol li::marker { color: var(--brand); font-weight: 500; }
+  ul li::marker { color: var(--color-accent-brand); }
+  ol li::marker { color: var(--color-accent-brand); font-weight: 500; }
 
   /* TAG */
   .tag {
     display: inline-block;
-    background: var(--tag-bg);
-    color: var(--brand);
+    background: var(--color-accent-tag);
+    color: var(--color-accent-brand);
     font-family: var(--sans);
     font-size: 9pt;
     font-weight: 500;
@@ -227,15 +227,15 @@
     text-align: left;
     font-family: var(--sans);
     font-weight: 500;
-    color: var(--dark-warm);
+    color: var(--color-text-warm);
     padding: 4pt 6pt;
-    border-top: 0.8pt solid var(--near-black);
-    border-bottom: 0.5pt solid var(--border);
+    border-top: 0.8pt solid var(--color-text-primary);
+    border-bottom: 0.5pt solid var(--color-border-default);
     background: transparent;
   }
   table td, .folio-table td {
     padding: 3pt 6pt;
-    border-bottom: 0.3pt solid var(--border-soft);
+    border-bottom: 0.3pt solid var(--color-border-soft);
     vertical-align: top;
   }
   table.compact th, .folio-table.compact th { padding: 3pt 6pt; font-size: 8pt; }
@@ -245,17 +245,17 @@
   }
   table.financial th:not(:first-child), .folio-table.financial th:not(:first-child) { text-align: right; }
   table.striped tbody tr:nth-child(even) td, .folio-table.striped tbody tr:nth-child(even) td {
-    background: var(--ivory);
+    background: var(--color-surface-card);
   }
   table .total td, .folio-table .total td {
-    font-weight: 500; border-top: 1pt solid var(--brand); border-bottom: none; color: var(--near-black);
+    font-weight: 500; border-top: 1pt solid var(--color-accent-brand); border-bottom: none; color: var(--color-text-primary);
   }
 
   /* CALLOUT */
   .callout {
     background: transparent;
-    border-top: 0.8pt solid var(--brand);
-    border-bottom: 0.3pt dotted var(--border);
+    border-top: 0.8pt solid var(--color-accent-brand);
+    border-bottom: 0.3pt dotted var(--color-border-default);
     padding: 6pt 0;
     border-radius: 0;
     margin: 10pt 0;
@@ -268,7 +268,7 @@
   figcaption {
     font-family: var(--sans);
     font-size: 9pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     margin-top: 4pt;
     text-align: left;
   }
@@ -286,18 +286,18 @@
     gap: 8pt;
     margin: 8pt 0;
     padding: 5pt 0;
-    border-top: 0.5pt solid var(--border);
-    border-bottom: 0.3pt dotted var(--border);
+    border-top: 0.5pt solid var(--color-border-default);
+    border-bottom: 0.3pt dotted var(--color-border-default);
   }
   .data-strip .label {
     font-size: 8pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     letter-spacing: 0.5pt;
     text-transform: uppercase;
   }
   .data-strip .value {
     font-size: 13pt;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     font-weight: 500;
     font-variant-numeric: tabular-nums;
   }
@@ -312,7 +312,7 @@
   .risk-item {
     padding: 5pt 0;
     background: transparent;
-    border-top: 0.3pt solid var(--border);
+    border-top: 0.3pt solid var(--color-border-default);
     border-radius: 0;
     break-inside: avoid;
   }
@@ -320,14 +320,14 @@
     font-family: var(--sans);
     font-size: 9pt;
     font-weight: 500;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     letter-spacing: 0.3pt;
     text-transform: uppercase;
     margin-bottom: 2pt;
   }
   .risk-desc {
     font-size: 9pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     line-height: 1.45;
   }
 
@@ -341,7 +341,7 @@
   /* ANALYST SUMMARY */
   .analyst-box {
     background: transparent;
-    border-top: 1pt solid var(--near-black);
+    border-top: 1pt solid var(--color-text-primary);
     border-radius: 0;
     padding: 8pt 0 0 0;
     margin: 12pt 0;
@@ -350,18 +350,18 @@
 
   /* CHART PLACEHOLDER */
   .chart-placeholder {
-    background: var(--ivory);
+    background: var(--color-surface-card);
     border-radius: 4pt;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--stone);
+    color: var(--color-text-muted);
     font-size: 9pt;
   }
   .analyst-label {
     font-family: var(--sans);
     font-size: 9pt;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     letter-spacing: 1pt;
     text-transform: uppercase;
     font-weight: 500;
@@ -372,9 +372,9 @@
   .report-footer {
     margin-top: 16pt;
     padding-top: 6pt;
-    border-top: 0.3pt dotted var(--border);
+    border-top: 0.3pt dotted var(--color-border-default);
     font-size: 9pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     display: flex;
     justify-content: space-between;
     font-variant-numeric: tabular-nums;
@@ -389,7 +389,7 @@
 <div class="report-header">
   <div class="ticker-block">
     <div class="ticker-eyebrow">{{EYEBROW - e.g. Equity Research / Valuation / Investment Memo}}</div>
-    <div class="ticker-name">{{COMPANY_NAME}} <span style="font-size: 14pt; color: var(--stone);">{{TICKER}}</span></div>
+    <div class="ticker-name">{{COMPANY_NAME}} <span style="font-size: 14pt; color: var(--color-text-muted);">{{TICKER}}</span></div>
     <div class="ticker-sub">{{SECTOR}} · {{EXCHANGE}} · {{One-line thesis.}}</div>
   </div>
   <div class="price-block">
@@ -436,10 +436,44 @@
 
 <!-- CHART: fill this figure slot with folio.py embed-drawing -->
 <h2>Price Action</h2>
-<figure data-folio-diagram-slot="price-action">
-  <div class="chart-placeholder" style="height: 60mm;">
-    [Candlestick / price chart placeholder - compiled by the Drawing DSL]
-  </div>
+<svg viewBox="0 0 760 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="20-session price action">
+      <rect width="100%" height="100%" fill="#F6F0EA"/>
+      <line x1="56" y1="210" x2="716" y2="210" stroke="#E9DED4" stroke-width="0.8"/>
+      <line x1="56" y1="115" x2="716" y2="115" stroke="#E9DED4" stroke-width="0.5" stroke-dasharray="3 4"/>
+      <line x1="56" y1="20" x2="716" y2="20" stroke="#E9DED4" stroke-width="0.5" stroke-dasharray="3 4"/>
+      <g font-family="'Source Serif 4',Charter,Georgia,serif" font-size="9" fill="#85776F" text-anchor="end">
+        <text x="48" y="214">100</text><text x="48" y="119">115</text><text x="48" y="24">130</text>
+      </g>
+      <g stroke="#B83D2E" fill="#B83D2E">
+        <line x1="80" y1="150" x2="80" y2="182"/><rect x="76" y="158" width="8" height="18" rx="1"/>
+        <line x1="112" y1="140" x2="112" y2="172"/><rect x="108" y="146" width="8" height="20" rx="1"/>
+        <line x1="144" y1="156" x2="144" y2="190"/><rect x="140" y="162" width="8" height="22" rx="1"/>
+        <line x1="176" y1="168" x2="176" y2="200"/><rect x="172" y="174" width="8" height="20" rx="1"/>
+        <line x1="208" y1="176" x2="208" y2="206"/><rect x="204" y="180" width="8" height="22" rx="1"/>
+        <line x1="240" y1="170" x2="240" y2="198"/><rect x="236" y="176" width="8" height="16" rx="1"/>
+        <line x1="272" y1="158" x2="272" y2="186"/><rect x="268" y="164" width="8" height="16" rx="1"/>
+        <line x1="304" y1="148" x2="304" y2="178"/><rect x="300" y="154" width="8" height="18" rx="1"/>
+        <line x1="336" y1="138" x2="336" y2="168"/><rect x="332" y="144" width="8" height="18" rx="1"/>
+        <line x1="368" y1="128" x2="368" y2="158"/><rect x="364" y="134" width="8" height="18" rx="1"/>
+      </g>
+      <g stroke="#4A6B52" fill="#4A6B52">
+        <line x1="400" y1="112" x2="400" y2="146"/><rect x="396" y="118" width="8" height="22" rx="1"/>
+        <line x1="432" y1="102" x2="432" y2="136"/><rect x="428" y="108" width="8" height="22" rx="1"/>
+        <line x1="464" y1="94" x2="464" y2="126"/><rect x="460" y="100" width="8" height="20" rx="1"/>
+        <line x1="496" y1="86" x2="496" y2="118"/><rect x="492" y="92" width="8" height="20" rx="1"/>
+        <line x1="528" y1="78" x2="528" y2="110"/><rect x="524" y="84" width="8" height="20" rx="1"/>
+        <line x1="560" y1="86" x2="560" y2="116"/><rect x="556" y="92" width="8" height="18" rx="1"/>
+        <line x1="592" y1="72" x2="592" y2="104"/><rect x="588" y="78" width="8" height="20" rx="1"/>
+        <line x1="624" y1="64" x2="624" y2="96"/><rect x="620" y="70" width="8" height="20" rx="1"/>
+        <line x1="656" y1="56" x2="656" y2="88"/><rect x="652" y="62" width="8" height="20" rx="1"/>
+        <line x1="688" y1="48" x2="688" y2="80"/><rect x="684" y="54" width="8" height="20" rx="1"/>
+      </g>
+      <g font-family="'Source Serif 4',Charter,Georgia,serif" font-size="9" fill="#5A4A43">
+        <text x="56" y="238">Session 1</text>
+        <text x="380" y="238">Recovery</text>
+        <text x="640" y="238">Session 20</text>
+      </g>
+    </svg>
   <figcaption>{{Chart title, e.g. "20-day price action showing accumulation phase."}}</figcaption>
 </figure>
 
@@ -465,10 +499,23 @@
 
 <!-- REVENUE BREAKDOWN -->
 <h2>Revenue Breakdown</h2>
-<figure data-folio-diagram-slot="revenue-breakdown">
-  <div class="chart-placeholder" style="height: 50mm;">
-    [Revenue breakdown chart placeholder - donut or waterfall]
-  </div>
+<svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Revenue by segment">
+      <rect width="100%" height="100%" fill="#F6F0EA"/>
+      <g font-family="'Source Serif 4',Charter,Georgia,serif" font-size="10" fill="#5A4A43">
+        <text x="56" y="42">Core</text>
+        <rect x="180" y="30" width="400" height="16" fill="#B83D2E" rx="2"/>
+        <text x="592" y="42" fill="#85776F">62%</text>
+        <text x="56" y="84">Growth</text>
+        <rect x="180" y="72" width="142" height="16" fill="#C97A63" rx="2"/>
+        <text x="334" y="84" fill="#85776F">22%</text>
+        <text x="56" y="126">Adjacent</text>
+        <rect x="180" y="114" width="77" height="16" fill="#8B8078" rx="2"/>
+        <text x="269" y="126" fill="#85776F">12%</text>
+        <text x="56" y="168">Other</text>
+        <rect x="180" y="156" width="26" height="16" fill="#B9ACA3" rx="2"/>
+        <text x="218" y="168" fill="#85776F">4%</text>
+      </g>
+    </svg>
   <figcaption>{{Chart title.}}</figcaption>
 </figure>
 

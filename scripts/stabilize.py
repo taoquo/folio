@@ -243,7 +243,7 @@ def rgb_to_hex(rgb: tuple[int, int, int]) -> str:
 
 def blend_rgba_on_parchment(r: int, g: int, b: int, alpha: float) -> str:
     a = clamp(alpha, 0.0, 1.0)
-    parchment = parse_hex(load_json(TOKENS_FILE)["--parchment"])
+    parchment = parse_hex(load_json(TOKENS_FILE)["--color-surface-page"])
     out = (
         round(parchment[0] + (r - parchment[0]) * a),
         round(parchment[1] + (g - parchment[1]) * a),

@@ -17,17 +17,17 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --parchment: #F6F0EA;
-    --ivory:     #FBF7F3;
-    --sand:      #E9DED4;
-    --border:    #E9DED4;
-    --border-soft: #E8DED6;
-    --near-black: #191514;
-    --dark-warm: #3A312D;
-    --olive:     #5A4A43;
-    --stone:     #85776F;
-    --brand:     #B83D2E;
-    --brand-tint: #F7E6E1;
+    --color-surface-page: #F6F0EA;
+    --color-surface-card:     #FBF7F3;
+    --sand:      #E6DACD;
+    --color-border-default:    #E6DACD;
+    --color-border-soft: #E5DBCD;
+    --color-text-primary: #191514;
+    --color-text-warm: #3A312D;
+    --color-text-secondary:     #5A4A43;
+    --color-text-muted:     #756A63;
+    --color-accent-brand:     #B83D2E;
+    --color-accent-brand-tint: #F7E6E1;
     --brand-tint-strong: #F1D2CC;
 
     --serif: "Source Serif 4", Charter, Georgia, Palatino, "Times New Roman", serif;
@@ -36,10 +36,10 @@
              Consolas, Monaco, monospace;
   }
 
-  html, body { background: var(--parchment); }
+  html, body { background: var(--color-surface-page); }
 
   body {
-    color: var(--near-black);
+    color: var(--color-text-primary);
     font-family: var(--serif);
     font-size: 9.4pt;
     line-height: 1.42;
@@ -49,7 +49,7 @@
   .serif { font-family: var(--serif); }
   .mono  { font-family: var(--mono); }
 
-  a { color: var(--brand); text-decoration: none; }
+  a { color: var(--color-accent-brand); text-decoration: none; }
 
   /* HEADER */
   .header {
@@ -57,7 +57,7 @@
     align-items: flex-end;
     justify-content: space-between;
     margin-bottom: 3mm;
-    border-left: 2.5pt solid var(--brand);
+    border-left: 2.5pt solid var(--color-accent-brand);
     border-radius: 1.5pt;
     padding-left: 8pt;
   }
@@ -67,7 +67,7 @@
     font-size: 26pt;
     font-weight: 500;
     letter-spacing: -0.2pt;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     line-height: 1;
     display: flex;
     align-items: baseline;
@@ -77,22 +77,22 @@
   .alias {
     font-size: 12.5pt;
     font-weight: 400;
-    color: var(--stone);
+    color: var(--color-text-muted);
   }
   .contact {
     text-align: right;
     font-size: 9pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     line-height: 1.5;
   }
   .contact .role {
-    color: var(--brand);
+    color: var(--color-accent-brand);
     font-size: 10.5pt;
     font-weight: 500;
   }
-  .contact .sep { color: var(--border); margin: 0 0.4em; }
-  .contact a { color: var(--dark-warm); }
-  .contact .loc { color: var(--olive); font-weight: 500; }
+  .contact .sep { color: var(--color-border-default); margin: 0 0.4em; }
+  .contact a { color: var(--color-text-warm); }
+  .contact .loc { color: var(--color-text-secondary); font-weight: 500; }
 
   /* METRICS */
   .metrics { display: flex; gap: 7mm; margin-bottom: 3.5mm; }
@@ -108,7 +108,7 @@
     font-family: var(--serif);
     font-size: 14pt;
     font-weight: 500;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     line-height: 1;
     font-variant-numeric: tabular-nums;
   }
@@ -116,17 +116,17 @@
     font-size: 10.5pt;
     margin-left: 0.5mm;
     font-weight: 500;
-    color: var(--brand);
+    color: var(--color-accent-brand);
   }
-  .metric-label { font-size: 9pt; color: var(--olive); line-height: 1.2; }
+  .metric-label { font-size: 9pt; color: var(--color-text-secondary); line-height: 1.2; }
 
   /* SECTION TITLE */
   .section-title {
     font-family: var(--serif);
     font-size: 13pt;
     font-weight: 500;
-    color: var(--near-black);
-    border-bottom: 0.5pt solid var(--border);
+    color: var(--color-text-primary);
+    border-bottom: 0.5pt solid var(--color-border-default);
     padding: 0 0 3pt 0;
     margin: 5.5mm 0 2mm 0;
     display: flex;
@@ -138,15 +138,15 @@
     font-family: var(--sans);
     font-weight: 400;
     font-size: 9pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     letter-spacing: 0.2pt;
   }
   section:first-of-type .section-title { margin-top: 0; }
   .page-break > .section-title { margin-top: 0; }
 
   /* SUMMARY */
-  .summary { font-size: 9.4pt; line-height: 1.50; color: var(--near-black); }
-  .summary .hl { color: var(--brand); }
+  .summary { font-size: 9.4pt; line-height: 1.50; color: var(--color-text-primary); }
+  .summary .hl { color: var(--color-accent-brand); }
 
   /* TIMELINE */
   .timeline { display: flex; gap: 7mm; margin-bottom: 3.5mm; }
@@ -158,22 +158,22 @@
   .tl-year {
     font-family: var(--serif);
     font-size: 11pt; font-weight: 500;
-    color: var(--brand); line-height: 1;
+    color: var(--color-accent-brand); line-height: 1;
   }
   .tl-head {
     font-size: 11pt; font-weight: 500;
-    color: var(--near-black);
+    color: var(--color-text-primary);
   }
-  .tl-body { font-size: 9pt; color: var(--olive); line-height: 1.45; }
+  .tl-body { font-size: 9pt; color: var(--color-text-secondary); line-height: 1.45; }
 
   /* PROJECTS */
   .project {
     padding: 2.5mm 0;
-    border-top: 0.4pt solid var(--border-soft);
+    border-top: 0.4pt solid var(--color-border-soft);
     break-inside: avoid;
   }
   .project:first-of-type {
-    border-top: 0.4pt solid var(--border);
+    border-top: 0.4pt solid var(--color-border-default);
     padding-top: 2.5mm;
   }
   .proj-head {
@@ -182,11 +182,11 @@
   }
   .proj-name {
     font-family: var(--serif);
-    font-size: 11pt; font-weight: 500; color: var(--near-black);
+    font-size: 11pt; font-weight: 500; color: var(--color-text-primary);
   }
-  .proj-kind { font-size: 11pt; color: var(--olive); }
+  .proj-kind { font-size: 11pt; color: var(--color-text-secondary); }
   .proj-role {
-    font-size: 9pt; color: var(--brand); font-weight: 500;
+    font-size: 9pt; color: var(--color-accent-brand); font-weight: 500;
     margin-left: auto; background: #F7E6E1;
     padding: 0.4mm 1.6mm; border-radius: 2pt; letter-spacing: 0.3pt;
     text-transform: uppercase;
@@ -195,17 +195,17 @@
   .proj-row { display: table-row; }
   .proj-label {
     display: table-cell; width: 16mm;
-    font-size: 9pt; color: var(--brand);
+    font-size: 9pt; color: var(--color-accent-brand);
     font-weight: 500; letter-spacing: 0.4pt;
     text-transform: uppercase;
     padding: 0.4mm 0 0.4mm 0; vertical-align: top;
   }
   .proj-text {
     display: table-cell; font-size: 9.2pt;
-    color: var(--near-black); line-height: 1.45;
+    color: var(--color-text-primary); line-height: 1.45;
     padding: 0 0 0.4mm 1mm;
   }
-  .proj-text .hl { color: var(--brand); }
+  .proj-text .hl { color: var(--color-accent-brand); }
 
   /* PAGE 2 FORCE BREAK */
   .page-break { break-before: page; }
@@ -213,12 +213,12 @@
   /* OPEN SOURCE */
   .os-intro {
     font-size: 9.4pt; line-height: 1.45;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     margin: 1.6mm 0 2.4mm 0;
     break-inside: avoid;
   }
-  .os-intro .hl { color: var(--brand); }
-  .os-intro .strong { color: var(--near-black); font-weight: 500; }
+  .os-intro .hl { color: var(--color-accent-brand); }
+  .os-intro .strong { color: var(--color-text-primary); font-weight: 500; }
 
   .os-grid {
     display: grid;
@@ -228,7 +228,7 @@
   .os-item {
     display: flex; align-items: baseline;
     gap: 2.5mm; padding: 1.2mm 0;
-    border-bottom: 0.3pt dotted var(--border);
+    border-bottom: 0.3pt dotted var(--color-border-default);
     break-inside: avoid;
   }
   .os-name {
@@ -236,30 +236,30 @@
     font-size: 10.5pt; font-weight: 500;
     flex-shrink: 0; min-width: 18mm;
   }
-  .os-name a { color: var(--brand); }
-  .os-desc { font-size: 9pt; color: var(--olive); line-height: 1.4; flex: 1; }
+  .os-name a { color: var(--color-accent-brand); }
+  .os-desc { font-size: 9pt; color: var(--color-text-secondary); line-height: 1.4; flex: 1; }
   .os-star {
-    font-size: 9pt; color: var(--dark-warm);
+    font-size: 9pt; color: var(--color-text-warm);
     font-weight: 500; white-space: nowrap;
     flex-shrink: 0; min-width: 10mm; text-align: right;
     font-variant-numeric: tabular-nums;
   }
-  .os-star.big { color: var(--brand); font-size: 9.2pt; }
+  .os-star.big { color: var(--color-accent-brand); font-size: 9.2pt; }
 
   .os-highlight {
     margin-top: 2.5mm;
     padding: 1.8mm 3mm;
-    background: var(--brand-tint);
-    border-left: 1.4pt solid var(--brand);
+    background: var(--color-accent-brand-tint);
+    border-left: 1.4pt solid var(--color-accent-brand);
     border-radius: 2pt;
     font-size: 9pt; line-height: 1.45;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     break-inside: avoid;
   }
-  .os-highlight .hl { color: var(--brand); }
+  .os-highlight .hl { color: var(--color-accent-brand); }
   .os-highlight .tag {
     display: inline-block;
-    background: var(--brand); color: var(--ivory);
+    background: var(--color-accent-brand); color: var(--color-surface-card);
     font-size: 9pt; font-weight: 500;
     padding: 0.2mm 1.6mm; border-radius: 2pt;
     margin-right: 1.5mm; letter-spacing: 0.5pt;
@@ -278,19 +278,19 @@
   .conv-head {
     font-family: var(--serif);
     font-size: 10pt; font-weight: 500;
-    color: var(--near-black); margin-bottom: 1mm;
+    color: var(--color-text-primary); margin-bottom: 1mm;
     display: flex; align-items: baseline; gap: 2mm;
   }
   .conv-head .year {
-    color: var(--brand); font-weight: 500;
+    color: var(--color-accent-brand); font-weight: 500;
     font-size: 9pt;
     font-variant-numeric: tabular-nums;
   }
   .conv-body {
-    font-size: 9pt; color: var(--olive);
+    font-size: 9pt; color: var(--color-text-secondary);
     line-height: 1.45;
   }
-  .conv-body .hl { color: var(--brand); }
+  .conv-body .hl { color: var(--color-accent-brand); }
 
   /* IMPACT */
   .handle-strip {
@@ -300,36 +300,36 @@
   }
   .handle-strip .handle {
     font-family: var(--serif);
-    font-size: 10pt; font-weight: 500; color: var(--brand);
+    font-size: 10pt; font-weight: 500; color: var(--color-accent-brand);
     flex-shrink: 0;
   }
-  .handle-strip .follower { font-size: 9pt; color: var(--stone); flex-shrink: 0; font-variant-numeric: tabular-nums; }
-  .handle-strip .desc { font-size: 9pt; color: var(--olive); line-height: 1.45; flex: 1; }
+  .handle-strip .follower { font-size: 9pt; color: var(--color-text-muted); flex-shrink: 0; font-variant-numeric: tabular-nums; }
+  .handle-strip .desc { font-size: 9pt; color: var(--color-text-secondary); line-height: 1.45; flex: 1; }
 
   .impact-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 6mm; }
   .inf-block-title {
     margin-top: 2.5mm;
     font-family: var(--serif);
     font-size: 10pt; font-weight: 500;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     margin-bottom: 1.5mm; padding-bottom: 0.5mm;
-    border-bottom: 0.3pt dotted var(--border);
+    border-bottom: 0.3pt dotted var(--color-border-default);
     display: flex; align-items: baseline; gap: 2mm;
   }
   .inf-block-title .small {
     font-family: var(--sans);
-    font-size: 9pt; color: var(--stone);
+    font-size: 9pt; color: var(--color-text-muted);
     font-weight: 400;
   }
   .art-row {
     padding: 1.8mm 0;
-    border-bottom: 0.3pt dotted var(--border-soft);
+    border-bottom: 0.3pt dotted var(--color-border-soft);
   }
   .talk-row {
     display: flex; justify-content: space-between;
     align-items: flex-start;
     gap: 2mm; padding: 1.8mm 0;
-    border-bottom: 0.3pt dotted var(--border-soft);
+    border-bottom: 0.3pt dotted var(--color-border-soft);
   }
   .art-row:last-of-type, .talk-row:last-of-type { border-bottom: none; }
   .art-header {
@@ -338,17 +338,17 @@
     gap: 2mm;
   }
   .art-title, .talk-title {
-    font-size: 9.2pt; color: var(--near-black);
+    font-size: 9.2pt; color: var(--color-text-primary);
     font-weight: 500; line-height: 1.4;
     flex: 1 1 auto; min-width: 0;
   }
   .art-stats, .talk-venue {
-    font-size: 9pt; color: var(--stone);
+    font-size: 9pt; color: var(--color-text-muted);
     line-height: 1.4; margin-top: 0.6mm;
   }
-  .art-stats .em-brand { color: var(--brand); }
+  .art-stats .em-brand { color: var(--color-accent-brand); }
   .art-date, .talk-date {
-    font-size: 9pt; color: var(--stone);
+    font-size: 9pt; color: var(--color-text-muted);
     font-variant-numeric: tabular-nums;
     font-weight: 400;
     white-space: nowrap;
@@ -357,19 +357,19 @@
   /* SKILLS */
   .skill-row {
     display: flex; gap: 3mm; padding: 1.8mm 0;
-    border-bottom: 0.3pt dotted var(--border);
+    border-bottom: 0.3pt dotted var(--color-border-default);
     align-items: baseline;
   }
   .skill-row:last-of-type { border-bottom: none; }
   .skill-label {
     font-size: 9pt; font-weight: 500;
-    color: var(--brand); letter-spacing: 0.5pt;
+    color: var(--color-accent-brand); letter-spacing: 0.5pt;
     text-transform: uppercase;
     width: 32mm; flex-shrink: 0;
     line-height: 1.35;
   }
-  .skill-body { font-size: 9.2pt; color: var(--near-black); line-height: 1.45; flex: 1; }
-  .skill-body .em-brand { color: var(--brand); }
+  .skill-body { font-size: 9.2pt; color: var(--color-text-primary); line-height: 1.45; flex: 1; }
+  .skill-body .em-brand { color: var(--color-accent-brand); }
 
   /* EDUCATION */
   .edu-row {
@@ -380,8 +380,8 @@
     font-family: var(--serif);
     font-weight: 500; font-size: 11pt;
   }
-  .edu-row .major { color: var(--olive); font-size: 9.4pt; }
-  .edu-row .date { color: var(--stone); font-variant-numeric: tabular-nums; font-size: 9pt; }
+  .edu-row .major { color: var(--color-text-secondary); font-size: 9.4pt; }
+  .edu-row .date { color: var(--color-text-muted); font-variant-numeric: tabular-nums; font-size: 9pt; }
 </style>
 </head>
 <body>
@@ -594,7 +594,7 @@
   <div class="section-title">Public Impact</div>
 
   <div class="handle-strip">
-    <span class="handle serif">X · <a href="https://tesla.com/blog" style="color: var(--brand); border-bottom: none;">@elonmusk</a></span>
+    <span class="handle serif">X · <a href="https://tesla.com/blog" style="color: var(--color-accent-brand); border-bottom: none;">@elonmusk</a></span>
     <span class="follower">214M followers</span>
     <span class="desc">Direct channel to 214M followers. Each engineering post, launch video, or product hint moves markets within hours.</span>
   </div>

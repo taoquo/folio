@@ -25,15 +25,15 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --parchment:  #F6F0EA;
-    --ivory:      #FBF7F3;
-    --near-black: #191514;
-    --dark-warm:  #3A312D;
-    --olive:      #5A4A43;
-    --stone:      #85776F;
-    --brand:      #B83D2E;
-    --brand-tint: #F7E6E1;
-    --border:     #E9DED4;
+    --color-surface-page:  #F6F0EA;
+    --color-surface-card:      #FBF7F3;
+    --color-text-primary: #191514;
+    --color-text-warm:  #3A312D;
+    --color-text-secondary:      #5A4A43;
+    --color-text-muted:      #756A63;
+    --color-accent-brand:      #B83D2E;
+    --color-accent-brand-tint: #F7E6E1;
+    --color-border-default:     #E6DACD;
 
     --serif: "Source Serif 4", Charter, Georgia, Palatino, serif;
     --sans: var(--serif);
@@ -41,7 +41,7 @@
   }
 
   body {
-    color: var(--near-black);
+    color: var(--color-text-primary);
     font-family: var(--serif);
   }
 
@@ -49,7 +49,7 @@
     width: 297mm;
     height: 210mm;
     padding: 18mm 22mm;
-    background: var(--parchment);
+    background: var(--color-surface-page);
     break-after: page;
     position: relative;
     display: flex;
@@ -62,7 +62,7 @@
     font-size: 9pt;
     letter-spacing: 2.5pt;
     text-transform: uppercase;
-    color: var(--stone);
+    color: var(--color-text-muted);
   }
 
   .page-num {
@@ -71,7 +71,7 @@
     right: 22mm;
     font-family: var(--mono);
     font-size: 9pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     letter-spacing: 0.5pt;
     font-variant-numeric: tabular-nums;
   }
@@ -82,7 +82,7 @@
     left: 22mm;
     font-family: var(--mono);
     font-size: 9pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     letter-spacing: 1.5pt;
     text-transform: uppercase;
   }
@@ -98,7 +98,7 @@
   .cover .mark {
     font-family: var(--mono);
     font-size: 10pt;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     letter-spacing: 3pt;
     text-transform: uppercase;
     margin-bottom: 22pt;
@@ -109,26 +109,26 @@
     font-weight: 500;
     line-height: 1.05;
     letter-spacing: -1.5pt;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     margin-bottom: 16pt;
   }
   .cover .sub {
     font-family: var(--serif);
     font-size: 15pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     line-height: 1.45;
     max-width: 34ch;
   }
   .cover .line {
     width: 60pt;
     height: 2pt;
-    background: var(--brand);
+    background: var(--color-accent-brand);
     margin: 20pt 0 16pt 0;
   }
   .cover .meta {
     font-family: var(--sans);
     font-size: 10pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     letter-spacing: 0.4pt;
   }
   .cover-visual { display: flex; align-items: center; justify-content: center; }
@@ -146,7 +146,7 @@
     font-weight: 500;
     line-height: 1.1;
     letter-spacing: -0.6pt;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     max-width: 24ch;
     margin-top: 6pt;
     margin-bottom: 28pt;
@@ -166,10 +166,10 @@
     font-family: var(--serif);
     font-size: 17pt;
     line-height: 1.45;
-    color: var(--dark-warm);
+    color: var(--color-text-warm);
     margin-bottom: 14pt;
   }
-  .claim .hl { color: var(--brand); }
+  .claim .hl { color: var(--color-accent-brand); }
 
   ul.pts {
     list-style: none;
@@ -178,7 +178,7 @@
     font-family: var(--sans);
     font-size: 12.5pt;
     line-height: 1.5;
-    color: var(--dark-warm);
+    color: var(--color-text-warm);
     padding-left: 14pt;
     position: relative;
     margin-bottom: 9pt;
@@ -187,22 +187,22 @@
     content: "\2013";
     position: absolute;
     left: 0;
-    color: var(--brand);
+    color: var(--color-accent-brand);
   }
-  ul.pts li .hl { color: var(--brand); font-weight: 500; }
+  ul.pts li .hl { color: var(--color-accent-brand); font-weight: 500; }
 
   /* folio-native callout: transparent + single brand left bar */
   .callout {
     background: transparent;
-    border-left: 2pt solid var(--brand);
+    border-left: 2pt solid var(--color-accent-brand);
     padding: 8pt 0 8pt 16pt;
     font-family: var(--serif);
     font-size: 14pt;
     line-height: 1.5;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     margin-top: 4pt;
   }
-  .callout .hl { color: var(--brand); }
+  .callout .hl { color: var(--color-accent-brand); }
 
   /* folio-native metrics: transparent baseline flex row */
   .metrics {
@@ -210,7 +210,7 @@
     gap: 20pt;
     margin-top: 20pt;
     padding-top: 12pt;
-    border-top: 0.3pt dotted var(--border);
+    border-top: 0.3pt dotted var(--color-border-default);
   }
   .metric {
     flex: 1;
@@ -222,7 +222,7 @@
     font-family: var(--serif);
     font-size: 32pt;
     font-weight: 500;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     line-height: 1;
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.3pt;
@@ -230,7 +230,7 @@
   .metric .l {
     font-family: var(--sans);
     font-size: 10pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     line-height: 1.4;
   }
 
@@ -249,39 +249,39 @@
     font-family: var(--serif);
     font-size: 52pt;
     font-weight: 500;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     letter-spacing: -0.8pt;
     margin-bottom: 12pt;
   }
   .ending .sub {
     font-family: var(--serif);
     font-size: 17pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     max-width: 44ch;
     line-height: 1.45;
   }
   .ending .line {
     width: 60pt;
     height: 1.5pt;
-    background: var(--brand);
+    background: var(--color-accent-brand);
     margin: 22pt auto;
   }
 
   /* --- Code Card --- */
   .code-card {
-    background: var(--ivory);
+    background: var(--color-surface-card);
     border: 1px solid #e8e5da;
     border-radius: 6pt;
     padding: 14pt 18pt;
     font-family: var(--mono);
     font-size: 10pt;
     line-height: 1.55;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     white-space: pre;
     overflow: hidden;
   }
-  .code-card .k { color: var(--brand); }
-  .code-card .c { color: #85776F; }
+  .code-card .k { color: var(--color-accent-brand); }
+  .code-card .c { color: #756A63; }
 </style>
 </head>
 <body>
@@ -298,14 +298,14 @@
   <div class="cover-visual">
     <!-- Decorative loop mark: concentric arcs in brand + stone -->
     <svg viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" style="width: 220pt;">
-      <circle cx="130" cy="130" r="100" fill="none" stroke="#E9DED4" stroke-width="1"/>
-      <circle cx="130" cy="130" r="72" fill="none" stroke="#E9DED4" stroke-width="1"/>
+      <circle cx="130" cy="130" r="100" fill="none" stroke="#E6DACD" stroke-width="1"/>
+      <circle cx="130" cy="130" r="72" fill="none" stroke="#E6DACD" stroke-width="1"/>
       <circle cx="130" cy="130" r="44" fill="#F7E6E1" stroke="#B83D2E" stroke-width="1.2"/>
       <!-- arc segments on outer ring to suggest cycle -->
       <path d="M 130 30 A 100 100 0 0 1 230 130" fill="none" stroke="#B83D2E" stroke-width="2.2" stroke-linecap="round"/>
-      <path d="M 230 130 A 100 100 0 0 1 130 230" fill="none" stroke="#85776F" stroke-width="1.2" stroke-linecap="round"/>
-      <path d="M 130 230 A 100 100 0 0 1 30 130" fill="none" stroke="#85776F" stroke-width="1.2" stroke-linecap="round"/>
-      <path d="M 30 130 A 100 100 0 0 1 130 30" fill="none" stroke="#85776F" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M 230 130 A 100 100 0 0 1 130 230" fill="none" stroke="#756A63" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M 130 230 A 100 100 0 0 1 30 130" fill="none" stroke="#756A63" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M 30 130 A 100 100 0 0 1 130 30" fill="none" stroke="#756A63" stroke-width="1.2" stroke-linecap="round"/>
       <!-- center label -->
       <text x="130" y="125" text-anchor="middle" font-size="10" font-weight="500" fill="#191514" font-family="'Source Serif 4',Charter,Georgia,serif">Agent</text>
       <text x="130" y="141" text-anchor="middle" font-size="8" fill="#B83D2E" font-family="'JetBrains Mono', monospace" letter-spacing="2">LOOP</text>
@@ -342,7 +342,7 @@
            Chevron marker (open path, not filled polygon). Core is the only focal element. -->
       <svg viewBox="0 0 680 560" xmlns="http://www.w3.org/2000/svg">
         <!-- surroundings label -->
-        <text x="340" y="12" text-anchor="middle" font-size="9" fill="#85776F" font-family="'JetBrains Mono', monospace" letter-spacing="1.5">TOOLS · HARNESS · EVALS · MEMORY</text>
+        <text x="340" y="12" text-anchor="middle" font-size="9" fill="#756A63" font-family="'JetBrains Mono', monospace" letter-spacing="1.5">TOOLS · HARNESS · EVALS · MEMORY</text>
 
         <!-- dashed cinnabar-coral ring -->
         <circle cx="340" cy="280" r="192" fill="none" stroke="#B83D2E" stroke-width="1" stroke-dasharray="4 3"/>
@@ -453,23 +453,23 @@
         <!-- Background -->
         <rect width="280" height="230" fill="#F6F0EA"/>
         <!-- Title -->
-        <text x="140" y="18" text-anchor="middle" font-size="8.5" fill="#85776F" font-family="'JetBrains Mono', monospace" letter-spacing="1.5">LOADING STRATEGY vs ACCURACY</text>
+        <text x="140" y="18" text-anchor="middle" font-size="8.5" fill="#756A63" font-family="'JetBrains Mono', monospace" letter-spacing="1.5">LOADING STRATEGY vs ACCURACY</text>
         <!-- Y axis label -->
         <text x="14" y="130" text-anchor="middle" font-size="8" fill="#5A4A43" font-family="'Source Serif 4',Charter,Georgia,serif" transform="rotate(-90 14 130)">Accuracy</text>
         <!-- Y axis line -->
         <line x1="36" y1="30" x2="36" y2="180" stroke="#5A4A43" stroke-width="0.8"/>
         <!-- Y axis ticks -->
         <line x1="30" y1="56" x2="36" y2="56" stroke="#5A4A43" stroke-width="0.8"/>
-        <text x="26" y="59" text-anchor="end" font-size="8" fill="#85776F" font-family="'Source Serif 4',Charter,Georgia,serif">85%</text>
+        <text x="26" y="59" text-anchor="end" font-size="8" fill="#756A63" font-family="'Source Serif 4',Charter,Georgia,serif">85%</text>
         <line x1="30" y1="120" x2="36" y2="120" stroke="#5A4A43" stroke-width="0.8"/>
-        <text x="26" y="123" text-anchor="end" font-size="8" fill="#85776F" font-family="'Source Serif 4',Charter,Georgia,serif">53%</text>
+        <text x="26" y="123" text-anchor="end" font-size="8" fill="#756A63" font-family="'Source Serif 4',Charter,Georgia,serif">53%</text>
         <!-- X axis -->
         <line x1="36" y1="180" x2="256" y2="180" stroke="#5A4A43" stroke-width="0.8"/>
         <!-- bar 1: flat loading -->
-        <rect x="56" y="120" width="68" height="60" fill="#E9DED4" stroke="none"/>
-        <text x="90" y="112" text-anchor="middle" font-size="8" fill="#85776F" font-family="'Source Serif 4',Charter,Georgia,serif">53%</text>
+        <rect x="56" y="120" width="68" height="60" fill="#E6DACD" stroke="none"/>
+        <text x="90" y="112" text-anchor="middle" font-size="8" fill="#756A63" font-family="'Source Serif 4',Charter,Georgia,serif">53%</text>
         <text x="90" y="198" text-anchor="middle" font-size="8.5" fill="#5A4A43" font-family="'Source Serif 4',Charter,Georgia,serif">Flat</text>
-        <text x="90" y="209" text-anchor="middle" font-size="7.5" fill="#85776F" font-family="'JetBrains Mono', monospace">loading</text>
+        <text x="90" y="209" text-anchor="middle" font-size="7.5" fill="#756A63" font-family="'JetBrains Mono', monospace">loading</text>
         <!-- bar 2: layered loading (brand) -->
         <rect x="156" y="56" width="68" height="124" fill="#F7E6E1" stroke="#B83D2E" stroke-width="1"/>
         <text x="190" y="48" text-anchor="middle" font-size="8" fill="#B83D2E" font-family="'Source Serif 4',Charter,Georgia,serif" font-weight="500">85%</text>

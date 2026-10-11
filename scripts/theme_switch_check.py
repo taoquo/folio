@@ -37,7 +37,7 @@ PROFILE = ROOT / "references" / "profiles" / "theme" / "folio-classic-v1.yaml"
 
 # The entry to move, and the value to move it to. A colour no other palette entry
 # holds, so a substitution cannot be confused with an existing value.
-ENTRY = "cinnabar"
+ENTRY = "cinnabar-600"
 FROM = "B83D2E"
 TO = "1F5FEB"
 

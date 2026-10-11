@@ -42,28 +42,28 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --parchment: #F6F0EA;
-    --ivory:     #FBF7F3;
-    --near-black:#191514;
-    --dark-warm: #3A312D;
-    --olive:     #5A4A43;
-    --stone:     #85776F;
-    --brand:     #B83D2E;
-    --border:    #E9DED4;
-    --border-soft:#E8DED6;
-    --tag-bg:    #F1D2CC;
+    --color-surface-page: #F6F0EA;
+    --color-surface-card:     #FBF7F3;
+    --color-text-primary:#191514;
+    --color-text-warm: #3A312D;
+    --color-text-secondary:     #5A4A43;
+    --color-text-muted: #756A63;
+    --color-accent-brand:     #B83D2E;
+    --color-border-default: #E6DACD;
+    --color-border-soft: #E5DBCD;
+    --color-accent-tag:    #F1D2CC;
     --serif: "LXGW WenKai", "Source Han Serif SC", "Noto Serif CJK SC", "Songti SC", "STSong", Georgia, serif;
     --sans: var(--serif);
   }
 
-  html, body { background: var(--parchment); }
+  html, body { background: var(--color-surface-page); }
 
   @media screen {
     body { max-width: 210mm; margin: 0 auto; padding: 15mm 18mm; }
   }
 
   body {
-    color: var(--near-black);
+    color: var(--color-text-primary);
     font-family: var(--serif);
     font-size: 10pt;
     line-height: 1.45;
@@ -80,7 +80,7 @@
 
   /* ========== HEADER ========== */
   .header {
-    border-top: 1.2pt solid var(--brand);
+    border-top: 1.2pt solid var(--color-accent-brand);
     padding-top: 7pt;
     margin-bottom: 12pt;
     display: flex;
@@ -93,7 +93,7 @@
   }
   .eyebrow {
     font-size: 9pt;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     letter-spacing: 1pt;
     text-transform: uppercase;
     margin-bottom: 4pt;
@@ -102,18 +102,18 @@
     font-family: var(--serif);
     font-size: 24pt;
     font-weight: 500;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     line-height: 1.15;
     margin-bottom: 5pt;
   }
   .subtitle {
     font-size: 11pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     line-height: 1.4;
   }
   .meta {
     font-size: 9pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     text-align: right;
     line-height: 1.45;
     white-space: nowrap;
@@ -127,8 +127,8 @@
     gap: 12pt;
     margin-bottom: 14pt;
     padding: 6pt 0;
-    border-top: 0.5pt solid var(--border);
-    border-bottom: 0.5pt solid var(--border);
+    border-top: 0.5pt solid var(--color-border-default);
+    border-bottom: 0.5pt solid var(--color-border-default);
   }
   .metric {
     flex: 1;
@@ -143,7 +143,7 @@
     font-family: var(--serif);
     font-size: 20pt;
     font-weight: 500;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     line-height: 1;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
@@ -151,7 +151,7 @@
   }
   .metric-label {
     font-size: 9pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     line-height: 1.3;
   }
 
@@ -163,12 +163,12 @@
     font-family: var(--serif);
     font-size: 16pt;
     font-weight: 500;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     margin-bottom: 6pt;
   }
   h2 .sub {
     font-size: 9pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     font-weight: 400;
     margin-left: 6pt;
   }
@@ -179,7 +179,7 @@
   .lead {
     font-size: 12pt;
     line-height: 1.5;
-    color: var(--dark-warm);
+    color: var(--color-text-warm);
     margin-bottom: 10pt;
   }
 
@@ -190,29 +190,29 @@
     align-items: baseline;
     padding: 7pt 0;
     margin: 0 0 14pt 0;
-    border-top: 0.8pt solid var(--near-black);
-    border-bottom: 0.3pt dotted var(--border);
+    border-top: 0.8pt solid var(--color-text-primary);
+    border-bottom: 0.3pt dotted var(--color-border-default);
     break-inside: avoid;
   }
   .decision-label {
     font-size: 8.5pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     letter-spacing: 0.7pt;
     text-transform: uppercase;
   }
   .decision-text {
     font-size: 11pt;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     line-height: 1.42;
   }
   .decision-owner {
     font-size: 9pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     text-align: right;
     font-variant-numeric: tabular-nums;
   }
 
-  .hl { color: var(--brand); font-weight: 500; }
+  .hl { color: var(--color-accent-brand); font-weight: 500; }
 
   /* ========== 2-column grid ========== */
   .two-col {
@@ -237,7 +237,7 @@
     content: "\2013";
     position: absolute;
     left: 0;
-    color: var(--brand);
+    color: var(--color-accent-brand);
   }
 
   /* ========== Timeline (横向进度点) ========== */
@@ -254,26 +254,26 @@
     font-family: var(--serif);
     font-size: 11pt;
     font-weight: 500;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     margin-bottom: 2pt;
   }
   .tl-head {
     font-size: 10pt;
     font-weight: 500;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     margin-bottom: 2pt;
   }
   .tl-body {
     font-size: 9pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     line-height: 1.4;
   }
 
   /* ========== Tag ========== */
   .tag {
     display: inline-block;
-    background: var(--tag-bg);    /* 实色！不要 rgba */
-    color: var(--brand);
+    background: var(--color-accent-tag);    /* 实色！不要 rgba */
+    color: var(--color-accent-brand);
     font-size: 9pt;
     font-weight: 500;
     padding: 1pt 5pt;
@@ -287,15 +287,15 @@
      不做容器也不做圆角，气质是"一条旁注"而不是"一个卡片"。 */
   .callout {
     background: transparent;
-    border-left: 1.8pt solid var(--brand);
+    border-left: 1.8pt solid var(--color-accent-brand);
     padding: 4pt 0 4pt 14pt;
     margin: 10pt 0;
     font-size: 10pt;
     line-height: 1.5;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     break-inside: avoid;
   }
-  .callout .hl, .callout .em-brand { color: var(--brand); }
+  .callout .hl, .callout .em-brand { color: var(--color-accent-brand); }
 
   /* ========== TABLE (folio-table) ========== */
   table, .folio-table {
@@ -308,14 +308,14 @@
   table th, .folio-table th {
     text-align: left;
     font-weight: 500;
-    color: var(--dark-warm);
+    color: var(--color-text-warm);
     padding: 4pt 6pt;
-    border-bottom: 1pt solid var(--border);
+    border-bottom: 1pt solid var(--color-border-default);
     background: transparent;
   }
   table td, .folio-table td {
     padding: 3pt 6pt;
-    border-bottom: 0.3pt solid var(--border-soft);
+    border-bottom: 0.3pt solid var(--color-border-soft);
     vertical-align: top;
   }
   table.compact th, .folio-table.compact th { padding: 2pt 5pt; font-size: 8pt; }
@@ -325,19 +325,19 @@
   }
   table.financial th:not(:first-child), .folio-table.financial th:not(:first-child) { text-align: right; }
   table.striped tbody tr:nth-child(even) td, .folio-table.striped tbody tr:nth-child(even) td {
-    background: var(--ivory);
+    background: var(--color-surface-card);
   }
   table .total td, .folio-table .total td {
-    font-weight: 500; border-top: 1pt solid var(--brand); border-bottom: none; color: var(--near-black);
+    font-weight: 500; border-top: 1pt solid var(--color-accent-brand); border-bottom: none; color: var(--color-text-primary);
   }
 
   /* ========== FOOTER ========== */
   .footer {
     margin-top: 18pt;
     padding-top: 6pt;
-    border-top: 0.3pt dotted var(--border);
+    border-top: 0.3pt dotted var(--color-border-default);
     font-size: 9pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     display: flex;
     justify-content: space-between;
     letter-spacing: 0.3pt;

@@ -33,8 +33,10 @@ class SourceReadingTests(TestCase):
         self.assertEqual("#B83D2E", theme.get("color.accent.brand"))
 
     def test_a_template_declaration_is_read(self) -> None:
+        # Templates name a variable the way the role is named, so the layer
+        # needs no translation table between the two.
         template = color_sources._template_declarations()
-        self.assertEqual("#B83D2E", template.get("brand"))
+        self.assertEqual("#B83D2E", template.get("color-accent-brand"))
 
 
 class SharedMeaningTests(TestCase):
@@ -106,27 +108,15 @@ class ThemeDomainTests(TestCase):
             with self.subTest(name=name):
                 self.assertIn(f"color.status.{name}-tint", style.values)
 
-    def test_the_data_domain_covers_three_palettes(self) -> None:
+    def test_the_document_theme_carries_no_chart_palette(self) -> None:
+        # A chart palette lived here with fourteen roles and no consumer: the
+        # templates draw their charts inline and a standalone diagram reads the
+        # drawing theme, which has its own palette and three schemes to keep in
+        # step. It was removed rather than given a consumer it did not have.
         import style_resolver
 
         style = style_resolver.resolve(genre="one-pager")
-        categorical = [k for k in style.values if k.startswith("color.data.category-")]
-        sequential = [k for k in style.values if k.startswith("color.data.sequential-")]
-        diverging = [k for k in style.values if k.startswith("color.data.diverging-")]
-        # Six, because a chart series palette in this repository holds six and
-        # a document that names fewer than a chart can draw would run short.
-        self.assertEqual(6, len(categorical))
-        self.assertEqual(5, len(sequential))
-        self.assertEqual(3, len(diverging))
-
-    def test_a_document_and_a_chart_agree_on_the_brand_red(self) -> None:
-        import style_resolver
-
-        from drawing.theme.folio import DEFAULT_FOLIO_THEME
-
-        style = style_resolver.resolve(genre="one-pager")
-        self.assertEqual(str(style.values["color.accent.brand"].value).upper(),
-                         DEFAULT_FOLIO_THEME.brand.upper())
+        self.assertEqual([], [k for k in style.values if k.startswith("color.data.")])
 
 
 class PaletteLayerTests(TestCase):
@@ -145,10 +135,12 @@ class PaletteLayerTests(TestCase):
             for path, value in style.values.items()
             if path.startswith("color.") and "palette." in value.chain[-1]
         }
-        self.assertEqual("cinnabar", origins["color.accent.brand"])
-        self.assertEqual("cinnabar", origins["color.status.positive"])
-        self.assertEqual("cinnabar", origins["color.data.category-1"])
-        self.assertEqual("cinnabar", origins["color.data.diverging-positive"])
+        # The accent and the positive status are one colour with two meanings.
+        self.assertEqual("cinnabar-600", origins["color.accent.brand"])
+        self.assertEqual("cinnabar-600", origins["color.status.positive"])
+        # And so are their tints.
+        self.assertEqual("cinnabar-100", origins["color.accent.brand-tint"])
+        self.assertEqual("cinnabar-100", origins["color.status.positive-tint"])
 
     def test_a_role_resolves_to_the_palette_value(self) -> None:
         import style_resolver

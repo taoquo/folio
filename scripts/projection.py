@@ -54,31 +54,6 @@ VARIABLE_MAP: dict[str, str] = {
     "paragraph.section_gap_pt": "--folio-section-gap",
 }
 
-# Legacy CSS variable -> the colour role that now owns it. The templates read
-# these names today; the projection emits both so nothing has to change at once.
-LEGACY_ALIASES: dict[str, str] = {
-    "--parchment": "color.surface.page",
-    "--ivory": "color.surface.card",
-    "--border": "color.border.default",
-    "--border-soft": "color.border.soft",
-    "--rule-warm": "color.border.warm",
-    "--near-black": "color.text.primary",
-    "--dark-warm": "color.text.warm",
-    "--olive": "color.text.secondary",
-    "--stone": "color.text.muted",
-    "--brand": "color.accent.brand",
-    "--brand-tint": "color.accent.tint",
-    "--tag-bg": "color.accent.tag",
-    "--status-positive": "color.status.positive",
-    "--status-caution": "color.status.caution",
-    "--status-negative": "color.status.negative",
-    "--status-informative": "color.status.informative",
-    "--status-positive-tint": "color.status.positive-tint",
-    "--status-caution-tint": "color.status.caution-tint",
-    "--status-negative-tint": "color.status.negative-tint",
-    "--status-informative-tint": "color.status.informative-tint",
-}
-
 COLOUR_PREFIX = "color."
 
 
@@ -182,15 +157,6 @@ def style_projection(genre: str | None, language: str | None,
         sources[variable] = style.source_of(path) or "unknown"
         colours[variable] = css_value
 
-    # The names the templates read today, pointed at the roles that now own the
-    # values. Emitted only when the role actually carries a colour, so a theme
-    # that omits `status` does not emit an alias to nothing.
-    aliases: dict[str, str] = {}
-    for legacy, role in LEGACY_ALIASES.items():
-        variable = colour_variable(role)
-        if variable in colours:
-            aliases[legacy] = f"var({variable})"
-
     if not projected:
         return Projection(css="", projected={}, sources={}, skipped=skipped)
 
@@ -202,17 +168,6 @@ def style_projection(genre: str | None, language: str | None,
     for variable, value in sorted(projected.items()):
         lines.append(f"  {variable}: {value}; /* {sources[variable]} */")
     lines.append("}")
-    if aliases:
-        lines.append("")
-        lines.append("/* Migration aliases. The templates read these names; each one")
-        lines.append("   points at the colour role that owns the value now. An alias")
-        lines.append("   whose role is unused is deleted, so this block shrinks to")
-        lines.append("   nothing rather than becoming a second naming scheme. */")
-        lines.append(":root {")
-        for legacy, value in sorted(aliases.items()):
-            lines.append(f"  {legacy}: {value};")
-        lines.append("}")
-
     return Projection(css="\n".join(lines), projected=projected, sources=sources,
                       skipped=skipped)
 
@@ -350,6 +305,46 @@ def combined(
                       skipped=skipped, conflicts=conflicts)
 
 
+def retarget_literals(html: str, theme: str | None = None) -> str:
+    """Move pre-palette literals in markup onto the selected scheme.
+
+    Some markup paints a colour rather than reading a variable: a diagram
+    template states `fill="#B83D2E"` in an SVG attribute, and a document
+    template draws its chart the same way. Measured: this renderer ignores a CSS
+    rule that would override a presentation attribute and does not resolve
+    `var()` inside one, so the literal has to be replaced in the markup.
+
+    What each literal means is read from
+    `references/theme/template-literal-ledger.json` -- recorded rather than
+    derived, because the default theme is the thing being changed and cannot be
+    its own reference. With the default theme selected the mapping is the
+    identity, so nothing moves.
+    """
+    import json
+
+    import style_resolver
+
+    ledger_path = ROOT / "references" / "theme" / "template-literal-ledger.json"
+    if not ledger_path.is_file():
+        return html
+    try:
+        ledger = json.loads(ledger_path.read_text(encoding="utf-8")).get("shipped") or {}
+    except Exception:  # pragma: no cover - a broken ledger must not stop a build
+        return html
+
+    try:
+        style = style_resolver.resolve(names={"theme": theme} if theme else None)
+    except Exception:  # pragma: no cover - a broken profile must not stop a build
+        return html
+
+    for literal, entry in ledger.items():
+        value = style.get(f"palette.{entry}")
+        replacement = str(value).strip() if value is not None else ""
+        if replacement.startswith("#") and replacement.upper() != literal.upper():
+            html = re.sub(re.escape(literal), replacement, html, flags=re.IGNORECASE)
+    return html
+
+
 def inject(html: str, projection: Projection) -> str:
     """Append a projection inside the document's own `<style>` element.
 
@@ -421,12 +416,6 @@ def unconsumed_variables() -> list[str]:
             text = path.read_text(encoding="utf-8", errors="ignore")
             used.update(re.findall(r"var\(\s*(--[a-z0-9-]+)", text))
     projected = style_projection("one-pager", "zh-Hans-CN")
-
-    # The migration aliases carry a role to the pages that read the old name, so
-    # an alias that is read makes its target consumed.
-    for legacy, target in re.findall(r"(--[a-z0-9-]+):\s*var\((--[a-z0-9-]+)\)", projected.css):
-        if legacy in used:
-            used.add(target)
 
     return sorted(
         name for name in projected.projected

@@ -26,28 +26,28 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --parchment: #F6F0EA;
-    --near-black:#191514;
-    --dark-warm: #3A312D;
-    --olive:     #5A4A43;
-    --stone:     #85776F;
-    --brand:     #B83D2E;
-    --ivory:     #FBF7F3;
-    --border:    #E9DED4;
-    --border-soft:#E8DED6;
+    --color-surface-page: #F6F0EA;
+    --color-text-primary:#191514;
+    --color-text-warm: #3A312D;
+    --color-text-secondary:     #5A4A43;
+    --color-text-muted:     #756A63;
+    --color-accent-brand:     #B83D2E;
+    --color-surface-card:     #FBF7F3;
+    --color-border-default:    #E6DACD;
+    --color-border-soft:#E5DBCD;
 
     --serif: "Source Serif 4", Charter, Georgia, Palatino, "Times New Roman", serif;
     --sans: var(--serif);
   }
 
-  html, body { background: var(--parchment); }
+  html, body { background: var(--color-surface-page); }
 
   @media screen {
     body { max-width: 210mm; margin: 0 auto; padding: 25mm; }
   }
 
   body {
-    color: var(--near-black);
+    color: var(--color-text-primary);
     font-family: var(--serif);
     font-size: 11pt;
     line-height: 1.5;
@@ -58,20 +58,20 @@
     margin-bottom: 22pt;
     font-size: 10pt;
     line-height: 1.55;
-    color: var(--olive);
+    color: var(--color-text-secondary);
   }
   .letterhead .sender-name {
     font-size: 13pt;
     font-weight: 500;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     margin-bottom: 4pt;
   }
-  .letterhead a { color: var(--dark-warm); text-decoration: none; }
+  .letterhead a { color: var(--color-text-warm); text-decoration: none; }
 
   .date {
     text-align: right;
     font-size: 10.5pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     margin-bottom: 18pt;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
@@ -84,7 +84,7 @@
   .recipient .to {
     font-family: var(--sans);
     font-size: 9pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     letter-spacing: 0.5pt;
     text-transform: uppercase;
     margin-bottom: 3pt;
@@ -93,23 +93,23 @@
   .recipient .name {
     font-size: 12pt;
     font-weight: 500;
-    color: var(--near-black);
+    color: var(--color-text-primary);
   }
   .recipient .org {
     font-size: 10.5pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
   }
 
   .subject {
     margin-bottom: 18pt;
-    border-left: 2.5pt solid var(--brand);
+    border-left: 2.5pt solid var(--color-accent-brand);
     border-radius: 1.5pt;
     padding-left: 8pt;
   }
   .subject .label {
     font-family: var(--sans);
     font-size: 9pt;
-    color: var(--brand);
+    color: var(--color-accent-brand);
     letter-spacing: 1pt;
     text-transform: uppercase;
     margin-bottom: 3pt;
@@ -118,7 +118,7 @@
   .subject .title {
     font-size: 16pt;
     font-weight: 500;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     line-height: 1.25;
     letter-spacing: -0.2pt;
   }
@@ -126,7 +126,7 @@
   .salutation {
     margin-bottom: 18pt;
     font-size: 12pt;
-    color: var(--near-black);
+    color: var(--color-text-primary);
   }
 
   .body-content p {
@@ -138,7 +138,7 @@
   .body-content p.indent { text-indent: 1.5em; }
 
   .body-content .hl {
-    color: var(--brand);
+    color: var(--color-accent-brand);
     font-weight: 500;
   }
 
@@ -148,32 +148,32 @@
   }
   .closing .regards {
     margin-bottom: 20pt;
-    color: var(--near-black);
+    color: var(--color-text-primary);
   }
   .closing .signature {
     font-size: 14pt;
     font-weight: 500;
-    color: var(--near-black);
+    color: var(--color-text-primary);
     margin-bottom: 3pt;
   }
   .closing .signoff-meta {
     font-family: var(--sans);
     font-size: 10pt;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     line-height: 1.5;
   }
 
   .attachments {
     margin-top: 24pt;
     padding-top: 10pt;
-    border-top: 0.5pt dotted var(--border);
+    border-top: 0.5pt dotted var(--color-border-default);
     font-family: var(--sans);
     font-size: 9.5pt;
-    color: var(--stone);
+    color: var(--color-text-muted);
     line-height: 1.55;
   }
   .attachments .label {
-    color: var(--brand);
+    color: var(--color-accent-brand);
     margin-right: 6pt;
     font-weight: 500;
     letter-spacing: 0.5pt;
@@ -199,14 +199,14 @@
   table th, .folio-table th {
     text-align: left;
     font-weight: 500;
-    color: var(--dark-warm);
+    color: var(--color-text-warm);
     padding: 5pt 8pt;
-    border-bottom: 1pt solid var(--border);
+    border-bottom: 1pt solid var(--color-border-default);
     background: transparent;
   }
   table td, .folio-table td {
     padding: 4pt 8pt;
-    border-bottom: 0.3pt solid var(--border-soft);
+    border-bottom: 0.3pt solid var(--color-border-soft);
     vertical-align: top;
   }
   table.compact th, .folio-table.compact th { padding: 3pt 6pt; font-size: 8pt; }
@@ -216,10 +216,10 @@
   }
   table.financial th:not(:first-child), .folio-table.financial th:not(:first-child) { text-align: right; }
   table.striped tbody tr:nth-child(even) td, .folio-table.striped tbody tr:nth-child(even) td {
-    background: var(--ivory);
+    background: var(--color-surface-card);
   }
   table .total td, .folio-table .total td {
-    font-weight: 500; border-top: 1pt solid var(--brand); border-bottom: none; color: var(--near-black);
+    font-weight: 500; border-top: 1pt solid var(--color-accent-brand); border-bottom: none; color: var(--color-text-primary);
   }
 </style>
 </head>
