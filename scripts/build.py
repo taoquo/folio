@@ -504,7 +504,7 @@ def build_host_integration(name: str) -> bool:
         return False
 
 
-def build_diagram_artifact(name: str) -> bool:
+def build_diagram_artifact(name: str, *, refresh_showcase: bool = True) -> bool:
     config = DIAGRAM_ARTIFACT_TARGETS.get(name)
     if config is None:
         print(f"ERROR: {name}: unknown diagram artifact target")
@@ -539,7 +539,8 @@ def build_diagram_artifact(name: str) -> bool:
         export_pdf, export_png = _load_diagram_exporters()
         export_png(svg_path, png_path)
         export_pdf(svg_path, pdf_path, spec.title)
-        _sync_diagram_showcase(config, png_path, pdf_path)
+        if refresh_showcase:
+            _sync_diagram_showcase(config, png_path, pdf_path)
     except Exception as exc:
         print(f"ERROR: {name}: artifact build failed ({exc})")
         return False
@@ -699,7 +700,11 @@ def build_all() -> int:
         if not build_html(name, source, 1, 9999, src_dir=DIAGRAMS):
             failures += 1
     for name in DIAGRAM_ARTIFACT_TARGETS:
-        if not build_diagram_artifact(name):
+        # `refresh_showcase=False`: a full build does not rewrite the README
+        # images. They are rendered with system fonts, so rewriting them turns
+        # into an unexplainable diff in `assets/demos/`; a deliberate refresh
+        # names the artifact target instead.
+        if not build_diagram_artifact(name, refresh_showcase=False):
             failures += 1
     for name in PPTX_TARGETS:
         if not build_slides(name):

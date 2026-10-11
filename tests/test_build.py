@@ -644,3 +644,38 @@ class IndexParityTests(TestCase):
         with contextlib.redirect_stdout(buffer):
             code = build.check_index_parity()
         self.assertEqual(0, code, buffer.getvalue())
+
+
+class DemoImageIsolationTests(TestCase):
+    """A full build does not rewrite the images the README links to.
+
+    `build_all` walks the artifact targets, and each writes a showcase copy into
+    `assets/demos/`. Those images are rendered with system fonts -- `Charter,
+    Georgia, serif`, neither of which is in this repository -- so rewriting them
+    produces a diff that cannot be explained from the change that ran the build.
+    """
+
+    def test_the_full_build_does_not_refresh_the_showcase(self) -> None:
+        import inspect
+
+        import build as build_module
+
+        source = inspect.getsource(build_module.build_all)
+        self.assertIn("refresh_showcase=False", source)
+
+    def test_an_artifact_target_can_still_refresh_the_showcase(self) -> None:
+        import inspect
+
+        import build as build_module
+
+        signature = inspect.signature(build_module.build_diagram_artifact)
+        self.assertIn("refresh_showcase", signature.parameters)
+        self.assertTrue(signature.parameters["refresh_showcase"].default)
+
+    def test_the_showcase_write_is_guarded(self) -> None:
+        import inspect
+
+        import build as build_module
+
+        source = inspect.getsource(build_module.build_diagram_artifact)
+        self.assertIn("refresh_showcase", source)
