@@ -38,17 +38,21 @@ PORTRAIT = ("pdftoppm", "-r", "150", "-f", "1", "-l", "1", "-png")
 LANDSCAPE = ("pdftoppm", "-r", "150", "-f", "1", "-l", "2", "-png")
 CANVAS = (1241, 1754)
 
-# Sources with no counterpart: named in the report rather than skipped, because a
-# silent skip is how they went stale in the first place.
-SOURCELESS = (
-    "demo-agent-ops-longdoc-zh",
-    "demo-agent-slides-zh",
-    "demo-chendu-portfolio-zh",
-    "demo-folio-changelog-zh",
-    "demo-model-review-letter-zh",
-    "demo-qinglan-onepager-zh",
-    "demo-zhouxu-resume-zh",
-)
+# Demos rebuilt from a document genre rather than from an HTML file. Their
+# content comes from `references/fixtures/document/showcase/`, which is the only
+# copy the repository has.
+FROM_GENRE = {
+    "demo-qinglan-onepager-zh": "one-pager",
+    "demo-agent-ops-longdoc-zh": "long-doc",
+    "demo-model-review-letter-zh": "letter",
+    "demo-chendu-portfolio-zh": "portfolio",
+    "demo-zhouxu-resume-zh": "resume",
+    "demo-folio-changelog-zh": "changelog",
+}
+
+# Named in the report rather than skipped, because a silent skip is how the
+# seven above went stale in the first place. Empty today.
+SOURCELESS: tuple[str, ...] = ()
 
 
 def _env() -> dict[str, str]:
@@ -59,6 +63,13 @@ def _env() -> dict[str, str]:
 
 def sources() -> list[Path]:
     return sorted(DEMOS.glob("demo-*.html"))
+
+
+def document_pdf(genre: str) -> Path:
+    """Build a document example and return its PDF."""
+    subprocess.run([sys.executable, str(ROOT / "scripts" / "build.py"), genre],
+                   cwd=ROOT, capture_output=True, env=_env())
+    return ROOT / "assets" / "examples" / f"{genre}.pdf"
 
 
 def render_pdf(source: Path, out: Path) -> None:
@@ -143,6 +154,25 @@ def main(argv: list[str]) -> int:
         return 1
 
     stale: list[str] = []
+
+    # The genre-backed demos first: they have no HTML, only a fixture.
+    for stem, genre in sorted(FROM_GENRE.items()):
+        if args.only is not None and stem != args.only:
+            continue
+        pdf = document_pdf(genre)
+        if not pdf.is_file():
+            print(f"ERROR: {stem}: {genre} did not build")
+            return 1
+        target_pdf, target_png = DEMOS / f"{stem}.pdf", DEMOS / f"{stem}.png"
+        if args.check:
+            found = retired_colours(target_png) if target_png.is_file() else {"artifact": 0}
+            if found:
+                stale.append(f"{stem}: shows {', '.join(sorted(found))}")
+            continue
+        target_pdf.write_bytes(pdf.read_bytes())
+        capture(target_pdf, target_png)
+        print(f"  {stem}: rebuilt from {genre}")
+
     for source in chosen:
         pdf = DEMOS / f"{source.stem}.pdf"
         png = DEMOS / f"{source.stem}.png"
