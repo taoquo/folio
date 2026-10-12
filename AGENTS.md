@@ -15,7 +15,7 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 | `references/drawing-dsl-v6-final-audit.md` | Closing program audit, gate evidence, and known limits | Low |
 | `assets/examples/` | Published document examples, built from the IR | Medium |
 | `assets/templates/` | 8 document templates in 2 base language families | Medium |
-| `assets/demos/` | README showcase demos, rebuilt from their HTML sources by `scripts/build_demos.py`; seven have no source and cannot be rebuilt | Medium |
+| `assets/demos/` | README showcase demos, rebuilt by `scripts/build_demos.py` from their HTML source or, for six of them, from a document fixture | Medium |
 | `assets/diagrams/generated/catalog/` | 23 generated catalog artifacts per format, SVG / PNG / PDF | Medium |
 | `scripts/build.py` | PDF / PPTX build and verification script, plus placeholder / orphan / rhythm checks | Low |
 | `scripts/folio.py` | Drawing DSL CLI, routing, render, import, catalog | Low |
