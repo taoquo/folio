@@ -1,0 +1,809 @@
+/* Folio Web · reading page base.
+ *
+ * Every size, family, spacing, radius and measure is a custom property from
+ * references/profiles/web/folio-v1.yaml, injected by scripts/build_web.py.
+ * This file decides relationships, never values: a literal here is a second
+ * design system, and `projection.py check` / `check_web.py` reject it.
+ */
+
+* { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* A jump lands below the sticky bar, not underneath it. */
+  scroll-padding-top: var(--web-scroll-offset);
+}
+
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background: var(--color-surface-page);
+  color: var(--color-text-primary);
+  font-family: var(--serif);
+  font-size: var(--web-body-size);
+  line-height: var(--web-body-leading);
+}
+
+a { color: var(--color-accent-brand); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 0.18em; }
+a:focus-visible {
+  outline: var(--web-space-1) solid var(--color-accent-brand);
+  outline-offset: var(--web-space-1);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-accent-brand) 18%, transparent);
+}
+
+/* The first stop for a keyboard reader; it leaves the composition untouched
+   until it is focused. */
+.skip {
+  position: absolute;
+  left: var(--web-space-4);
+  top: var(--web-space-4);
+  z-index: 40;
+  padding: var(--web-space-3) var(--web-space-5);
+  border: var(--web-line-hairline) solid var(--color-border-default);
+  border-radius: var(--web-radius-label);
+  background: var(--color-surface-card);
+  font-family: var(--mono);
+  font-size: var(--web-label-size);
+  line-height: var(--web-label-leading);
+  transform: translateY(-300%);
+}
+.skip:focus { transform: none; }
+
+/* ---- delivery shell ---- */
+
+/* The bar belongs to the column, not to the window: it shares the page's
+   width so the hairline below it reads as a masthead rule. */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--web-space-6);
+  max-width: var(--web-page-width);
+  min-height: var(--web-topbar-min-height);
+  margin: 0 auto;
+  padding: 0 var(--web-page-x);
+  border-bottom: var(--web-line-hairline) solid var(--color-border-soft);
+  background: var(--color-surface-card);
+}
+
+.topbar .back {
+  grid-column: 1;
+  justify-self: start;
+  padding: var(--web-space-4) 0;
+  font-family: var(--mono);
+  font-size: var(--web-label-size);
+  line-height: var(--web-label-leading);
+  color: var(--color-text-secondary);
+}
+
+.topbar .back:hover { color: var(--color-accent-brand); text-decoration: none; }
+
+.series-name {
+  grid-column: 2;
+  justify-self: center;
+  font-family: var(--mono);
+  font-size: var(--web-label-size);
+  line-height: var(--web-label-leading);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.now {
+  grid-column: 3;
+  justify-self: end;
+  max-width: 100%;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: var(--web-label-size);
+  line-height: var(--web-label-leading);
+  color: var(--color-text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.progress {
+  position: absolute;
+  left: 0;
+  bottom: calc(-1 * var(--web-line-hairline));
+  width: 100%;
+  height: var(--web-line-progress);
+  background: var(--color-accent-brand);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.page {
+  max-width: var(--web-page-width);
+  margin: 0 auto;
+  padding: var(--web-page-top) var(--web-page-x) var(--web-page-bottom);
+}
+
+/* ---- document head ---- */
+
+/* A masthead, not a header block: the rule closes the title and the contents
+   open below it. */
+.doc-head {
+  margin: var(--web-space-8) 0 0;
+  padding-bottom: var(--web-space-11);
+  border-bottom: var(--web-line-hairline) solid var(--color-border-default);
+}
+
+.kicker {
+  margin: 0 0 var(--web-space-4);
+  font-family: var(--mono);
+  font-size: var(--web-label-size);
+  letter-spacing: 0.14em;
+  line-height: var(--web-label-leading);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+h1 {
+  margin: 0 0 var(--web-space-5);
+  font-size: var(--web-h1-size);
+  line-height: var(--web-h1-leading);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.lead {
+  margin: 0;
+  max-width: var(--web-measure-body);
+  font-size: var(--web-lead-size);
+  line-height: var(--web-lead-leading);
+  color: var(--color-text-secondary);
+  text-wrap: balance;
+}
+
+/* ---- table of contents ---- */
+
+/* An index, not a card wall: each entry hangs from a rule, so three columns
+   read as one list rather than as three boxes. */
+.toc { margin: var(--web-space-12) 0 0; }
+
+.toc ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--web-toc-min), 1fr));
+  gap: 0 var(--web-space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.toc a {
+  display: block;
+  padding: var(--web-space-5) 0 var(--web-space-6);
+  border-top: var(--web-line-hairline) solid var(--color-border-soft);
+  color: var(--color-text-primary);
+  transition: border-color 0.18s ease;
+}
+
+.toc a:hover { border-top-color: var(--color-accent-brand); text-decoration: none; }
+
+.toc .num {
+  display: block;
+  margin-bottom: var(--web-space-2);
+  font-family: var(--mono);
+  font-size: var(--web-label-size);
+  line-height: var(--web-label-leading);
+  color: var(--color-text-muted);
+}
+
+.toc .name {
+  display: block;
+  font-size: var(--web-small-size);
+  line-height: var(--web-small-leading);
+  transition: color 0.18s ease;
+}
+
+.toc a:hover .name { color: var(--color-accent-brand); }
+
+.toc .sum {
+  display: block;
+  margin-top: var(--web-space-1);
+  font-size: var(--web-label-size);
+  line-height: var(--web-label-leading);
+  color: var(--color-text-secondary);
+  text-wrap: balance;
+}
+
+/* ---- chapters ---- */
+
+/* Each chapter opens on its own rule, so the page reads as a sequence of
+   sections rather than one long scroll. It is a structural rule, like the one
+   above the document nav, so both read `border.default`; only the list and
+   card hairlines take the soft tone. */
+.chapter {
+  margin-top: var(--web-space-16);
+  padding-top: var(--web-space-8);
+  border-top: var(--web-line-hairline) solid var(--color-border-default);
+  font-size: var(--web-reading-size);
+  line-height: var(--web-reading-leading);
+}
+
+.chapter h2 {
+  position: relative;
+  margin: 0 0 var(--web-space-6);
+  font-size: var(--web-h2-size);
+  line-height: var(--web-h2-leading);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.chapter h2 .num {
+  display: block;
+  margin: 0 0 var(--web-space-3);
+  font-family: var(--mono);
+  font-size: var(--web-label-size);
+  line-height: var(--web-label-leading);
+  letter-spacing: 0.12em;
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.chapter h3 {
+  margin: var(--web-space-11) 0 var(--web-space-4);
+  font-size: var(--web-h3-size);
+  line-height: var(--web-h3-leading);
+  font-weight: 500;
+  text-wrap: balance;
+}
+
+.chapter p { margin: 0 0 var(--web-space-6); max-width: var(--web-measure-body); }
+
+/* A script inside a script, as in d_k written as an exponent, keeps the outer
+   script's size. The browser's default shrinks it a second time, which turns a
+   two-character index into a speck. */
+.chapter sup sub, .chapter sub sup { font-size: inherit; }
+
+/* A wide screen has room for the section number to step into the margin and
+   become the page's one large numeral. The title keeps the column. */
+@media (min-width: 1200px) {
+  .chapter h2 .num {
+    position: absolute;
+    left: calc(-1 * var(--web-index-offset));
+    top: calc(-1 * var(--web-space-2));
+    margin: 0;
+    font-size: var(--web-index-size);
+    line-height: var(--web-index-leading);
+    letter-spacing: -0.02em;
+    color: var(--color-border-default);
+  }
+}
+/* A file reference is a name, not prose: monospace keeps `scripts/x.py:12`
+   legible and tells the reader it is a path rather than a word. */
+.chapter code {
+  padding: 0 var(--web-space-2);
+  border-radius: var(--web-radius-badge);
+  background: var(--color-surface-card);
+  font-family: var(--mono);
+  font-size: var(--web-code-size);
+  color: var(--color-text-secondary);
+  /* A path is one token; on a narrow screen it must be allowed to break or it
+     pushes the whole page wide. */
+  overflow-wrap: anywhere;
+}
+.src-note { font-size: var(--web-label-size); line-height: var(--web-label-leading); color: var(--color-text-muted); }
+/* A formula is quoted source, not prose: monospaced so symbols line up, and
+   scrollable rather than wrapped when the expression is longer than the
+   reading measure. */
+/* Two classes, so the rule outranks the prose measure on `.chapter p`. */
+.chapter .formula {
+  margin: var(--web-space-7) 0 var(--web-space-8);
+  padding: var(--web-space-5) var(--web-space-7);
+  max-width: var(--web-figure-slot);
+  border-left: var(--web-line-marker) solid var(--color-border-soft);
+  background: var(--color-surface-card);
+  font-family: var(--mono);
+  font-size: var(--web-code-size);
+  line-height: var(--web-code-leading);
+  white-space: pre;
+  overflow-x: auto;
+}
+.chapter ul, .chapter ol {
+  max-width: var(--web-measure-list);
+  margin: 0 0 var(--web-space-6);
+  padding-left: var(--web-list-indent);
+}
+/* A component grid is not prose: it uses the figure column, not the text
+   measure. Without this the KPI row and card grid inherit the list width and
+   lose columns the page has room for. */
+.chapter .multi-card, .chapter .kpi-row, .chapter .phase-seg, .chapter .tbl-wrap {
+  max-width: none;
+}
+.chapter li { margin: 0 0 var(--web-space-3); }
+
+.prose-list { margin: 0 0 var(--web-space-6); padding-left: 0; list-style: none; }
+.prose-list li { position: relative; padding-left: var(--web-bullet-indent); }
+.prose-list li::before {
+  content: "•";
+  position: absolute;
+  left: var(--web-bullet-left);
+  color: var(--color-text-muted);
+}
+
+/* ---- content components ---- */
+
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(var(--web-kpi-columns), minmax(0, 1fr));
+  gap: var(--web-space-6);
+  margin: var(--web-space-9) 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kpi {
+  padding: var(--web-space-9);
+  border: var(--web-line-hairline) solid var(--color-border-soft);
+  border-radius: var(--web-radius-card);
+  background: var(--color-surface-card);
+}
+
+.kpi .v {
+  display: block;
+  font-size: var(--web-kpi-size);
+  line-height: var(--web-kpi-leading);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi .k {
+  display: block;
+  margin-top: var(--web-space-2);
+  font-family: var(--mono);
+  font-size: var(--web-label-size);
+  line-height: var(--web-label-leading);
+  color: var(--color-text-secondary);
+}
+
+.phase-seg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--web-space-4);
+  margin: var(--web-space-8) 0;
+  padding: 0;
+  list-style: none;
+}
+
+.phase {
+  flex: 1 1 var(--web-phase-basis);
+  min-width: var(--web-phase-min);
+  padding: var(--web-space-6) var(--web-space-7);
+  border-left: var(--web-line-marker) solid var(--color-border-default);
+  background: var(--color-surface-card);
+}
+
+/* A stage names its meaning; the colour follows, so two stages in one row are
+   distinguishable and a scheme switch keeps each meaning distinct. */
+.phase[data-role="delivered"] { border-left-color: var(--color-semantic-delivered); }
+.phase[data-role="info"] { border-left-color: var(--color-semantic-info); }
+.phase[data-role="component"] { border-left-color: var(--color-semantic-component); }
+.phase[data-role="passed"] { border-left-color: var(--color-semantic-passed); }
+.phase[data-role="attention"] { border-left-color: var(--color-semantic-attention); }
+.phase[data-role="enhance"] { border-left-color: var(--color-semantic-enhance); }
+.phase[data-role="risk"] { border-left-color: var(--color-semantic-risk); }
+.phase[data-role="change"] { border-left-color: var(--color-semantic-change); }
+.phase[data-role="input"] { border-left-color: var(--color-semantic-input); }
+.phase[data-role="pending"] { border-left-color: var(--color-semantic-pending); }
+
+.phase .t {
+  display: block;
+  font-family: var(--mono);
+  font-size: var(--web-label-size);
+  color: var(--color-text-muted);
+}
+.phase .d { display: block; font-size: var(--web-small-size); }
+
+/* An insight is a pull quote: the accent belongs to its rule, and the panel is
+   the card surface the other blocks already use. Mixing a tint would put a
+   fifth surface colour on the page, and in a warm scheme a red wash reads as a
+   separate, pinker paper rather than the same one. */
+.insight {
+  margin: var(--web-space-9) 0;
+  padding: var(--web-space-7) var(--web-space-9);
+  border-left: var(--web-line-marker) solid var(--color-accent-brand);
+  background: var(--color-surface-card);
+}
+
+.insight p { margin: 0; max-width: var(--web-measure-list); }
+
+.multi-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--web-card-min), 1fr));
+  gap: var(--web-space-6);
+  margin: var(--web-space-9) 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  padding: var(--web-space-8) var(--web-space-9);
+  border: var(--web-line-hairline) solid var(--color-border-soft);
+  border-radius: var(--web-radius-card);
+  background: var(--color-surface-card);
+}
+
+.card .t { display: block; font-weight: 500; margin-bottom: var(--web-space-2); }
+.card .d { display: block; font-size: var(--web-label-size); line-height: var(--web-label-leading); color: var(--color-text-secondary); }
+
+/* ---- tables ---- */
+
+.tbl-wrap { overflow-x: auto; margin: var(--web-space-9) 0 var(--web-space-10); }
+
+/* A table is a printed object: one rule above the header, one under it, one
+   closing the body. Row hairlines are quiet enough to remain optional. */
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--web-dense-size);
+  line-height: var(--web-dense-leading);
+}
+
+/* A wide table scrolls; its caption is prose and must not scroll away with
+   it, so it stays pinned to the left edge of the scrollport. */
+.tbl caption {
+  position: sticky;
+  left: 0;
+  caption-side: top;
+  max-width: calc(100vw - var(--web-page-x) * 2);
+  padding: 0 0 var(--web-space-4);
+  text-align: left;
+  font-family: var(--mono);
+  font-size: var(--web-label-size);
+  line-height: var(--web-label-leading);
+  color: var(--color-text-muted);
+}
+
+.tbl th, .tbl td {
+  padding: var(--web-space-3) var(--web-space-5);
+  border-bottom: var(--web-line-hairline) solid var(--color-border-soft);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.tbl th {
+  border-top: var(--web-line-hairline) solid var(--color-border-default);
+  border-bottom: var(--web-line-hairline) solid var(--color-border-default);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: var(--color-surface-card);
+}
+
+.tbl tr:last-child td { border-bottom: var(--web-line-hairline) solid var(--color-border-default); }
+
+.tbl td { height: var(--web-table-row); }
+.tbl td.num, .tbl th.num {
+  text-align: right;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- figures ---- */
+
+.figure { margin: var(--web-space-12) 0 var(--web-space-13); max-width: var(--web-figure-slot); }
+
+.figure svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: var(--web-line-hairline) solid var(--color-border-soft);
+  border-radius: var(--web-radius-card);
+  background: var(--color-surface-card);
+}
+
+figcaption {
+  margin-top: var(--web-space-4);
+  font-family: var(--mono);
+  font-size: var(--web-caption-size);
+  line-height: var(--web-caption-leading);
+  color: var(--color-text-muted);
+}
+
+/* ---- doc nav ---- */
+
+.doc-nav {
+  margin-top: var(--web-space-17);
+  padding-top: var(--web-space-7);
+  border-top: var(--web-line-hairline) solid var(--color-border-default);
+  font-family: var(--mono);
+  font-size: var(--web-label-size);
+}
+
+.doc-nav a { display: inline-block; min-height: var(--web-nav-line-height); line-height: var(--web-nav-line-height); }
+.doc-nav .dot { margin: 0 var(--web-dot-gap); color: var(--color-text-muted); }
+
+/* ---- series index ---- */
+
+/* The index is the same publication as a chapter: entries hang from rules,
+   with the module number in the margin like a section number. */
+.module-grid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.module-block {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--web-space-2) var(--web-space-7);
+  padding: var(--web-space-8) var(--web-space-6);
+  border-bottom: var(--web-line-hairline) solid var(--color-border-soft);
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.module-block:hover {
+  background: color-mix(in srgb, var(--color-surface-card) 70%, transparent);
+  transform: translateY(calc(-1 * var(--web-hover-lift)));
+}
+
+.module-num {
+  grid-row: 1 / span 3;
+  font-family: var(--mono);
+  font-size: var(--web-index-size);
+  line-height: var(--web-index-leading);
+  letter-spacing: -0.02em;
+  color: var(--color-border-default);
+}
+.module-block h2 {
+  grid-column: 2;
+  margin: 0;
+  font-size: var(--web-h2-size);
+  line-height: var(--web-h2-leading);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.module-block h2 a { color: var(--color-text-primary); }
+.module-block h2 a:hover { color: var(--color-accent-brand); text-decoration: none; }
+.module-summary {
+  grid-column: 2;
+  margin: 0;
+  font-size: var(--web-small-size);
+  line-height: var(--web-small-leading);
+  color: var(--color-text-secondary);
+}
+.module-meta {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--web-space-4);
+  align-items: center;
+  margin-top: var(--web-space-2);
+}
+
+.badge {
+  display: inline-block;
+  padding: var(--web-line-hairline) var(--web-space-4);
+  border: var(--web-line-hairline) solid var(--color-border-default);
+  border-radius: var(--web-radius-badge);
+  font-family: var(--mono);
+  font-size: var(--web-label-size);
+  line-height: var(--web-space-10);
+  color: var(--color-text-secondary);
+}
+
+.badge[data-status="已实现"],
+.badge[data-status="Implemented"] {
+  border-color: var(--color-semantic-passed);
+  color: var(--color-semantic-passed-strong);
+}
+.badge[data-status="代码验证"],
+.badge[data-status="Code-verified"] {
+  border-color: var(--color-semantic-info);
+  color: var(--color-semantic-info-strong);
+}
+.badge[data-status="规范"],
+.badge[data-status="Spec"] {
+  border-color: var(--color-semantic-delivered);
+  color: var(--color-semantic-delivered-strong);
+}
+.badge[data-status="引擎对照"],
+.badge[data-status="Engine parity"] {
+  border-color: var(--color-semantic-input);
+  color: var(--color-semantic-input-strong);
+}
+.badge[data-status="规划中"],
+.badge[data-status="Planned"] {
+  border-color: var(--color-semantic-pending);
+  color: var(--color-semantic-pending-strong);
+}
+
+.pkg {
+  font-family: var(--mono);
+  font-size: var(--web-code-size);
+  line-height: var(--web-code-leading);
+  color: var(--color-text-muted);
+}
+
+/* ---- reading rail: right-side section scale ---- */
+
+/* The rail hangs off the column's right edge at every width, so it indexes the
+   text rather than the window. Both edges are set: a fixed box with only one
+   of them resolves against the window and drifts. */
+.rail {
+  position: fixed;
+  left: calc(50% + var(--web-page-width) / 2 + var(--web-rail-right));
+  right: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  font-family: var(--mono);
+}
+
+.rail ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--web-space-3);
+  align-items: flex-end;
+}
+
+.rail a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: var(--web-space-10);
+  padding: var(--web-space-1) 0;
+}
+
+.rail .tick {
+  display: block;
+  width: var(--web-rail-tick);
+  height: var(--web-rail-tick-height);
+  border-radius: var(--web-radius-tick);
+  background: var(--color-border-default);
+  transition: width 0.15s ease, height 0.15s ease, background 0.15s ease;
+}
+
+.rail a:hover .tick { width: var(--web-rail-tick-hover); background: var(--color-text-muted); }
+
+.rail a[aria-current="true"] .tick {
+  width: var(--web-rail-tick-active);
+  height: var(--web-rail-tick-height-active);
+  background: var(--color-accent-brand);
+}
+
+.rail .label {
+  position: absolute;
+  right: 100%;
+  margin-right: var(--web-rail-label-gap);
+  padding: var(--web-space-2) var(--web-space-4);
+  border: var(--web-line-hairline) solid var(--color-border-soft);
+  border-radius: var(--web-radius-label);
+  background: var(--color-surface-card);
+  color: var(--color-text-primary);
+  font-size: var(--web-label-size);
+  line-height: var(--web-label-leading);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
+}
+
+.rail a:hover .label,
+.rail a:focus-visible .label { opacity: 1; }
+
+@media (max-width: 900px) {
+  .rail { display: none; }
+}
+
+@media print {
+  .rail { display: none; }
+}
+
+/* ---- entrance ----
+ * The animation is driven by scroll position, not by a callback: a block is
+ * already visible whenever it is on screen, and a browser without view
+ * timelines never receives a hidden state to begin with. A reader who asks for
+ * less motion sees the page as it is.
+ */
+
+@keyframes settle {
+  from { opacity: 0; transform: translateY(var(--web-reveal-offset)); }
+  to { opacity: 1; transform: none; }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .chapter > h2,
+    .chapter > h3,
+    .chapter > .figure,
+    .chapter > .tbl-wrap,
+    .chapter > .kpi-row,
+    .chapter > .phase-seg,
+    .chapter > .insight,
+    .chapter > .multi-card,
+    .toc li,
+    .module-block {
+      animation: settle linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
+}
+
+/* ---- responsive ----
+ * The breakpoints are structure, not a type scale: CSS cannot read a custom
+ * property in a media query. The values each breakpoint applies come from the
+ * profile, so the template still decides no size.
+ */
+
+/* A wide window takes one step, not a second design. The column, the figures
+ * and the tables widen together, so the single right edge survives the
+ * breakpoint; only the reading measure changes, and it stays inside the band.
+ */
+@media (min-width: 1280px) {
+  .page, .topbar { max-width: var(--web-wide-page-width); }
+  .chapter p, .lead { max-width: var(--web-measure-wide-body); }
+  .chapter ul, .chapter ol, .insight p { max-width: var(--web-measure-wide-list); }
+  .figure, .chapter .formula { max-width: var(--web-wide-figure-slot); }
+  /* The rail follows the column, not the window: at 1920 an edge-pinned rail
+     drifts half a screen away from the text it indexes. A fixed element's
+     percentage resolves against the viewport without its scrollbar, which
+     `100vw` does not. */
+  .rail { left: calc(50% + var(--web-wide-page-width) / 2 + var(--web-rail-right)); }
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: var(--web-compact-page-top) var(--web-compact-page-x)
+      var(--web-compact-page-bottom);
+  }
+  .topbar { padding: 0 var(--web-compact-page-x); }
+  /* The rail disappears at 900px, so the running label is the only thing that
+     still says where the reader is. The series name gives way instead: the
+     back link already names the series. */
+  .series-name { display: none; }
+  .doc-head { padding-bottom: var(--web-space-9); }
+  .chapter { margin-top: var(--web-space-14); }
+  .tbl caption { max-width: calc(100vw - var(--web-compact-page-x) * 2); }
+  /* The page padding already narrows the column; a second cap here would put
+     the figures on a different right edge than the text. */
+  .chapter p, .lead, .figure, .chapter .formula { max-width: none; }
+  /* On a phone the expression is wider than the screen; wrapping keeps the
+     whole formula readable, where scrolling would hide half of it. */
+  .chapter .formula { white-space: pre-wrap; }
+  h1 { font-size: var(--web-compact-h1); }
+  .kpi-row { grid-template-columns: repeat(var(--web-compact-kpi-columns), minmax(0, 1fr)); }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: var(--web-narrow-page-top) var(--web-narrow-page-x)
+      var(--web-narrow-page-bottom);
+  }
+  .topbar { padding: 0 var(--web-narrow-page-x); }
+  .series-name { display: none; }
+  .chapter { font-size: var(--web-narrow-body); }
+  .tbl caption { max-width: calc(100vw - var(--web-narrow-page-x) * 2); }
+  h1 { font-size: var(--web-narrow-h1); }
+  .kpi-row { grid-template-columns: repeat(var(--web-narrow-kpi-columns), minmax(0, 1fr)); }
+  .toc ol { grid-template-columns: 1fr; }
+}
+
+@media print {
+  .topbar, .doc-nav, .skip { display: none; }
+  /* A printed page has no viewport to enter, so the entrance is not played. */
+  .chapter > h2, .chapter > h3, .chapter > .figure, .chapter > .tbl-wrap,
+  .chapter > .kpi-row, .chapter > .phase-seg, .chapter > .insight,
+  .chapter > .multi-card, .toc li, .module-block { animation: none; }
+  body { background: var(--color-surface-page); }
+}

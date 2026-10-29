@@ -42,11 +42,11 @@
       "separator": [
         [
           120,
-          206
+          200
         ],
         [
           904,
-          206
+          200
         ]
       ]
     },
@@ -56,7 +56,7 @@
       "label": {
         "text": "RUNTIME LAYER",
         "x": 32,
-        "y": 284,
+        "y": 272,
         "fill": "#74665F",
         "size": 11.0,
         "family": "'JetBrains Mono', monospace",
@@ -77,11 +77,11 @@
       "separator": [
         [
           120,
-          362
+          344
         ],
         [
           904,
-          362
+          344
         ]
       ]
     },
@@ -91,7 +91,7 @@
       "label": {
         "text": "DATA LAYER",
         "x": 32,
-        "y": 440,
+        "y": 416,
         "fill": "#74665F",
         "size": 11.0,
         "family": "'JetBrains Mono', monospace",
@@ -117,7 +117,7 @@
       "label": {
         "text": "DATA PIPELINE",
         "x": 164,
-        "y": 240,
+        "y": 228,
         "fill": "#74665F",
         "size": 8.0,
         "family": "'JetBrains Mono', monospace",
@@ -128,9 +128,9 @@
       },
       "box": {
         "x": 148,
-        "y": 224,
+        "y": 212,
         "w": 440,
-        "h": 272
+        "h": 260
       },
       "style": {
         "fill": "#FBF7F3",
@@ -154,19 +154,19 @@
       "points": [
         [
           256,
-          404
+          380
         ],
         [
           256,
-          352
+          332
         ],
         [
           428,
-          352
+          332
         ],
         [
           428,
-          320
+          308
         ]
       ],
       "style": {
@@ -181,15 +181,15 @@
         "points": [
           [
             424,
-            328
+            316
           ],
           [
             428,
-            320
+            308
           ],
           [
             432,
-            328
+            316
           ]
         ]
       },
@@ -197,7 +197,7 @@
       "label": {
         "text": "STREAM",
         "x": 344,
-        "y": 340,
+        "y": 320,
         "fill": "#5A4A43",
         "size": 8.0,
         "family": "'JetBrains Mono', monospace",
@@ -208,7 +208,7 @@
       },
       "label_box": {
         "x": 324,
-        "y": 328,
+        "y": 308,
         "w": 40,
         "h": 16
       },
@@ -222,19 +222,19 @@
       "points": [
         [
           532,
-          320
+          308
         ],
         [
           532,
-          360
+          344
         ],
         [
           428,
-          360
+          344
         ],
         [
           428,
-          404
+          380
         ]
       ],
       "style": {
@@ -249,15 +249,15 @@
         "points": [
           [
             424,
-            396
+            372
           ],
           [
             428,
-            404
+            380
           ],
           [
             432,
-            396
+            372
           ]
         ]
       },
@@ -265,7 +265,7 @@
       "label": {
         "text": "LOAD",
         "x": 480,
-        "y": 348,
+        "y": 332,
         "fill": "#5A4A43",
         "size": 8.0,
         "family": "'JetBrains Mono', monospace",
@@ -276,7 +276,7 @@
       },
       "label_box": {
         "x": 464,
-        "y": 336,
+        "y": 320,
         "w": 32,
         "h": 16
       },
@@ -362,15 +362,15 @@
         ],
         [
           584,
-          392
+          368
         ],
         [
           532,
-          392
+          368
         ],
         [
           532,
-          404
+          380
         ]
       ],
       "style": {
@@ -385,15 +385,15 @@
         "points": [
           [
             528,
-            396
+            372
           ],
           [
             532,
-            404
+            380
           ],
           [
             536,
-            396
+            372
           ]
         ]
       },
@@ -409,7 +409,7 @@
       "id": "processor",
       "box": {
         "x": 392,
-        "y": 248,
+        "y": 236,
         "w": 176,
         "h": 72
       },
@@ -425,7 +425,7 @@
         {
           "text": "SERVICE",
           "x": 412,
-          "y": 268,
+          "y": 256,
           "fill": "#B83D2E",
           "size": 7.0,
           "family": "'JetBrains Mono', monospace",
@@ -437,7 +437,7 @@
         {
           "text": "Stream Processor",
           "x": 480,
-          "y": 288,
+          "y": 276,
           "fill": "#191514",
           "size": 12.0,
           "family": "\"Source Serif 4\", Charter, Georgia, serif",
@@ -449,7 +449,7 @@
         {
           "text": "transform stage",
           "x": 480,
-          "y": 304,
+          "y": 292,
           "fill": "#5A4A43",
           "size": 9.0,
           "family": "'JetBrains Mono', monospace",
@@ -466,7 +466,7 @@
       "id": "kafka",
       "box": {
         "x": 168,
-        "y": 404,
+        "y": 380,
         "w": 176,
         "h": 72
       },
@@ -482,7 +482,7 @@
         {
           "text": "CLOUD",
           "x": 188,
-          "y": 424,
+          "y": 400,
           "fill": "#74665F",
           "size": 7.0,
           "family": "'JetBrains Mono', monospace",
@@ -494,7 +494,7 @@
         {
           "text": "Kafka Bus",
           "x": 256,
-          "y": 444,
+          "y": 420,
           "fill": "#191514",
           "size": 12.0,
           "family": "\"Source Serif 4\", Charter, Georgia, serif",
@@ -506,7 +506,7 @@
         {
           "text": "event stream",
           "x": 256,
-          "y": 460,
+          "y": 436,
           "fill": "#5A4A43",
           "size": 9.0,
           "family": "'JetBrains Mono', monospace",
@@ -519,9 +519,9 @@
       "pictogram": {
         "id": "pictogram:kafka",
         "paths": [
-          "M 314 420 h 12",
-          "M 314 424 h 12",
-          "M 314 428 h 12"
+          "M 314 396 h 12",
+          "M 314 400 h 12",
+          "M 314 404 h 12"
         ],
         "stroke": "#E6DACD"
       },
@@ -531,7 +531,7 @@
       "id": "warehouse",
       "box": {
         "x": 392,
-        "y": 404,
+        "y": 380,
         "w": 176,
         "h": 72
       },
@@ -547,7 +547,7 @@
         {
           "text": "STORE",
           "x": 412,
-          "y": 424,
+          "y": 400,
           "fill": "#74665F",
           "size": 7.0,
           "family": "'JetBrains Mono', monospace",
@@ -559,7 +559,7 @@
         {
           "text": "Warehouse",
           "x": 480,
-          "y": 444,
+          "y": 420,
           "fill": "#191514",
           "size": 12.0,
           "family": "\"Source Serif 4\", Charter, Georgia, serif",
@@ -571,7 +571,7 @@
         {
           "text": "analytics state",
           "x": 480,
-          "y": 460,
+          "y": 436,
           "fill": "#5A4A43",
           "size": 9.0,
           "family": "'JetBrains Mono', monospace",
@@ -584,8 +584,8 @@
       "pictogram": {
         "id": "pictogram:warehouse",
         "paths": [
-          "M 538 418 h 12 v 12 h -12 z",
-          "M 540 422 h 8"
+          "M 538 394 h 12 v 12 h -12 z",
+          "M 540 398 h 8"
         ],
         "stroke": "#5A4A43"
       },
@@ -723,7 +723,7 @@
       "id": "observability",
       "box": {
         "x": 616,
-        "y": 404,
+        "y": 380,
         "w": 176,
         "h": 72
       },
@@ -739,7 +739,7 @@
         {
           "text": "CLOUD",
           "x": 636,
-          "y": 424,
+          "y": 400,
           "fill": "#74665F",
           "size": 7.0,
           "family": "'JetBrains Mono', monospace",
@@ -751,7 +751,7 @@
         {
           "text": "Observability",
           "x": 704,
-          "y": 444,
+          "y": 420,
           "fill": "#191514",
           "size": 12.0,
           "family": "\"Source Serif 4\", Charter, Georgia, serif",
@@ -763,7 +763,7 @@
         {
           "text": "logs · traces",
           "x": 704,
-          "y": 460,
+          "y": 436,
           "fill": "#5A4A43",
           "size": 9.0,
           "family": "'JetBrains Mono', monospace",
@@ -776,9 +776,9 @@
       "pictogram": {
         "id": "pictogram:observability",
         "paths": [
-          "M 762 420 h 12",
-          "M 762 424 h 12",
-          "M 762 428 h 12"
+          "M 762 396 h 12",
+          "M 762 400 h 12",
+          "M 762 404 h 12"
         ],
         "stroke": "#E6DACD"
       },

@@ -12,20 +12,28 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 | `references/writing.md` | Content strategy + quality bars per document type, English-only source | Low |
 | `references/production.md` | WeasyPrint build and troubleshooting runbook, English-only source | Medium |
 | `references/drawing-dsl.md` | Drawing DSL scope, compiler stages, routing, and output layer | Low |
+| `references/web/` | Web reading-page scenario: delivery, content, density, figures, acceptance (English-only) | Medium |
 | `references/drawing-dsl-v6-final-audit.md` | Closing program audit, gate evidence, and known limits | Low |
 | `assets/examples/` | Published document examples, built from the IR | Medium |
 | `assets/templates/` | 8 document templates in 2 base language families | Medium |
 | `assets/demos/` | README showcase demos, rebuilt by `scripts/build_demos.py` from their HTML source or, for six of them, from a document fixture | Medium |
 | `assets/diagrams/generated/catalog/` | 23 generated catalog artifacts per format, SVG / PNG / PDF | Medium |
 | `scripts/build.py` | PDF / PPTX build and verification script, plus placeholder / orphan / rhythm checks | Low |
-| `scripts/folio.py` | Drawing DSL CLI, routing, render, import, catalog | Low |
+| `scripts/folio.py` | CLI for build, verify, profiles, Web series, Drawing DSL routing, render, import and catalog | Low |
 | `scripts/page_contracts.py` | Single source for page-count contracts, consumed by every checker | Low |
 | `references/profiles/theme/` | Colour schemes, one file each: a palette of raw values and the roles that point at it. `FOLIO_THEME` selects one | Medium |
+| `references/profiles/web/` | Screen profile: font stacks, px type roles, spacing, radii, measure, reading-page geometry | Medium |
+| `assets/templates/web/` | Web reading-page skeletons and `base.css`, which reads only projected variables | Medium |
+| `scripts/build_web.py` | Builds a static reading-page series and embeds the profile's face | Medium |
+| `scripts/check_web.py` | Enforces the `W-*` rules at levels 1-3 | Medium |
+| `scripts/web_contracts.py` | Single source for Web page types, vocabulary, figure budgets and acceptance | Low |
+| `scripts/web_figures.py` | Drawing DSL adapter for Web figures and the theme bridge | Low |
+| `scripts/web_geometry.py` | Static figure geometry and provenance reads | Low |
 | `scripts/document_ir/` | Document IR: model, validator, readers, HTML and PPTX writers | Medium |
 | `scripts/renderers/` | Renderer protocol and the WeasyPrint adapter | Low |
 | `scripts/pipeline.py` | Chooses the render path via `FOLIO_PIPELINE` | Low |
 | `scripts/fidelity.py` | Measures the IR path against the template path, per document type | Medium |
-| `scripts/projection.py` | Projects the resolved style and layout policy into a document's stylesheet | Medium |
+| `scripts/projection.py` | Projects the resolved style, Web screen scale and layout policy into a stylesheet | Medium |
 | `styles.css` | The two homepages' stylesheet; baked with the scheme like any other static page | Medium |
 | `scripts/document_build.py` | Builds a finished document from content, choosing the path by configuration | Medium |
 | `scripts/spacing_probe.py` | Reads a rendered document's spacing back and compares it with the model | Low |
@@ -57,7 +65,7 @@ Document engine checks. These gate the IR path and the measured quality of every
 ```bash
 python3 scripts/corpus.py validate            # every fixture is well formed
 python3 scripts/corpus.py coverage            # composition and adversarial share
-python3 scripts/profile_check.py              # 36 profiles, shape and meaning
+python3 scripts/profile_check.py              # 40 profiles, shape and meaning
 python3 scripts/document_baseline.py compare  # documents match the approved baseline
 python3 scripts/pipeline.py rollback-drill    # every mode can be left by configuration
 python3 scripts/migration.py status           # IR readiness per document type
@@ -81,6 +89,24 @@ python3 scripts/build_scheme_comparison.py --inject   # the homepage galleries
 python3 scripts/build_literal_ledger.py      # record what a template literal means
 python3 scripts/spacing_probe.py compare --genre one-pager   # rendered spacing vs the model
 ```
+
+Web reading-page checks. The scenario is a static page, so its gate needs no browser:
+
+```bash
+python3 scripts/check_web.py <page> --level 1                # structure, text, delivery
+python3 scripts/check_web.py <page> --level 3 --source <txt> # density, colour, geometry
+python3 scripts/web_geometry.py <page>                       # figure geometry only
+python3 scripts/build_web.py --series <dir> --verify         # build and check a series
+python3 scripts/folio.py web --series <dir> --verify         # the same through the CLI
+python3 scripts/folio.py web --series references/fixtures/web/reading-demo \
+  --verify --level 3 --source references/fixtures/web/reading-demo/source.txt  # the tracked fixture CI runs
+```
+
+Web pages read the same theme as every document plus a screen profile in
+`references/profiles/web/`. `projection.py` emits both layers; the templates in
+`assets/templates/web/` declare no size, family, spacing or radius. A literal in
+`base.css` is rejected by `projection.py check`, and `check_web.py` resolves the
+built page's custom properties before it measures density or colour.
 
 Lint runs from the shared `pyproject.toml` config, so local and CI results match:
 

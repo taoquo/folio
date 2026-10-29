@@ -99,30 +99,30 @@ writes, `docs/acceptance/color-system.html`, is the same data with swatches.
 | name | value | roles using it |
 |---|---|---|
 | `amber-100` | `#F6EBD9` | 1 |
-| `amber-600` | `#906327` | 1 |
+| `amber-600` | `#906327` | 3 |
 | `cinnabar-100` | `#F7E6E1` | 2 |
 | `cinnabar-200` | `#F1D2CC` | 1 |
 | `cinnabar-500` | `#C97A63` | 0 |
-| `cinnabar-600` | `#B83D2E` | 2 |
-| `cinnabar-800` | `#7E241C` | 0 |
-| `ink` | `#191514` | 1 |
+| `cinnabar-600` | `#B83D2E` | 3 |
+| `cinnabar-800` | `#7E241C` | 2 |
+| `ink` | `#191514` | 5 |
 | `ivory` | `#FBF7F3` | 1 |
 | `parchment` | `#F6F0EA` | 1 |
-| `sage-600` | `#4A6B52` | 0 |
+| `sage-600` | `#4A6B52` | 1 |
 | `sand` | `#E6DACD` | 1 |
-| `slate-600` | `#5A6B7A` | 1 |
+| `slate-600` | `#5A6B7A` | 2 |
 | `warm-200` | `#E5DBCD` | 1 |
 | `warm-250` | `#D7CBC2` | 1 |
 | `warm-300` | `#e3baa9` | 1 |
 | `warm-350` | `#B9ACA3` | 1 |
-| `warm-500` | `#8B8078` | 1 |
-| `warm-600` | `#756A63` | 1 |
+| `warm-500` | `#8B8078` | 2 |
+| `warm-600` | `#756A63` | 2 |
 | `warm-650` | `#74665F` | 1 |
-| `warm-700` | `#5A4A43` | 2 |
-| `warm-800` | `#4B3E39` | 0 |
-| `warm-850` | `#3A312D` | 1 |
+| `warm-700` | `#5A4A43` | 4 |
+| `warm-800` | `#4B3E39` | 2 |
+| `warm-850` | `#3A312D` | 4 |
 
-**Roles** — 22 semantic uses.
+**Roles** — 42 semantic uses.
 
 *画布与容器* — 页面、卡片；一个文档的底色层次
 
@@ -165,6 +165,31 @@ writes, `docs/acceptance/color-system.html`, is the same data with swatches.
 | `color.status.negative` | `--color-status-negative` | `#5A6B7A` | `slate-600` | 2 |
 | `color.status.positive` | `--color-status-positive` | `#B83D2E` | `cinnabar-600` | 2 |
 
+*内容语义* — 文档含义用色；同一含义全站同色，跨 scheme 固定
+
+| role | CSS variable | value | from | used by |
+|---|---|---|---|---|
+| `color.semantic.attention` | `--color-semantic-attention` | `#906327` | `amber-600` | **none** |
+| `color.semantic.attention-strong` | `--color-semantic-attention-strong` | `#906327` | `amber-600` | **none** |
+| `color.semantic.change` | `--color-semantic-change` | `#5A4A43` | `warm-700` | **none** |
+| `color.semantic.change-strong` | `--color-semantic-change-strong` | `#3A312D` | `warm-850` | **none** |
+| `color.semantic.component` | `--color-semantic-component` | `#4B3E39` | `warm-800` | **none** |
+| `color.semantic.component-strong` | `--color-semantic-component-strong` | `#191514` | `ink` | **none** |
+| `color.semantic.delivered` | `--color-semantic-delivered` | `#B83D2E` | `cinnabar-600` | **none** |
+| `color.semantic.delivered-strong` | `--color-semantic-delivered-strong` | `#7E241C` | `cinnabar-800` | **none** |
+| `color.semantic.enhance` | `--color-semantic-enhance` | `#7E241C` | `cinnabar-800` | **none** |
+| `color.semantic.enhance-strong` | `--color-semantic-enhance-strong` | `#191514` | `ink` | **none** |
+| `color.semantic.info` | `--color-semantic-info` | `#5A6B7A` | `slate-600` | **none** |
+| `color.semantic.info-strong` | `--color-semantic-info-strong` | `#3A312D` | `warm-850` | **none** |
+| `color.semantic.input` | `--color-semantic-input` | `#8B8078` | `warm-500` | **none** |
+| `color.semantic.input-strong` | `--color-semantic-input-strong` | `#4B3E39` | `warm-800` | **none** |
+| `color.semantic.passed` | `--color-semantic-passed` | `#4A6B52` | `sage-600` | **none** |
+| `color.semantic.passed-strong` | `--color-semantic-passed-strong` | `#3A312D` | `warm-850` | **none** |
+| `color.semantic.pending` | `--color-semantic-pending` | `#756A63` | `warm-600` | **none** |
+| `color.semantic.pending-strong` | `--color-semantic-pending-strong` | `#5A4A43` | `warm-700` | **none** |
+| `color.semantic.risk` | `--color-semantic-risk` | `#191514` | `ink` | **none** |
+| `color.semantic.risk-strong` | `--color-semantic-risk-strong` | `#191514` | `ink` | **none** |
+
 **Contrast**, measured against both surfaces a document uses:
 
 | purpose | ratio | minimum | result |
@@ -179,6 +204,16 @@ writes, `docs/acceptance/color-system.html`, is the same data with swatches.
 | 警告 / 画布 | 4.64:1 | 4.5:1 | pass |
 | 负向 / 画布 | 4.86:1 | 4.5:1 | pass |
 | 细线 / 画布 | 1.22:1 | 1.2:1 | pass |
+| 语义 交付 / 画布 | 8.61:1 | 4.5:1 | pass |
+| 语义 信息 / 画布 | 11.21:1 | 4.5:1 | pass |
+| 语义 构件 / 画布 | 16.03:1 | 4.5:1 | pass |
+| 语义 通过 / 画布 | 11.21:1 | 4.5:1 | pass |
+| 语义 注意 / 画布 | 4.64:1 | 4.5:1 | pass |
+| 语义 增强 / 画布 | 16.03:1 | 4.5:1 | pass |
+| 语义 风险 / 画布 | 16.03:1 | 4.5:1 | pass |
+| 语义 变更 / 画布 | 11.21:1 | 4.5:1 | pass |
+| 语义 输入 / 画布 | 9.07:1 | 4.5:1 | pass |
+| 语义 待办 / 画布 | 7.44:1 | 4.5:1 | pass |
 
 **Chart series follow the scheme.** The drawing theme's six series tokens read `color.series.*`, so a scheme reaches a chart's series the way it reaches its canvas. A line chart strokes positions 1, 2 and 6 at 1.6px and those carry a 3:1 non-text minimum; 3, 4 and 5 are fills behind a labelled key. The drawing theme holds eighteen tokens, thirteen of them shared with this one, and `docs/exploration/drawing-series-bridge.md` records how they were joined.
 

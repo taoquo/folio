@@ -1,5 +1,8 @@
 # Web Workspace
 
+> Superseded. The current Web scenario is `references/web/README.md`; this file
+> is kept for history and must not be used to route new work.
+
 Use this guide for product workspaces and operational UI: dashboards, editors, review queues, admin tools, settings, monitors, and internal control surfaces.
 
 Read `web-foundation.md` first.

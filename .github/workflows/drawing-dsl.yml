@@ -79,6 +79,14 @@ jobs:
         run: python scripts/stabilize.py resume changelog --check
       - name: Validate profiles against the repository
         run: python scripts/profile_check.py
+      - name: Validate every colour scheme and the Web projection
+        run: |
+          python scripts/check_theme_schemes.py
+          python scripts/projection.py check
+      - name: Build and verify the Web reading fixture
+        run: |
+          python scripts/folio.py web --series references/fixtures/web/reading-demo \
+            --verify --level 3 --source references/fixtures/web/reading-demo/source.txt
       - name: Validate the document corpus
         run: |
           python scripts/corpus.py validate

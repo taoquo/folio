@@ -35,7 +35,7 @@ def layout_drawing(
     constraints = compile_layout_constraints(drawing, grammar)
     _require_elk()
     seed_boxes = _elk_seed_layout(drawing, constraints)
-    boxes = _compose(drawing, constraints, seed_boxes)
+    boxes = _compose(drawing, constraints, seed_boxes, grammar)
     edges = _route_edges(drawing, constraints, boxes)
     bounds = _bounds_for(boxes, edges)
     result = LayoutResult(boxes=boxes, edges=edges, bounds=bounds)
@@ -142,18 +142,35 @@ def _compose(
     drawing: DrawingPlan,
     constraints: LayoutConstraintSet,
     seed: dict[str, LayoutBox],
+    grammar: ArchitectureGrammar = DEFAULT_ARCHITECTURE_GRAMMAR,
 ) -> dict[str, LayoutBox]:
     if drawing.composition.pattern == "pipeline":
         return _pipeline_boxes(drawing, constraints, seed)
     if drawing.composition.pattern == "hub":
         return _hub_boxes(drawing, constraints, seed)
-    return _layered_boxes(drawing, constraints, seed)
+    return _layered_boxes(drawing, constraints, seed, grammar)
+
+
+# The legend is drawn in the bottom chrome band. A region pads its members and
+# can push its border down into that band, so the last row moves up by exactly
+# the overlap. Nodes alone already stop above the legend.
+LEGEND_TOP_FROM_BOTTOM = 60
+LEGEND_CLEARANCE = 8
+
+
+def _region_wraps_last_row(drawing: DrawingPlan, last_row: list[str]) -> bool:
+    members = set(last_row)
+    return any(
+        region.treatment in {"soft-boundary", "trust-boundary", "phase-band"} and members & set(region.members)
+        for region in drawing.regions
+    )
 
 
 def _layered_boxes(
     drawing: DrawingPlan,
     constraints: LayoutConstraintSet,
     seed: dict[str, LayoutBox],
+    grammar: ArchitectureGrammar = DEFAULT_ARCHITECTURE_GRAMMAR,
 ) -> dict[str, LayoutBox]:
     rows: list[tuple[str, list[str]]] = []
     assigned: set[str] = set()
@@ -169,6 +186,10 @@ def _layered_boxes(
         rows = [("default", [node.id for node in drawing.nodes])]
 
     top, bottom, left, right = 92, drawing.height - 64, 72, drawing.width - 72
+    if drawing.legend and _region_wraps_last_row(drawing, rows[-1][1]):
+        legend_top = drawing.height - LEGEND_TOP_FROM_BOTTOM
+        region_bottom = bottom + grammar.geometry.group_pad_bottom
+        bottom -= max(0, region_bottom - (legend_top - LEGEND_CLEARANCE))
     row_step = 0 if len(rows) == 1 else (bottom - top - 72) / (len(rows) - 1)
     boxes: dict[str, LayoutBox] = {}
     for row_index, (_layer, members) in enumerate(rows):
@@ -230,6 +251,27 @@ def _align_secondary_rows(
     return result
 
 
+def _bands_follow_flow(bands, flow: list[str]) -> bool:
+    """True when the layer bands are consecutive runs of the declaration order.
+
+    A band groups members that sit next to each other. If the bands interleave
+    -- `a, b, a` -- they describe one structure seen from two angles, not rows,
+    and forcing them into rows would draw a band across rows it does not own.
+    The spine is not consulted here: it orders the reading, and banding still
+    decides which row a node belongs to.
+    """
+    seen: list[str] = []
+    for band in bands:
+        run = [node_id for node_id in flow if node_id in set(band.members)]
+        if not run:
+            continue
+        positions = [flow.index(node_id) for node_id in run]
+        if positions != list(range(positions[0], positions[0] + len(positions))):
+            return False
+        seen.extend(run)
+    return seen == [node_id for node_id in flow if node_id in set(seen)]
+
+
 def _pipeline_boxes(
     drawing: DrawingPlan,
     constraints: LayoutConstraintSet,
@@ -241,8 +283,39 @@ def _pipeline_boxes(
     left, right = 64, drawing.width - 64
     boxes: dict[str, LayoutBox] = {}
     pipeline_nodes = [*ordered, *remainder]
-    chunks = [pipeline_nodes[index:index + 4] for index in range(0, len(pipeline_nodes), 4)] or [[]]
-    first_y = _grid(drawing.height * (0.34 if len(chunks) > 1 else 0.42))
+    # A pipeline that declares layers has already said which nodes belong on
+    # which row. Chunking by four instead leaves the layer bands drawn around
+    # nodes that are no longer in them, so the declared layers win -- but only
+    # when each band is a run of the flow order. A band that interleaves with
+    # another is a stack, not a pipeline row, and forcing it into rows would
+    # break the order the spine states.
+    bands = [region for region in drawing.regions if region.treatment == "layer-band"]
+    declared = [node.id for node in drawing.nodes]
+    if bands and not _bands_follow_flow(bands, declared):
+        bands = []
+    if bands:
+        chunks = [
+            [node_id for node_id in band.members if node_id in seed]
+            for band in bands
+        ]
+        grouped = {node_id for chunk in chunks for node_id in chunk}
+        leftovers = [node_id for node_id in pipeline_nodes if node_id not in grouped]
+        if leftovers:
+            chunks.append(leftovers)
+        chunks = [chunk for chunk in chunks if chunk] or [[]]
+    else:
+        chunks = [pipeline_nodes[index:index + 4] for index in range(0, len(pipeline_nodes), 4)] or [[]]
+    if bands:
+        # One row per declared layer, fitted inside the canvas: a fixed 148px
+        # step would push the last layer band past the bottom edge as soon as
+        # the payload declares three layers.
+        tallest = max(constraints.node_sizes[node_id][1] for node_id in pipeline_nodes) if pipeline_nodes else 64
+        top, bottom = 92, drawing.height - 64
+        step = 148 if len(chunks) < 2 else min(148, (bottom - top - tallest) / (len(chunks) - 1))
+        first_y = _grid(top + max(0, (bottom - top - tallest - step * (len(chunks) - 1)) / 2))
+    else:
+        step = 148
+        first_y = _grid(drawing.height * (0.34 if len(chunks) > 1 else 0.42))
     for row_index, chunk in enumerate(chunks):
         widths = [constraints.node_sizes[node_id][0] for node_id in chunk]
         gap = constraints.node_gap
@@ -250,8 +323,11 @@ def _pipeline_boxes(
             gap = min(gap, max(12, (right - left - sum(widths)) // (len(chunk) - 1)))
         total = sum(widths) + max(0, len(chunk) - 1) * gap
         x = _grid(left + max(0, (right - left - total) / 2))
-        y = _grid(first_y + row_index * 148)
-        row = chunk if row_index % 2 == 0 else list(reversed(chunk))
+        y = _grid(first_y + row_index * step)
+        # A serpentine pipeline reverses alternate rows to keep the next arrow
+        # short. A layer band is not serpentine: its members are stated in flow
+        # order, and reversing them turns the arrows backwards.
+        row = chunk if bands or row_index % 2 == 0 else list(reversed(chunk))
         for node_id in row:
             w, h = constraints.node_sizes[node_id]
             boxes[node_id] = LayoutBox(x, y, w, h)
@@ -270,11 +346,17 @@ def _hub_boxes(
         focus = _ordered_node_ids(drawing, constraints)[0]
     focus_w, focus_h = constraints.node_sizes[focus]
     center_x = _grid(drawing.width / 2)
-    center_y = _grid(drawing.height / 2 + 16)
+    if drawing.legend:
+        # The ring sits above the legend band, so the lowest satellite clears
+        # the legend box without shrinking the horizontal spread.
+        center_y = _grid(drawing.height / 2 - 8)
+        radius_y = min(168, max(132, drawing.height // 3 - 8))
+    else:
+        center_y = _grid(drawing.height / 2 + 16)
+        radius_y = min(176, max(132, drawing.height // 3))
     boxes = {focus: LayoutBox(_grid(center_x - focus_w / 2), _grid(center_y - focus_h / 2), focus_w, focus_h)}
     satellites = [node_id for node_id in _ordered_node_ids(drawing, constraints) if node_id != focus]
     radius_x = min(320, max(220, drawing.width // 3))
-    radius_y = min(176, max(132, drawing.height // 3))
     for index, node_id in enumerate(satellites):
         angle = -pi / 2 + (2 * pi * index / max(1, len(satellites)))
         w, h = constraints.node_sizes[node_id]

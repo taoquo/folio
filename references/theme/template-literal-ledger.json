@@ -3,12 +3,12 @@
   "shipped": {
     "#191514": "color.text.primary",
     "#3A312D": "color.text.warm",
-    "#4A6B52": "palette:sage-600",
-    "#4B3E39": "palette:warm-800",
+    "#4A6B52": "color.semantic.passed",
+    "#4B3E39": "color.semantic.component",
     "#5A4A43": "color.text.secondary",
     "#5A6B7A": "color.status.negative",
     "#756A63": "color.text.muted",
-    "#7E241C": "palette:cinnabar-800",
+    "#7E241C": "color.semantic.delivered-strong",
     "#8B8078": "color.series.6",
     "#906327": "color.status.caution",
     "#B83D2E": "color.accent.brand",
@@ -27,6 +27,7 @@
   "files": {
     "#191514": [
       "assets/demos/demo-agent-ops-longdoc.html",
+      "assets/demos/demo-agent-slides-zh.html",
       "assets/demos/demo-agent-slides.html",
       "assets/demos/demo-architecture.html",
       "assets/demos/demo-board-letter.html",
@@ -77,6 +78,7 @@
     ],
     "#3A312D": [
       "assets/demos/demo-agent-ops-longdoc.html",
+      "assets/demos/demo-agent-slides-zh.html",
       "assets/demos/demo-agent-slides.html",
       "assets/demos/demo-board-letter.html",
       "assets/demos/demo-folio-changelog.html",
@@ -115,6 +117,7 @@
     ],
     "#5A4A43": [
       "assets/demos/demo-agent-ops-longdoc.html",
+      "assets/demos/demo-agent-slides-zh.html",
       "assets/demos/demo-agent-slides.html",
       "assets/demos/demo-architecture.html",
       "assets/demos/demo-board-letter.html",
@@ -166,6 +169,7 @@
     ],
     "#756A63": [
       "assets/demos/demo-agent-ops-longdoc.html",
+      "assets/demos/demo-agent-slides-zh.html",
       "assets/demos/demo-agent-slides.html",
       "assets/demos/demo-architecture.html",
       "assets/demos/demo-board-letter.html",
@@ -227,6 +231,7 @@
     ],
     "#B83D2E": [
       "assets/demos/demo-agent-ops-longdoc.html",
+      "assets/demos/demo-agent-slides-zh.html",
       "assets/demos/demo-agent-slides.html",
       "assets/demos/demo-architecture.html",
       "assets/demos/demo-board-letter.html",
@@ -327,6 +332,7 @@
     ],
     "#E6DACD": [
       "assets/demos/demo-agent-ops-longdoc.html",
+      "assets/demos/demo-agent-slides-zh.html",
       "assets/demos/demo-agent-slides.html",
       "assets/demos/demo-architecture.html",
       "assets/demos/demo-board-letter.html",
@@ -402,6 +408,7 @@
     ],
     "#F6F0EA": [
       "assets/demos/demo-agent-ops-longdoc.html",
+      "assets/demos/demo-agent-slides-zh.html",
       "assets/demos/demo-agent-slides.html",
       "assets/demos/demo-architecture.html",
       "assets/demos/demo-board-letter.html",
@@ -451,6 +458,7 @@
       "styles.css"
     ],
     "#F7E6E1": [
+      "assets/demos/demo-agent-slides-zh.html",
       "assets/demos/demo-agent-slides.html",
       "assets/demos/demo-musk-resume.html",
       "assets/diagrams/architecture.html",
@@ -475,6 +483,7 @@
     ],
     "#FBF7F3": [
       "assets/demos/demo-agent-ops-longdoc.html",
+      "assets/demos/demo-agent-slides-zh.html",
       "assets/demos/demo-agent-slides.html",
       "assets/demos/demo-architecture.html",
       "assets/demos/demo-board-letter.html",
@@ -605,6 +614,7 @@
       "assets/diagrams/waterfall.html"
     ],
     "#E8E5DA": [
+      "assets/demos/demo-agent-slides-zh.html",
       "assets/demos/demo-agent-slides.html"
     ],
     "#E9DED4": [

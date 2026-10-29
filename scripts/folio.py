@@ -674,8 +674,20 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers.add_parser("package", help="Build dist/folio.zip.")
     subparsers.add_parser("list-targets", help="List known build targets.")
 
+    web_cmd = subparsers.add_parser(
+        "web", help="Build or verify a Web reading-page series from series.json."
+    )
+    web_cmd.add_argument("--series", required=True, help="Directory holding series.json.")
+    web_cmd.add_argument("--out", help="Output root (default: dist/web).")
+    web_cmd.add_argument("--theme", help="FOLIO_THEME scheme name.")
+    web_cmd.add_argument("--verify", action="store_true", help="Run the W-* checks after building.")
+    web_cmd.add_argument("--source", help="Source text for the zero-deletion check.")
+    web_cmd.add_argument("--level", type=int, default=3, choices=(1, 2, 3))
+    web_cmd.add_argument("--strict-figures", action="store_true",
+                         help="Treat figure advisory diagnostics as build failures.")
+
     check_profiles = subparsers.add_parser(
-        "check-profiles", help="Validate typography/page/language/theme/taste profiles."
+        "check-profiles", help="Validate typography/page/web/language/theme/taste profiles."
     )
     check_profiles.add_argument("--format", choices=("text", "json"), default="text")
     check_profiles.add_argument("--strict", action="store_true", help="Treat warnings as failures.")
@@ -684,7 +696,7 @@ def build_parser() -> argparse.ArgumentParser:
         "inspect-profile", help="Print one resolved profile with its inheritance applied."
     )
     inspect_profile.add_argument("name", help="Profile name, for example folio-resume-zh-v1.")
-    inspect_profile.add_argument("--kind", choices=("typography", "page", "language", "theme", "taste"))
+    inspect_profile.add_argument("--kind", choices=("typography", "page", "web", "language", "theme", "taste"))
 
     list_types = subparsers.add_parser("list-diagram-types", help="List registered authoring contracts.")
     list_types.add_argument("--format", choices=("text", "json"), default="text")
@@ -854,6 +866,21 @@ def _main(argv: list[str]) -> int:
         return _run_package()
     if args.command == "list-targets":
         return list_targets()
+    if args.command == "web":
+        from build_web import main as web_main
+
+        forwarded = ["--series", args.series, "--level", str(args.level)]
+        if args.out:
+            forwarded.extend(("--out", args.out))
+        if args.theme:
+            forwarded.extend(("--theme", args.theme))
+        if args.source:
+            forwarded.extend(("--source", args.source))
+        if args.verify:
+            forwarded.append("--verify")
+        if args.strict_figures:
+            forwarded.append("--strict-figures")
+        return web_main(forwarded)
     if args.command == "check-profiles":
         return _check_profiles(args.format, args.strict)
     if args.command == "inspect-profile":

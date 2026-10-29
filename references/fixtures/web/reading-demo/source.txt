@@ -1,0 +1,6 @@
+A release stops at a gate when any visual check fails.
+The build reaches 28.4 BLEU in 3.5 days after a short warmup schedule.
+A build job moves from queued to rendered to signed.
+Sign-off crosses three lanes before the report ships.
+The rules live in scripts/web_contracts.py and scripts/check_web.py.
+The page reads the same profiles as every document.

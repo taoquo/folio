@@ -173,6 +173,148 @@ def style_projection(genre: str | None, language: str | None,
 
 
 
+# Web reading page: the screen scale the old base.css declared for itself.
+# Every entry is derived from a resolved `web.*` path rather than kept in a
+# second table, so adding a role to the profile is enough to make it available.
+GENERIC_FONT_FAMILIES = {"serif", "sans-serif", "monospace", "cursive", "fantasy",
+                         "system-ui", "ui-serif", "ui-monospace"}
+
+
+def _font_stack(value: Any) -> str:
+    """A profile's family list as a CSS font-family value.
+
+    A family name with a space has to be quoted; a generic keyword must not be.
+    """
+    if isinstance(value, str):
+        return value
+    names = [str(item).strip() for item in (value or []) if str(item).strip()]
+    out = []
+    for name in names:
+        if name.lower() in GENERIC_FONT_FAMILIES or name.startswith(("var(", "ui-")):
+            out.append(name)
+        else:
+            out.append(f'"{name}"')
+    return ", ".join(out)
+
+
+def web_projection(genre: str = "web-reading", language: str | None = "zh-Hans-CN") -> Projection:
+    """The screen scale for a Web reading page.
+
+    The Web templates read only these variables. Sizes, spacing, radii, measure
+    and structural geometry are resolved from `references/profiles/web/`, so a
+    change to the profile moves the page and a change to the template cannot
+    invent a value.
+    """
+    import style_resolver
+
+    style = style_resolver.resolve(genre=genre, language=language)
+    projected: dict[str, str] = {}
+    sources: dict[str, str] = {}
+
+    if not style.domains.get("web"):
+        return Projection(css="", projected={}, sources={},
+                          skipped=["no web profile matched"])
+
+    def put(variable: str, value: str, path: str) -> None:
+        projected[variable] = value
+        sources[variable] = style.source_of(path) or "unknown"
+
+    # The resolver flattens a profile without its kind as a prefix. These are
+    # the Web profile's own top-level fields, and no other kind declares them:
+    # typography uses `body`, and colour uses `color`.
+    for path in style.values:
+        if not path.startswith(("font.", "type.", "space.", "line.",
+                                "radius.", "measure.", "layout.")):
+            continue
+        # The path is global, so the provenance decides whether it is the Web
+        # profile's value or another domain's field that happens to share a name.
+        if not (style.source_of(path) or "").startswith("web:"):
+            continue
+        value = style.get(path)
+        if value is None or isinstance(value, (list, tuple, dict)):
+            continue
+
+        if path.startswith("type."):
+            parts = path.split(".")
+            if len(parts) != 3:
+                continue
+            role, field = parts[1], parts[2]
+            if field == "size_px":
+                put(f"--web-{role}-size", f"{float(value):g}px", path)
+            elif field == "leading":
+                put(f"--web-{role}-leading", f"{float(value):g}", path)
+            elif field == "weight":
+                put(f"--web-{role}-weight", f"{int(value)}", path)
+        elif path.startswith("space.s"):
+            put(f"--web-space-{path.rsplit('s', 1)[-1]}", f"{float(value):g}px", path)
+        elif path.startswith("line."):
+            put(f"--web-line-{path.split('.', 1)[1].replace('_', '-')}", f"{float(value):g}px", path)
+        elif path.startswith("radius."):
+            put(f"--web-radius-{path.split('.', 1)[1].replace('_', '-')}", f"{float(value):g}px", path)
+        elif path.startswith("measure."):
+            put(f"--web-measure-{path.split('.', 1)[1].replace('_', '-')}", f"{float(value):g}ch", path)
+        elif path.startswith("layout."):
+            key = path.split(".", 1)[1]
+            variable = f"--web-{key.replace('_', '-')}"
+            # A column count is a number, not a length.
+            suffix = "" if key.endswith("_columns") else "px"
+            put(variable, f"{float(value):g}{suffix}", path)
+
+    for path, variable in (("font.serif", "--serif"), ("font.mono", "--mono")):
+        value = style.get(path)
+        if value:
+            put(variable, _font_stack(value), path)
+
+    if not projected:
+        return Projection(css="", projected={}, sources={}, skipped=["no web profile matched"])
+
+    lines = [
+        "/* Projected from the resolved Web profile. The page reads these;",
+        "   no size, family, spacing or radius is declared in the template. */",
+        ":root {",
+    ]
+    for variable, value in sorted(projected.items()):
+        lines.append(f"  {variable}: {value}; /* {sources[variable]} */")
+    lines.append("}")
+    return Projection(css="\n".join(lines), projected=projected, sources=sources)
+
+
+def web_font_faces(language: str | None = "zh-Hans-CN") -> list[dict[str, str]]:
+    """Every face a Web page should embed, Latin first.
+
+    A Chinese page carries two files: a Latin serif for the English prose and
+    the bundled Kai face for the Chinese. Embedding only the CJK face forced
+    the Latin text into it, because a family name earlier in the stack still
+    wins whenever it has the glyph.
+    """
+    import style_resolver
+
+    style = style_resolver.resolve(genre="web-reading", language=language)
+    pairs = (
+        ("font.latin_face", "font.latin_face_file", "font.latin_face_weight"),
+        ("font.face", "font.face_file", "font.face_weight"),
+    )
+    faces: list[dict[str, str]] = []
+    for family_key, file_key, weight_key in pairs:
+        if not (style.source_of(family_key) or "").startswith("web:"):
+            continue
+        family = str(style.get(family_key) or "")
+        filename = str(style.get(file_key) or "")
+        if family and filename:
+            faces.append({
+                "family": family,
+                "file": filename,
+                "weight": str(style.get(weight_key) or ""),
+            })
+    return faces
+
+
+def web_font_face(language: str | None = "zh-Hans-CN") -> dict[str, str]:
+    """The first embedded face, kept for callers that only need one."""
+    faces = web_font_faces(language)
+    return faces[0] if faces else {"family": "", "file": ""}
+
+
 # The pairs the model has a rule for, and the selectors that express them. A
 # selector is only emitted when the template does not already set a margin for
 # the pair, so an existing stylesheet is never overridden.
@@ -410,10 +552,31 @@ UNCONSUMED: dict[str, str] = {
     "--color-series-4": "chart series; the drawing theme reads it through style_resolver, not through CSS",
     "--color-series-5": "chart series; the drawing theme reads it through style_resolver, not through CSS",
     "--color-series-6": "chart series; the drawing theme reads it through style_resolver, not through CSS",
+    "--color-semantic-delivered": "L2 content semantics; the Web reading-page templates read it",
+    "--color-semantic-delivered-strong": "L2 content semantics; the Web reading-page templates read it",
+    "--color-semantic-info": "L2 content semantics; the Web reading-page templates read it",
+    "--color-semantic-info-strong": "L2 content semantics; the Web reading-page templates read it",
+    "--color-semantic-component": "L2 content semantics; the Web reading-page templates read it",
+    "--color-semantic-component-strong": "L2 content semantics; the Web reading-page templates read it",
+    "--color-semantic-passed": "L2 content semantics; the Web reading-page templates read it",
+    "--color-semantic-passed-strong": "L2 content semantics; the Web reading-page templates read it",
+    "--color-semantic-attention": "L2 content semantics; the Web reading-page templates read it",
+    "--color-semantic-attention-strong": "L2 content semantics; the Web reading-page templates read it",
+    "--color-semantic-enhance": "L2 content semantics; the Web reading-page templates read it",
+    "--color-semantic-enhance-strong": "L2 content semantics; the Web reading-page templates read it",
+    "--color-semantic-risk": "L2 content semantics; the Web reading-page templates read it",
+    "--color-semantic-risk-strong": "L2 content semantics; the Web reading-page templates read it",
+    "--color-semantic-change": "L2 content semantics; the Web reading-page templates read it",
+    "--color-semantic-change-strong": "L2 content semantics; the Web reading-page templates read it",
+    "--color-semantic-input": "L2 content semantics; the Web reading-page templates read it",
+    "--color-semantic-input-strong": "L2 content semantics; the Web reading-page templates read it",
+    "--color-semantic-pending": "L2 content semantics; the Web reading-page templates read it",
+    "--color-semantic-pending-strong": "L2 content semantics; the Web reading-page templates read it",
 }
 
 # Templates a projected variable may be read from. Diagrams read the migration
-# aliases; documents read both.
+# aliases; documents read both. The Web templates keep their declarations in
+# `base.css`, so the scan has to include CSS files as well as HTML.
 CONSUMER_DIRS = ("assets/templates", "assets/diagrams")
 
 
@@ -422,15 +585,59 @@ def unconsumed_variables() -> list[str]:
     root = Path(__file__).resolve().parents[1]
     used: set[str] = set()
     for directory in CONSUMER_DIRS:
-        for path in (root / directory).glob("*.html"):
+        for path in (root / directory).rglob("*"):
+            if not path.is_file() or path.suffix not in {".html", ".css"}:
+                continue
             text = path.read_text(encoding="utf-8", errors="ignore")
             used.update(re.findall(r"var\(\s*(--[a-z0-9-]+)", text))
-    projected = style_projection("one-pager", "zh-Hans-CN")
+    projected = dict(style_projection("one-pager", "zh-Hans-CN").projected)
+    projected.update(web_projection("web-reading", "zh-Hans-CN").projected)
+    projected.update(web_projection("web-reading", "en").projected)
 
     return sorted(
-        name for name in projected.projected
+        name for name in projected
         if name not in used and name not in UNCONSUMED
     )
+
+
+# Declarations the Web template must not decide for itself. A value here is a
+# second design system: the profile is the only place it may live.
+WEB_LITERAL_PROPERTIES = ("font-size", "font-family", "line-height", "padding",
+                          "margin", "gap", "border-radius")
+
+
+def web_template_literals() -> list[str]:
+    """Numeric or family literals in the Web template's type and spacing.
+
+    `0` is not a value the profile needs to own, and a custom-property
+    declaration is the projection's own block, not the template's. Everything
+    else is a hard-coded design decision.
+    """
+    path = Path(__file__).resolve().parents[1] / "assets" / "templates" / "web" / "base.css"
+    if not path.is_file():
+        return []
+    text = re.sub(r"/\*[\s\S]*?\*/", "", path.read_text(encoding="utf-8"))
+    findings: list[str] = []
+    in_root = 0
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith(":root"):
+            in_root = 1
+            continue
+        if in_root:
+            if "}" in line:
+                in_root = 0
+            continue
+        for prop in WEB_LITERAL_PROPERTIES:
+            match = re.match(rf"{prop}\s*:\s*(.+)", stripped)
+            if not match:
+                continue
+            value = match.group(1).rstrip(";")
+            if prop == "font-family" and "var(" not in value:
+                findings.append(f"{prop}: {value}")
+            elif re.search(r"\b\d*\.?\d+(px|pt|em|rem)\b", value):
+                findings.append(f"{prop}: {value}")
+    return findings
 
 
 def check() -> list[str]:
@@ -441,6 +648,20 @@ def check() -> list[str]:
     projection = style_projection("one-pager", "zh-Hans-CN")
     if not projection.projected:
         issues.append("no style values were projected for one-pager")
+
+    # The Web layer is a projection too, and it must resolve for both languages
+    # the engine claims to serve.
+    for language in ("zh-Hans-CN", "en"):
+        web = web_projection("web-reading", language)
+        if not web.projected:
+            issues.append(f"no Web values were projected for {language}")
+        for required in ("--serif", "--mono", "--web-body-size", "--web-space-6",
+                         "--web-measure-body"):
+            if required not in web.projected:
+                issues.append(f"Web projection for {language} is missing {required}")
+
+    for literal in web_template_literals():
+        issues.append(f"Web template declares its own value: {literal}")
 
     # The layer must be legal CSS by inspection: balanced braces, no empty rule.
     for name, proj in (("style", projection), ("policy", policy_projection("one-pager"))):

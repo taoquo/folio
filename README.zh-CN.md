@@ -300,11 +300,12 @@ Mermaid 和 draw.io 会转换成类型化的图表 JSON，并附一份保真度�
 
 ### 输出生成
 
-Folio 目前支持两条主输出路径：
+Folio 目前支持这些输出路径：
 
 - HTML 模板 -> PDF
 - Python 幻灯片模板 -> PPTX
 - Diagram spec -> SVG + PNG + PDF
+- 阅读页系列 -> 自包含静态 HTML（`scripts/folio.py web`）
 
 展示型 demo 通常会同时保留 `HTML + PDF + PNG`，这样首页和 README 才能持续反映真实状态。
 
@@ -316,7 +317,7 @@ Folio 不只是模板集合，还带了一份紧凑的操作参考：[CHEATSHEET
 - 需要完整视觉系统时，看 `references/design.md`
 - 结构没问题但内容质量不够时，看 `references/writing.md`
 - 构建、页数、渲染行为出问题时，看 `references/production.md`
-- 指导浏览器页面设计时，看 `references/web-foundation.md`、`references/web-reading.md`、`references/web-workspace.md` 和 `references/web-checklist.md`
+- 需要静态 Web 阅读页时，看 `references/web/README.md`；它的样式来自与其他输出相同的主题与 Web profile
 
 ### 文档引擎
 
@@ -389,7 +390,8 @@ python3 scripts/build_color_reference.py     # 单个色系的色板与角色
 - [references/drawing-dsl.md](references/drawing-dsl.md)：Drawing DSL 范围、编译阶段、路由与输出层
 - [references/drawing-dsl-authoring.md](references/drawing-dsl-authoring.md)：意图优先的图表创作流程
 - [references/drawing-dsl-v6-final-audit.md](references/drawing-dsl-v6-final-audit.md)：收尾审计、门禁证据与已知限制
-- [references/web-foundation.md](references/web-foundation.md)：阅读页面和产品工作台的 Web 设计指导基础
+- [references/web/README.md](references/web/README.md)：Web 阅读页场景、交付、图表与验收
+- [references/profiles/web/folio-v1.yaml](references/profiles/web/folio-v1.yaml)：屏幕字体栈、字号阶梯、间距、圆角与行长
 - [CHANGELOG.md](CHANGELOG.md)：版本亮点汇总，附 `docs/releases/` 中完整发布说明的链接
 
 ## 生图提示词

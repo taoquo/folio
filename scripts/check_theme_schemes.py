@@ -40,6 +40,16 @@ REQUIRED_ROLES = (
     "color.accent.brand", "color.accent.brand-tint",
     "color.status.positive", "color.status.caution", "color.status.negative",
     "color.status.caution-tint",
+    "color.semantic.delivered", "color.semantic.delivered-strong",
+    "color.semantic.info", "color.semantic.info-strong",
+    "color.semantic.component", "color.semantic.component-strong",
+    "color.semantic.passed", "color.semantic.passed-strong",
+    "color.semantic.attention", "color.semantic.attention-strong",
+    "color.semantic.enhance", "color.semantic.enhance-strong",
+    "color.semantic.risk", "color.semantic.risk-strong",
+    "color.semantic.change", "color.semantic.change-strong",
+    "color.semantic.input", "color.semantic.input-strong",
+    "color.semantic.pending", "color.semantic.pending-strong",
     # The drawing theme reads these. A scheme that omits one leaves that chart
     # series on a literal, which is the failure the bridge exists to prevent.
     "color.series.1", "color.series.2", "color.series.3",
@@ -64,6 +74,15 @@ CONTRAST_PAIRS = (
     ("color.status.negative", "color.surface.page", 4.5, "negative on canvas"),
     ("color.border.default", "color.surface.page", 1.2, "hairline on canvas"),
     ("color.border.soft", "color.surface.page", 1.2, "soft hairline on canvas"),
+    *((f"color.semantic.{n}", "color.surface.page", 3.0, f"{n} mark on canvas")
+      for n in ("delivered", "info", "component", "passed", "attention",
+                "enhance", "risk", "change", "input", "pending")),
+    *((f"color.semantic.{n}-strong", "color.surface.page", 4.5, f"{n} text on canvas")
+      for n in ("delivered", "info", "component", "passed", "attention",
+                "enhance", "risk", "change", "input", "pending")),
+    *((f"color.semantic.{n}-strong", "color.surface.card", 4.5, f"{n} text on card")
+      for n in ("delivered", "info", "component", "passed", "attention",
+                "enhance", "risk", "change", "input", "pending")),
 )
 
 BANDS = ((0.85, 50), (0.72, 100), (0.55, 200), (0.40, 300), (0.28, 400),
@@ -201,6 +220,21 @@ def check_scheme(name: str) -> dict[str, Any]:
         if not value(role).startswith("#"):
             findings.append({"kind": "shape", "subject": role,
                              "detail": "a template reads this and the scheme does not define it"})
+
+    # A meaning is only a meaning if it looks different from its neighbours.
+    # Aliasing ten roles onto five colours passes shape and contrast while
+    # producing badges and phase bars a reader cannot tell apart.
+    meanings = ("delivered", "info", "component", "passed", "attention",
+                "enhance", "risk", "change", "input", "pending")
+    marks: dict[str, list[str]] = {}
+    for meaning in meanings:
+        marks.setdefault(value(f"color.semantic.{meaning}").lower(), []).append(meaning)
+    for colour, roles in sorted(marks.items()):
+        if len(roles) > 1 and colour:
+            findings.append({
+                "kind": "distinct", "subject": ", ".join(roles),
+                "detail": f"the same colour {colour} carries more than one meaning",
+            })
 
     for foreground, background, minimum, purpose in CONTRAST_PAIRS:
         front, back = value(foreground), value(background)

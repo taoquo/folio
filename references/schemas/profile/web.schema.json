@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folio.dev/schema/web-profile-1.0.json",
+  "title": "Folio Web Reading Profile",
+  "description": "The screen scale: font stacks, px type roles, spacing, radii, measure and structural geometry. Carries no colour and no print geometry.",
+  "type": "object",
+  "required": ["version", "profiles"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {"const": 1},
+    "defaults": {"type": "object", "additionalProperties": true},
+    "profiles": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["font", "type", "space", "measure"],
+        "properties": {
+          "genre": {"type": "string"},
+          "language": {"type": "string"},
+          "font": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["serif", "mono"],
+            "properties": {
+              "serif": {"$ref": "#/$defs/stack"},
+              "mono": {"$ref": "#/$defs/stack"},
+              "face": {"type": "string"},
+              "face_file": {"type": "string"},
+              "face_weight": {"type": "string"},
+              "latin_face": {"type": "string"},
+              "latin_face_file": {"type": "string"},
+              "latin_face_weight": {"type": "string"}
+            }
+          },
+          "type": {
+            "type": "object",
+            "additionalProperties": {"$ref": "#/$defs/typeRole"},
+            "required": ["body"]
+          },
+          "space": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {"type": "number", "minimum": 0}
+          },
+          "line": {
+            "type": "object",
+            "additionalProperties": {"type": "number", "minimum": 0}
+          },
+          "radius": {
+            "type": "object",
+            "additionalProperties": {"type": "number", "minimum": 0}
+          },
+          "measure": {
+            "type": "object",
+            "required": ["body"],
+            "additionalProperties": {"type": "number", "minimum": 20, "maximum": 120}
+          },
+          "layout": {
+            "type": "object",
+            "additionalProperties": {"type": "number", "minimum": 0}
+          }
+        },
+        "allOf": [
+          {
+            "if": {"required": ["font"]},
+            "then": {
+              "properties": {
+                "font": {
+                  "dependentRequired": {
+                    "face": ["face_file"],
+                    "latin_face": ["latin_face_file"]
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "stack": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "typeRole": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["size_px", "leading"],
+      "properties": {
+        "size_px": {"type": "number", "exclusiveMinimum": 0, "maximum": 96},
+        "leading": {"type": "number", "exclusiveMinimum": 0, "maximum": 4},
+        "weight": {"type": "integer", "minimum": 100, "maximum": 900}
+      }
+    }
+  }
+}

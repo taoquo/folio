@@ -4,9 +4,11 @@ profiles:
     palette:
       amber-100: '#F5EBD8'
       amber-600: '#8A5A16'
+      amber-700: '#754C13'
       azure-100: '#E4EBF4'
       azure-150: '#D4DEED'
       azure-200: '#C3D2E6'
+      azure-600: '#3A639A'
       azure-700: '#1F4E8C'
       ink: '#14181D'
       ivory: '#FAFBFC'
@@ -46,6 +48,51 @@ profiles:
           palette: azure-100
         6:
           palette: slate-600
+      # L2 content semantics: the meanings a *document* states (delivered,
+      # risk, change...). They are not accents -- accents_per_document stays 1 --
+      # and they are the same in every scheme, so one meaning keeps one colour
+      # when the theme changes.
+      semantic:
+        delivered:
+          palette: azure-700
+        delivered-strong:
+          palette: azure-700
+        info:
+          palette: slate-700
+        info-strong:
+          palette: slate-800
+        component:
+          palette: slate-650
+        component-strong:
+          palette: slate-800
+        passed:
+          palette: azure-600
+        passed-strong:
+          palette: azure-700
+        attention:
+          palette: amber-600
+        attention-strong:
+          palette: amber-700
+        enhance:
+          palette: slate-600
+        enhance-strong:
+          palette: slate-800
+        risk:
+          palette: slate-800
+        risk-strong:
+          palette: ink
+        change:
+          palette: amber-700
+        change-strong:
+          palette: amber-700
+        input:
+          palette: ink
+        input-strong:
+          palette: ink
+        pending:
+          palette: slate-500
+        pending-strong:
+          palette: slate-650
       status:
         caution:
           palette: amber-600

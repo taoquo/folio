@@ -1,0 +1,95 @@
+{
+  "schema_version": "3.0",
+  "kind": "state-machine",
+  "title": "Build Job Lifecycle",
+  "axis": "left-right",
+  "focus": "rendering",
+  "persistent": true,
+  "submachine": false,
+  "states": [
+    {
+      "id": "start",
+      "type": "initial"
+    },
+    {
+      "id": "queued",
+      "type": "state",
+      "label": "Queued",
+      "description": "waiting for a worker"
+    },
+    {
+      "id": "rendering",
+      "type": "state",
+      "label": "Rendering",
+      "description": "typesetting pages",
+      "emphasis": "focal"
+    },
+    {
+      "id": "gating",
+      "type": "state",
+      "label": "Gating",
+      "description": "running visual checks"
+    },
+    {
+      "id": "published",
+      "type": "state",
+      "label": "Published",
+      "description": "artifact signed"
+    },
+    {
+      "id": "failed",
+      "type": "state",
+      "label": "Failed",
+      "description": "needs author input"
+    },
+    {
+      "id": "done",
+      "type": "final"
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t0",
+      "source": "start",
+      "target": "queued"
+    },
+    {
+      "id": "t1",
+      "source": "queued",
+      "target": "rendering",
+      "event": "worker claim",
+      "channel": "focal"
+    },
+    {
+      "id": "t2",
+      "source": "rendering",
+      "target": "gating",
+      "event": "scene ready"
+    },
+    {
+      "id": "t3",
+      "source": "gating",
+      "target": "published",
+      "guard": "no blockers"
+    },
+    {
+      "id": "t4",
+      "source": "gating",
+      "target": "failed",
+      "guard": "blockers",
+      "channel": "exceptional"
+    },
+    {
+      "id": "t5",
+      "source": "gating",
+      "target": "rendering",
+      "event": "repair",
+      "channel": "reset"
+    },
+    {
+      "id": "t6",
+      "source": "published",
+      "target": "done"
+    }
+  ]
+}

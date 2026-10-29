@@ -300,11 +300,12 @@ Mermaid and draw.io convert into typed diagram JSON with a fidelity ledger that 
 
 ### Output generation
 
-Folio supports two main output paths:
+Folio supports these output paths:
 
 - HTML templates -> PDF
 - Python slide templates -> PPTX
 - Diagram specs -> SVG + PNG + PDF
+- Reading-page series -> self-contained static HTML (`scripts/folio.py web`)
 
 Showcase demos usually keep `HTML + PDF + PNG` together so the homepage and README stay truthful.
 
@@ -316,7 +317,7 @@ Folio also carries a compact operating reference in [CHEATSHEET.md](CHEATSHEET.m
 - Use `references/design.md` when you need the full visual system
 - Use `references/writing.md` when structure is fine but content quality is weak
 - Use `references/production.md` when builds, page counts, or render behavior go wrong
-- Use `references/web-foundation.md`, `references/web-reading.md`, `references/web-workspace.md`, and `references/web-checklist.md` when guiding browser-page design
+- Use `references/web/README.md` for the static Web reading-page scenario; its styles come from the same theme and Web profiles as every other output
 
 ### Document engine
 
@@ -389,7 +390,8 @@ Use the short guide first, then go deeper only when needed.
 - [references/drawing-dsl.md](references/drawing-dsl.md): Drawing DSL scope, compiler stages, routing, and output layer
 - [references/drawing-dsl-authoring.md](references/drawing-dsl-authoring.md): intent-first diagram authoring workflow
 - [references/drawing-dsl-v6-final-audit.md](references/drawing-dsl-v6-final-audit.md): closing audit, gate evidence, and known limits
-- [references/web-foundation.md](references/web-foundation.md): Web guidance foundation for reading pages and product workspaces
+- [references/web/README.md](references/web/README.md): the Web reading-page scenario, delivery, figures, and acceptance
+- [references/profiles/web/folio-v1.yaml](references/profiles/web/folio-v1.yaml): screen font stacks, type scale, spacing, radii and measure
 - [CHANGELOG.md](CHANGELOG.md): release highlights with links to the full notes in `docs/releases/`
 
 ## Image Prompting

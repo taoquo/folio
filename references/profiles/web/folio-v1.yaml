@@ -1,0 +1,310 @@
+# Web reading-page profile
+#
+# The screen counterpart of the typography profile. It carries the values the
+# Web templates used to declare for themselves: the font stack, the screen type
+# scale, spacing, radii, measure and the structural page geometry.
+#
+# A Web template reads these only through the projection in
+# `scripts/projection.py`; no size, family, spacing or radius is written in
+# `assets/templates/web/base.css`. That is what makes one profile edit move
+# every built page, and what lets `check_web.py` compare the rendered values
+# with the engine rather than with a template's memory.
+#
+# Units are explicit in the field name (`size_px`, `_ch`) because the screen is
+# not the page: a pt here would be a second scale pretending to be the first.
+
+version: 1
+profiles:
+  folio-web-zh-v1:
+    genre: web-reading
+    language: zh-Hans-CN
+    font:
+      # Latin first, CJK after it: the browser resolves per glyph, so English
+      # prose keeps the serif the rest of Folio uses while Chinese falls to
+      # the bundled Kai face. A single Kai-first stack made every English
+      # paragraph look like a different design system.
+      serif:
+        - Source Serif 4
+        - LXGW WenKai
+        - Source Han Serif SC
+        - Noto Serif CJK SC
+        - Songti SC
+        - STSong
+        - Georgia
+        - serif
+      mono:
+        - JetBrains Mono
+        - SF Mono
+        - Menlo
+        - monospace
+      latin_face: Source Serif 4
+      latin_face_file: SourceSerif4Variable-Roman.ttf
+      latin_face_weight: 200 900
+      face: LXGW WenKai
+      face_file: LXGWWenKai-Regular.ttf
+    type:
+      body:
+        size_px: 16
+        leading: 1.62
+      lead:
+        size_px: 20
+        leading: 1.5
+      # The chapter body. Long-form reading gets its own step so the
+      # lead, the prose and the dense table are three clear voices.
+      reading:
+        size_px: 17
+        leading: 1.6
+      dense:
+        size_px: 13
+        leading: 1.5
+      small:
+        size_px: 14
+        leading: 1.5
+      h1:
+        size_px: 48
+        leading: 1.1
+      h2:
+        size_px: 30
+        leading: 1.16
+      h3:
+        size_px: 20
+        leading: 1.35
+      kpi:
+        size_px: 28
+        leading: 1.1
+      label:
+        size_px: 11
+        leading: 1.45
+      caption:
+        size_px: 12
+        leading: 1.55
+      code:
+        size_px: 13
+        leading: 1.6
+      # A chapter marker in the margin on a wide screen.
+      index:
+        size_px: 44
+        leading: 1
+    space:
+      s1: 2
+      s2: 4
+      s3: 6
+      s4: 8
+      s5: 10
+      s6: 12
+      s7: 14
+      s8: 16
+      s9: 18
+      s10: 20
+      s11: 24
+      s12: 28
+      s13: 32
+      s14: 40
+      s16: 56
+      s17: 64
+    line:
+      hairline: 1
+      marker: 3
+      progress: 2
+    radius:
+      card: 8
+      badge: 999
+      label: 6
+      tick: 1
+    measure:
+      body: 76
+      list: 76
+      # The wide step. 93ch is the ceiling the measure band allows, and it is
+      # what a 760px column holds at 17px: the text, the figures and the tables
+      # stay one width, so the page keeps a single right edge.
+      wide_body: 93
+      wide_list: 93
+    layout:
+      page_width: 724
+      page_x: 32
+      page_top: 48
+      page_bottom: 96
+      compact_page_x: 24
+      compact_page_top: 32
+      compact_page_bottom: 72
+      compact_h1: 38
+      kpi_columns: 4
+      compact_kpi_columns: 2
+      narrow_page_x: 20
+      narrow_page_top: 24
+      narrow_page_bottom: 64
+      narrow_h1: 32
+      narrow_body: 16
+      narrow_kpi_columns: 1
+      toc_min: 240
+      card_min: 240
+      phase_basis: 180
+      phase_min: 160
+      rail_right: 20
+      rail_label_gap: 10
+      rail_tick: 14
+      rail_tick_hover: 22
+      rail_tick_active: 28
+      rail_tick_height: 2
+      rail_tick_height_active: 4
+      topbar_min_height: 44
+      nav_line_height: 32
+      dot_gap: 8
+      bullet_left: 2
+      bullet_indent: 18
+      list_indent: 20
+      table_row: 32
+      figure_slot: 660
+      # A wide window takes one step, not a second design: the whole column
+      # widens together, so the single right edge survives the breakpoint.
+      wide_page_width: 824
+      wide_figure_slot: 760
+      # A sticky top bar would cover an anchor unless every jump lands
+      # below it; the offset is the bar plus one quiet gap.
+      scroll_offset: 72
+      # Where a chapter numeral sits when it steps into the margin.
+      index_offset: 56
+      # How far a revealed block travels before it settles.
+      reveal_offset: 10
+      # A card answers the pointer by this much.
+      hover_lift: 2
+  folio-web-en-v1:
+    genre: web-reading
+    language: en
+    font:
+      serif:
+        - Charter
+        - Source Serif 4
+        - Georgia
+        - serif
+      mono:
+        - JetBrains Mono
+        - SF Mono
+        - Menlo
+        - monospace
+    type:
+      body:
+        size_px: 16
+        leading: 1.62
+      lead:
+        size_px: 20
+        leading: 1.5
+      # The chapter body. Long-form reading gets its own step so the
+      # lead, the prose and the dense table are three clear voices.
+      reading:
+        size_px: 17
+        leading: 1.6
+      dense:
+        size_px: 13
+        leading: 1.5
+      small:
+        size_px: 14
+        leading: 1.5
+      h1:
+        size_px: 48
+        leading: 1.1
+      h2:
+        size_px: 30
+        leading: 1.16
+      h3:
+        size_px: 20
+        leading: 1.35
+      kpi:
+        size_px: 28
+        leading: 1.1
+      label:
+        size_px: 11
+        leading: 1.45
+      caption:
+        size_px: 12
+        leading: 1.55
+      code:
+        size_px: 13
+        leading: 1.6
+      # A chapter marker in the margin on a wide screen.
+      index:
+        size_px: 44
+        leading: 1
+    space:
+      s1: 2
+      s2: 4
+      s3: 6
+      s4: 8
+      s5: 10
+      s6: 12
+      s7: 14
+      s8: 16
+      s9: 18
+      s10: 20
+      s11: 24
+      s12: 28
+      s13: 32
+      s14: 40
+      s16: 56
+      s17: 64
+    line:
+      hairline: 1
+      marker: 3
+      progress: 2
+    radius:
+      card: 8
+      badge: 999
+      label: 6
+      tick: 1
+    measure:
+      body: 76
+      list: 76
+      # The wide step. 93ch is the ceiling the measure band allows, and it is
+      # what a 760px column holds at 17px: the text, the figures and the tables
+      # stay one width, so the page keeps a single right edge.
+      wide_body: 93
+      wide_list: 93
+    layout:
+      page_width: 724
+      page_x: 32
+      page_top: 48
+      page_bottom: 96
+      compact_page_x: 24
+      compact_page_top: 32
+      compact_page_bottom: 72
+      compact_h1: 38
+      kpi_columns: 4
+      compact_kpi_columns: 2
+      narrow_page_x: 20
+      narrow_page_top: 24
+      narrow_page_bottom: 64
+      narrow_h1: 32
+      narrow_body: 16
+      narrow_kpi_columns: 1
+      toc_min: 240
+      card_min: 240
+      phase_basis: 180
+      phase_min: 160
+      rail_right: 20
+      rail_label_gap: 10
+      rail_tick: 14
+      rail_tick_hover: 22
+      rail_tick_active: 28
+      rail_tick_height: 2
+      rail_tick_height_active: 4
+      topbar_min_height: 44
+      nav_line_height: 32
+      dot_gap: 8
+      bullet_left: 2
+      bullet_indent: 18
+      list_indent: 20
+      table_row: 32
+      figure_slot: 660
+      # A wide window takes one step, not a second design: the whole column
+      # widens together, so the single right edge survives the breakpoint.
+      wide_page_width: 824
+      wide_figure_slot: 760
+      # A sticky top bar would cover an anchor unless every jump lands
+      # below it; the offset is the bar plus one quiet gap.
+      scroll_offset: 72
+      # Where a chapter numeral sits when it steps into the margin.
+      index_offset: 56
+      # How far a revealed block travels before it settles.
+      reveal_offset: 10
+      # A card answers the pointer by this much.
+      hover_lift: 2

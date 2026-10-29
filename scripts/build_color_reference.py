@@ -28,13 +28,14 @@ import style_resolver  # noqa: E402
 
 from drawing.theme.contrast import contrast_ratio  # noqa: E402
 
-GROUPS = ("surface", "text", "border", "accent", "status", "data")
+GROUPS = ("surface", "text", "border", "accent", "status", "semantic", "data")
 
 GROUP_LABEL = {
     "surface": ("画布与容器", "页面、卡片；一个文档的底色层次"),
     "text": ("文字层级", "正文、次级、弱化；层级靠明度而不是字号"),
     "border": ("分隔与描边", "卡片边框、表格线、题头下的细线"),
     "accent": ("品牌强调", "唯一的彩色。设计系统只允许一个"),
+    "semantic": ("内容语义", "文档含义用色；同一含义全站同色，跨 scheme 固定"),
     "status": ("状态语义", "值意味着什么；必须与文字同时出现"),
     "data": ("图表编码", "一条数据系列是什么；不表达好坏"),
 }
@@ -52,6 +53,16 @@ PAIRS = (
     ("color.status.caution", "color.surface.page", 4.5, "警告 / 画布"),
     ("color.status.negative", "color.surface.page", 4.5, "负向 / 画布"),
     ("color.border.default", "color.surface.page", 1.2, "细线 / 画布"),
+    ("color.semantic.delivered-strong", "color.surface.page", 4.5, "语义 交付 / 画布"),
+    ("color.semantic.info-strong", "color.surface.page", 4.5, "语义 信息 / 画布"),
+    ("color.semantic.component-strong", "color.surface.page", 4.5, "语义 构件 / 画布"),
+    ("color.semantic.passed-strong", "color.surface.page", 4.5, "语义 通过 / 画布"),
+    ("color.semantic.attention-strong", "color.surface.page", 4.5, "语义 注意 / 画布"),
+    ("color.semantic.enhance-strong", "color.surface.page", 4.5, "语义 增强 / 画布"),
+    ("color.semantic.risk-strong", "color.surface.page", 4.5, "语义 风险 / 画布"),
+    ("color.semantic.change-strong", "color.surface.page", 4.5, "语义 变更 / 画布"),
+    ("color.semantic.input-strong", "color.surface.page", 4.5, "语义 输入 / 画布"),
+    ("color.semantic.pending-strong", "color.surface.page", 4.5, "语义 待办 / 画布"),
 )
 
 
@@ -172,7 +183,7 @@ def render(data: dict) -> str:
 
     families: dict[str, list[str]] = defaultdict(list)
     for name in data["palette"]:
-        match = re.match(r"^([a-z]+)-(\d+)$", name)
+        match = re.match(r"^([a-z][a-z-]*)-(\d+)$", name)
         families[match.group(1) if match else "（无数字后缀）"].append(name)
 
     return _PAGE.format(

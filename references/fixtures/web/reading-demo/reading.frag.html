@@ -1,0 +1,34 @@
+<section class="chapter" id="s01" data-sum="A release stops at a gate when any visual check fails">
+<h2><span class="num">01</span>Release gates</h2>
+<p>A release stops at a gate when any visual check fails. The build reaches 28.4 BLEU in 3.5 days after a short warmup schedule.</p>
+<ul class="kpi-row">
+<li class="kpi"><span class="v">28.4</span><span class="k">BLEU</span></li>
+<li class="kpi"><span class="v">3.5 days</span><span class="k">build time</span></li>
+<li class="kpi"><span class="v">0</span><span class="k">blocking checks</span></li>
+<li class="kpi"><span class="v">3</span><span class="k">stages</span></li>
+</ul>
+<!--FOLIO:FIGURE:release-gate-->
+<div class="insight"><p>A gate is useful only when its failure has a name.</p></div>
+</section>
+<section class="chapter" id="s02" data-sum="A build job moves from queued to rendered to signed">
+<h2><span class="num">02</span>Build stages</h2>
+<p>A build job moves from queued to rendered to signed. The warmup schedule is short, the base run is longer, and the large run is the longest.</p>
+<ul class="phase-seg">
+<li class="phase" data-role="input"><span class="t">warmup</span><span class="d">short schedule</span></li>
+<li class="phase" data-role="delivered"><span class="t">base</span><span class="d">regular build</span></li>
+<li class="phase" data-role="attention"><span class="t">large</span><span class="d">long build</span></li>
+</ul>
+<!--FOLIO:FIGURE:build-lifecycle-->
+<div class="insight"><p>Each stage has a different cost and a different failure mode.</p></div>
+</section>
+<section class="chapter" id="s03" data-sum="Sign-off crosses three lanes before the report ships">
+<h2><span class="num">03</span>Sign-off</h2>
+<p>Sign-off crosses three lanes before the report ships. The analyst writes, the controller checks, and the legal reviewer records the result.</p>
+<!--FOLIO:FIGURE:sign-off-->
+<div class="insight"><p>The last lane is a decision, not another edit.</p></div>
+</section>
+<section class="chapter" id="s04" data-sum="The page reads the same engine profiles as every document">
+<h2><span class="num">04</span>Engine comparison</h2>
+<p>The rules live in <code>scripts/web_contracts.py:1</code> and <code>scripts/check_web.py:1</code>. The page reads the same profiles as every document.</p>
+<div class="insight"><p>One profile edit moves the page and its figures together.</p></div>
+</section>

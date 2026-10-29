@@ -115,33 +115,43 @@ Always use `CHEATSHEET.md` and `references/*.md` for design, writing, production
 
 If unsure, ask a one-liner about the scenario rather than guess.
 
-### Web guidance
+### Web reading pages
 
-When the user asks for website design, webpage layout, product UI, dashboard, editor UI, admin page, browser-page design guidance, or turning a document into a webpage, use the Web guidance references before answering or designing.
-
-Folio Web guidance does not mean Folio builds a Web app. It means Folio's visual judgment, editorial restraint, and interaction rules are used to guide a browser-page design.
+When the user asks to turn a document, report, paper or release story into a
+browser reading page, or asks for a Web reading-page layout, use the Web
+scenario. It is a static page, not an app: no component library, router, client
+state or build step at view time.
 
 Read in this order:
 
-1. `references/web-foundation.md`
-2. `references/web-reading.md` for content-heavy pages: long articles, reports, case studies, research pages, release stories, and document-to-Web publishing
-3. `references/web-workspace.md` for operational pages: dashboards, editors, review queues, admin tools, settings, monitors, and product UI
-4. `references/web-checklist.md` before finalizing guidance, mockups, or implementation code
+1. `references/web/README.md` — scope, owners, commands, rule ids
+2. `references/web/web-delivery.md` — what ships, the two skeletons, status vocabulary
+3. `references/web/web-content.md` — what goes on the page and how text becomes a component
+4. `references/web/web-visual.md` — density, measure, colour layers
+5. `references/web/web-figures.md` — the Drawing DSL host contract and geometry audits
+6. `references/web/web-acceptance.md` — the workflow and the 16 acceptance items
 
-Before proposing a Web layout, mockup, or implementation, establish the Web design contract from `web-foundation.md`:
+The scenario is the engine extended to the Web, not a second design system:
 
-- visual thesis
-- page job
-- archetype
-- content plan
-- primary object
-- page skeleton
-- interaction thesis using the Motion Thesis Template from `web-foundation.md`
-- state coverage
-- mobile collapse plan
-- final quality gate
+- Colours come from `references/profiles/theme/*.yaml`; screen type, fonts,
+  spacing, radii and measure come from `references/profiles/web/folio-v1.yaml`.
+- The templates in `assets/templates/web/` read only the projected variables.
+  A literal size, family, spacing value or hex in them is a defect.
+- Figures are Drawing DSL products. A page never hand-authors an SVG.
+- A semantic mark declares `data-role` from the ten roles; two meanings may not
+  share one colour.
 
-For Web motion, each motion must be expressible as `This motion means ...`. Do not let hover, active, or focus become the whole motion system unless the page is only a simple form or static notice.
+Build and verify:
+
+```bash
+python3 scripts/folio.py web --series <dir> --verify --level 3 --source <source.txt>
+python3 scripts/check_web.py <page.html> --level 1
+python3 scripts/projection.py check
+```
+
+The old `references/web-foundation.md`, `web-reading.md`, `web-workspace.md`
+and `web-checklist.md` are superseded and kept for history only. Do not route
+new work to them.
 
 If a page mixes reading and workspace behavior, separate the reading region from the operational region instead of blending article hierarchy and app controls into one surface.
 
