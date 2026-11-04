@@ -197,13 +197,19 @@ def _font_stack(value: Any) -> str:
     return ", ".join(out)
 
 
-def web_projection(genre: str = "web-reading", language: str | None = "zh-Hans-CN") -> Projection:
+def web_projection(genre: str = "web-reading", language: str | None = "zh-Hans-CN",
+                   *, include_viewport_aliases: bool = True) -> Projection:
     """The screen scale for a Web reading page.
 
     The Web templates read only these variables. Sizes, spacing, radii, measure
     and structural geometry are resolved from `references/profiles/web/`, so a
     change to the profile moves the page and a change to the template cannot
     invent a value.
+
+    `include_viewport_aliases=False` keeps the per-width values out of the emitted
+    `:root`: they are inputs to `web_plan`, which resolves each one into the
+    plain role variable inside the media query that applies it. A page that
+    declares both would carry two answers to the same question.
     """
     import style_resolver
 
@@ -223,8 +229,8 @@ def web_projection(genre: str = "web-reading", language: str | None = "zh-Hans-C
     # the Web profile's own top-level fields, and no other kind declares them:
     # typography uses `body`, and colour uses `color`.
     for path in style.values:
-        if not path.startswith(("font.", "type.", "space.", "line.",
-                                "radius.", "measure.", "layout.")):
+        if not path.startswith(("font.", "type.", "space.", "line.", "weight.",
+                                "tracking.", "radius.", "measure.", "layout.")):
             continue
         # The path is global, so the provenance decides whether it is the Web
         # profile's value or another domain's field that happens to share a name.
@@ -245,6 +251,13 @@ def web_projection(genre: str = "web-reading", language: str | None = "zh-Hans-C
                 put(f"--web-{role}-leading", f"{float(value):g}", path)
             elif field == "weight":
                 put(f"--web-{role}-weight", f"{int(value)}", path)
+        elif path.startswith("weight."):
+            # A weight is a number with no unit; it is not a length.
+            put(f"--web-weight-{path.split('.', 1)[1].replace('_', '-')}",
+                f"{int(value)}", path)
+        elif path.startswith("tracking."):
+            key = path.split(".", 1)[1].removesuffix("_em").replace("_", "-")
+            put(f"--web-tracking-{key}", f"{float(value):g}em", path)
         elif path.startswith("space.s"):
             put(f"--web-space-{path.rsplit('s', 1)[-1]}", f"{float(value):g}px", path)
         elif path.startswith("line."):
@@ -268,12 +281,16 @@ def web_projection(genre: str = "web-reading", language: str | None = "zh-Hans-C
     if not projected:
         return Projection(css="", projected={}, sources={}, skipped=["no web profile matched"])
 
+    viewport_only = viewport_aliases(projected)
+    emitted = {name: value for name, value in projected.items()
+               if include_viewport_aliases or name not in viewport_only}
+
     lines = [
         "/* Projected from the resolved Web profile. The page reads these;",
         "   no size, family, spacing or radius is declared in the template. */",
         ":root {",
     ]
-    for variable, value in sorted(projected.items()):
+    for variable, value in sorted(emitted.items()):
         lines.append(f"  {variable}: {value}; /* {sources[variable]} */")
     lines.append("}")
     return Projection(css="\n".join(lines), projected=projected, sources=sources)
@@ -580,6 +597,16 @@ UNCONSUMED: dict[str, str] = {
 CONSUMER_DIRS = ("assets/templates", "assets/diagrams")
 
 
+# A per-width value is an input to `web_plan`, not a name the stylesheet reads:
+# the plan resolves it into the plain role variable and emits that inside the
+# media query. `web_plan.viewport_plan()` must consume every one of them.
+WEB_VIEWPORT_QUALIFIER = re.compile(r"^--web-(?:[a-z0-9]+-)?(?:compact|narrow|wide)-")
+
+
+def viewport_aliases(projected: dict[str, str]) -> set[str]:
+    return {name for name in projected if WEB_VIEWPORT_QUALIFIER.match(name)}
+
+
 def unconsumed_variables() -> list[str]:
     """Projected variables no template reads."""
     root = Path(__file__).resolve().parents[1]
@@ -593,17 +620,18 @@ def unconsumed_variables() -> list[str]:
     projected = dict(style_projection("one-pager", "zh-Hans-CN").projected)
     projected.update(web_projection("web-reading", "zh-Hans-CN").projected)
     projected.update(web_projection("web-reading", "en").projected)
+    aliases = viewport_aliases(projected)
 
     return sorted(
         name for name in projected
-        if name not in used and name not in UNCONSUMED
+        if name not in used and name not in UNCONSUMED and name not in aliases
     )
 
 
 # Declarations the Web template must not decide for itself. A value here is a
 # second design system: the profile is the only place it may live.
-WEB_LITERAL_PROPERTIES = ("font-size", "font-family", "line-height", "padding",
-                          "margin", "gap", "border-radius")
+WEB_LITERAL_PROPERTIES = ("font-size", "font-family", "line-height", "letter-spacing",
+                          "font-weight", "padding", "margin", "gap", "border-radius")
 
 
 def web_template_literals() -> list[str]:
@@ -633,8 +661,14 @@ def web_template_literals() -> list[str]:
             if not match:
                 continue
             value = match.group(1).rstrip(";")
-            if prop == "font-family" and "var(" not in value:
+            if "var(" in value:
+                continue
+            if prop == "font-family":
                 findings.append(f"{prop}: {value}")
+            elif prop == "font-weight":
+                # A weight carries no unit, so the length test cannot see it.
+                if re.search(r"\b\d{3}\b|\bbold(er)?\b|\blight(er)?\b", value):
+                    findings.append(f"{prop}: {value}")
             elif re.search(r"\b\d*\.?\d+(px|pt|em|rem)\b", value):
                 findings.append(f"{prop}: {value}")
     return findings
@@ -662,6 +696,24 @@ def check() -> list[str]:
 
     for literal in web_template_literals():
         issues.append(f"Web template declares its own value: {literal}")
+
+    # Every per-width value the profile projects must be one the plan resolves,
+    # and every value the plan reads must exist. A typo on either side would
+    # otherwise leave a breakpoint quietly keeping the regular value.
+    import web_plan
+
+    projected = web_projection("web-reading", "zh-Hans-CN").projected
+    plan = web_plan.viewport_plan("zh-Hans-CN")
+    consumed = {item["alias"] for override in plan["overrides"]
+                for item in override["values"].values() if "alias" in item}
+    for name in sorted(viewport_aliases(projected) - consumed):
+        issues.append(f"per-width value nothing applies: {name}")
+    for name in sorted(consumed - set(projected)):
+        issues.append(f"the plan reads a value the profile does not project: {name}")
+
+    template = (Path(__file__).resolve().parents[1] / "assets" / "templates" / "web" / "base.css")
+    if template.is_file():
+        issues.extend(web_plan.stylesheet_breakpoints(template.read_text(encoding="utf-8")))
 
     # The layer must be legal CSS by inspection: balanced braces, no empty rule.
     for name, proj in (("style", projection), ("policy", policy_projection("one-pager"))):

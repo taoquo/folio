@@ -186,7 +186,7 @@ class DrawingDslTests(TestCase):
 
         self.assertGreater(measure_text("模型", 12), measure_text("AI", 12))
         self.assertLessEqual(len(fitted.title), 2)
-        self.assertIsNone(fitted.metadata)
+        self.assertEqual((), fitted.metadata)
 
     def test_svg_renderer_contains_no_visual_semantic_branching(self) -> None:
         source = inspect.getsource(svg_renderer)

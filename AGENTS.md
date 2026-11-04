@@ -29,6 +29,10 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 | `scripts/web_contracts.py` | Single source for Web page types, vocabulary, figure budgets and acceptance | Low |
 | `scripts/web_figures.py` | Drawing DSL adapter for Web figures and the theme bridge | Low |
 | `scripts/web_geometry.py` | Static figure geometry and provenance reads | Low |
+| `scripts/web_plan.py` | The page plan: viewport values, figure plates, breakpoints | Medium |
+| `scripts/web_page.py` | Top-level block index and roles, fail-closed | Medium |
+| `scripts/web_measure.py` | Chromium measurement (Playwright, nightly only) | Medium |
+| `scripts/web_verify.py` | Grades the measured page against the plan | Medium |
 | `scripts/document_ir/` | Document IR: model, validator, readers, HTML and PPTX writers | Medium |
 | `scripts/renderers/` | Renderer protocol and the WeasyPrint adapter | Low |
 | `scripts/pipeline.py` | Chooses the render path via `FOLIO_PIPELINE` | Low |
@@ -100,6 +104,11 @@ python3 scripts/build_web.py --series <dir> --verify         # build and check a
 python3 scripts/folio.py web --series <dir> --verify         # the same through the CLI
 python3 scripts/folio.py web --series references/fixtures/web/reading-demo \
   --verify --level 3 --source references/fixtures/web/reading-demo/source.txt  # the tracked fixture CI runs
+python3 scripts/web_plan.py --series attention --gate        # the layout plan, arithmetic only
+
+# L4: the rendered page against its plan (nightly; needs Playwright + Chromium)
+python3 scripts/web_measure.py --series attention            # what Chromium computed
+python3 scripts/web_verify.py --series attention             # what the plan required
 ```
 
 Web pages read the same theme as every document plus a screen profile in
@@ -107,6 +116,78 @@ Web pages read the same theme as every document plus a screen profile in
 `assets/templates/web/` declare no size, family, spacing or radius. A literal in
 `base.css` is rejected by `projection.py check`, and `check_web.py` resolves the
 built page's custom properties before it measures density or colour.
+
+The Web path computes rather than declares, in four layers:
+
+| Layer | Module | Decides |
+|---|---|---|
+| Page model | `scripts/web_page.py` | which top-level blocks exist, each with a role and an id |
+| Viewport plan | `scripts/web_plan.py` | every value that changes with width, and the figure's framing |
+| Emission | `projection.py` + `plan_css` | values into `:root` and value-only `@media` blocks |
+| Verification | `web_measure.py` / `web_verify.py` | what Chromium computed, against what the plan stated |
+
+`base.css` keeps arrangement only: a breakpoint may change a grid, hide a rail
+or wrap a formula, and a `@media` width it declares must be one `web_plan.BREAKPOINTS`
+knows. Builds write `plan.json` beside `figures.manifest.json`; `web_verify.py`
+grades the page against it. Only `web_measure.py` imports Playwright, and only
+the nightly job runs it.
+
+A figure inside a page is composed for the band it will be shown at, not for the
+artifact's canvas: `drawing/stage.py` makes the stage a host input,
+`web_figures.compose_for_band()` takes the largest stage that still clears the
+7px tier floor and the plate-shape band, and the page carries one inline plate
+per width class (`narrow` / `compact` / `medium` / `wide`) with `base.css`
+showing exactly one. Only the families listed in `STAGE_AWARE` can be
+recomposed. Every other family ships a single plate
+(`data-folio-plate="all"`, `data-folio-single="true"`) and the plan reports the
+size the reader gets there as REVIEW. Bringing a family under the rule is a
+geometry change plus a `STAGE_AWARE` entry, never a lower floor.
+
+A composed plate decides its descriptors once for the whole plate: one line, two
+wrapped lines with the box raised to 76 units, or titles only when no node's
+descriptor fits in two. `layout/constraints.py` and `resolve.py` ask
+`fit_node_content` the same question so box heights and the drawn runs agree, and
+`compose_for_band()` bisects toward the 240-unit floor when a stage refuses to
+compile, because feasible stages are not an interval. The 960-unit artifact path
+keeps the per-node rule and is untouched, so `diagram-catalog` must stay
+byte-identical.
+
+The stage owns the height as well as the width. A composed plate keeps the
+authored height as its ceiling and takes the shortest canvas the composition
+still resolves on, with `CANVAS_SLACK` units between the last row and the
+legend; a legend pinned to the bottom edge otherwise turns an unfilled canvas
+into a hole that a coverage number cannot see. The height band's floor scales
+with the stage (`CanvasBand.minimum_at`) because it is layout math in stage
+units; its ceiling does not, because a taller canvas is never the fix. Legends
+are packed by measured text advance and stack under their title when one row
+does not fit.
+
+Group boundaries are layout geometry, not render decoration:
+`layout/regions.py` computes each boundary's rectangle once, and both the
+renderer and the label placer use it. A connector may cross a boundary but never
+run along its edge, the strip inside a boundary's top padding belongs to the
+boundary's own name, and a name that finds no free slot is dropped rather than
+overprinted. Connector labels are the one secondary type decided per label
+rather than per plate: a label prints only within `LABEL_REACH` of its own line
+on **every** stage, because a note on one path is not a field every path must
+carry, and a word that drifts far from its connector names nothing. A labelled
+pair's row gap reserves the label's box plus the placer's clearance before
+anything is placed; a row is never split to buy a word, because splitting
+reshapes the plate. The floors that reserve the room (`MIN_GROUP_PAD_TOP`,
+`MIN_LAYER_GAP`) are derived from the type they hold, not tuned, and so is the
+arrow's approach: a lane is held two arrowheads clear of the face it enters, or
+the tip lands on the corner it turned at (`DG137`).
+
+A composed plate's title is a page heading in all but name. `web_figures`
+picks the largest tier (24 down to 14, step 2) whose delivery at the class's
+widest band stays under 0.9 × H2, recompiles at that tier, and records
+`title_units` / `title_px`; `fit_verdict` checks both against H3 and the H2
+share. The standalone artifact keeps its authored 24 units.
+
+Coverage is the ink's bounding box, so it cannot see a hole inside the drawing.
+The manifest therefore records `empty_band_units` — the tallest horizontal band
+inside the content that nothing crosses — and `fit_verdict` fails it above
+`FIGURE_FIT["empty_band_max"]` (90 units, derived as six node-title lines).
 
 Lint runs from the shared `pyproject.toml` config, so local and CI results match:
 

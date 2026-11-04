@@ -93,7 +93,7 @@ a:focus-visible {
   font-family: var(--mono);
   font-size: var(--web-label-size);
   line-height: var(--web-label-leading);
-  letter-spacing: 0.12em;
+  letter-spacing: var(--web-tracking-caps);
   text-transform: uppercase;
   color: var(--color-text-muted);
   white-space: nowrap;
@@ -143,7 +143,7 @@ a:focus-visible {
   margin: 0 0 var(--web-space-4);
   font-family: var(--mono);
   font-size: var(--web-label-size);
-  letter-spacing: 0.14em;
+  letter-spacing: var(--web-tracking-caps-wide);
   line-height: var(--web-label-leading);
   text-transform: uppercase;
   color: var(--color-text-muted);
@@ -153,8 +153,8 @@ h1 {
   margin: 0 0 var(--web-space-5);
   font-size: var(--web-h1-size);
   line-height: var(--web-h1-leading);
-  font-weight: 500;
-  letter-spacing: -0.015em;
+  font-weight: var(--web-weight-medium);
+  letter-spacing: var(--web-tracking-tight);
   text-wrap: balance;
 }
 
@@ -238,8 +238,8 @@ h1 {
   margin: 0 0 var(--web-space-6);
   font-size: var(--web-h2-size);
   line-height: var(--web-h2-leading);
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-weight: var(--web-weight-medium);
+  letter-spacing: var(--web-tracking-snug);
   text-wrap: balance;
 }
 
@@ -249,16 +249,16 @@ h1 {
   font-family: var(--mono);
   font-size: var(--web-label-size);
   line-height: var(--web-label-leading);
-  letter-spacing: 0.12em;
+  letter-spacing: var(--web-tracking-caps);
   color: var(--color-text-muted);
-  font-weight: 400;
+  font-weight: var(--web-weight-regular);
 }
 
 .chapter h3 {
   margin: var(--web-space-11) 0 var(--web-space-4);
   font-size: var(--web-h3-size);
   line-height: var(--web-h3-leading);
-  font-weight: 500;
+  font-weight: var(--web-weight-medium);
   text-wrap: balance;
 }
 
@@ -279,7 +279,7 @@ h1 {
     margin: 0;
     font-size: var(--web-index-size);
     line-height: var(--web-index-leading);
-    letter-spacing: -0.02em;
+    letter-spacing: var(--web-tracking-tighter);
     color: var(--color-border-default);
   }
 }
@@ -357,8 +357,8 @@ h1 {
   display: block;
   font-size: var(--web-kpi-size);
   line-height: var(--web-kpi-leading);
-  font-weight: 500;
-  letter-spacing: -0.015em;
+  font-weight: var(--web-weight-medium);
+  letter-spacing: var(--web-tracking-tight);
   font-variant-numeric: tabular-nums;
 }
 
@@ -438,7 +438,7 @@ h1 {
   background: var(--color-surface-card);
 }
 
-.card .t { display: block; font-weight: 500; margin-bottom: var(--web-space-2); }
+.card .t { display: block; font-weight: var(--web-weight-medium); margin-bottom: var(--web-space-2); }
 .card .d { display: block; font-size: var(--web-label-size); line-height: var(--web-label-leading); color: var(--color-text-secondary); }
 
 /* ---- tables ---- */
@@ -479,7 +479,7 @@ h1 {
 .tbl th {
   border-top: var(--web-line-hairline) solid var(--color-border-default);
   border-bottom: var(--web-line-hairline) solid var(--color-border-default);
-  font-weight: 500;
+  font-weight: var(--web-weight-medium);
   color: var(--color-text-secondary);
   background: var(--color-surface-card);
 }
@@ -495,16 +495,51 @@ h1 {
 
 /* ---- figures ---- */
 
+/* A figure shares the text column's width. It used to bleed to the drawing's
+ * own 960 units to make its labels legible, but that enlarged the plate and
+ * its empty margin together; the legibility comes from the drawing being
+ * composed for the column, not from widening the page.
+ *
+ * A drawing is composed once per figure class, so a figure carries one plate
+ * per class and this block shows exactly one of them. The rules below are
+ * arrangement only: they name a class, never a size. `display` is the whole
+ * mechanism -- a hidden plate is out of the layout and out of the accessible
+ * tree, which is why nothing here needs `aria-hidden`.
+ */
 .figure { margin: var(--web-space-12) 0 var(--web-space-13); max-width: var(--web-figure-slot); }
 
-.figure svg {
-  display: block;
+.figure .figure-svg {
   width: 100%;
   height: auto;
   border: var(--web-line-hairline) solid var(--color-border-soft);
   border-radius: var(--web-radius-card);
   background: var(--color-surface-card);
 }
+
+.figure-svg { display: none; }
+/* The wide plate is the base: a reader without media queries, a print view,
+ * and every window above the compact step get it. */
+.figure-svg[data-folio-plate="wide"] { display: block; }
+
+@media (max-width: 768px) {
+  .figure-svg[data-folio-plate="wide"] { display: none; }
+  .figure-svg[data-folio-plate="medium"] { display: block; }
+}
+
+@media (max-width: 588px) {
+  .figure-svg[data-folio-plate="medium"] { display: none; }
+  .figure-svg[data-folio-plate="compact"] { display: block; }
+}
+
+@media (max-width: 480px) {
+  .figure-svg[data-folio-plate="compact"] { display: none; }
+  .figure-svg[data-folio-plate="narrow"] { display: block; }
+}
+
+/* A family that composes on one stage carries one plate, and it is the plate
+ * at every width. Declared after the class rules, so it wins by source order
+ * without a specificity trick. */
+.figure-svg[data-folio-plate="all"] { display: block; }
 
 figcaption {
   margin-top: var(--web-space-4);
@@ -556,7 +591,7 @@ figcaption {
   font-family: var(--mono);
   font-size: var(--web-index-size);
   line-height: var(--web-index-leading);
-  letter-spacing: -0.02em;
+  letter-spacing: var(--web-tracking-tighter);
   color: var(--color-border-default);
 }
 .module-block h2 {
@@ -564,8 +599,8 @@ figcaption {
   margin: 0;
   font-size: var(--web-h2-size);
   line-height: var(--web-h2-leading);
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-weight: var(--web-weight-medium);
+  letter-spacing: var(--web-tracking-snug);
   text-wrap: balance;
 }
 .module-block h2 a { color: var(--color-text-primary); }
@@ -741,9 +776,12 @@ figcaption {
 }
 
 /* ---- responsive ----
- * The breakpoints are structure, not a type scale: CSS cannot read a custom
- * property in a media query. The values each breakpoint applies come from the
- * profile, so the template still decides no size.
+ * These blocks carry no values. Every size, measure and slot that changes with
+ * width is emitted by `web_plan` as a `:root` override inside its own media
+ * query; what is left here is the arrangement that reads it — a grid that
+ * becomes one column, a rail that leaves, an expression that wraps. A literal
+ * in this file is still a defect, and so is a width a `@media` here declares
+ * that `web_plan.BREAKPOINTS` does not.
  */
 
 /* A wide window takes one step, not a second design. The column, the figures
@@ -751,51 +789,26 @@ figcaption {
  * breakpoint; only the reading measure changes, and it stays inside the band.
  */
 @media (min-width: 1280px) {
-  .page, .topbar { max-width: var(--web-wide-page-width); }
-  .chapter p, .lead { max-width: var(--web-measure-wide-body); }
-  .chapter ul, .chapter ol, .insight p { max-width: var(--web-measure-wide-list); }
-  .figure, .chapter .formula { max-width: var(--web-wide-figure-slot); }
   /* The rail follows the column, not the window: at 1920 an edge-pinned rail
      drifts half a screen away from the text it indexes. A fixed element's
      percentage resolves against the viewport without its scrollbar, which
      `100vw` does not. */
-  .rail { left: calc(50% + var(--web-wide-page-width) / 2 + var(--web-rail-right)); }
+  .rail { left: calc(50% + var(--web-page-width) / 2 + var(--web-rail-right)); }
 }
 
 @media (max-width: 768px) {
-  .page {
-    padding: var(--web-compact-page-top) var(--web-compact-page-x)
-      var(--web-compact-page-bottom);
-  }
-  .topbar { padding: 0 var(--web-compact-page-x); }
   /* The rail disappears at 900px, so the running label is the only thing that
      still says where the reader is. The series name gives way instead: the
      back link already names the series. */
   .series-name { display: none; }
   .doc-head { padding-bottom: var(--web-space-9); }
   .chapter { margin-top: var(--web-space-14); }
-  .tbl caption { max-width: calc(100vw - var(--web-compact-page-x) * 2); }
-  /* The page padding already narrows the column; a second cap here would put
-     the figures on a different right edge than the text. */
-  .chapter p, .lead, .figure, .chapter .formula { max-width: none; }
   /* On a phone the expression is wider than the screen; wrapping keeps the
      whole formula readable, where scrolling would hide half of it. */
   .chapter .formula { white-space: pre-wrap; }
-  h1 { font-size: var(--web-compact-h1); }
-  .kpi-row { grid-template-columns: repeat(var(--web-compact-kpi-columns), minmax(0, 1fr)); }
 }
 
 @media (max-width: 480px) {
-  .page {
-    padding: var(--web-narrow-page-top) var(--web-narrow-page-x)
-      var(--web-narrow-page-bottom);
-  }
-  .topbar { padding: 0 var(--web-narrow-page-x); }
-  .series-name { display: none; }
-  .chapter { font-size: var(--web-narrow-body); }
-  .tbl caption { max-width: calc(100vw - var(--web-narrow-page-x) * 2); }
-  h1 { font-size: var(--web-narrow-h1); }
-  .kpi-row { grid-template-columns: repeat(var(--web-narrow-kpi-columns), minmax(0, 1fr)); }
   .toc ol { grid-template-columns: 1fr; }
 }
 

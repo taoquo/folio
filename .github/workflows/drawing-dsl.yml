@@ -87,6 +87,14 @@ jobs:
         run: |
           python scripts/folio.py web --series references/fixtures/web/reading-demo \
             --verify --level 3 --source references/fixtures/web/reading-demo/source.txt
+      # The stress case is ten times the fixture: nine chapters and four
+      # figures on one long page, which is where the figure and density checks
+      # get exercised. Building it here keeps that page inside the gate.
+      - name: Build and verify the Web reading stress case
+        run: |
+          python scripts/folio.py web --series references/fixtures/web/attention \
+            --verify --level 3 --source references/fixtures/web/attention/source.txt
+          python scripts/web_plan.py --series attention --gate
       - name: Validate the document corpus
         run: |
           python scripts/corpus.py validate

@@ -12,9 +12,11 @@ def validate_drawing_semantics(drawing: DrawingPlan, budget: InformationBudget |
     # is derived from the plan rather than fixed at nine for every canvas.
     if budget is None:
         budget = InformationBudget.for_canvas(drawing.height, drawing.canvas)
+    # The plan's own width is the stage it was composed on, so it is the
+    # reference this check measures the declared canvas against.
     diagnostics = [DrawingDiagnostic("ERROR", "DG044", issue) for issue in canvas_issues(
         {"width": drawing.width, "height": drawing.height, "canvas": drawing.canvas},
-        kind=drawing.kind, band=GRAPH_CANVAS,
+        kind=drawing.kind, band=GRAPH_CANVAS, stage=drawing.width,
     )]
     node_ids = [node.id for node in drawing.nodes]
     duplicates = [node_id for node_id, count in Counter(node_ids).items() if count > 1]

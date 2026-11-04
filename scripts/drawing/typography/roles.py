@@ -22,11 +22,34 @@ own reasons.
 
 from __future__ import annotations
 
+from contextlib import contextmanager
+from contextvars import ContextVar
 from dataclasses import dataclass
 from enum import Enum
 
 from ..scene import SceneText
 from ..theme.folio import FolioTheme
+
+# The diagram title is the one role whose size belongs to the *host*, not to the
+# drawing. A standalone artifact has no page around it, so 24 units is the
+# title. A figure placed in a reading column does: its title has to sit below
+# the page's H2 and above its H3, and how many stage units that takes depends on
+# the band the plate is composed for. The host therefore names the title's units
+# for the duration of a compile, the same way it names the stage; every other
+# role keeps its authored size.
+_TITLE_UNITS: ContextVar[float | None] = ContextVar("folio_title_units", default=None)
+
+TITLE_UNITS_DEFAULT = 24.0
+
+
+@contextmanager
+def use_title_units(units: float | None):
+    """Set the diagram title's size for the duration of the block."""
+    token = _TITLE_UNITS.set(None if units is None else float(units))
+    try:
+        yield units
+    finally:
+        _TITLE_UNITS.reset(token)
 
 
 class TextRole(str, Enum):
@@ -137,6 +160,11 @@ def resolve_text_style(
         TextRole.LEGEND: TextStyle(theme.mono, 9, theme.olive),
     }
     style = styles[role]
+    if role is TextRole.DIAGRAM_TITLE:
+        units = _TITLE_UNITS.get()
+        if units is not None and units != style.size:
+            style = TextStyle(style.family, units, style.color, style.anchor,
+                              style.tracking, style.weight)
     if role is TextRole.KNOCKOUT:
         # Knockout only reads on a filled shape, and only the focal mark is filled. Elsewhere the
         # mark is an outline on the page colour, where page-coloured text disappears -- the

@@ -1,0 +1,82 @@
+{
+  "schema_version": "3.0",
+  "kind": "architecture",
+  "title": "Scaled dot-product attention",
+  "layout": "vertical-stack",
+  "height": 500,
+  "layers": [
+    {
+      "id": "in",
+      "label": "Inputs"
+    },
+    {
+      "id": "out",
+      "label": "Compute"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "q",
+      "kind": "external",
+      "label": "Q",
+      "layer": "in"
+    },
+    {
+      "id": "k",
+      "kind": "external",
+      "label": "K",
+      "layer": "in"
+    },
+    {
+      "id": "v",
+      "kind": "external",
+      "label": "V",
+      "layer": "in"
+    },
+    {
+      "id": "s",
+      "kind": "service",
+      "label": "MatMul",
+      "layer": "out"
+    },
+    {
+      "id": "m",
+      "kind": "service",
+      "label": "Softmax",
+      "layer": "out"
+    },
+    {
+      "id": "w",
+      "kind": "service",
+      "label": "Weighted sum",
+      "layer": "out"
+    }
+  ],
+  "edges": [
+    {
+      "source": "q",
+      "target": "s",
+      "kind": "primary"
+    },
+    {
+      "source": "k",
+      "target": "s",
+      "kind": "primary"
+    },
+    {
+      "source": "s",
+      "target": "m",
+      "kind": "primary"
+    },
+    {
+      "source": "v",
+      "target": "w",
+      "kind": "primary"
+    },
+    {
+      "source": "m",
+      "target": "w",
+      "kind": "primary"
+    }
+  ]
+}

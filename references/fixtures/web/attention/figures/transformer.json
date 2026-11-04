@@ -1,0 +1,96 @@
+{
+  "schema_version": "3.0",
+  "kind": "architecture",
+  "title": "Transformer architecture",
+  "layout": "horizontal-layers",
+  "height": 500,
+  "layers": [
+    {
+      "id": "in",
+      "label": "Inputs"
+    },
+    {
+      "id": "enc",
+      "label": "Encoder"
+    },
+    {
+      "id": "dec",
+      "label": "Decoder"
+    },
+    {
+      "id": "out",
+      "label": "Outputs"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "pe",
+      "kind": "external",
+      "label": "Positional",
+      "sublabel": "encoding",
+      "layer": "in"
+    },
+    {
+      "id": "inp",
+      "kind": "external",
+      "label": "Inputs",
+      "sublabel": "embedding",
+      "layer": "in"
+    },
+    {
+      "id": "enc",
+      "kind": "service",
+      "label": "Encoder",
+      "sublabel": "self-attention + FFN x6",
+      "layer": "enc"
+    },
+    {
+      "id": "dec",
+      "kind": "service",
+      "label": "Decoder",
+      "sublabel": "masked + cross attention",
+      "layer": "dec"
+    },
+    {
+      "id": "out",
+      "kind": "service",
+      "label": "Outputs",
+      "sublabel": "linear + softmax",
+      "layer": "out"
+    },
+    {
+      "id": "pred",
+      "kind": "external",
+      "label": "Prediction",
+      "sublabel": "next token",
+      "layer": "out"
+    }
+  ],
+  "edges": [
+    {
+      "source": "pe",
+      "target": "enc",
+      "kind": "primary"
+    },
+    {
+      "source": "inp",
+      "target": "enc",
+      "kind": "primary"
+    },
+    {
+      "source": "enc",
+      "target": "dec",
+      "kind": "primary"
+    },
+    {
+      "source": "dec",
+      "target": "out",
+      "kind": "primary"
+    },
+    {
+      "source": "out",
+      "target": "pred",
+      "kind": "primary"
+    }
+  ]
+}

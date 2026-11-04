@@ -66,12 +66,11 @@ FIGCAPTION_EXEMPT_ENDS = ("figcaption",)
 CHAPTER_NUM = re.compile(r"^\s*(\d{2})\b")
 FIGURE_NUM = re.compile(r"^(?:图|Figure) ([A-Z]?-?\d+) · ")
 
-# figcaption grammar: 图 / Figure 前缀-N · 图意 · composition: X · axis: Y
-FIGCAPTION = re.compile(
-    r"^(?:图|Figure) [A-Z]?-?\d+ · .+? · "
-    r"(?:composition: (layered|pipeline|hub)|kind: ([a-z-]+))"
-    r" · axis: (top-down|left-right)$"
-)
+# figcaption grammar: 图 / Figure 前缀-N · 图意.
+# The composition and the reading axis are figure facts, carried by
+# `data-composition` / `data-axis` and compared with the manifest by W-FIG-01.
+# They are not printed under the plate: a caption is read, not parsed.
+FIGCAPTION = re.compile(r"^(?:图|Figure) [A-Z]?-?\d+ · (?!.*\b(?:composition|axis):).+$")
 
 # ----------------------------------------------------------------- density
 
@@ -123,16 +122,106 @@ FIGURE = {
     "width": 960,
     # The drawing DSL's canvas bands: graphs 500-800, charts 400-720, notations 480-800.
     "view_box_height": (400, 800),
-    # The page's content width. The reading page is one column, so a figure is
+    # The text column's width. The reading page is one column, so a figure is
     # exactly as wide as the text.
     "slot": 660,
-    # Rendered at that slot (660px / 960 units): the same bands in page pixels.
-    "rendered_height": (275, 550),
+    # The plate's shape: framed height over framed width. A figure composed for
+    # a band is delivered at that band's size, so its proportions -- not its
+    # pixels -- are what the contract can hold across viewports. A narrow
+    # composition wraps its rows and arrives portrait (1.0-1.4); a wide one
+    # arrives landscape (0.5-0.8). The band rejects both the strip and the
+    # column-tall plate.
+    "rendered_aspect": (0.45, 1.50),
     "architecture_nodes_max": 9,
     "rows_max": 10,
     "focal_max": 2,
     "colour_max": 4,
+    # The drawing's type tiers are 7 / 9 / 12 units. On a stage composed for the
+    # band, those units arrive as pixels, so the smallest tier is exactly the
+    # legibility floor rather than a target the page could widen its way to.
+    "title_min_px": 11,
+    "tier_min_px": 7,
 }
+
+# A figure has two obligations. Legibility alone is gameable by making the
+# plate larger; a filled plate alone is gameable by cropping a tiny drawing.
+# Both are measured on the delivered viewBox, not on the 960-unit stage.
+FIGURE_FIT = {
+    # Ink area / plate area. Cropping the attention figures raises this from
+    # 0.54-0.66 to 0.86, so 0.75 separates a framed drawing from a padded one.
+    "coverage_min": 0.75,
+    # The largest of the four margins, over the plate's longer side. The 24-unit
+    # framing margin lands at 3.0-3.5% on these drawings.
+    "margin_ratio_max": 0.04,
+    # The smallest tier, delivered at the narrowest band the page serves. The
+    # drawing is composed for a band, so this floor is met by the composition
+    # rather than by the page's width.
+    "delivered_target_px": 7.0,
+    # The floor is a rounded floor. A stage moves in 4-unit steps, which at the
+    # narrowest band is 0.08px of delivered type, so a composition can sit a
+    # hundredth below the target with no stage between it and the one that
+    # clears it. Half a step is noise, not a defect; a full step is a defect,
+    # and this tolerance is smaller than one.
+    "delivered_tolerance_px": 0.05,
+
+    # A figure title is a page heading in all but name: it has to read below
+    # H2 and above H3. A plate is shown across its whole class, so the binding
+    # number is the title's delivery at the class's *widest* band -- the
+    # largest the reader ever sees it -- and the title tier is the largest one
+    # whose widest delivery stays under this share of H2. The tiers step by two
+    # units; each step moves the delivered title by about a pixel at the design
+    # band, which is why the H3 floor is read with a half-step tolerance.
+    "title_h2_ratio": 0.9,
+    "title_tier_max": 24,
+    # The node title is 12 units. A figure title two units above it is still
+    # the largest type in the drawing rather than a second node label.
+    "title_tier_floor": 14,
+    "title_tier_step": 2,
+    "title_floor_tolerance_px": 1.0,
+
+    # Coverage reads the ink's bounding box, so it cannot see a hole the
+    # drawing contains: two rows at the top and one at the bottom still fill
+    # the plate. This is the tallest horizontal band inside the content that
+    # nothing crosses, in stage units.
+    #
+    # Derived from the type, not picked: a node title is 12 units and its line
+    # box is 1.25x that, so six lines is 90 units. A gap taller than six lines
+    # of a node's own title is no longer row spacing; it reads as a missing
+    # part of the drawing. Measured on the 24 plates the page serves, the
+    # largest real band is 40 units (the strip above a bottom-pinned legend);
+    # the 108-unit hole this rule exists to catch sits well above the limit.
+    "empty_band_max": 90,
+}
+
+# A figure is composed for the band it will be shown at, and the composition
+# changes with that band: a 320px column wraps rows a 660px column does not.
+# One SVG therefore cannot serve the whole page, so each figure is emitted once
+# per class and CSS shows the one that matches the viewport.
+#
+# The design band is the band at the *narrowest* viewport the class serves,
+# because the type floor binds there: a composition that delivers 7px at its
+# narrow end delivers more at the wide end, which is a floor being met, not a
+# target being missed. `375` is the narrowest viewport a current phone reports;
+# below it the column is narrower than any composition that holds the floor at
+# a plate shape a reader would accept, and that is a different drawing, not a
+# smaller number. The page's own reviewed set starts at 390.
+# The classes are cut where the *band*, not the viewport, doubles less than a
+# quarter: a plate composed at one end of its class is delivered 1.25x larger
+# at the other, so no reader gets type twice the size another reader gets.
+# `481-588` and `589-768` split the tablet range at the geometric mean of its
+# bands (433..676 -> 541 at 589px of viewport), which is why there are four
+# classes and not the three the page's own typography uses.
+FIGURE_VARIANTS = (
+    {"key": "narrow", "min_viewport": 375, "max_viewport": 480},
+    {"key": "compact", "min_viewport": 481, "max_viewport": 588},
+    {"key": "medium", "min_viewport": 589, "max_viewport": 768},
+    {"key": "wide", "min_viewport": 769, "max_viewport": None},
+)
+FIGURE_VARIANT_KEYS = tuple(item["key"] for item in FIGURE_VARIANTS)
+
+# The plate name used when a family cannot compose for a band at all: the
+# drawing rides the authored stage and every class shows the same plate.
+FIGURE_SINGLE_PLATE = "all"
 
 # Plan figures declare a composition; data figures declare their kind.
 COMPOSITIONS = ("layered", "pipeline", "hub")

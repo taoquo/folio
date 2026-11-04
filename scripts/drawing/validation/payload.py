@@ -15,6 +15,7 @@ from typing import Any
 
 from ..canvas_contract import GRAPH_CANVAS, CanvasBand, canvas_issues
 from ..scene import ResolvedScene
+from ..stage import current as current_stage
 from .accessibility import validate_scene_accessibility
 from .canvas import validate_canvas
 from .geometry import validate_scene_geometry
@@ -46,7 +47,8 @@ def common_payload_diagnostics(
         diagnostics.append(DrawingDiagnostic("ERROR", code, f"unknown field: {name}"))
     if not isinstance(payload.get("title"), str) or not payload.get("title", "").strip():
         diagnostics.append(DrawingDiagnostic("ERROR", code, "title must be a non-empty string"))
-    for issue in canvas_issues(payload, kind=kind, band=band, default_height=default_height):
+    for issue in canvas_issues(payload, kind=kind, band=band,
+                               default_height=default_height, stage=current_stage().width):
         diagnostics.append(DrawingDiagnostic("ERROR", code, issue))
     if payload.get("language") is not None and (not isinstance(payload["language"], str) or not payload["language"].strip()):
         diagnostics.append(DrawingDiagnostic("ERROR", code, "language must be a non-empty string"))

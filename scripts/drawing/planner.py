@@ -40,12 +40,22 @@ def _channel(edge: SemanticEdge) -> str:
     return "secondary-flow"
 
 
-def _size_tier(node: SemanticNode) -> str:
+def _size_tier(node: SemanticNode, grammar: ArchitectureGrammar = DEFAULT_ARCHITECTURE_GRAMMAR) -> str:
+    """The smallest tier whose box still holds this label.
+
+    The thresholds are derived from the tier widths rather than written as
+    numbers, because on a narrower stage the tiers shrink while the type does
+    not: a 176-unit box that held a 140-unit label holds 96 units of it at
+    scale 0.55. Deriving them keeps the choice about the label, not about 960.
+    """
+    tiers = {name: width for name, width, _ in grammar.geometry.size_tiers}
     title_width = measure_text(node.label, 12)
     metadata_width = measure_text(node.metadata or "", 9, "mono")
-    if not node.metadata and title_width <= 104:
+    compact_width = tiers.get("compact", 144) - 40
+    regular_width = tiers.get("regular", 176) - 36
+    if not node.metadata and title_width <= compact_width:
         return "compact"
-    if title_width <= 140 and metadata_width <= 140:
+    if title_width <= regular_width and metadata_width <= regular_width:
         return "regular"
     return "wide"
 
@@ -173,7 +183,7 @@ def plan_drawing(
             emphasis="focal" if node.id == focus else ("background" if node.id in background else "normal"),
             region=node.domain,
             content=NodeContentPlan(_archetype(node), node.label, node.metadata, node.description),
-            size_tier=_size_tier(node),
+            size_tier=_size_tier(node, grammar),
             pictogram=_pictogram(node),
         )
         for node in semantic.nodes

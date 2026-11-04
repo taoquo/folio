@@ -102,6 +102,20 @@ profiles:
       s14: 40
       s16: 56
       s17: 64
+    # Text weight and tracking. They are values like any other: a heading
+    # that decides its own weight is a second design system. The vocabulary
+    # is closed to what the page actually uses.
+    weight:
+      regular: 400
+      medium: 500
+    tracking:
+      # An uppercase label needs air between letters to stay a label.
+      caps_em: 0.12
+      caps_wide_em: 0.14
+      # A display line is set tighter as it grows.
+      tight_em: -0.015
+      snug_em: -0.01
+      tighter_em: -0.02
     line:
       hairline: 1
       marker: 3
@@ -242,6 +256,20 @@ profiles:
       s14: 40
       s16: 56
       s17: 64
+    # Text weight and tracking. They are values like any other: a heading
+    # that decides its own weight is a second design system. The vocabulary
+    # is closed to what the page actually uses.
+    weight:
+      regular: 400
+      medium: 500
+    tracking:
+      # An uppercase label needs air between letters to stay a label.
+      caps_em: 0.12
+      caps_wide_em: 0.14
+      # A display line is set tighter as it grows.
+      tight_em: -0.015
+      snug_em: -0.01
+      tighter_em: -0.02
     line:
       hairline: 1
       marker: 3

@@ -75,7 +75,10 @@ DOMAIN_FIELDS: dict[str, frozenset[str]] = {
     # that the print scale does not: font stacks, px sizes, spacing, radii,
     # measure and the reading page's structural geometry.
     "web": frozenset({
-        "font", "type", "space", "line", "radius", "measure", "layout", "genre",
+        "font", "type", "space", "line", "radius", "measure", "layout",
+        # Weight and tracking are type decisions the page used to make for
+        # itself, one declaration at a time.
+        "weight", "tracking", "genre",
     }),
 }
 

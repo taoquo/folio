@@ -57,6 +57,16 @@
             "required": ["body"],
             "additionalProperties": {"type": "number", "minimum": 20, "maximum": 120}
           },
+          "weight": {
+            "description": "Text weights by role. The only place a weight is decided.",
+            "type": "object",
+            "additionalProperties": {"type": "integer", "minimum": 100, "maximum": 900}
+          },
+          "tracking": {
+            "description": "Letter spacing in em, by intent. Keys end in _em because the unit is part of the name.",
+            "type": "object",
+            "additionalProperties": {"type": "number", "minimum": -0.1, "maximum": 0.5}
+          },
           "layout": {
             "type": "object",
             "additionalProperties": {"type": "number", "minimum": 0}

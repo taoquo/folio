@@ -19,15 +19,23 @@ in new code; nothing new should reference a version number that no longer means 
 
 from __future__ import annotations
 
+from .layout.graph_geometry import (
+    DEFAULT_GRAPH_GEOMETRY,
+    GraphGeometry,
+    graph_geometry_for_stage,
+)
 from .layout.layered_graph import (
     GraphComposition,
     GraphEdgePlan,
     GraphNodePlan,
     GraphPlan,
     arrow_for,
+    choose_graph_composition,
     fit_layered_graph_height,
+    graph_axis_fits,
     graph_band_top,
     graph_depths,
+    graph_extent,
     graph_has_feedback,
     layout_layered_graph,
     layout_result,
@@ -54,12 +62,14 @@ from .validation.payload import (
 )
 
 __all__ = [
-    "GraphComposition", "GraphEdgePlan", "GraphNodePlan", "GraphPlan", "arrow_for",
+    "DEFAULT_GRAPH_GEOMETRY", "GraphComposition", "GraphEdgePlan", "GraphGeometry",
+    "GraphNodePlan", "GraphPlan", "arrow_for", "choose_graph_composition",
     "common_payload_diagnostics", "cycle_exists", "dimensions", "edge_label_signature",
-    "finite_number", "fit_layered_graph_height", "graph_band_top", "graph_depths",
-    "graph_has_feedback", "infer_language", "layout_layered_graph", "layout_result",
-    "node_size", "object_list", "plan_node_size", "reachable", "require_no_errors",
-    "resolve_graph_scene", "route_graph_edges", "validate_distinguishable_parallel_edges",
-    "validate_item_strings", "validate_no_self_edges", "validate_object_fields",
-    "validate_resolved_scene", "validate_unique_ids", "wrap_text",
+    "finite_number", "fit_layered_graph_height", "graph_axis_fits", "graph_band_top",
+    "graph_depths", "graph_extent", "graph_geometry_for_stage", "graph_has_feedback",
+    "infer_language", "layout_layered_graph", "layout_result", "node_size", "object_list",
+    "plan_node_size", "reachable", "require_no_errors", "resolve_graph_scene",
+    "route_graph_edges", "validate_distinguishable_parallel_edges", "validate_item_strings",
+    "validate_no_self_edges", "validate_object_fields", "validate_resolved_scene",
+    "validate_unique_ids", "wrap_text",
 ]

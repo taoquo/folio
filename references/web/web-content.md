@@ -51,7 +51,7 @@ A title names a thing. Symbols that encode a relationship belong in the body.
 | `vs` | “与…的取舍” |
 | `·` | “：” or a comma |
 
-`figcaption` is the only exemption, because the composition grammar needs `·`.
+`figcaption` is the only exemption: `图 W-1 · 图意` uses `·` to separate the number from the statement.
 Rule: **W-TXT-01**.
 
 ## 5. Numbering
@@ -65,14 +65,14 @@ Rules: **W-TXT-02** (chapters), **W-TXT-02b** (figures).
 ## 6. Figure captions
 
 ```
-图 <prefix>-<n> · <what it shows> · composition: <value> · axis: <value>
-Figure <prefix>-<n> · <what it shows> · composition: <value> · axis: <value>
+图 <prefix>-<n> · <what it shows>
+Figure <prefix>-<n> · <what it shows>
 ```
 
-`composition` is one of `layered`, `pipeline`, `hub`, `compare`, `grid`,
-`state`, `bar`, `explain`; `axis` is `top-down` or `left-right`. The caption
-must agree with the figure's `data-composition` and `data-axis`, both copied
-from the compiled plan rather than chosen on the page.
+The number is assigned by the builder in placement order. The composition and
+the reading axis are not part of the caption: they live on the figure's
+`data-composition` and `data-axis`, copied from the compiled plan rather than
+chosen on the page, and W-FIG-01 compares them with the manifest.
 Rule: **W-TXT-03**.
 
 ## 7. Two voices
@@ -85,3 +85,35 @@ Rule: **W-TXT-03**.
 The engine has no sans: `--sans` is an alias of `--serif`. Do not introduce a
 second family in a Web template; if a sans is ever needed, it is an engine type
 role, not a page decision.
+
+## 8. The page model
+
+A module fragment is a string, but it is not unstructured. `scripts/web_page.py`
+reads it once and returns every **top-level block** of every chapter — the `h2`,
+the `h3`, the paragraphs, the lists, the insight and table wrappers, the
+figures — each with a role from a closed vocabulary (`BLOCK_ROLES`) and an id
+derived from its chapter.
+
+Two consequences follow, and both are rules:
+
+- **W-STR-05**: every top-level block on the built page carries
+  `data-folio-role` and a unique `data-folio-id`. A block the model cannot name
+  fails the build, because a component nobody declared is not a rendering
+  detail.
+- **W-STR-06**: the blocks Chromium renders equal the blocks the model counted.
+  A block that disappears between the model and the page is a builder defect.
+
+The model never re-serialises the DOM. A block is identified by the source span
+of its start tag, and annotation inserts one attribute into that tag; the
+fragment stays the skeleton, the way a print template does. Figure placeholders
+are comments at model time and become `<figure>` blocks carrying the model's
+role and id.
+
+The chapter heading and the TOC summary come from the model too. They used to
+be recovered with a regex over the whole fragment, which meant any attribute
+added to an `h2` silently emptied the navigation.
+
+`FOLIO_WEB_MODEL` selects the behaviour: `off` (no model, legacy chapter
+regexes), `shadow` (build and validate it, leave the source alone), `on`
+(annotate; the default). `shadow` and `off` are byte-identical, and a test holds
+them that way.

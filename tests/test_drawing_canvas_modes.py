@@ -91,14 +91,16 @@ class CanvasModeTests(unittest.TestCase):
         self.assertFalse(GRAPH_CANVAS.accepts(1800, "figure"))
         self.assertTrue(GRAPH_CANVAS.accepts(1800, "poster"))
 
-    def test_width_is_pinned_in_both_modes(self) -> None:
+    def test_the_payload_may_not_declare_a_width(self) -> None:
         for mode in CANVAS_MODES:
             with self.subTest(mode=mode):
                 payload = architecture(2, canvas=mode)
                 payload["width"] = 1200
                 with self.assertRaises(DrawingCompilationError) as caught:
                     DEFAULT_COMPILER_REGISTRY.compile_payload(payload)
-                self.assertIn("width must be exactly 960", str(caught.exception))
+                # The stage belongs to the host: composing at another width is a
+                # compile-time input, never a field the drawing sets for itself.
+                self.assertIn("declared by the host", str(caught.exception))
 
 
 class PosterCompilationTests(unittest.TestCase):

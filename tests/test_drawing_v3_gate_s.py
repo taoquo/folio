@@ -194,13 +194,17 @@ class DrawingV3GateSTests(TestCase):
         self.assertTrue(any(item.code == "PV107" for item in validate_scene_primitives(scene)))
 
     def test_aud_009_architecture_overflow_cannot_reach_scene_export(self) -> None:
+        # A stage is the host's input now, so a stage too small for the
+        # composition is not a canvas-contract breach (DG044) any more: it is a
+        # drawing that cannot be placed in it. It still fails closed, and it
+        # fails before a scene reaches an exporter.
         drawing = replace(drawing_plan_from_spec(self.spec), width=320)
 
         with self.assertRaises(DrawingCompilationError) as context:
             compile_drawing_plan(drawing)
 
-        self.assertEqual("plan", context.exception.stage)
-        self.assertIn("DG044", str(context.exception))
+        self.assertEqual("layout", context.exception.stage)
+        self.assertIn("LY001", str(context.exception))
 
     def test_aud_015_layout_endpoint_must_touch_target_boundary(self) -> None:
         boxes = {

@@ -686,6 +686,15 @@ def build_parser() -> argparse.ArgumentParser:
     web_cmd.add_argument("--strict-figures", action="store_true",
                          help="Treat figure advisory diagnostics as build failures.")
 
+    web_plan_cmd = subparsers.add_parser(
+        "web-plan",
+        help="Print the Web layout plan for a built series, and gate the figure fit.")
+    web_plan_cmd.add_argument("--series", required=True, help="Built series name under dist/web.")
+    web_plan_cmd.add_argument("--dist", help="Build root (default: dist/web).")
+    web_plan_cmd.add_argument("--gate", action="store_true",
+                              help="Exit nonzero when a figure breaks the fit contract.")
+    web_plan_cmd.add_argument("--json", action="store_true", help="Print the plan as JSON.")
+
     check_profiles = subparsers.add_parser(
         "check-profiles", help="Validate typography/page/web/language/theme/taste profiles."
     )
@@ -881,6 +890,17 @@ def _main(argv: list[str]) -> int:
         if args.strict_figures:
             forwarded.append("--strict-figures")
         return web_main(forwarded)
+    if args.command == "web-plan":
+        from web_plan import main as plan_main
+
+        forwarded = ["--series", args.series]
+        if args.dist:
+            forwarded.extend(("--dist", args.dist))
+        if args.gate:
+            forwarded.append("--gate")
+        if args.json:
+            forwarded.append("--json")
+        return plan_main(forwarded)
     if args.command == "check-profiles":
         return _check_profiles(args.format, args.strict)
     if args.command == "inspect-profile":

@@ -45,15 +45,23 @@ class ContractTests(unittest.TestCase):
         self.assertLess(C.MEASURE_CHARS[0], C.MEASURE_CHARS[1])
 
     def test_caption_grammar_accepts_a_contract_caption(self) -> None:
-        value = "图 W-1 · 编码器与解码器堆栈 · composition: layered · axis: left-right"
+        value = "图 W-1 · 编码器与解码器堆栈"
         self.assertTrue(C.FIGCAPTION.match(value))
 
-    def test_caption_grammar_rejects_a_missing_axis(self) -> None:
-        value = "图 W-1 · 编码器与解码器堆栈 · composition: layered"
+    def test_caption_grammar_rejects_a_missing_number(self) -> None:
+        value = "编码器与解码器堆栈"
         self.assertIsNone(C.FIGCAPTION.match(value))
 
+    def test_caption_grammar_rejects_a_provenance_tail(self) -> None:
+        # The composition and the axis belong on the figure's data attributes,
+        # not in the sentence a reader sees.
+        for tail in (" composition: layered", " axis: left-right"):
+            with self.subTest(tail=tail):
+                value = f"图 W-1 · 编码器与解码器堆栈 ·{tail}"
+                self.assertIsNone(C.FIGCAPTION.match(value))
+
     def test_caption_grammar_accepts_an_english_caption(self) -> None:
-        value = "Figure W-1 · Encoder and decoder stacks · composition: layered · axis: left-right"
+        value = "Figure W-1 · Encoder and decoder stacks"
         self.assertTrue(C.FIGCAPTION.match(value))
 
     def test_semantic_roles_are_the_ten_meanings(self) -> None:
@@ -161,6 +169,69 @@ class FigureCaptionTests(unittest.TestCase):
 
         self.assertEqual("hub", figure.composition)
         self.assertEqual("top-down", figure.axis)
+
+
+class FigureLegibilityTests(unittest.TestCase):
+    """The manifest says what the column delivers, instead of guessing.
+
+    A figure is drawn on a 960-unit stage and scaled into the 660px column, so
+    its 7 / 9 / 12 tiers arrive at 4.8 / 6.2 / 8.3px. Enlarging the plate was
+    tried and rejected: it enlarged the drawing's empty margin with it. What
+    survives is the measurement — every tier the scene draws is recorded, so
+    `web_probe.py` and W-FIG-10 can report the delivered size, and P1b has a
+    baseline to move.
+    """
+
+    FIXTURES = ROOT / "references" / "fixtures" / "web" / "reading-demo" / "figures"
+
+    def _figure(self):
+        import web_figures
+
+        return web_figures.render_figure(
+            self.FIXTURES / "release-gate.json", "release-gate", page_theme=None)
+
+    def test_manifest_reports_every_tier_the_scene_draws(self) -> None:
+        figure = self._figure()
+        manifest = figure.manifest_entry()
+
+        self.assertEqual([round(size, 2) for size in figure.text_sizes],
+                         manifest["text_sizes"])
+        self.assertGreaterEqual(len(figure.text_sizes), 2)
+        self.assertEqual(sorted(figure.text_sizes), list(figure.text_sizes))
+
+    def test_min_font_is_the_size_delivered_in_the_slot(self) -> None:
+        figure = self._figure()
+        framed = figure.view_box[2]
+
+        self.assertAlmostEqual(C.FIGURE["slot"] * min(figure.text_sizes) / framed,
+                               figure.min_font_px, places=2)
+        self.assertLess(figure.min_font_px, min(figure.text_sizes))
+
+    def test_svg_scales_to_its_slot(self) -> None:
+        # The page owns the width; the drawing owns the composition. An
+        # intrinsic width here would put a 960-unit plate in a 660px column.
+        figure = self._figure()
+        root_tag = figure.svg[:figure.svg.index(">") + 1]
+
+        self.assertIn('width="100%"', root_tag)
+        self.assertIn('viewBox="', root_tag)
+
+    def test_the_drawing_is_framed_to_its_ink(self) -> None:
+        # The plate is the ink plus the framing margin, not the whole stage.
+        figure = self._figure()
+
+        self.assertLess(figure.view_box[2], figure.stage[0])
+        self.assertGreaterEqual(figure.coverage, C.FIGURE_FIT["coverage_min"])
+        self.assertLessEqual(figure.margin_ratio, C.FIGURE_FIT["margin_ratio_max"])
+
+    def test_framing_delivers_larger_type_than_the_full_stage(self) -> None:
+        figure = self._figure()
+        slot = C.FIGURE["slot"]
+        framed = min(figure.text_sizes) * slot / figure.view_box[2]
+        full = min(figure.text_sizes) * slot / figure.stage[0]
+
+        self.assertGreater(framed, full)
+        self.assertAlmostEqual(framed, figure.min_font_px, places=2)
 
 
 if __name__ == "__main__":

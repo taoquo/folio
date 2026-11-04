@@ -10,9 +10,19 @@ page is not shrunk by empty scene padding.
 from __future__ import annotations
 
 from ..scene import ResolvedScene
+from ..stage import current as current_stage
 from .profiles import normalize_output_profile
 
 PAGE_PREVIEW_MARGIN = 24
+# The frame is a visual safety margin, so it has to stay a margin: held at 24
+# units, a 400-unit stage frames its ink with a gutter three times as heavy, in
+# proportion, as a 960-unit one. The floor keeps the ink off the drawn edge.
+MIN_PAGE_PREVIEW_MARGIN = 8
+
+
+def _framing_margin() -> int:
+    scale = min(1.0, current_stage().scale)
+    return max(MIN_PAGE_PREVIEW_MARGIN, int(round(PAGE_PREVIEW_MARGIN * scale)))
 
 
 def scene_viewport(scene: ResolvedScene, profile: str) -> tuple[int, int, int, int]:
@@ -26,10 +36,11 @@ def scene_viewport(scene: ResolvedScene, profile: str) -> tuple[int, int, int, i
     ink = scene_ink_box(scene)
     if ink is None or ink.w <= 0 or ink.h <= 0:
         return full
-    left = max(0, ink.x - PAGE_PREVIEW_MARGIN)
-    top = max(0, ink.y - PAGE_PREVIEW_MARGIN)
-    right = min(scene.width, ink.x + ink.w + PAGE_PREVIEW_MARGIN)
-    bottom = min(scene.height, ink.y + ink.h + PAGE_PREVIEW_MARGIN)
+    margin = _framing_margin()
+    left = max(0, ink.x - margin)
+    top = max(0, ink.y - margin)
+    right = min(scene.width, ink.x + ink.w + margin)
+    bottom = min(scene.height, ink.y + ink.h + margin)
     width = max(1, right - left)
     height = max(1, bottom - top)
     if width >= scene.width and height >= scene.height:

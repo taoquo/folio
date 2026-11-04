@@ -1,0 +1,53 @@
+{
+  "series": "attention",
+  "language": "zh-Hans-CN",
+  "kicker": "TRANSFORMER · PAPER READING",
+  "title": "Attention Is All You Need",
+  "lead": "一次把循环与卷积移出序列建模的架构说明：它做了什么、为什么成立、代价在哪里。",
+  "figure_prefix": "W",
+  "figures": [
+    {
+      "id": "transformer",
+      "fixture": "figures/transformer.json",
+      "caption": "源图 Figure 1 · 编码器与解码器各 6 层，注意力是唯一跨位置的通路"
+    },
+    {
+      "id": "scaled-dot-product",
+      "fixture": "figures/scaled-dot-product.json",
+      "caption": "源图 Figure 2 左 · 缩放点积注意力：Q 与 K 打分，Softmax 归一，再与 V 加权"
+    },
+    {
+      "id": "multi-head",
+      "fixture": "figures/multi-head.json",
+      "composition": "hub",
+      "caption": "源图 Figure 2 右 · 多头注意力：8 个头并行，拼接后一次线性投影（图示 3 个代表）"
+    },
+    {
+      "id": "worked-example",
+      "fixture": "figures/worked-example.json",
+      "caption": "源图 Figure 2 的工作算例 · 单头形状流：d_model 512，dk 64，序列长度 4",
+      "example": true
+    }
+  ],
+  "modules": [
+    {
+      "id": "attention",
+      "num": "01",
+      "name": "Attention Is All You Need",
+      "summary": "Transformer 架构、缩放点积注意力、多头注意力与 WMT14 结果。",
+      "status": "已实现",
+      "package": "papers.neurips.cc/7181",
+      "external": "https://papers.neurips.cc/paper/7181-attention-is-all-you-need.pdf",
+      "title": "Attention Is All You Need",
+      "kicker": "TRANSFORMER",
+      "lead": "用注意力替代循环与卷积：架构、论证与实验。",
+      "fragment": "attention.frag.html",
+      "figures": [
+        "transformer",
+        "scaled-dot-product",
+        "multi-head",
+        "worked-example"
+      ]
+    }
+  ]
+}

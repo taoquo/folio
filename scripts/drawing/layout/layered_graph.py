@@ -13,7 +13,7 @@ from dataclasses import asdict, dataclass
 from typing import Any
 
 from ..connectors.contract import approach_needs_rerouting, perpendicular_approach
-from ..connectors.labels import place_edge_labels
+from ..connectors.labels import LABEL_REACH, place_edge_labels
 from ..connectors.postprocess import clean_polyline
 from ..layout.models import LayoutBox, LayoutEdge, LayoutResult
 from ..scene import (
@@ -27,8 +27,12 @@ from ..scene import (
     SceneText,
 )
 from ..theme.folio import DEFAULT_FOLIO_THEME, FolioTheme
+from ..typography.fit import _wrap as _staged_wrap
+from ..typography.fit import fit_wrap_width
+from ..typography.measure import measure_text
 from ..typography.roles import TextRole, resolve_text_style
 from ..typography.text import wrap_text
+from .graph_geometry import DEFAULT_GRAPH_GEOMETRY, MARK_ARCHETYPES, GraphGeometry
 from .grid import grid
 
 
@@ -131,7 +135,13 @@ def _subtitle_safe_height(node: GraphNodePlan, width: int, height: int) -> int:
     return max(height, 64) if len(lines) > 1 else height
 
 
-def plan_node_size(plan: GraphPlan, node: GraphNodePlan) -> tuple[int, int]:
+def plan_node_size(
+    plan: GraphPlan,
+    node: GraphNodePlan,
+    geometry: GraphGeometry = DEFAULT_GRAPH_GEOMETRY,
+) -> tuple[int, int]:
+    if not geometry.is_default:
+        return _composed_node_size(node, geometry)
     width, height = node_size(node.archetype)
     if len(plan.nodes) <= 8:
         return width, _subtitle_safe_height(node, width, height)
@@ -144,7 +154,56 @@ def plan_node_size(plan: GraphPlan, node: GraphNodePlan) -> tuple[int, int]:
     return min(width, 112), _subtitle_safe_height(node, min(width, 112), min(height, 56))
 
 
-def layout_layered_graph(plan: GraphPlan) -> LayoutResult:
+def _composed_node_size(node: GraphNodePlan, geometry: GraphGeometry) -> tuple[int, int]:
+    """A node box that holds its own text at the type scale, never a shrunk one.
+
+    The authored layout could trust 144 units because it was measured at 960.
+    Composed for a column, a box is only as wide as its longest unbreakable word
+    -- the composer refuses to cut a word in half -- plus two insets, and only
+    as tall as the lines it draws.
+    """
+    width, height = geometry.node_size(node.archetype)
+    if node.archetype in MARK_ARCHETYPES:
+        return width, height
+    title = resolve_text_style(TextRole.NODE_TITLE, DEFAULT_FOLIO_THEME)
+    # A box that would need a third line is widened until two hold the whole
+    # label, because the wrap caps at two and drops the rest.
+    width = fit_wrap_width(
+        node.label, width, title.size, 2, geometry.title_wrap_inset)
+    if node.subtitle:
+        meta = resolve_text_style(TextRole.NODE_META, DEFAULT_FOLIO_THEME)
+        # The subtitle wraps like the title. Sizing the box to the whole sentence
+        # instead would make "running visual checks" the widest node in a
+        # six-state chain and leave the chain no stage narrow enough to compose.
+        words = node.subtitle.split()
+        widest = measure_text(node.subtitle, meta.size, meta.family) if len(words) <= 1 else max(
+            measure_text(word, meta.size, meta.family) for word in words)
+        width = max(width, grid(widest + 2 * geometry.subtitle_inset))
+        width = fit_wrap_width(
+            node.subtitle, width, meta.size, 2, 2 * geometry.subtitle_inset)
+        subtitle_lines = _staged_wrap(
+            node.subtitle, max(48, width - 2 * geometry.subtitle_inset), meta.size)
+        height = max(
+            height,
+            geometry.node_subtitle_height
+            + max(0, len(subtitle_lines) - 1) * geometry.subtitle_pitch)
+    lines = _staged_wrap(node.label, max(48, width - geometry.title_wrap_inset), title.size)
+    if len(lines) > 1:
+        height = max(
+            height,
+            geometry.node_height_floor + (len(lines) - 1) * geometry.fan_pitch)
+    return grid(width), grid(height)
+
+
+def layout_layered_graph(
+    plan: GraphPlan,
+    geometry: GraphGeometry = DEFAULT_GRAPH_GEOMETRY,
+    *,
+    axis: str | None = None,
+    fold: int = 0,
+) -> LayoutResult:
+    if not geometry.is_default or fold > 1:
+        return _layout_composed(plan, geometry, axis or plan.composition.axis, fold)
     depth = graph_depths(plan)
     bands: dict[int, list[GraphNodePlan]] = defaultdict(list)
     for node in plan.nodes:
@@ -209,8 +268,16 @@ def graph_band_top(plan: GraphPlan, depth: dict[str, int]) -> int:
     return 176 if graph_has_feedback(plan, depth) else 96
 
 
-def fit_layered_graph_height(plan: GraphPlan) -> int:
+def fit_layered_graph_height(
+    plan: GraphPlan,
+    geometry: GraphGeometry = DEFAULT_GRAPH_GEOMETRY,
+    *,
+    axis: str | None = None,
+    fold: int = 0,
+) -> int:
     """Shrink a left-right graph canvas to the height its single band actually needs."""
+    if not geometry.is_default or fold > 1:
+        return _composed_height(plan, geometry, axis or plan.composition.axis, fold)
     if plan.composition.axis != "left-right" or not plan.nodes:
         return plan.height
     depth = graph_depths(plan)
@@ -231,7 +298,14 @@ def route_graph_edges(
     width: int,
     height: int,
     label_obstacles: tuple[LayoutBox, ...] = (),
+    geometry: GraphGeometry = DEFAULT_GRAPH_GEOMETRY,
+    *,
+    axis: str | None = None,
+    fold: int = 0,
 ) -> list[LayoutEdge]:
+    if not geometry.is_default or fold > 1:
+        return _route_composed(
+            plan, boxes, width, height, geometry, axis or plan.composition.axis, fold, label_obstacles)
     # Forward and reverse edges leave a node from different sides (top/bottom versus left/right),
     # so they must be fanned out independently. Mixing them shifts a lone forward connector off
     # centre and leaves a visible kink.
@@ -322,7 +396,8 @@ def route_graph_edges(
         points = list(clean_polyline(points))
         label = edge.label if edge.label and len(edge.label) <= 24 else None
         results.append(LayoutEdge(edge.source, edge.target, points, label, None, edge.id))
-    return place_edge_labels(results, list(boxes.values()), width, height, label_obstacles)
+    return place_edge_labels(results, list(boxes.values()), width, height, label_obstacles,
+                             reach=LABEL_REACH)
 
 
 def layout_result(boxes: dict[str, LayoutBox], edges: list[LayoutEdge]) -> LayoutResult:
@@ -355,6 +430,7 @@ def resolve_graph_scene(
     regions: tuple[SceneRegion, ...] = (),
     theme: FolioTheme = DEFAULT_FOLIO_THEME,
     description: str | None = None,
+    geometry: GraphGeometry = DEFAULT_GRAPH_GEOMETRY,
 ) -> ResolvedScene:
     scene_nodes: list[SceneNode] = []
     for node in plan.nodes:
@@ -366,20 +442,38 @@ def resolve_graph_scene(
         texts: list[SceneText] = []
         if node.archetype not in {"initial", "final"}:
             title_style = resolve_text_style(TextRole.NODE_TITLE, theme)
-            lines = wrap_text(node.label, max(48, box.w - 24), title_style.size, title_style.family, 2)
+            lines = _wrap_for_stage(
+                node.label, max(48, box.w - geometry.title_wrap_inset),
+                title_style.size, title_style.family, 2, geometry.is_default)
             baseline = grid(box.y + box.h / 2 - (len(lines) - 1) * 8 + (0 if node.subtitle else 4))
             texts.extend(
-                SceneText(line, box.x + box.w // 2, baseline + index * 16, title_style.color, title_style.size, title_style.family, "middle", weight=title_style.weight)
+                SceneText(line, grid(box.x + box.w / 2), baseline + index * 16, title_style.color, title_style.size, title_style.family, "middle", weight=title_style.weight)
                 for index, line in enumerate(lines)
             )
             if node.subtitle:
                 meta = resolve_text_style(TextRole.NODE_META, theme)
-                texts.append(SceneText(node.subtitle, box.x + box.w // 2, box.y + box.h - 8, meta.color, meta.size, meta.family, "middle"))
+                if geometry.is_default:
+                    texts.append(SceneText(
+                        node.subtitle, grid(box.x + box.w / 2),
+                        box.y + box.h - geometry.subtitle_inset,
+                        meta.color, meta.size, meta.family, "middle"))
+                else:
+                    meta_lines = _staged_wrap(
+                        node.subtitle, max(48, box.w - 2 * geometry.subtitle_inset), meta.size)
+                    bottom = box.y + box.h - geometry.subtitle_inset
+                    texts.extend(
+                        SceneText(
+                            line, grid(box.x + box.w / 2),
+                            bottom - (len(meta_lines) - 1 - index) * geometry.subtitle_pitch,
+                            meta.color, meta.size, meta.family, "middle")
+                        for index, line in enumerate(meta_lines))
         shape = {
             "choice": "diamond", "decision": "diamond", "terminal": "pill", "data": "data",
             "initial": "circle", "final": "double-circle",
         }.get(node.archetype, "rect")
-        scene_nodes.append(SceneNode(node.id, SceneBox(box.x, box.y, box.w, box.h), SceneStyle(fill, stroke, 1.2, radius=6), tuple(texts), shape=shape))
+        scene_nodes.append(SceneNode(
+            node.id, SceneBox(box.x, box.y, box.w, box.h),
+            SceneStyle(fill, stroke, 1.2, radius=geometry.node_radius), tuple(texts), shape=shape))
 
     route_by_id = {edge.id: edge for edge in layout.edges if edge.id}
     scene_edges: list[SceneEdge] = []
@@ -395,16 +489,502 @@ def resolve_graph_scene(
         label_box = SceneBox(**asdict(route.label_box)) if route.label_box else None
         if route.label and route.label_box:
             style = resolve_text_style(TextRole.EDGE_LABEL, theme)
-            label = SceneText(route.label, grid(route.label_box.x + route.label_box.w / 2), grid(route.label_box.y + 12), style.color, style.size, style.family, "middle")
+            size = style.size if geometry.is_default else geometry.edge_label_size
+            label = SceneText(route.label, grid(route.label_box.x + route.label_box.w / 2), grid(route.label_box.y + 12), style.color, size, style.family, "middle")
         scene_edges.append(SceneEdge(
             edge.id, edge.source, edge.target, points,
             SceneStyle(stroke=stroke, stroke_width=1.4, dash=(6, 4) if exceptional else ()),
             arrow_for(points), f"{plan.kind}-edge {plan.kind}-edge--{edge.channel}", label, label_box,
         ))
     title_style = resolve_text_style(TextRole.DIAGRAM_TITLE, theme)
-    title = SceneText(plan.title, plan.width // 2, 40, title_style.color, title_style.size, title_style.family, "middle")
+    title = SceneText(
+        plan.title, grid(plan.width / 2), geometry.title_baseline,
+        title_style.color, title_style.size, title_style.family, "middle")
     return ResolvedScene(
         plan.width, plan.height, theme.parchment, title, regions, tuple(scene_edges), tuple(scene_nodes),
         description=description or f"{plan.kind}: {plan.title}", language=plan.language,
         reading_order=tuple(node.id for node in plan.nodes),
     )
+
+
+# --- Composed stages -------------------------------------------------------
+#
+# Everything below runs only when the host has named a stage narrower than the
+# canvas the graph was authored on. The authored path above is untouched, so a
+# 960-unit artifact cannot move by a rounding step.
+
+def _wrap_for_stage(
+    text: str,
+    width: int,
+    size: float,
+    family: str,
+    max_lines: int,
+    is_default: bool,
+) -> tuple[str, ...]:
+    """The authored wrap, or the staged one that refuses to cut a word in half."""
+    if is_default:
+        return wrap_text(text, width, size, family, max_lines)
+    return _staged_wrap(text, width, size)
+
+
+def _graph_bands(plan: GraphPlan) -> tuple[dict[str, int], dict[int, list[GraphNodePlan]]]:
+    depth = graph_depths(plan)
+    bands: dict[int, list[GraphNodePlan]] = defaultdict(list)
+    for node in plan.nodes:
+        bands[depth[node.id]].append(node)
+    return depth, dict(sorted(bands.items()))
+
+
+def _composed_gap(plan: GraphPlan, geometry: GraphGeometry) -> int:
+    return geometry.dense_node_gap if len(plan.nodes) > geometry.dense_threshold else geometry.node_gap
+
+
+def _feedback_edges(plan: GraphPlan, depth: dict[str, int]) -> list[GraphEdgePlan]:
+    return [edge for edge in plan.edges if depth[edge.target] < depth[edge.source]]
+
+
+def _composed_band_top(plan: GraphPlan, depth: dict[str, int], geometry: GraphGeometry) -> int:
+    """The top of the first band: the title's clearance plus any feedback lanes."""
+    feedback = len(_feedback_edges(plan, depth))
+    reserve = geometry.title_clearance
+    if feedback:
+        reserve = max(
+            reserve,
+            geometry.label_lane_offset + geometry.label_lane_pitch * feedback + 24)
+    return reserve
+
+
+def _band_sizes(
+    plan: GraphPlan,
+    bands: dict[int, list[GraphNodePlan]],
+    geometry: GraphGeometry,
+) -> tuple[dict[int, list[tuple[int, int]]], dict[int, int], dict[int, int]]:
+    gap = _composed_gap(plan, geometry)
+    sizes: dict[int, list[tuple[int, int]]] = {}
+    widths: dict[int, int] = {}
+    heights: dict[int, int] = {}
+    for level, nodes in bands.items():
+        items = [plan_node_size(plan, node, geometry) for node in nodes]
+        sizes[level] = items
+        widths[level] = max(width for width, _height in items)
+        heights[level] = sum(height for _width, height in items) + max(0, len(nodes) - 1) * gap
+    return sizes, widths, heights
+
+
+def _fold_cell(index: int, fold: int) -> tuple[int, int]:
+    """One position on a serpentine grid: rows alternate so the chain never turns back."""
+    row, slot = divmod(index, fold)
+    return row, (slot if row % 2 == 0 else fold - 1 - slot)
+
+
+def _fold_rows(count: int, fold: int) -> int:
+    return -(-count // fold) if fold > 1 else 1
+
+
+def _fold_metrics(
+    plan: GraphPlan,
+    bands: dict[int, list[GraphNodePlan]],
+    sizes: dict[int, list[tuple[int, int]]],
+    fold: int,
+) -> tuple[list[tuple[GraphNodePlan, tuple[int, int], tuple[int, int]]], dict[int, int], dict[int, int]]:
+    """Place one *node* per cell, not one band.
+
+    A band can hold two siblings. Folding bands rather than nodes stacked the
+    siblings in one cell, and a connector to the lower one ran straight through
+    the upper one -- a crossing the layout asked for, not the router. One node
+    per cell gives every connector a free row or gutter to arrive in.
+    """
+    items = [
+        (node, size, _fold_cell(index, fold))
+        for index, (node, size) in enumerate(
+            (node, size)
+            for level in bands
+            for node, size in zip(bands[level], sizes[level])
+        )
+    ]
+    rows = _fold_rows(len(items), fold)
+    col_widths = {column: 0 for column in range(fold)}
+    row_heights = {row: 0 for row in range(rows)}
+    for _node, (width, height), (row, column) in items:
+        col_widths[column] = max(col_widths[column], width)
+        row_heights[row] = max(row_heights[row], height)
+    return items, col_widths, row_heights
+
+
+def _place_columns(
+    plan: GraphPlan,
+    bands: dict[int, list[GraphNodePlan]],
+    sizes: dict[int, list[tuple[int, int]]],
+    widths: dict[int, int],
+    heights: dict[int, int],
+    geometry: GraphGeometry,
+    band_top: int,
+) -> dict[str, LayoutBox]:
+    levels = list(bands)
+    gap = _composed_gap(plan, geometry)
+    side = geometry.side_margin
+    available = plan.width - 2 * side
+    spread = gap
+    if len(levels) > 1:
+        spread = max(gap, grid((available - sum(widths.values())) / (len(levels) - 1)))
+    total = sum(widths.values()) + spread * (len(levels) - 1)
+    cursor = side if total <= available else grid((plan.width - total) / 2)
+    tallest = max(heights.values())
+    boxes: dict[str, LayoutBox] = {}
+    for level in levels:
+        y = band_top + max(0, (tallest - heights[level]) // 2)
+        for node, (width, height) in zip(bands[level], sizes[level]):
+            boxes[node.id] = LayoutBox(
+                grid(cursor + (widths[level] - width) / 2), grid(y), width, height)
+            y += height + gap
+        cursor += widths[level] + spread
+    return boxes
+
+
+def _place_rows(
+    plan: GraphPlan,
+    bands: dict[int, list[GraphNodePlan]],
+    sizes: dict[int, list[tuple[int, int]]],
+    widths: dict[int, int],
+    heights: dict[int, int],
+    geometry: GraphGeometry,
+) -> dict[str, LayoutBox]:
+    levels = list(bands)
+    gap = _composed_gap(plan, geometry)
+    side = geometry.side_margin
+    available = plan.width - 2 * side
+    y = max(geometry.top_down_origin, geometry.title_clearance)
+    boxes: dict[str, LayoutBox] = {}
+    for level in levels:
+        count = len(bands[level])
+        spread = gap
+        if count > 1:
+            spread = max(gap, grid((available - widths[level]) / (count - 1)))
+        total = widths[level] + spread * (count - 1)
+        cursor = side if total <= available else grid((plan.width - total) / 2)
+        for node, (width, _height) in zip(bands[level], sizes[level]):
+            boxes[node.id] = LayoutBox(grid(cursor), grid(y), width, heights[level])
+            cursor += width + spread
+        y += heights[level] + gap
+    return boxes
+
+
+def _place_folded(
+    plan: GraphPlan,
+    bands: dict[int, list[GraphNodePlan]],
+    sizes: dict[int, list[tuple[int, int]]],
+    geometry: GraphGeometry,
+    fold: int,
+) -> dict[str, LayoutBox]:
+    items, col_widths, row_heights = _fold_metrics(plan, bands, sizes, fold)
+    gap = _composed_gap(plan, geometry)
+    row_gap = max(gap, geometry.min_row_gap)
+    side = geometry.side_margin
+    available = plan.width - 2 * side
+    spread = max(gap, grid((available - sum(col_widths.values())) / (fold - 1))) if fold > 1 else gap
+    needed = sum(col_widths.values()) + spread * (fold - 1)
+    if needed > available:
+        spread = gap
+        needed = sum(col_widths.values()) + spread * (fold - 1)
+    cursor = side if needed <= available else grid((plan.width - needed) / 2)
+    col_x: dict[int, int] = {}
+    for column in range(fold):
+        col_x[column] = cursor
+        cursor += col_widths[column] + spread
+    top = geometry.title_clearance
+    row_y: dict[int, int] = {}
+    cursor = top
+    for row in range(len(row_heights)):
+        row_y[row] = cursor
+        cursor += row_heights[row] + row_gap
+    boxes: dict[str, LayoutBox] = {}
+    for node, (width, height), (row, column) in items:
+        boxes[node.id] = LayoutBox(
+            grid(col_x[column] + (col_widths[column] - width) / 2),
+            grid(row_y[row] + (row_heights[row] - height) / 2),
+            width, height)
+    return boxes
+
+
+def _layout_composed(
+    plan: GraphPlan,
+    geometry: GraphGeometry,
+    axis: str,
+    fold: int,
+) -> LayoutResult:
+    depth, bands = _graph_bands(plan)
+    sizes, widths, heights = _band_sizes(plan, bands, geometry)
+    if axis == "left-right" and fold > 1 and len(plan.nodes) > fold:
+        boxes = _place_folded(plan, bands, sizes, geometry, fold)
+    elif axis == "left-right":
+        boxes = _place_columns(
+            plan, bands, sizes, widths, heights, geometry,
+            _composed_band_top(plan, depth, geometry))
+    else:
+        boxes = _place_rows(plan, bands, sizes, widths, heights, geometry)
+    edges = route_graph_edges(
+        plan, boxes, plan.width, plan.height, (),
+        geometry=geometry, axis=axis, fold=fold)
+    return layout_result(boxes, edges)
+
+
+def _composed_height(
+    plan: GraphPlan,
+    geometry: GraphGeometry,
+    axis: str,
+    fold: int,
+) -> int:
+    """The canvas the composition actually needs, on the 4-unit grid."""
+    depth, bands = _graph_bands(plan)
+    sizes, widths, heights = _band_sizes(plan, bands, geometry)
+    side = geometry.side_margin
+    if axis == "left-right" and fold > 1 and len(plan.nodes) > fold:
+        _items, _col_widths, row_heights = _fold_metrics(plan, bands, sizes, fold)
+        rows = len(row_heights)
+        row_gap = max(_composed_gap(plan, geometry), geometry.min_row_gap)
+        body = sum(row_heights.values()) + (rows - 1) * row_gap
+        return grid(geometry.title_clearance + body + side)
+    if axis == "left-right":
+        return grid(_composed_band_top(plan, depth, geometry) + max(heights.values()) + side)
+    gap = _composed_gap(plan, geometry)
+    origin = max(geometry.top_down_origin, geometry.title_clearance)
+    return grid(origin + sum(heights.values()) + (len(bands) - 1) * gap + side)
+
+
+def graph_extent(
+    plan: GraphPlan,
+    geometry: GraphGeometry,
+    axis: str,
+    fold: int,
+) -> tuple[int, int]:
+    """The width and height this composition needs at minimum."""
+    depth, bands = _graph_bands(plan)
+    sizes, widths, heights = _band_sizes(plan, bands, geometry)
+    side = geometry.side_margin
+    # The gap the placement will really use, not the bare `min_gap`: a fit
+    # measured with a smaller gap than the layout draws puts the first column at
+    # a negative x and the nodes leave the canvas.
+    gap = _composed_gap(plan, geometry)
+    row_gap = max(gap, geometry.min_row_gap)
+    if axis == "left-right" and fold > 1 and len(plan.nodes) > fold:
+        _items, col_widths, row_heights = _fold_metrics(plan, bands, sizes, fold)
+        rows = len(row_heights)
+        width = 2 * side + sum(col_widths.values()) + (fold - 1) * gap
+        height = (
+            geometry.title_clearance + sum(row_heights.values())
+            + (rows - 1) * row_gap + side)
+        return width, height
+    if axis == "left-right":
+        width = 2 * side + sum(widths.values()) + (len(bands) - 1) * gap
+        height = _composed_band_top(plan, depth, geometry) + max(heights.values()) + side
+        return width, height
+    width = 2 * side + max(widths.values())
+    origin = max(geometry.top_down_origin, geometry.title_clearance)
+    height = origin + sum(heights.values()) + (len(bands) - 1) * gap + side
+    return width, height
+
+
+def graph_axis_fits(
+    plan: GraphPlan,
+    geometry: GraphGeometry,
+    axis: str,
+    fold: int,
+    width: int,
+    max_height: int,
+) -> bool:
+    need_width, need_height = graph_extent(plan, geometry, axis, fold)
+    return need_width <= width and need_height <= max_height
+
+
+def choose_graph_composition(
+    plan: GraphPlan,
+    geometry: GraphGeometry,
+    width: int,
+    max_height: int,
+) -> tuple[str, int]:
+    """The authored axis, a folded authored axis, or the perpendicular one.
+
+    A narrow plate cannot hold a six-level chain sideways: the node title is 12
+    units and a word cannot be cut, so the chain is folded into a serpentine
+    before the reading direction is changed. Folding preserves the reading
+    order; the axis is the last resort because it rewrites the direction the
+    author chose.
+    """
+    authored = plan.composition.axis
+    levels = len({*graph_depths(plan).values()})
+    options: list[tuple[str, int]] = [(authored, 0)]
+    if authored == "left-right":
+        options.extend((authored, fold) for fold in range(2, min(5, levels)))
+    perpendicular = "top-down" if authored == "left-right" else "left-right"
+    options.append((perpendicular, 0))
+    if perpendicular == "left-right":
+        options.extend((perpendicular, fold) for fold in range(2, min(5, levels)))
+    for axis, fold in options:
+        if graph_axis_fits(plan, geometry, axis, fold, width, max_height):
+            return axis, fold
+    return authored, 0
+
+
+def _route_composed(
+    plan: GraphPlan,
+    boxes: dict[str, LayoutBox],
+    width: int,
+    height: int,
+    geometry: GraphGeometry,
+    axis: str,
+    fold: int,
+    label_obstacles: tuple[LayoutBox, ...],
+) -> list[LayoutEdge]:
+    depth = graph_depths(plan)
+
+    def _forward(edge: GraphEdgePlan) -> bool:
+        if depth[edge.target] != depth[edge.source]:
+            return depth[edge.target] > depth[edge.source]
+        return boxes[edge.target].x >= boxes[edge.source].x
+
+    outgoing: dict[tuple[str, bool], list[str]] = defaultdict(list)
+    incoming: dict[tuple[str, bool], list[str]] = defaultdict(list)
+    for edge in plan.edges:
+        outgoing[(edge.source, _forward(edge))].append(edge.id)
+        incoming[(edge.target, _forward(edge))].append(edge.id)
+
+    def _cross(value: LayoutBox) -> int:
+        return value.y + value.h // 2 if axis == "left-right" else value.x + value.w // 2
+
+    by_id = {edge.id: edge for edge in plan.edges}
+    for ids in outgoing.values():
+        ids.sort(key=lambda edge_id: (_cross(boxes[by_id[edge_id].target]), edge_id))
+    for ids in incoming.values():
+        ids.sort(key=lambda edge_id: (_cross(boxes[by_id[edge_id].source]), edge_id))
+
+    results: list[LayoutEdge] = []
+    feedback = 0
+    for edge in plan.edges:
+        source, target = boxes[edge.source], boxes[edge.target]
+        source_ids = outgoing[(edge.source, _forward(edge))]
+        target_ids = incoming[(edge.target, _forward(edge))]
+        source_rank = source_ids.index(edge.id)
+        target_rank = target_ids.index(edge.id)
+        source_offset = grid((source_rank - (len(source_ids) - 1) / 2) * geometry.fan_pitch)
+        target_offset = grid((target_rank - (len(target_ids) - 1) / 2) * geometry.fan_pitch)
+        horizontal_right = target.x >= source.x + source.w
+        horizontal_left = target.x + target.w <= source.x
+        clamp_height = horizontal_right or horizontal_left
+        # A forward edge and its return share one gutter. Give each direction its
+        # own lane, or the two polylines land on the same y and read as one line.
+        pair_gap = geometry.min_gap
+        mirrored = clamp_height and any(
+            other.id != edge.id and other.source == edge.target and other.target == edge.source
+            for other in plan.edges)
+        if mirrored:
+            source_offset += pair_gap if _forward(edge) else -pair_gap
+            target_offset += pair_gap if _forward(edge) else -pair_gap
+        limit = source.h if clamp_height else source.w
+        source_offset = max(-limit // 2 + 2, min(limit // 2 - 2, source_offset))
+        limit = target.h if clamp_height else target.w
+        target_offset = max(-limit // 2 + 2, min(limit // 2 - 2, target_offset))
+        # A folded chain or an upright lane stack moves down the page, so a
+        # connector owns the gutter between two rows and travels along it. Giving
+        # the row corridor priority keeps every horizontal segment out of the row
+        # itself, where a node's mid-height is shared by unrelated connectors.
+        different_row = (
+            target.y >= source.y + source.h or target.y + target.h <= source.y)
+        row_corridor = different_row and (axis == "top-down" or fold > 1)
+        if edge.source == edge.target:
+            start = (source.x + source.w, grid(source.y + source.h / 2 - 8))
+            end = (source.x + source.w, grid(source.y + source.h / 2 + 8))
+            lane_x = min(
+                width - geometry.label_lane_margin,
+                source.x + source.w + geometry.label_lane_offset)
+            points = [start, (lane_x, start[1]), (lane_x, end[1]), end]
+        elif row_corridor:
+            downward = target.y > source.y
+            start = (
+                grid(source.x + source.w / 2 + source_offset),
+                source.y + source.h if downward else source.y)
+            end = (
+                grid(target.x + target.w / 2 + target_offset),
+                target.y if downward else target.y + target.h)
+            # Several connectors can leave one face for the same next row. Order
+            # their corridors by how far they travel sideways, so the edge that
+            # turns soonest turns first and no corridor is cut by another's riser.
+            peers = [
+                other for other in plan.edges
+                if other.source == edge.source and (
+                    downward and boxes[other.target].y >= source.y + source.h
+                    or not downward
+                    and boxes[other.target].y + boxes[other.target].h <= source.y)
+            ]
+            peers.sort(key=lambda item: (
+                abs(boxes[item.target].x - source.x), item.id))
+            rank = [item.id for item in peers].index(edge.id)
+            pitch = geometry.label_lane_pitch
+            # The lane is held back from the target face by a whole arrowhead:
+            # clamped only to the row gap, it leaves the tip on the corner it
+            # turned at, which draws as a kink (DG137).
+            if downward:
+                lane = grid(source.y + source.h + pitch * (rank + 1))
+                lane = min(lane, target.y - geometry.approach_min)
+                lane = max(lane, source.y + source.h)
+            else:
+                lane = grid(source.y - pitch * (rank + 1))
+                lane = max(lane, target.y + target.h + geometry.approach_min)
+                lane = min(lane, source.y)
+            points = [start, (start[0], lane), (end[0], lane), end]
+        elif horizontal_right:
+            start = (source.x + source.w, grid(source.y + source.h / 2 + source_offset))
+            end = (target.x, grid(target.y + target.h / 2 + target_offset))
+            if len(source_ids) >= len(target_ids):
+                rank, count = source_rank, len(source_ids)
+            else:
+                rank, count = target_rank, len(target_ids)
+            lane = grid(start[0] + (rank + 1) * (end[0] - start[0]) / (count + 1))
+            points = [start, (lane, start[1]), (lane, end[1]), end]
+            if approach_needs_rerouting((lane, end[1]), end):
+                detour = perpendicular_approach(start, target)
+                if detour:
+                    points = [start, *[(grid(x), grid(y)) for x, y in detour]]
+        elif horizontal_left:
+            start = (source.x, grid(source.y + source.h / 2 + source_offset))
+            end = (target.x + target.w, grid(target.y + target.h / 2 + target_offset))
+            if len(source_ids) >= len(target_ids):
+                rank, count = source_rank, len(source_ids)
+            else:
+                rank, count = target_rank, len(target_ids)
+            lane = grid(start[0] - (rank + 1) * (start[0] - end[0]) / (count + 1))
+            points = [start, (lane, start[1]), (lane, end[1]), end]
+        elif target.y > source.y:
+            start = (grid(source.x + source.w / 2 + source_offset), source.y + source.h)
+            end = (grid(target.x + target.w / 2 + target_offset), target.y)
+            if len(source_ids) >= len(target_ids):
+                rank, count = source_rank, len(source_ids)
+            else:
+                rank, count = target_rank, len(target_ids)
+            lane = grid(start[1] + (rank + 1) * (end[1] - start[1]) / (count + 1))
+            # Same floor as the row corridor: ordering the fan can push the lane
+            # to within an arrowhead of the target face.
+            lane = max(min(lane, end[1] - geometry.approach_min), start[1])
+            points = [start, (start[0], lane), (end[0], lane), end]
+        else:
+            feedback += 1
+            left_lane = (
+                min(source.x, target.x) - geometry.label_lane_offset
+                - geometry.label_lane_pitch * feedback)
+            if left_lane >= geometry.side_margin + geometry.min_gap:
+                start = (source.x, grid(source.y + source.h / 2 + source_offset))
+                end = (target.x, grid(target.y + target.h / 2 + target_offset))
+                lane = grid(left_lane)
+            else:
+                start = (source.x + source.w, grid(source.y + source.h / 2 + source_offset))
+                end = (target.x + target.w, grid(target.y + target.h / 2 + target_offset))
+                lane = grid(min(
+                    width - geometry.side_margin,
+                    max(source.x + source.w, target.x + target.w)
+                    + geometry.label_lane_offset + geometry.label_lane_pitch * feedback))
+            points = [start, (lane, start[1]), (lane, end[1]), end]
+        points = list(clean_polyline(points))
+        label = edge.label if edge.label and len(edge.label) <= 24 else None
+        results.append(LayoutEdge(edge.source, edge.target, points, label, None, edge.id))
+    return place_edge_labels(
+        results, list(boxes.values()), width, height, label_obstacles,
+        reach=LABEL_REACH, size=geometry.edge_label_size)

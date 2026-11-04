@@ -15,11 +15,11 @@
   "contact_sheets": [
     {
       "path": "assets/demos/drawing-dsl-all-types.png",
-      "sha256": "6e436d971b3323d4e98f06bd8255a4e6340706616741c62abd0d1452dd98dfae"
+      "sha256": "4b6a5c2355a08a5cf8dce16ad904f1b60ded8b26525dec492c129a9ebfe87957"
     },
     {
       "path": "assets/demos/drawing-dsl-supported-types.png",
-      "sha256": "8f51473f1f0e32cac23d784aed978b81ca0e3623fa41aebe6f7253c095c1a3c1"
+      "sha256": "c3e2c003c2b14f73a22a39de92b1b33d47a74462e067e6e7889180399261fa66"
     }
   ],
   "diagrams": [
@@ -82,7 +82,7 @@
         "png": "363eb1333bd259b6113e971798796a6ecc195ccff56251c3349190beb4c7cb10",
         "input": "1781e1e5e60fed9bd0f7fcc16559b0a95e3b59ff25cb50d38898e4354661bd4e",
         "svg": "f1cb69bfa3e26c78f8d80fa1fa3d7af2c27e1a150a68f9a4fabd3e3fcd93ea0b",
-        "pdf": "8d0c1f614e3dbc1698331782a6768107f67dec9a67aee80da09cfad4ee924f96"
+        "pdf": "7f6dd9fcd0b9933ed2df6474137fb6c82bdebf3736c703b7dc1f58eed770aa44"
       },
       "unresolved_placeholders": []
     },
@@ -143,7 +143,7 @@
         "png": "b4459fdac735294213ef6514fa7e99e75db50c36a13b447b8d06779d3c649c3c",
         "input": "716dc64d01f794aeebddd3e178a56c574e8758246e38766997fe85930390ac30",
         "svg": "a4b1d32422ac0a051e80978bc4bf613bd3e844126427c659530a4f0464bdb671",
-        "pdf": "c21b5816aa3c2c4e63056481db6bb279e33b69f888aae6680103fdfdc917737c"
+        "pdf": "dfbe1025c37fc90f71364758594a551f72958d5ca6c859f487b5035ca4b0bb0c"
       },
       "unresolved_placeholders": []
     },
@@ -207,7 +207,7 @@
         "png": "cdae9390e6858d5d2631cb11b7ba4091c48427309dccb7329c1fd6bb4e69a3f2",
         "input": "08ae32fee0750b70799c173766c10baaf8d6f6577b18127b4b8362eb14558c49",
         "svg": "a5372c631565d50e282535f54237b1d233790766069e4527d853d68c08de6760",
-        "pdf": "1bc14f78ffad004b0095eedab6c32b9bb86e2e0d02a40673b8ba87ba326ba8cc"
+        "pdf": "85e802b510991559e6ede87152006050966dbe763d211a21c47c12fed2ee66f2"
       },
       "unresolved_placeholders": []
     },
@@ -273,7 +273,7 @@
         "png": "878e7b4f2f584efb01f59a6c119d6adfd51fec6f85ca63bbe65ef8966e7d02c6",
         "input": "4a5786ce21b169abbc7de552392a8ed630e428e8157ba936ea3da805ec0a23b7",
         "svg": "8ceb921a95c2516896e1c308d16fb88e9ad772bd0e5f699faca74472b6f33107",
-        "pdf": "ce4f003fa9e31a6a0b36c7e9bc2de007e82112f25d3829e10f913e723bdd1a63"
+        "pdf": "168673a5ec4475607b6d3d7349c9a6ee15819cfca525745fe190dafb13d0011f"
       },
       "unresolved_placeholders": []
     },
@@ -339,7 +339,7 @@
         "png": "dbe2f3e8378e39c95e452e0c5b99ab62455ced860a955c195276771c07e4ea47",
         "input": "eaf755963f9771e6b886ba93ee7e1433f0dc98a8bde9e25bf07aed3807db598e",
         "svg": "68491a03e7f81d9e432533ff5117dd38633a8c6a4e6d3f58f52d5a4664c92a0a",
-        "pdf": "5dc005fab3cae824db21b89b6d26ed0906ff4c2a7a39d8b72503af2aa4c41db9"
+        "pdf": "ff8522209664a3146d48b02641a777cbc05be434ac8977fbd440fc2df54ea6b3"
       },
       "unresolved_placeholders": []
     },
@@ -399,7 +399,7 @@
         "png": "dc8d2f3b4032d992d87d87bc48cd30217fd9d6e0df6be5d510421e6c70d04758",
         "input": "2c8032f1a83022985f6190d9b1e290ad774011e33bc541e3559a873cd5d45d2d",
         "svg": "8424692df012c6582729a2d651ec1a8f99c9b246a74e9f896d893c041a1ef7e3",
-        "pdf": "f7ee251686632ffcedff239f74ed9c9f815d00c704da6aca9b7565532fd601c5"
+        "pdf": "4e949f6d4c171c51bbaaa89314f2ceddc363ae9c4b9d547d58ea257af57a4017"
       },
       "unresolved_placeholders": []
     },
@@ -448,7 +448,7 @@
         "semantic_nodes": 6,
         "visual_nodes": 6,
         "edges": 6,
-        "edge_labels": 4,
+        "edge_labels": 3,
         "focus": 1,
         "crossings": 0,
         "bends": 6,
@@ -458,10 +458,10 @@
         "taste_warnings": 0
       },
       "digests": {
-        "png": "f212c188339b78a505bee5d986960a2d3656d1150ae7ce81fc2f121b67d7a9ea",
+        "png": "ae23125c94eec745d8f445147fce0fe4552d21c99ea37a47763bbdb416f72e62",
         "input": "6ccb3ef7d231e6df6bca9e5142f9cf5805a7daf2c0007a2b9ecd006bc30d1553",
-        "svg": "88ddf71cb9169171e53267fb9d7c6150074b1f7d5f48f68fbf3ab5578b2df6a5",
-        "pdf": "42e94608cc74084b32244fab9a2256697a73bdbcb57e5fdc3be3df1e5d167e39"
+        "svg": "f724beeff6948d326fa3af2677192a30c1e679d01ac90405ffb0834cd964ee4b",
+        "pdf": "d6aaadf2a90274793dbdf2ea1156b633e4de38faa06fc6ee924939d414e61315"
       },
       "unresolved_placeholders": []
     },
@@ -524,7 +524,7 @@
         "png": "0ee0cabbcab13e31a90611256e72e26bf610732196517a88a55f232db9864877",
         "input": "9f1281022dc468dd817017df2a04beddff4a5eb02ed8f5f2c598f733d1879cfc",
         "svg": "50b0b3df6f0d2009c4b2c78db152b6ca65499dbb2fa06562e8dac0f8e0ffb811",
-        "pdf": "c355e2fd814c27a7b09135d184b2a64b082a42cd50dadd51b84770e805bf3841"
+        "pdf": "8524995829c54647db94df38c338b15d8dca6d50675764ecd15bc123c1d03a9a"
       },
       "unresolved_placeholders": []
     },
@@ -585,7 +585,7 @@
         "png": "721a4b57ebf6781d0f8196e348144b0fb9e9174b8c1ccc1e06a23c96014d5a59",
         "input": "cf6892927660612aceb0a04354d5844c1d0649d9f54785b87de97602577edf64",
         "svg": "3a957bf2c22c79fc96811dbe7bed7e5cf9552408fdd95c8933bc244dad7d49fe",
-        "pdf": "c0871ad241aad37fc618f67e943ff56d8a40b4d926068ef88b478ad9ed8c2b5b"
+        "pdf": "00926cd9f029ac61a2ebff7a636a6a99071ff5b3a2bffcd4fa96740ac8b0630a"
       },
       "unresolved_placeholders": []
     },
@@ -649,7 +649,7 @@
         "png": "c0bb02552f0c25a66487cbb66cc5b1595cefa38d3ae1f8bc62c4f88cdc1d2386",
         "input": "df6834ed82e761de45cf08a59ac2fd59bb620d3469dd89d5a72680f35cc6495a",
         "svg": "f22e89ffd7b8bd76f29518c36a0753efdac45d2525eef417d207ec16e2a92105",
-        "pdf": "5520961f2b762ff2812aa6a1d323546832ac8a14ce6e8c0b7cc166fefb68443c"
+        "pdf": "40ad921132a19d82e325a36d6959e8c593d503841ac22cc5f6986dc211af2208"
       },
       "unresolved_placeholders": []
     },
@@ -710,7 +710,7 @@
         "png": "c279e846734fea551f679a2700f350b09704fa081aca05383ed9e89da69b7e5a",
         "input": "e485665477cd2030d5c701f0bbab824d70af424e3b22f24e53d53d1236332fc2",
         "svg": "ceede21c267a3c29d9d01265931eefb6b4b5944a8b944abf2b9f5f3d11cd689d",
-        "pdf": "7cce0d261fb683690461dc839afc14e3aa62d9d064674882756b7cebb2d927b6"
+        "pdf": "cd1ae585d4a09ef7a93fa566c50d3a35c45434e6fb67f0431522548f26722f46"
       },
       "unresolved_placeholders": []
     },
@@ -769,7 +769,7 @@
         "png": "566e306a329fe38e57c43070f21cb123a5fd56b1bc875fd9b8961167f7fd1577",
         "input": "bbe24eeafcff57301896533d8c13844e2eb33ed13380de75073b134ae215d6b1",
         "svg": "a08f65586a71f78d43803664bd9cfdc78a77cc964468417894200ed390ae2bd8",
-        "pdf": "7aa50e980a88272f3bc3765ba97ce2f9704cd59b244110640919a4004b978790"
+        "pdf": "fc0c60480c55ec34ea22f1da0362434447738958430fbf7d6a3a8048d7e64391"
       },
       "unresolved_placeholders": []
     },
@@ -829,7 +829,7 @@
         "png": "44fd3c421e5413f80ccafc54835af5d7dea563e7251d4ca0ce20219f50a5ffe0",
         "input": "69adc98e9855e49d5439ad7d91da2757ec1f9b8bdd29d31e3f884ffd264aa89f",
         "svg": "3a0b99503215cbc194d66c0dce3951065908b50fa839058027b7857ff8691872",
-        "pdf": "31b85f31e5ad3faa63d0283f3c63698c1cb8f7f1b94c4d46949bf9862006927e"
+        "pdf": "2fe1b2df4a0904158412ee1d9a2cd7f0eca3644b41daafbadea116354235b496"
       },
       "unresolved_placeholders": []
     },
@@ -892,7 +892,7 @@
         "png": "ccd54a715a56069664cef877c94b3e0fdbeec259a9c2755d87584def34decfde",
         "input": "6e50bddcf05e719c59d571a8090659c0139e40776620c2fa4b0744d9b05bda4f",
         "svg": "bf86970f6dccb5c14500c7e25c4b66cb69c6462a79fad3f01d6d40af257189aa",
-        "pdf": "1583cb53a5e78e770dbc2c86f95a329ec9e8e5415f4cb897e88f3b3b63e43ebe"
+        "pdf": "78cc94ef495793f7d09f25c1cd1318fab2af9d09a5bb8612f686f961865246b6"
       },
       "unresolved_placeholders": []
     },
@@ -952,7 +952,7 @@
         "png": "9fc63db0191633005563a6215b6bfa01a22bdc02e47437ac3c631a0a91b6195b",
         "input": "8390f9f0ae5eb0db1e498983dfbf0576bded33c1eca9278c791769f543ad0306",
         "svg": "796e7d410d33fb778f052da07a7070c4470ca598783ac163e67aea7f8daea91a",
-        "pdf": "ce6ea23813e46133f968ca79d108dc08cc49f284d456b4749a3882f81ff6b40d"
+        "pdf": "79e80ea93877b3735da2467115bcf8642fb11cf618191d942b6042d62062a6f0"
       },
       "unresolved_placeholders": []
     },
@@ -1015,7 +1015,7 @@
         "png": "580d434842db6c5e3288d57a4b8824684aa1f9183ee982cce68e71d37eb31622",
         "input": "c64f5470f87e592ba4c2134ec35c150fb17d71e3857421810d42ee7f20deb2cb",
         "svg": "172bbfbe58557928bd5bf98cf9f69952685193d16a4b7f87ecf7f7a07aab1fd5",
-        "pdf": "3f073a315fe29e6883aeeebca3ccd4998c8a7ed157f4982554d26f7e3705df5b"
+        "pdf": "df66f565c1d0bd5bdd4c9857ce6d0e4473bd2056cfdfa925a838b141348a6b6d"
       },
       "unresolved_placeholders": []
     },
@@ -1078,7 +1078,7 @@
         "png": "4e010e234f9cce1b60036a1b47e2d4143552a1f9bdcbc826b59f79d5b0005e80",
         "input": "c9bb7dc6e9c0fde400db24fa0038e5548ae723297110f22b51f12c856265c699",
         "svg": "cee2b5adbc3239e391137466abe3ad2120041cb3ebb5ecfc2221d588b7cb2334",
-        "pdf": "3f6faf9b9fb9c934b4d6ca74cc23ae384256471fe8108fb2d4509ec15568a1f9"
+        "pdf": "717a1e5cd2fed9e909e60b3fe8614940a0d3b756715b70a52dd32f78fcc3d737"
       },
       "unresolved_placeholders": []
     },
@@ -1140,7 +1140,7 @@
         "png": "fb94dcfc601fb86efdbbc0634ab579af02a45fa93f8893df3e86b706eee84597",
         "input": "710b880ef2b0cc6d129367a9b2ed16acc9100d76a14362d169446dd95effee35",
         "svg": "75d95c460e5618e48c02ef5863407134f64d37c29719873efe7a9e46cfa74c06",
-        "pdf": "2a2e09ffd675ab103bc7b9efa37bbde06905102fa7f5b907e4a13c61669d12a7"
+        "pdf": "5c183d1885b399c087cd5b3e85b7c633423fc96f8b6806fdfde787d49292dac0"
       },
       "unresolved_placeholders": []
     },
@@ -1202,7 +1202,7 @@
         "png": "f11b7fd4ffc9b2471fc5caf46818293b68facf8b45bb5539913b44deee28ab14",
         "input": "7c02e652342dfd497b4bb17829e03e28682efd014dbe30cf5966b36aa910f371",
         "svg": "b07f44c04ce51b9ccc7731ee23b39526625533805a9a1623c29f8e0c4839a367",
-        "pdf": "d13c94d684f952d5d00f1164e0174718006c43069e5f24463d82a5334f057bf0"
+        "pdf": "fc2d02135d082fca9ad7ce3bf04184bb305f5621d7931c6de9f13fb3649d847b"
       },
       "unresolved_placeholders": []
     },
@@ -1265,7 +1265,7 @@
         "png": "dba78222af138fa59a100b28b3e5077c7fb985e9ccc69044ba5fae5521984cea",
         "input": "2272355bef0e001578ea9e1e61c91aaf70963ec8a7b07957f902f0a7777db81c",
         "svg": "2e21e303c0a8c53069efb4bf214aee38e9f9699777869b1f327a517c3dcd073e",
-        "pdf": "5bab9e707d42f0382453300eb1b2dccb00e490bff504f8494f6597546bcfac9e"
+        "pdf": "9088993f054827acec74210c55ec4e9fd7a2ad5663ea1c04614ca41ea9d95bdb"
       },
       "unresolved_placeholders": []
     },
@@ -1328,7 +1328,7 @@
         "png": "c987ccd36ae3e76f316403f569382f3b5aa9f570653c442ac0c95a5ba79859d9",
         "input": "d72321f3a09ac556aa4ecc86b518bb2313f007f4d3d4da5178c406d005aedceb",
         "svg": "3fdf69cc2a4fd2a7d92bd14bb1280b82952a7beb41f00af4addcafe8d4303c7b",
-        "pdf": "af816edabc404bc861fa68416472330e334b0cd82a31766f93ee24f2660b01cb"
+        "pdf": "45befdd248f851c20265ffe67eb03f6ab3e22b29b543ad73e36da17f34d5baa7"
       },
       "unresolved_placeholders": []
     },
@@ -1389,7 +1389,7 @@
         "png": "4f42e3048f7fde8b97414adc7b8d6be4573e7823dbc83a98225a31ad650d5c52",
         "input": "a34e03b91012df934dcdde1fb58b365bf8d1ac49bdf3cef822882666047449d2",
         "svg": "d586c14940076649d1d8a5c27844149f1023869d711424d2bf2173c6381ef1d6",
-        "pdf": "2a8f018119a863361291ce0cae20f36a34cad7dc3e3fb854f51ae7bbc12c549c"
+        "pdf": "670cd602460424d8652eaaf2d7003cbb5eb95c921397b5aa6822820eafa0161d"
       },
       "unresolved_placeholders": []
     },
@@ -1450,7 +1450,7 @@
         "png": "50f1064c32825fc1980d9aa5cdf71531542779b7603d217956f82e295a408e97",
         "input": "ad464d3d548838319037749ac2b69b2698eed5e49548368488af149f689ed3b2",
         "svg": "b49d81091f075ed3679af58d5080eb4396fc616e2db40e677f7f65636bedf57a",
-        "pdf": "67c61d87930aef2ef112b424c3846af05a344342db1379faa3bac36a3e217ae6"
+        "pdf": "f1b80cf0549609f5ce9a8da154e46712a78cc26b4b4497cdbbe2fd84567fe09a"
       },
       "unresolved_placeholders": []
     }

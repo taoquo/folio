@@ -55,6 +55,9 @@ ALLOWED = {
     "scripts/templates/canvas-review.html":
         "a template build_canvas_review.py renders into build/canvas/, where review/ is "
         "created beside it",
+    "assets/templates/web/module.html":
+        "build_web.py renders it to dist/web/<series>/<module>/index.html, where "
+        "../index.html is the series index it links back to",
 }
 
 

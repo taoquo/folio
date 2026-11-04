@@ -23,12 +23,14 @@ base stylesheet, the table of contents and the module blocks, then writes
 from __future__ import annotations
 
 import argparse
+import hashlib
 import html
 import json
 import os
 import re
 import shutil
 import sys
+from dataclasses import replace as replace_fields
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -36,6 +38,8 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import web_contracts as C  # noqa: E402
 import web_figures as WF  # noqa: E402
+import web_page as WP  # noqa: E402
+import web_plan  # noqa: E402
 
 TEMPLATES = ROOT / "assets" / "templates" / "web"
 
@@ -72,13 +76,20 @@ def ui_for(language: str) -> dict[str, str]:
 
 
 def style_css(language: str, theme: str | None) -> tuple[str, str]:
-    """The injected variable layer and the resolved theme name."""
+    """The injected variable layer and the resolved theme name.
+
+    Three layers, in order: the theme's colour roles, the profile's regular
+    values, and the viewport plan's value patches. The last one is the only
+    place a width changes a size, and it changes nothing but a value.
+    """
     import projection
 
     theme_layer = projection.style_projection("web-reading", language, theme=theme)
-    web_layer = projection.web_projection("web-reading", language)
+    web_layer = projection.web_projection("web-reading", language, include_viewport_aliases=False)
+    plan_layer = web_plan.plan_css(web_plan.viewport_plan(language))[0]
     name = theme_layer.sources.get("theme") or theme or "default"
-    css = "\n\n".join(part.css.strip() for part in (theme_layer, web_layer) if not part.empty)
+    css = "\n\n".join(part.strip() for part in (theme_layer.css, web_layer.css, plan_layer)
+                      if part.strip())
     if ":root" not in css:
         css = ":root {\n" + css + "\n}"
     return css, name
@@ -190,7 +201,33 @@ RAIL_SCRIPT = """(function () {
 })();"""
 
 
-def rail_from(fragment: str) -> str:
+def rail_from(model: WP.Page) -> str:
+    """The side rail: one entry per chapter, read from the page model."""
+    items = []
+    for index, chapter in enumerate(model.chapters):
+        current = "true" if index == 0 else "false"
+        items.append(
+            f'  <li><a href="#{chapter.id}" aria-current="{current}">'
+            f'<span class="tick"></span>'
+            f'<span class="label">{chapter.number} {chapter.title}</span></a></li>'
+        )
+    return "<ol>\n" + "\n".join(items) + "\n</ol>"
+
+
+def toc_from(model: WP.Page) -> str:
+    """The contents list: number, title and summary, from the page model."""
+    items = []
+    for chapter in model.chapters:
+        items.append(
+            f'  <li><a href="#{chapter.id}"><span class="num">{chapter.number}</span>'
+            f'<span class="name">{chapter.title}</span>'
+            f'<span class="sum">{chapter.summary}</span></a></li>'
+        )
+    return "\n".join(items)
+
+
+def rail_legacy(fragment: str) -> str:
+    """The rollback path (`FOLIO_WEB_MODEL=off`): chapter chrome from regexes."""
     items = []
     for index, match in enumerate(re.finditer(
         r'<section class="chapter" id="([^"]+)"[^>]*>\s*<h2><span class="num">(\d+)</span>(.*?)</h2>',
@@ -207,7 +244,7 @@ def rail_from(fragment: str) -> str:
     return "<ol>\n" + "\n".join(items) + "\n</ol>"
 
 
-def toc_from(fragment: str) -> str:
+def toc_legacy(fragment: str) -> str:
     items = []
     for match in re.finditer(
         r'<section class="chapter" id="([^"]+)"[^>]*data-sum="([^"]*)"[^>]*>\s*<h2><span class="num">(\d+)</span>(.*?)</h2>',
@@ -256,27 +293,73 @@ def module_block(module: dict, ui: dict[str, str]) -> str:
 FIGURE_PLACEHOLDER = re.compile(r"<!--FOLIO:FIGURE:([a-z0-9-]+)-->")
 
 
-def figure_block(figure_id: str, entry: dict, rendered: WF.RenderedFigure, number: int,
-                 prefix: str, figure_word: str = "图") -> str:
+def mark_plate(variant: str, rendered: WF.RenderedFigure,
+               *, axis_label: str | None = None) -> tuple[str, str]:
+    """The plate as the page carries it, and the hash of that markup.
+
+    The drawing is composed for one band, so a figure carries one plate per
+    class, each marked with the class CSS shows it in and the stage it was
+    composed on. The hash covers the markup without its own `data-folio-sha`
+    attribute, so a checker can recompute it by dropping that one attribute:
+    a plate that stops matching its manifest record is a stale build, not a
+    rendering difference.
+
+    ``axis_label`` is set only when the plates disagree about the reading
+    direction, because then the figure's single `data-axis` cannot speak for
+    every plate and the plate has to state its own.
+    """
+    attrs = (
+        f'class="figure-svg" data-folio-plate="{variant}" '
+        f'data-folio-stage="{rendered.stage[0]}x{rendered.stage[1]}"'
+    )
+    if axis_label:
+        attrs += f' data-axis="{axis_label}"'
+    base = rendered.svg.replace("<svg ", f"<svg {attrs} ", 1)
+    # The embed profile writes `style="display:block;width:100%"` on the root,
+    # and an inline style outranks the stylesheet -- including the rule that
+    # hides the plates this viewport is not showing. The page owns the plate's
+    # size, so the inline copy goes.
+    base = base.replace(' style="display:block;width:100%;height:auto"', "", 1)
+    digest = hashlib.sha256(base.encode("utf-8")).hexdigest()[:16]
+    return base.replace("<svg ", f'<svg data-folio-sha="{digest}" ', 1), digest
+
+
+def figure_block(figure_id: str, entry: dict, variants: dict[str, WF.RenderedFigure],
+                 number: int, prefix: str, figure_word: str = "图",
+                 folio_id: str = "") -> str:
+    wide = variants.get("wide") or variants[next(iter(variants))]
     attributes = [
+        # The figure is a block like any other: the page model gives it the same
+        # role and id vocabulary, so W-STR-06 can compare counts without a
+        # special case for drawings.
+        'data-folio-role="figure"',
+        f'data-folio-id="{folio_id or figure_id}"',
         f'data-folio-drawing="{figure_id}"',
-        f'data-folio-sha="{rendered.svg_sha}"',
-        f'data-kind="{rendered.kind}"',
-        f'data-axis="{rendered.axis}"',
+        # The wide plate is the one a print view and a reader without CSS get,
+        # so the figure-level record names it.
+        f'data-folio-sha="{wide.svg_sha}"',
+        f'data-kind="{wide.kind}"',
+        f'data-axis="{wide.axis}"',
+        f'data-folio-plates="{",".join(variants)}"',
     ]
-    if rendered.composition:
-        attributes.append(f'data-composition="{rendered.composition}"')
+    if list(variants) == [WF.SINGLE_PLATE]:
+        # No class composed, so every class shows the authored plate. The
+        # attribute tells the checker the missing classes are the figure's, not
+        # a build that forgot to emit them.
+        attributes.append('data-folio-single="true"')
+    if wide.composition:
+        attributes.append(f'data-composition="{wide.composition}"')
     if entry.get("example"):
         attributes.append('data-example="true"')
-    keyword = (
-        f"composition: {rendered.composition}"
-        if rendered.composition
-        else f"kind: {rendered.kind}"
-    )
-    caption = f"{figure_word} {prefix}-{number} · {entry['caption']} · {keyword} · axis: {rendered.axis}"
+    # The reader gets a caption, not the figure's provenance. Composition and
+    # axis stay on `data-composition` / `data-axis` and in the manifest, where
+    # W-FIG-01 compares them; repeating them under the plate made every caption
+    # read like a compiler trace.
+    caption = f"{figure_word} {prefix}-{number} · {entry['caption']}"
+    plates = "".join(variants[key].svg for key in variants)
     return (
         f'<figure class="figure" {" ".join(attributes)}>'
-        f"{rendered.svg}<figcaption>{html.escape(caption)}</figcaption></figure>"
+        f"{plates}<figcaption>{html.escape(caption)}</figcaption></figure>"
     )
 
 
@@ -288,23 +371,44 @@ def render_figures(
     page_theme: str,
     prefix: str,
     strict: bool,
+    language: str | None = None,
     figure_word: str = "图",
+    figure_ids: dict[str, str] | None = None,
 ) -> tuple[str, dict[str, dict]]:
-    rendered: dict[str, WF.RenderedFigure] = {}
+    rendered: dict[str, dict[str, WF.RenderedFigure]] = {}
+    uncomposed: dict[str, tuple[str, ...]] = {}
+    variants = web_plan.figure_variants(language)
+    bands = {item["key"]: item["band"] for item in variants}
+    max_bands = {item["key"]: item["max_band"] for item in variants}
+    page = web_plan.geometry(language)
+    # The title's ceiling is a share of H2, not H2 itself: a figure must not
+    # compete with the section heading above it. Its floor is H3, so the title
+    # reads as a heading rather than as another line of body.
+    title_px = (page["h3"], page["h2"] * C.FIGURE_FIT["title_h2_ratio"])
     for figure_id in module.get("figures", []):
         if figure_id not in series_figures:
             raise SystemExit(f"ERROR: figure {figure_id!r} is used by {module['id']} but not declared")
         entry = series_figures[figure_id]
-        figure = WF.render_figure(
+        composed, missing = WF.render_plates(
             Path(module["_dir"]) / entry["fixture"],
             figure_id,
+            bands=bands,
+            max_bands=max_bands,
+            title_px=title_px,
             page_theme=page_theme,
             composition=entry.get("composition"),
         )
-        if strict and figure.diagnostics:
-            detail = ", ".join(f"{item['level']}:{item['code']}" for item in figure.diagnostics)
-            raise SystemExit(f"ERROR: figure {figure_id!r} has diagnostics: {detail}")
-        rendered[figure_id] = figure
+        plates: dict[str, WF.RenderedFigure] = {}
+        axes = {figure.axis for figure in composed.values()}
+        for variant, figure in composed.items():
+            if strict and figure.diagnostics:
+                detail = ", ".join(f"{item['level']}:{item['code']}" for item in figure.diagnostics)
+                raise SystemExit(f"ERROR: figure {figure_id!r} has diagnostics: {detail}")
+            markup, digest = mark_plate(
+                variant, figure, axis_label=figure.axis if len(axes) > 1 else None)
+            plates[variant] = replace_fields(figure, svg=markup, svg_sha=digest)
+        rendered[figure_id] = plates
+        uncomposed[figure_id] = missing
 
     used: set[str] = set()
     number = 0
@@ -317,7 +421,8 @@ def render_figures(
         used.add(figure_id)
         number += 1
         return figure_block(figure_id, series_figures[figure_id], rendered[figure_id],
-                            number, prefix, figure_word)
+                            number, prefix, figure_word,
+                            folio_id=(figure_ids or {}).get(figure_id, ""))
 
     fragment = FIGURE_PLACEHOLDER.sub(replace, fragment)
     if "<!--FOLIO:FIGURE:" in fragment:
@@ -325,7 +430,8 @@ def render_figures(
     unused = set(rendered) - used
     if unused:
         raise SystemExit(f"ERROR: figures rendered but not placed: {sorted(unused)}")
-    manifest = {figure_id: rendered[figure_id].manifest_entry() for figure_id in rendered}
+    manifest = {figure_id: WF.figure_manifest_entry(plates, uncomposed[figure_id])
+                for figure_id, plates in rendered.items()}
     return fragment, manifest
 
 
@@ -351,6 +457,7 @@ def build(series_dir: Path, out_dir: Path, theme: str | None, *, strict: bool = 
         "page_theme": page_theme,
         "drawing_theme": WF.drawing_theme_for(page_theme),
         "figures": {},
+        "pages": {},
     }
 
     written: list[Path] = []
@@ -358,12 +465,31 @@ def build(series_dir: Path, out_dir: Path, theme: str | None, *, strict: bool = 
         module = dict(module)
         module["_dir"] = str(series_dir)
         fragment = (series_dir / module["fragment"]).read_text(encoding="utf-8")
+        # The model runs on the source, before figures are expanded: the
+        # markup it annotates is the one the reader's builder produced, and a
+        # block's role cannot change because a drawing was inlined into it.
+        model = None
+        if WP.mode() != "off":
+            fragment, model = WP.model_fragment(fragment)
+        figure_ids = {
+            block.figure: block.id for block in model.blocks() if block.figure
+        } if model is not None else {}
         fragment, module_manifest = render_figures(
             module, series_figures, fragment,
             page_theme=page_theme, prefix=prefix, strict=strict,
-            figure_word=ui["figure"],
+            language=language,
+            figure_word=ui["figure"], figure_ids=figure_ids,
         )
         manifest["figures"][module["id"]] = module_manifest
+        if model is not None:
+            manifest["pages"][module["id"]] = {
+                "chapters": [
+                    {"id": chapter.id, "number": chapter.number,
+                     "title": chapter.title, "blocks": len(chapter.blocks)}
+                    for chapter in model.chapters
+                ],
+                "counts": model.counts(),
+            }
         target = out_dir / data["series"] / module["id"] / "index.html"
         page = render(module_template, {
             "LANG": language,
@@ -379,9 +505,9 @@ def build(series_dir: Path, out_dir: Path, theme: str | None, *, strict: bool = 
             ),
             "KICKER": module["kicker"],
             "LEAD": module["lead"],
-            "TOC": toc_from(fragment),
+            "TOC": toc_from(model) if model else toc_legacy(fragment),
             "TOC_LABEL": ui["toc"],
-            "RAIL": rail_from(fragment),
+            "RAIL": rail_from(model) if model else rail_legacy(fragment),
             "RAIL_LABEL": ui["rail"],
             "RAIL_SCRIPT": RAIL_SCRIPT,
             "SECTIONS": fragment,
@@ -416,6 +542,15 @@ def build(series_dir: Path, out_dir: Path, theme: str | None, *, strict: bool = 
 
     manifest_path = out_dir / data["series"] / "figures.manifest.json"
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    # The plan travels with the build. `web_verify.py` compares the browser's
+    # computed values with these, so a page that drifts from its plan is a
+    # failed build rather than a matter of taste.
+    plan_path = out_dir / data["series"] / "plan.json"
+    plan = web_plan.plan_document(language)
+    plan["series"] = data["series"]
+    plan_path.write_text(json.dumps(plan, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    written.append(plan_path)
     return written
 
 
