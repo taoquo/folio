@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -124,13 +125,21 @@ def check_types(plan: dict, projected: dict[str, str], page: dict, viewport: int
             if abs(got["leading"] - want["leading"]) > TOLERANCE["leading_px"]:
                 wrong_leading.append(f"{role} {got['leading']:g} != {want['leading']:g}")
     statement = "computed type equals the plan at every role"
-    if absent:
-        rows.append(_fail("V-PLAN-01", statement, f"not rendered: {', '.join(absent)}"))
-    elif wrong_size or wrong_leading:
-        rows.append(_fail("V-PLAN-01", statement,
-                          f"size: {wrong_size or 'ok'}; leading: {wrong_leading or 'ok'}"))
+    if wrong_size or wrong_leading:
+        detail = f"size: {wrong_size or 'ok'}; leading: {wrong_leading or 'ok'}"
+        if absent:
+            detail += f"; not on this page: {', '.join(absent)}"
+        rows.append(_fail("V-PLAN-01", statement, detail))
     else:
-        rows.append(_pass("V-PLAN-01", statement, f"{len(expected)} role(s) agree"))
+        # The plan declares a size for every role the engine can set; a page
+        # that uses none of that content is not a defect. Blocks whose role
+        # must exist are guarded above by ROLE_PRESENCE, so this stays visible
+        # without failing a page for the blocks it does not carry.
+        agreed = len(expected) - len(absent)
+        detail = f"{agreed} role(s) agree"
+        if absent:
+            detail += f"; not on this page: {', '.join(absent)}"
+        rows.append(_pass("V-PLAN-01", statement, detail))
     return rows
 
 
@@ -305,6 +314,130 @@ def check_rhythm(projected: dict[str, str], page: dict) -> dict:
             "status": "REVIEW", "detail": "; ".join(detail)}
 
 
+def _rgb(value: str | None) -> tuple[float, float, float] | None:
+    parts = re.findall(r"[\d.]+", value or "")
+    if len(parts) < 3:
+        return None
+    return tuple(float(part) for part in parts[:3])  # type: ignore[return-value]
+
+
+def _luminance(rgb: tuple[float, float, float]) -> float:
+    def channel(value: float) -> float:
+        value /= 255
+        return value / 12.92 if value <= 0.03928 else ((value + 0.055) / 1.055) ** 2.4
+
+    red, green, blue = (channel(part) for part in rgb)
+    return 0.2126 * red + 0.7152 * green + 0.0722 * blue
+
+
+def contrast_ratio(foreground: str, background: str) -> float | None:
+    front, back = _rgb(foreground), _rgb(background)
+    if front is None or back is None:
+        return None
+    high, low = sorted((_luminance(front), _luminance(back)), reverse=True)
+    return (high + 0.05) / (low + 0.05)
+
+
+def _prose(page: dict) -> list[dict]:
+    """The paragraphs that are running text, not apparatus."""
+    return [item for item in (page.get("paragraphs") or [])
+            if item.get("role") in (None, "paragraph")]
+
+
+def check_column(page: dict) -> dict:
+    """The prose runs the page's own column.
+
+    The page is one column: the heading, the plate, the table and the
+    paragraph share a left edge and a right edge. A measure narrower than the
+    column does not shorten the line -- it leaves a hole beside the text, and
+    the reader sees a strip that disagrees with every other block on the page.
+    The stylesheet can only ask for a width; where the blocks landed is the
+    browser's answer, so this is measured rather than read off the CSS.
+    """
+    statement = "the prose runs the page's own column"
+    column = float(((page.get("boxes") or {}).get("chapter") or {}).get("width") or 0)
+    paragraphs = _prose(page)
+    if not column:
+        return {"rule": "V-TYPE-02", "statement": statement, "status": "SKIP",
+                "detail": "no chapter column on the page"}
+    if not paragraphs:
+        return {"rule": "V-TYPE-02", "statement": statement, "status": "SKIP",
+                "detail": "no prose paragraph on the page"}
+    narrow = []
+    for paragraph in paragraphs:
+        width = float(paragraph.get("width") or 0)
+        if width and width < column - 1:
+            narrow.append(f"p{paragraph.get('index')} {width:.0f} of {column:.0f}px")
+    if narrow:
+        return _fail("V-TYPE-02", statement,
+                     f"{len(narrow)} paragraph(s) inside the column: " + ", ".join(narrow[:3]))
+    return _pass("V-TYPE-02", statement,
+                 f"{len(paragraphs)} paragraph(s) reach the column edge")
+
+
+def check_captions(page: dict) -> dict:
+    """A caption hangs from the plate it names.
+
+    The caption and the drawing are one block: the words say what the plate
+    shows, and the left edge is what says they belong together. A caption that
+    steps out of the column and stands in the margin is read as a note about
+    the page rather than a description of the drawing -- and on a page whose
+    margin holds nothing else, it is simply adrift. The browser measures both
+    edges, because only it knows where the absolute position landed.
+    """
+    statement = "each caption hangs from its plate"
+    captions = page.get("captions") or []
+    if not captions:
+        return {"rule": "V-FIG-14", "statement": statement, "status": "SKIP",
+                "detail": "no caption on the page"}
+    adrift = []
+    for caption in captions:
+        left = float(caption.get("left") or 0)
+        plate_left = float(caption.get("plate_left") or 0)
+        width = float(caption.get("width") or 0)
+        plate_width = float(caption.get("plate_width") or 0)
+        if abs(left - plate_left) > 1:
+            adrift.append(f"caption {caption.get('index')} at {left:.0f}px, "
+                          f"plate at {plate_left:.0f}px")
+        elif plate_width and width > plate_width + 1:
+            adrift.append(f"caption {caption.get('index')} {width:.0f}px wide, "
+                          f"plate {plate_width:.0f}px")
+    if adrift:
+        return _fail("V-FIG-14", statement, "; ".join(adrift[:3]))
+    return _pass("V-FIG-14", statement, f"{len(captions)} caption(s) on their plate")
+
+
+def check_contrast(page: dict) -> dict:
+    """Every text role clears its WCAG ratio against what it sits on.
+
+    The page's colours are a theme, and a theme can be quiet enough to be
+    unreadable. A muted label at 11px and a chapter numeral at 44px are both
+    text; the large-text allowance applies to the numeral and to nothing else.
+    """
+    statement = "text clears its contrast ratio"
+    measured = page.get("colours") or {}
+    problems, samples = [], []
+    for role, item in sorted(measured.items()):
+        if not item:
+            continue
+        ratio = contrast_ratio(item.get("colour"), item.get("background"))
+        if ratio is None:
+            continue
+        size = float(item.get("size") or 0)
+        weight = int(item.get("weight") or 400)
+        large = size >= C.LARGE_TEXT_PX or (size >= 18.66 and weight >= 700)
+        need = C.CONTRAST_MIN["large" if large else "normal"]
+        samples.append(f"{role} {ratio:.2f}:1")
+        if ratio + 0.02 < need:
+            problems.append(f"{role} {ratio:.2f}:1 below {need:g}:1")
+    if not samples:
+        return {"rule": "V-COL-01", "statement": statement, "status": "SKIP",
+                "detail": "no coloured text role on the page"}
+    if problems:
+        return _fail("V-COL-01", statement, "; ".join(problems[:4]))
+    return _pass("V-COL-01", statement, ", ".join(samples[:5]))
+
+
 def check_overflow(page: dict) -> dict:
     statement = "nothing overflows sideways that the page did not mark"
     overflow = page.get("overflow") or []
@@ -354,6 +487,9 @@ def verify(plan: dict, metrics: dict, manifest: dict | None) -> list[dict]:
                 check_figure(plan, page, width),
                 check_plates(width, page),
                 check_figure_type(manifest or {}, page, module, width),
+                check_column(page),
+                check_captions(page),
+                check_contrast(page),
                 check_rhythm(projected, page),
                 check_overflow(page),
                 check_dom(manifest or {}, page, module),
@@ -365,6 +501,7 @@ def verify(plan: dict, metrics: dict, manifest: dict | None) -> list[dict]:
 
 
 RULE_ORDER = ("V-PLAN-01", "V-PLAN-02", "V-PLAN-03", "V-FIG-13", "V-FIG-12",
+              "V-FIG-14", "V-TYPE-02", "V-COL-01",
               "V-RHYTHM-01", "V-OVF-01", "V-DOM-01")
 SEVERITY = {"FAIL": 3, "REVIEW": 2, "PASS": 1, "SKIP": 0}
 

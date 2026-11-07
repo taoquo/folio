@@ -130,6 +130,12 @@ Read in this order:
 4. `references/web/web-visual.md` — density, measure, colour layers
 5. `references/web/web-figures.md` — the Drawing DSL host contract and geometry audits
 6. `references/web/web-acceptance.md` — the workflow and the 16 acceptance items
+7. `references/web/web-verification.md` — the measured `V-*` rules and their PASS/REVIEW/FAIL/SKIP policy
+
+A built page is a `case` or a `fixture`, and `series.json` says which with
+`kind`. A case names the work it reads (`source`: work, author, year, link);
+a fixture carries a delivery status and a package path. Only a fixture may be
+about the engine.
 
 The scenario is the engine extended to the Web, not a second design system:
 

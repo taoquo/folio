@@ -1,5 +1,6 @@
 {
   "series": "attention",
+  "kind": "case",
   "language": "zh-Hans-CN",
   "kicker": "TRANSFORMER · PAPER READING",
   "title": "Attention Is All You Need",
@@ -25,7 +26,7 @@
     {
       "id": "worked-example",
       "fixture": "figures/worked-example.json",
-      "caption": "源图 Figure 2 的工作算例 · 单头形状流：d_model 512，dk 64，序列长度 4",
+      "caption": "引擎绘制的单头算例 · d_model 512，dk 64，序列长度 4，非源图",
       "example": true
     }
   ],
@@ -35,9 +36,13 @@
       "num": "01",
       "name": "Attention Is All You Need",
       "summary": "Transformer 架构、缩放点积注意力、多头注意力与 WMT14 结果。",
-      "status": "已实现",
-      "package": "papers.neurips.cc/7181",
-      "external": "https://papers.neurips.cc/paper/7181-attention-is-all-you-need.pdf",
+      "kind": "case",
+      "source": {
+        "work": "Attention Is All You Need",
+        "author": "Vaswani et al.",
+        "year": 2017,
+        "url": "https://papers.neurips.cc/paper/7181-attention-is-all-you-need.pdf"
+      },
       "title": "Attention Is All You Need",
       "kicker": "TRANSFORMER",
       "lead": "用注意力替代循环与卷积：架构、论证与实验。",

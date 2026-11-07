@@ -54,6 +54,7 @@ UI = {
         "series": "SERIES",
         "module": "MODULE ARCHIVE",
         "external": "外链",
+        "source": "来源",
         "figure": "图",
         "skip": "跳到正文",
     },
@@ -65,6 +66,7 @@ UI = {
         "series": "SERIES",
         "module": "MODULE ARCHIVE",
         "external": "External",
+        "source": "Source",
         "figure": "Figure",
         "skip": "Skip to content",
     },
@@ -272,20 +274,48 @@ def index_rail(modules: list[dict]) -> str:
     return "<ol>\n" + "\n".join(items) + "\n</ol>"
 
 
+def source_block(module: dict, ui: dict[str, str]) -> str:
+    """The work a case reads. A fixture has no work to name and returns empty.
+
+    The page is a reading page, so its provenance is the source, not the engine
+    that set it. Keeping the two apart is what stops a case from turning into a
+    report about the code that produced it.
+    """
+    source = module.get("source") or {}
+    if not source:
+        return ""
+    work = html.escape(source.get("work", ""))
+    author = html.escape(source.get("author", ""))
+    year = html.escape(str(source.get("year", "")))
+    url = source.get("url", "")
+    title = (f'<a href="{html.escape(url)}">{work}</a>' if url else work)
+    parts = " · ".join(part for part in (title, author, year) if part)
+    return (f'<p class="source" data-folio-source="true">'
+            f'<span class="source-label">{ui["source"]}</span> {parts}</p>')
+
+
 def module_block(module: dict, ui: dict[str, str]) -> str:
     external = (
         f'<a class="module-link" href="{module["external"]}">{ui["external"]}</a>'
         if module.get("external") else ""
     )
+    source = source_block(module, ui)
+    if source:
+        # A case states what it reads; a status badge would state what the
+        # engine has implemented, which is not a fact about the content.
+        meta = source
+    else:
+        status = module.get("status", "")
+        meta = (
+            f'<span class="badge" data-status="{status}">{status}</span>'
+            f'<code class="pkg">{module.get("package", "")}</code>{external}'
+        )
     return (
-        f'  <li class="module-block" id="m{module["num"]}" data-status="{module["status"]}">'
+        f'  <li class="module-block" id="m{module["num"]}">'
         f'<span class="module-num">{module["num"]}</span>'
         f'<h2><a href="./{module["id"]}/index.html">{module["name"]}</a></h2>'
         f'<p class="module-summary">{module["summary"]}</p>'
-        f'<div class="module-meta">'
-        f'<span class="badge" data-status="{module["status"]}">{module["status"]}</span>'
-        f'<code class="pkg">{module.get("package", "")}</code>{external}'
-        f'</div></li>'
+        f'<div class="module-meta">{meta}</div></li>'
     )
 
 
@@ -505,6 +535,8 @@ def build(series_dir: Path, out_dir: Path, theme: str | None, *, strict: bool = 
             ),
             "KICKER": module["kicker"],
             "LEAD": module["lead"],
+            "KIND": module.get("kind") or data.get("kind") or "case",
+            "SOURCE": source_block(module, ui),
             "TOC": toc_from(model) if model else toc_legacy(fragment),
             "TOC_LABEL": ui["toc"],
             "RAIL": rail_from(model) if model else rail_legacy(fragment),

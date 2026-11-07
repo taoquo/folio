@@ -749,18 +749,37 @@ def check_links(root: Node, report: Report) -> None:
     report.add("W-ACC-10", not broken, f"broken anchors: {broken or 'none'}")
 
 
-def check_evidence(root: Node, text: str, report: Report, page_type: str) -> None:
+def check_source(root: Node, report: Report, page_type: str, kind: str) -> None:
+    """A case names the work it reads; a fixture is about the engine.
+
+    The page is a reading page, so its provenance is the work, not the code
+    that set it. A case therefore carries one source block with a title, an
+    author or issuing body, a year and a link. A fixture is the engine's own
+    conformance page and has no work to name, so the rule does not apply.
+    """
     if page_type == "series-index":
         report.note("W-CNT-05", "SKIP", "index is a listing, not a module")
         return
-    cites = re.findall(r"[A-Za-z0-9_./-]+\.(?:py|md|yaml|yml|json):\d+", text)
-    has_chapter = any(
-        token in node.text()
-        for node in find_all(root, "h2")
-        for token in ("引擎对照", "Engine comparison")
-    )
-    report.add("W-CNT-05", len(cites) >= 2 and has_chapter,
-               f"{len(cites)} file:line cite(s), engine-comparison chapter = {has_chapter}")
+    if kind == "fixture":
+        report.note("W-CNT-05", "SKIP", "conformance fixture, not a case")
+        return
+    source = next((node for node in root.walk()
+                   if node.attrs.get("data-folio-source") == "true"), None)
+    if source is None:
+        report.add("W-CNT-05", False, "the case does not name the work it reads")
+        return
+    text = source.text()
+    link = find_one(source, "a")
+    year = re.search(r"\b(1[5-9]\d{2}|20\d{2})\b", text)
+    problems = []
+    if not text.strip():
+        problems.append("empty source block")
+    if not year:
+        problems.append("no year")
+    if link is None or not (link.attrs.get("href") or "").startswith(("http://", "https://")):
+        problems.append("no link to the work")
+    report.add("W-CNT-05", not problems,
+               f"source: {text[:60] or 'none'}" if not problems else "; ".join(problems))
 
 
 def acceptance(report: Report) -> list[tuple[str, str, str]]:
@@ -784,7 +803,7 @@ def acceptance(report: Report) -> list[tuple[str, str, str]]:
         "title-symbols": ["W-TXT-01"],
         "links": ["W-ACC-10", "W-DLV-01b"],
         "colour": ["W-COL-01", "W-COL-02", "W-COL-06", "W-COL-07", "W-DEN-08", "W-DEN-09"],
-        "evidence": ["W-CNT-05"],
+        "source": ["W-CNT-05"],
     }
     for item in C.ACCEPTANCE:
         rules = mapping.get(item.key, [])
@@ -819,10 +838,12 @@ def main(argv: list[str]) -> int:
 
     report = Report()
     page_type = check_structure(root, report, args.series_dir)
+    body = find_one(root, "body")
+    kind = (body.attrs.get("data-folio-kind") if body else "") or ""
     check_delivery(root, text, report, args.path, series, page_type)
     check_text(root, report)
     check_links(root, report)
-    check_evidence(root, text, report, page_type)
+    check_source(root, report, page_type, kind)
     check_rail(root, text, report, page_type)
     manifest = json.loads(args.figures_manifest.read_text(encoding="utf-8")) if args.figures_manifest else None
     module_id = args.path.parent.name

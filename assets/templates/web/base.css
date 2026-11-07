@@ -280,7 +280,9 @@ h1 {
     font-size: var(--web-index-size);
     line-height: var(--web-index-leading);
     letter-spacing: var(--web-tracking-tighter);
-    color: var(--color-border-default);
+    /* A numeral is text. The border colour made it a watermark the reader
+       could not resolve; the muted text colour keeps it quiet and legible. */
+    color: var(--color-text-muted);
   }
 }
 /* A file reference is a name, not prose: monospace keeps `scripts/x.py:12`
@@ -647,11 +649,6 @@ figcaption {
   border-color: var(--color-semantic-delivered);
   color: var(--color-semantic-delivered-strong);
 }
-.badge[data-status="引擎对照"],
-.badge[data-status="Engine parity"] {
-  border-color: var(--color-semantic-input);
-  color: var(--color-semantic-input-strong);
-}
 .badge[data-status="规划中"],
 .badge[data-status="Planned"] {
   border-color: var(--color-semantic-pending);
@@ -664,6 +661,30 @@ figcaption {
   line-height: var(--web-code-leading);
   color: var(--color-text-muted);
 }
+
+/* A case names the work it reads, not the engine that set it. The label is
+   apparatus and keeps the mono voice; the citation is text and takes the
+   reading face, the same division a caption makes between its number and its
+   sentence. */
+.source {
+  margin: var(--web-space-4) 0 0;
+  font-size: var(--web-label-size);
+  line-height: var(--web-label-leading);
+  color: var(--color-text-muted);
+}
+.source-label {
+  font-family: var(--mono);
+  letter-spacing: var(--web-tracking-caps);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.source a {
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  text-decoration-color: var(--color-border-default);
+  text-underline-offset: 0.18em;
+}
+.module-meta .source { margin: 0; }
 
 /* ---- reading rail: right-side section scale ---- */
 

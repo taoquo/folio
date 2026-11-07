@@ -20,7 +20,7 @@
 
 ## 先看效果，再看说明
 
-Folio 是一套面向 AI 时代的文档设计系统：覆盖 8 种文档类型、23 种由 Drawing DSL 驱动的图表类型、中英文两条生成路径，并提供面向阅读页面和产品工作台的 Web 设计指导，专门服务于 agent 驱动的交付物。
+Folio 是一套面向 AI 时代的文档设计系统：覆盖 8 种文档类型、23 种由 Drawing DSL 驱动的图表类型、中英文两条生成路径，并提供由同一套 profile 生成的 Web 阅读页，专门服务于 agent 驱动的交付物。
 
 它追求的不是视觉花样，而是稳定、清晰、专业、可重复的输出结果。
 
@@ -33,7 +33,7 @@ Folio 不把文档视为中性的输出，而把它看作思想获得公共形�
 - 同一套设计语言如何覆盖 8 种文档类型
 - 23 种结构化图表如何输出 `SVG + PNG + PDF`
 - 中文和英文输出如何共享一致的排版气质
-- Web 设计指导如何覆盖阅读页面和产品工作台，而不把 Folio 变成前端框架
+- Web 阅读页（系列索引与模块存档）与其他输出共用同一套 profile，而不把 Folio 变成前端框架
 - 成品默认落到 PDF / PPTX，而不是停留在 HTML 示意图
 - 一页纸、研报、简历、幻灯片、更新日志之间如何保持统一而不单调
 
@@ -195,7 +195,6 @@ Folio 会根据自然语言请求自动触发。你只需要尽量把下面这�
 - `帮我生成一张系统架构图`
 - `帮我画一张 UML 类图`
 - `帮我把这份报告设计成网页阅读页`
-- `帮我设计一个 Folio 风格的产品工作台`
 
 可选：创建 `~/.config/folio/brand.md`，持久保存身份信息、文档默认设置和写作习惯。可从 [brand.example.md](references/brand.example.md) 开始。当前请求存在歧义时，Folio 会把它作为 fallback 上下文使用。
 
@@ -227,36 +226,26 @@ Folio 把“当前事实”和“品牌素材”当作一等输入，而不是�
 - 涉及品牌文档时，会检查 logo、截图、产品图和品牌色是否齐备
 - 如果关键素材缺失，应明确标出缺口，而不是用泛化视觉凑数
 
-### Web 设计指导
+### Web 阅读页
 
-Folio 可以指导浏览器页面设计，同时保持现有静态文档构建链不变。
+Folio 把一组内容片段构建成静态阅读页：一个系列索引，加上每篇文章的模块页。产物是自包含 HTML——没有外链样式、没有脚本、没有应用外壳，阅读时不跑构建。
 
-每个 Web 请求都先建立设计合同，再进入 layout、mockup 或代码：
+Web 侧的每个值都由引擎给出。屏幕字号、字体栈、间距、圆角、行长与页面几何在 `references/profiles/web/folio-v1.yaml`；颜色来自主题 profile；图表来自 Drawing DSL。`assets/templates/web/` 下的模板只读取投影后的变量，`scripts/projection.py check` 会拒绝 `base.css` 里的字面量。
 
-| 步骤 | 必须决策 | 可见结果 |
-|---|---|---|
-| 1 | page job、archetype、primary object 和 orientation | 第一屏说明页面要解决什么问题 |
-| 2 | content plan 和 page skeleton | 先命名 Reading、Workspace 或 Hybrid 区域，再考虑组件 |
-| 3 | required states 和 motion thesis | loading、empty、error、selected、success 状态有语义动效 |
-| 4 | mobile collapse plan 和 final quality gate | 窄屏不依赖 hover 或只存在于桌面的隐藏控制 |
+页面只有两种身份：
 
-页面骨架替代组件展台：
+- **案例（case）** 是内容。它注明所读的作品（作品、作者、年份、链接），不描述排版它的引擎。
+- **夹具（fixture）** 是引擎的一致性页面：带交付状态与包路径，存在的目的就是测试规则。
 
-- Reading：opening block / contents rail / article body / figure band / source notes
-- Workspace：nav / toolbar / primary work area / inspector / feedback
-- Hybrid：reading rail / document preview / operation panel / status
-- Web 设计指导是给 agent 使用的设计参考，不会新增 Web 应用构建链，也不会改变 Folio 的 PDF / PPTX / SVG 输出
+```bash
+python3 scripts/folio.py web --series references/fixtures/web/attention
+python3 scripts/check_web.py dist/web/attention/attention/index.html --level 3 \
+  --series-dir dist/web/attention --figures-manifest dist/web/attention/figures.manifest.json
+```
 
-Motion thesis 必须说明意义，而不是装饰：
+浏览器那一半（`scripts/web_measure.py` + `scripts/web_verify.py`）在每夜任务里跑。规则分为 `W-*`（静态）与 `V-*`（实测），都列在 `references/web/` 下。
 
-| 层级 | 模板 |
-|---|---|
-| Page motion | `This motion means the user is oriented within the page by ...` |
-| Region motion | `This motion means secondary context is attached to or removed from ...` |
-| Object motion | `This motion means the current object, row, figure, source, or section is ...` |
-| Control motion | `This motion means the control can be acted on, is being pressed, or has completed ...` |
-
-只启用服务页面任务的层级。hover、active、focus 不能成为整套动效系统。
+这条路径不引入 Web 应用框架：没有组件库、路由、客户端状态或暗色模式开关。
 
 ### 图表路由
 

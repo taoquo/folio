@@ -26,13 +26,30 @@ page's custom properties before it measures density.
 3. `web-visual.md` — density, measure, colour layers.
 4. `web-figures.md` — the drawing-DSL host contract and the geometry audits.
 5. `web-acceptance.md` — the seven-step workflow and the 16 acceptance items.
+6. `web-verification.md` — the `V-*` rules: what each one measures, in which
+   browser, and what it does when the page disagrees with the plan.
+
+## Case or fixture
+
+A page is one of two things, and `series.json` says which with `kind`.
+
+- **`case`** is content. It names the work it reads (`source`: work, author,
+  year, link) and it does not describe the engine that set it.
+- **`fixture`** is the engine's conformance page. It carries a delivery status
+  and a package path, and it is allowed to be about the engine because that is
+  what it tests.
 
 ## Rule ids
 
-A rule is `W-<area>-<n>`, stable, and reported by the same id from
-`scripts/check_web.py` and `scripts/web_geometry.py`. Areas: `DLV` delivery,
-`STR` structure, `CNT` content, `TXT` text, `DEN` density, `COL` colour, `FIG`
-figures, `GEO` geometry, `ACC` acceptance.
+A rule is `W-<area>-<n>`, stable, and reported by `scripts/check_web.py`.
+Areas: `DLV` delivery, `STR` structure, `CNT` content, `TXT` text, `DEN`
+density, `COL` colour, `FIG` figures, `GEO` geometry, `ACC` acceptance.
+
+`scripts/web_geometry.py` is the figure-measurement helper behind `W-GEO-*`; it
+does not report rule ids of its own.
+
+The browser rules are `V-<area>-<n>`, reported by `scripts/web_verify.py` and
+listed in `web-verification.md`.
 
 ## Commands
 
@@ -44,16 +61,29 @@ python3 scripts/build_web.py --series <dir> --strict-figures # treat DSL advisor
 python3 scripts/check_web.py <page.html> --level 1           # CI gate
 python3 scripts/check_web.py <page.html> --level 3 --source <source.txt>
 python3 scripts/web_geometry.py <page.html>                  # figure geometry only
-python3 scripts/folio.py web --series <dir> --verify         # the same build through the CLI
 ```
 
-The tracked fixture is `references/fixtures/web/reading-demo/`; CI builds and
-verifies it at level 3, so a change to the profile, the template, or the
-contracts is caught before it reaches a page:
+Build and check are separate commands: the browser measurement is the slow
+half and belongs in the nightly job, not in the build.
 
 ```bash
-python3 scripts/folio.py web --series references/fixtures/web/reading-demo \
-  --verify --level 3 --source references/fixtures/web/reading-demo/source.txt
+python3 scripts/folio.py web --series <dir>
+python3 scripts/check_web.py dist/web/<series>/<module>/index.html --level 3 \
+  --series-dir dist/web/<series> --figures-manifest dist/web/<series>/figures.manifest.json
+```
+
+Two series are tracked, and CI builds both:
+
+- `references/fixtures/web/reading-demo/` — `kind: fixture`, the conformance
+  page. A change to the profile, the template or the contracts shows up here.
+- `references/fixtures/web/attention/` — `kind: case`, a real reading page
+  (`Attention Is All You Need`). It is the page a reader would open.
+
+```bash
+python3 scripts/folio.py web --series references/fixtures/web/reading-demo
+python3 scripts/check_web.py dist/web/reading-demo/reading/index.html \
+  --level 3 --source references/fixtures/web/reading-demo/source.txt \
+  --series-dir dist/web/reading-demo
 ```
 
 The series language comes from `series.json` (`"language": "en"` for an English

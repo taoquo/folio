@@ -66,6 +66,15 @@ HEADING = re.compile(r'<h2[^>]*>\s*<span class="num">(\d+)</span>(.*?)</h2>', re
 
 MODES = ("off", "shadow", "on")
 
+# A void element has no end tag. `HTMLParser` still reports `<br>` through
+# `handle_starttag`, so counting it as a container leaves the scanner one level
+# deep for the rest of the chapter -- which silently dropped every block after
+# the first `<br>` in a formula.
+VOID = frozenset({
+    "area", "base", "br", "col", "embed", "hr", "img", "input",
+    "link", "meta", "param", "source", "track", "wbr",
+})
+
 
 @dataclass(frozen=True)
 class Block:
@@ -136,7 +145,8 @@ class _Scanner(HTMLParser):
         attrs = dict(attrs_list)
         classes = (attrs.get("class") or "").split()
         start = self._abs_offset()
-        self.depth += 1
+        if tag not in VOID:
+            self.depth += 1
 
         if tag == "section" and "chapter" in classes:
             self.current = {

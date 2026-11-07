@@ -43,15 +43,22 @@ TOPBAR_LINKS = 1
 # lists are closed: a status outside them is still a defect, and each group is
 # the same statement in two languages rather than a second set of meanings.
 STATUS_VOCAB = (
-    "已实现", "代码验证", "规范", "引擎对照", "规划中",
-    "Implemented", "Code-verified", "Spec", "Engine parity", "Planned",
+    "已实现", "代码验证", "规范", "规划中",
+    "Implemented", "Code-verified", "Spec", "Planned",
 )
 
 # Package state and integration state are separate statements.
 STATUS_GROUPS = {
     "package": ("已实现", "代码验证", "Implemented", "Code-verified"),
-    "integration": ("规范", "引擎对照", "规划中", "Spec", "Engine parity", "Planned"),
+    "integration": ("规范", "规划中", "Spec", "Planned"),
 }
+
+# A page is one of two things, and the difference is what the page owes the
+# reader. A *case* is content: it names the work it reads, and it does not
+# describe the engine that set it. A *fixture* is the engine's own conformance
+# page: it carries a status and a package path, and it is allowed to be about
+# the engine because that is what it tests.
+KINDS = ("case", "fixture")
 
 # ------------------------------------------------------------ title rules
 
@@ -86,6 +93,11 @@ DENSITY: dict[str, tuple[float, float]] = {
 }
 
 MEASURE_CHARS = (60.0, 95.0)
+
+# WCAG's two contrast minima. Large text is 24px, or 18.66px when bold; the
+# numeral in the margin is the one role that can use the lower one.
+CONTRAST_MIN = {"normal": 4.5, "large": 3.0}
+LARGE_TEXT_PX = 24.0
 
 # ------------------------------------------------------- C2 concept mapping
 
@@ -271,7 +283,7 @@ ACCEPTANCE: tuple[Acceptance, ...] = (
     Acceptance("title-symbols", "标题禁用符号归零", "machine"),
     Acceptance("links", "标签配对、JS 平衡、外链可达", "machine"),
     Acceptance("colour", "L1/L2 与引擎样式合规；语义色可区分；单图彩色不超过 4", "machine"),
-    Acceptance("evidence", "实证齐全：文件行号 / Sources / 引擎对照章", "semi"),
+    Acceptance("source", "案例页注明所读作品、作者、年份与链接", "machine"),
     Acceptance("reading-rail", "右侧章节刻度存在、随滚动激活、hover 显示标题", "semi"),
     Acceptance("figure-provenance", "每张图可追到 DSL fixture 与 sha", "machine"),
     Acceptance("figure-dsl", "图表由 DSL 编译且 ERROR 诊断为零", "machine"),

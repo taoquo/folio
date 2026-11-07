@@ -31,7 +31,7 @@
     <div class="hero-actions" aria-label="下一步">
       <a class="action-link primary" href="#output-system">查看输出</a>
       <a class="action-link" href="#usage">安装</a>
-      <a class="action-link" href="#web-guidance">读 Web 规范</a>
+      <a class="action-link" href="#web-reading">读 Web 阅读页</a>
     </div>
   </header>
 
@@ -44,7 +44,7 @@
     <a href="#rhythm"><span>05</span>节奏</a>
     <a href="#modules"><span>06</span>模块</a>
     <a href="#artifacts"><span>07</span>图形</a>
-    <a href="#web-guidance"><span>08</span>Web</a>
+    <a href="#web-reading"><span>08</span>Web</a>
     <a href="#travel"><span>09</span>生图</a>
     <a href="#lookup"><span>10</span>速查</a>
     <a href="#anti-patterns"><span>11</span>反例</a>
@@ -55,7 +55,7 @@
     <div class="section-head">
       <p class="section-num">00 · Master Index</p>
       <h2 class="section-title">输出系统</h2>
-      <p class="section-lede">先选择 Folio 要产出什么。目录把用户请求映射到 PDF、PPTX、SVG 或 Web guidance；样本矩阵展示真实输出语言。</p>
+      <p class="section-lede">先选择 Folio 要产出什么。目录把用户请求映射到 PDF、PPTX、SVG 或 Web 阅读页；样本矩阵展示真实输出语言。</p>
     </div>
 
     <div class="master-index-shell">
@@ -103,7 +103,7 @@
             <tr><td>07</td><td>Equity Report</td><td>投资备忘录、财报快报、个股研报</td><td>PDF</td></tr>
             <tr><td>08</td><td>Changelog</td><td>Release Notes 与版本叙事</td><td>PDF</td></tr>
             <tr><td>09</td><td>图形档案</td><td>架构图与 UML 图形样本</td><td>SVG · PNG · PDF</td></tr>
-            <tr><td>10</td><td>Web 设计指导</td><td>用 Folio 规则指导阅读页面和产品工作台</td><td>Reference</td></tr>
+            <tr><td>10</td><td>Web 阅读页</td><td>由引擎 Web profile 生成的静态阅读页</td><td>HTML</td></tr>
           </table>
         </div>
 
@@ -608,35 +608,35 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
     </div>
   </section>
 
-  <!-- ============ 08 WEB GUIDANCE ============ -->
-  <section id="web-guidance">
+  <!-- ============ 08 WEB READING PAGES ============ -->
+  <section id="web-reading">
     <div class="section-head">
-      <p class="section-num">08 · Web Guidance</p>
-      <h2 class="section-title">Web 页面规范</h2>
-      <p class="section-lede">这是 guidance reference，不是组件展台。它用 page job、skeleton、state coverage 和语义动效约束 Web 页面，同时不新增 Web 构建链。</p>
+      <p class="section-num">08 · Web</p>
+      <h2 class="section-title">Web 阅读页</h2>
+      <p class="section-lede">一个系列索引加上每篇文章的模块页，构建为自包含静态 HTML。屏幕字号、间距、行长与图版几何都来自 Web profile；没有组件库、路由或应用外壳。</p>
     </div>
     <div class="web-guidance-panel">
       <div class="catalog-head">
-        <p class="catalog-overline">设计流程</p>
-        <h3 class="catalog-title">页面任务先行</h3>
-        <p class="catalog-copy">每个 Web 请求先建立设计合同，再进入布局：page job、archetype、primary object、orientation、states、skeleton、motion thesis 和 mobile collapse。</p>
+        <p class="catalog-overline">两种页面</p>
+        <h3 class="catalog-title">案例与夹具</h3>
+        <p class="catalog-copy">案例是内容：注明所读的作品，不描述排版它的引擎。夹具是引擎的一致性页面：带交付状态与包路径，用来测试规则。</p>
       </div>
       <table class="catalog-table">
-        <tr><th>模式</th><th>骨架</th><th>状态重点</th><th>参考</th></tr>
-        <tr><td>Reading</td><td>opening block / contents rail / article body / figure band / source notes</td><td>progress、sources、captions</td><td><code>web-reading.md</code></td></tr>
-        <tr><td>Workspace</td><td>nav / toolbar / primary work area / inspector / feedback</td><td>loading、empty、error、selected、success</td><td><code>web-workspace.md</code></td></tr>
-        <tr><td>Hybrid</td><td>reading rail / document preview / operation panel / status</td><td>selected document、generation state、review findings</td><td><code>web-foundation.md</code></td></tr>
+        <tr><th>部分</th><th>承载什么</th><th>归属</th><th>规则集</th></tr>
+        <tr><td>系列索引</td><td>系列标题、导语、每个模块一张卡片</td><td><code>build_web.py</code></td><td><code>W-DLV</code>、<code>W-STR</code></td></tr>
+        <tr><td>模块页</td><td>页头、目录、章节、图版、来源</td><td><code>build_web.py</code></td><td><code>W-CNT</code>、<code>W-FIG</code></td></tr>
+        <tr><td>实测页面</td><td>计算后的字号、列宽、图版、图注</td><td><code>web_verify.py</code></td><td><code>V-*</code></td></tr>
       </table>
       <div class="catalog-head" style="margin-top:24px;">
-        <p class="catalog-overline">Motion Thesis</p>
-        <h3 class="catalog-title">动效描述结构</h3>
-        <p class="catalog-copy">每个动效都必须能写成 <code>This motion means ...</code>。hover 只表达控件可操作，不能成为整套动效系统。</p>
+        <p class="catalog-overline">构建</p>
+        <h3 class="catalog-title">一条构建，一条检查</h3>
+        <p class="catalog-copy"><code>folio.py web --series &lt;dir&gt;</code> 写出系列；<code>check_web.py --level 3</code> 检查结构、密度、颜色与图版几何。浏览器实测在每夜任务里跑。</p>
       </div>
       <table class="catalog-table">
-        <tr><th>层级</th><th>意义</th><th>首页用法</th><th>限制</th></tr>
-        <tr><td>Page</td><td>This motion means the user is oriented within the page</td><td>只用于初始进入</td><td>尊重 reduced motion</td></tr>
-        <tr><td>Object</td><td>This motion means this specimen can be inspected</td><td>样本 hover</td><td>不造成布局位移</td></tr>
-        <tr><td>Control</td><td>This motion means the control is pressed or focused</td><td>action link press / focus</td><td>不能替代 page 或 object 动效</td></tr>
+        <tr><th>层</th><th>来源</th><th>规则</th><th>限制</th></tr>
+        <tr><td>字号与行长</td><td><code>profiles/web/folio-v1.yaml</code></td><td><code>W-DEN</code>、<code>V-TYPE</code></td><td><code>base.css</code> 不允许字面量</td></tr>
+        <tr><td>颜色</td><td><code>profiles/theme/*.yaml</code></td><td><code>W-COL</code>、<code>V-COL-01</code></td><td>模板里不允许 hex</td></tr>
+        <tr><td>图表</td><td>Drawing DSL</td><td><code>W-FIG</code>、<code>V-FIG</code></td><td>页面不手写 SVG</td></tr>
       </table>
     </div>
   </section>

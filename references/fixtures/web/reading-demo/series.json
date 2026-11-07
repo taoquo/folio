@@ -1,5 +1,6 @@
 {
   "series": "reading-demo",
+  "kind": "fixture",
   "language": "en",
   "kicker": "FIXTURE",
   "title": "Web Reading Fixture",
@@ -28,12 +29,13 @@
       "id": "reading",
       "num": "01",
       "name": "Web Reading Fixture",
-      "summary": "Release gates, build stages and the rules that keep the page honest.",
+      "summary": "Release gates, build stages, sign-off and the gate record, as the conformance page.",
+      "kind": "fixture",
       "status": "Implemented",
       "package": "fixtures/web/reading-demo",
       "title": "Web Reading Fixture",
       "kicker": "FIXTURE",
-      "lead": "Three mechanisms, three figures, and one engine comparison.",
+      "lead": "Four chapters and three figures, used to check the engine.",
       "fragment": "reading.frag.html",
       "figures": [
         "release-gate",

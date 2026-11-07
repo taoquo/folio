@@ -27,7 +27,7 @@ Steps 1–5 happen in the repository. Step 6 is the only step that needs a host.
 | 9 | No banned symbol in any title | machine | W-TXT-01 |
 | 10 | Anchors resolve, no external script, external links reachable | machine | W-ACC-10, W-DLV-01b |
 | 11 | L1/L2 colour compliance; every variable defined; every semantic mark names a meaning; at most four colours per figure | machine | W-COL-01/02/06/07 |
-| 12 | Evidence: file:line, sources, engine-comparison section | semi | W-CNT-05 |
+| 12 | A case names the work it reads (work, author, year, link); a fixture is exempt | machine | W-CNT-05 |
 | 13 | Reading rail: one tick per chapter, active on scroll, title on hover | semi | W-DLV-06/07/08 |
 | 14 | Every figure traces to a DSL fixture and hash | machine | W-FIG-07 |
 | 15 | Figures are DSL products with zero ERROR diagnostics | machine | W-GEO-01 |

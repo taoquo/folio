@@ -149,16 +149,21 @@ MEASURE_JS = r"""
         if (rect.width > 0.5) ranges.push(rect);
       }
     }
-    // One rect per fragment; merge fragments that share a baseline.
-    const rows = new Map();
+    // One row per line. A line is not one top coordinate: a subscript sits a
+    // few pixels low and a superscript a few high, and keying on the rounded
+    // top turned every `x_i` into a line of its own. Anything within half a
+    // line box of a row belongs to that row.
+    const rows = [];
     for (const rect of ranges) {
-      const key = Math.round(rect.top);
-      const row = rows.get(key) || { top: rect.top, left: rect.left, right: rect.right, chars: 0 };
+      let row = rows.find((item) => Math.abs(item.top - rect.top) < 12);
+      if (!row) {
+        row = { top: rect.top, left: rect.left, right: rect.right };
+        rows.push(row);
+      }
       row.left = Math.min(row.left, rect.left);
       row.right = Math.max(row.right, rect.right);
-      rows.set(key, row);
     }
-    const ordered = [...rows.values()].sort((a, b) => a.top - b.top);
+    const ordered = rows.sort((a, b) => a.top - b.top);
     const text = el.textContent.replace(/\s+/g, " ").trim();
     const characters = [...text].length;
     // A line holds about half as many Han characters as Latin ones, so a
@@ -172,11 +177,75 @@ MEASURE_JS = r"""
     };
   }
 
+  // A paragraph's role is the block that owns it. A pull quote's sentence is
+  // the quote's content, not a paragraph of the running text, and the checker
+  // must not ask it to reach the column the way running prose does.
+  const ownedRole = (el) => {
+    if (el.getAttribute("data-folio-role")) return el.getAttribute("data-folio-role");
+    const block = el.closest("[data-folio-role]");
+    return block ? block.getAttribute("data-folio-role") : "paragraph";
+  };
+
   const paragraphs = [...document.querySelectorAll(".chapter p")].slice(0, 8).map((el, i) => ({
     index: i,
+    role: ownedRole(el),
     lines: linesOf(el),
     width: +el.getBoundingClientRect().width.toFixed(2),
   }));
+
+  // A caption belongs to the plate above it, so its own left edge is measured
+  // against that plate's. A note that has wandered into the margin is still
+  // the same words; only the left edge says it has left the drawing.
+  const captions = [...document.querySelectorAll("figure figcaption, .tbl caption")]
+    .map((el, i) => {
+      const rect = el.getBoundingClientRect();
+      const plate = el.closest("figure") || el.closest("table");
+      const plateRect = (plate || el).getBoundingClientRect();
+      return {
+        index: i,
+        tag: el.tagName.toLowerCase(),
+        lines: linesOf(el),
+        width: +rect.width.toFixed(2),
+        left: +rect.left.toFixed(2),
+        plate_left: +plateRect.left.toFixed(2),
+        plate_width: +plateRect.width.toFixed(2),
+      };
+    });
+
+  // The colours a reader actually sees, with the background each one sits on.
+  // A translucent background is resolved by walking up to the first opaque
+  // ancestor, which is the only way a ratio computed here means anything.
+  function backgroundOf(el) {
+    let node = el;
+    while (node && node !== document.documentElement) {
+      const colour = getComputedStyle(node).backgroundColor;
+      const parts = colour.match(/[\d.]+/g);
+      if (parts && (parts.length < 4 || parseFloat(parts[3]) > 0.99)) return colour;
+      node = node.parentElement;
+    }
+    return getComputedStyle(document.body).backgroundColor;
+  }
+
+  const colourTargets = {
+    "prose": ".chapter p",
+    "caption": "figure.figure figcaption",
+    "source-note": ".chapter .src-note",
+    "chapter-numeral": ".chapter h2 .num",
+    "kpi-label": ".kpi .k",
+    "table-head": ".tbl th",
+  };
+  const colours = Object.fromEntries(
+    Object.entries(colourTargets).map(([key, selector]) => {
+      const el = firstVisible(selector);
+      if (!el) return [key, null];
+      const s = getComputedStyle(el);
+      return [key, {
+        colour: s.color,
+        background: backgroundOf(el),
+        size: parseFloat(s.fontSize),
+        weight: parseInt(s.fontWeight, 10),
+      }];
+    }));
 
   // Which chapter a block belongs to, so a gap can say whether it sits inside
   // one chapter's flow or crosses the boundary between two. The boundary is a
@@ -255,6 +324,8 @@ MEASURE_JS = r"""
       };
     }),
     paragraphs,
+    captions,
+    colours,
     blocks,
     gaps,
     overflow,

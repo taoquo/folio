@@ -46,6 +46,15 @@ class ScanTests(unittest.TestCase):
         self.assertEqual(["chapter-title", "formula", "source-note"],
                          [block.role for block in page.chapters[0].blocks])
 
+    def test_a_line_break_does_not_swallow_the_rest_of_the_chapter(self) -> None:
+        # `<br>` has no end tag. Counting it as a container left the scanner
+        # one level deep, so every block after the first formula line vanished
+        # from the model and from the page's annotations.
+        page = WP.scan(chapter('<p class="formula">a<br>b</p><h3>after</h3><p>still here</p>'))
+
+        self.assertEqual(["chapter-title", "formula", "section-title", "paragraph"],
+                         [block.role for block in page.chapters[0].blocks])
+
     def test_a_figure_placeholder_is_a_block(self) -> None:
         page = WP.scan(chapter("<p>x</p>\n<!--FOLIO:FIGURE:release-gate-->"))
 

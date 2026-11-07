@@ -12,7 +12,7 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 | `references/writing.md` | Content strategy + quality bars per document type, English-only source | Low |
 | `references/production.md` | WeasyPrint build and troubleshooting runbook, English-only source | Medium |
 | `references/drawing-dsl.md` | Drawing DSL scope, compiler stages, routing, and output layer | Low |
-| `references/web/` | Web reading-page scenario: delivery, content, density, figures, acceptance (English-only) | Medium |
+| `references/web/` | Web reading-page scenario: delivery, content, density, figures, acceptance, browser rules (English prose; bilingual labels quoted as data) | Medium |
 | `references/drawing-dsl-v6-final-audit.md` | Closing program audit, gate evidence, and known limits | Low |
 | `assets/examples/` | Published document examples, built from the IR | Medium |
 | `assets/templates/` | 8 document templates in 2 base language families | Medium |

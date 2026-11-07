@@ -1,8 +1,8 @@
 <section class="chapter" id="s01" data-sum="A release stops at a gate when any visual check fails">
 <h2><span class="num">01</span>Release gates</h2>
-<p>A release stops at a gate when any visual check fails. The build reaches 28.4 BLEU in 3.5 days after a short warmup schedule.</p>
+<p>A release stops at a gate when any visual check fails. The build reaches a release candidate in 3.5 days after a short warmup schedule.</p>
 <ul class="kpi-row">
-<li class="kpi"><span class="v">28.4</span><span class="k">BLEU</span></li>
+<li class="kpi"><span class="v">12</span><span class="k">visual gates</span></li>
 <li class="kpi"><span class="v">3.5 days</span><span class="k">build time</span></li>
 <li class="kpi"><span class="v">0</span><span class="k">blocking checks</span></li>
 <li class="kpi"><span class="v">3</span><span class="k">stages</span></li>
@@ -27,8 +27,22 @@
 <!--FOLIO:FIGURE:sign-off-->
 <div class="insight"><p>The last lane is a decision, not another edit.</p></div>
 </section>
-<section class="chapter" id="s04" data-sum="The page reads the same engine profiles as every document">
-<h2><span class="num">04</span>Engine comparison</h2>
-<p>The rules live in <code>scripts/web_contracts.py:1</code> and <code>scripts/check_web.py:1</code>. The page reads the same profiles as every document.</p>
-<div class="insight"><p>One profile edit moves the page and its figures together.</p></div>
+<section class="chapter" id="s04" data-sum="A gate record names the check, its owner and the build it last cleared">
+<h2><span class="num">04</span>Gate record</h2>
+<p>Every gate writes one row: what it checked, who owns the check, and the build in which it last cleared. A row without an owner is an open gate, and an open gate blocks the release.</p>
+<div class="tbl-wrap"><table class="tbl">
+<caption>Table 1 · the four gates that stop a release, their owners, and the build in which each last cleared.</caption>
+<tr><th>Gate</th><th>Owner</th><th class="num">Last cleared</th></tr>
+<tr><td>Visual</td><td>Design review</td><td class="num">2461</td></tr>
+<tr><td>Type</td><td>Editorial</td><td class="num">2461</td></tr>
+<tr><td>Legal</td><td>Controller</td><td class="num">2458</td></tr>
+<tr><td>Accessibility</td><td>Design review</td><td class="num">2453</td></tr>
+</table></div>
+<h3>What the record is for</h3>
+<ul class="prose-list">
+<li>The release job reads the record; a person does not type it twice.</li>
+<li>A gate that never cleared has no build number, and the release job stops there.</li>
+<li>An owner is a team, never a single reviewer who may be away.</li>
+</ul>
+<div class="insight"><p>A record the job cannot read is a note, not a gate.</p></div>
 </section>

@@ -115,19 +115,23 @@ content.
 The same fact is stated once and referenced afterwards. Package state and
 integration state are separate statements, not one badge pretending to be both.
 
-Closed vocabulary — five meanings, each with a Chinese and an English label:
+Closed vocabulary — four meanings, each with a Chinese and an English label:
 
 | Meaning | Chinese | English | Group |
 |---|---|---|---|
 | implemented | `已实现` | `Implemented` | package |
 | code-verified | `代码验证` | `Code-verified` | package |
 | spec | `规范` | `Spec` | integration |
-| engine parity | `引擎对照` | `Engine parity` | integration |
 | planned | `规划中` | `Planned` | integration |
 
 A word outside this list is a finding: a reader cannot compare modules whose
-states were invented per page. The Chinese and English labels are the same five
+states were invented per page. The Chinese and English labels are the same four
 statements, not a second taxonomy.
+
+The badge states a **fixture's** delivery state. A `case` names the work it
+reads instead, in a source block under the lead and on the series card
+(`source`: work, author, year, link; `W-CNT-05`). A page that describes the
+engine that set it is not a reading page.
 
 A content component that carries a meaning declares it with `data-role`, drawn
 from the ten semantic roles (`delivered`, `info`, `component`, `passed`,
