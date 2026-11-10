@@ -34,7 +34,7 @@ The browser half runs in the nightly job, not on every push.
 | `V-PLAN-02` | The prose column is the planned column | prose box width against `plan.viewports[n].column` | FAIL; a measure cap may narrow the prose only within the plan's tolerance |
 | `V-PLAN-03` | The figure spans its band | plate box width against the band | FAIL |
 | `V-FIG-13` | One plate per figure is shown, and it is this width's class | visible plate count and its `data-folio-plate` | FAIL |
-| `V-FIG-12` | The plate's type lands where the plan says, title included | delivered tier px from the plate width, title between H3 and 0.9 × H2 | REVIEW: the composition is a drawing fact, not a page defect |
+| `V-FIG-12` | The plate's type lands where the plan says, title included | delivered tier px from the plate width, title between H3 and 0.9 × H2, per figure | FAIL; a one-stage family is REVIEW, with the size the reader gets |
 | `V-FIG-14` | Each caption hangs from its plate | caption `left` / `width` against the figure's box | FAIL; a caption in the margin is a defect, not a note |
 | `V-TYPE-02` | The prose runs the page's own column | every running paragraph's width against the chapter column | FAIL; a paragraph narrower than the column is a hole beside the text |
 | `V-COL-01` | Text clears its contrast ratio | computed colour against the first opaque background, per role | FAIL below 4.5:1 (3:1 for large text) |

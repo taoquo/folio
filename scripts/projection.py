@@ -230,7 +230,8 @@ def web_projection(genre: str = "web-reading", language: str | None = "zh-Hans-C
     # typography uses `body`, and colour uses `color`.
     for path in style.values:
         if not path.startswith(("font.", "type.", "space.", "line.", "weight.",
-                                "tracking.", "radius.", "measure.", "layout.")):
+                                "tracking.", "underline.", "radius.", "measure.",
+                                "layout.")):
             continue
         # The path is global, so the provenance decides whether it is the Web
         # profile's value or another domain's field that happens to share a name.
@@ -258,6 +259,10 @@ def web_projection(genre: str = "web-reading", language: str | None = "zh-Hans-C
         elif path.startswith("tracking."):
             key = path.split(".", 1)[1].removesuffix("_em").replace("_", "-")
             put(f"--web-tracking-{key}", f"{float(value):g}em", path)
+        elif path.startswith("underline."):
+            # A decoration metric is a fraction of the type, like tracking.
+            key = path.split(".", 1)[1].removesuffix("_em").replace("_", "-")
+            put(f"--web-underline-{key}", f"{float(value):g}em", path)
         elif path.startswith("space.s"):
             put(f"--web-space-{path.rsplit('s', 1)[-1]}", f"{float(value):g}px", path)
         elif path.startswith("line."):
@@ -310,6 +315,7 @@ def web_font_faces(language: str | None = "zh-Hans-CN") -> list[dict[str, str]]:
     pairs = (
         ("font.latin_face", "font.latin_face_file", "font.latin_face_weight"),
         ("font.face", "font.face_file", "font.face_weight"),
+        ("font.mono_face", "font.mono_face_file", "font.mono_face_weight"),
     )
     faces: list[dict[str, str]] = []
     for family_key, file_key, weight_key in pairs:
@@ -322,8 +328,19 @@ def web_font_faces(language: str | None = "zh-Hans-CN") -> list[dict[str, str]]:
                 "family": family,
                 "file": filename,
                 "weight": str(style.get(weight_key) or ""),
+                "format": _font_format(filename),
             })
     return faces
+
+
+def _font_format(filename: str) -> str:
+    """The `format()` hint a browser needs for the file it is about to load."""
+    suffix = Path(filename).suffix.lower()
+    return {
+        ".woff2": "woff2",
+        ".woff": "woff",
+        ".otf": "opentype",
+    }.get(suffix, "truetype")
 
 
 def web_font_face(language: str | None = "zh-Hans-CN") -> dict[str, str]:
@@ -630,17 +647,17 @@ def unconsumed_variables() -> list[str]:
 
 # Declarations the Web template must not decide for itself. A value here is a
 # second design system: the profile is the only place it may live.
-WEB_LITERAL_PROPERTIES = ("font-size", "font-family", "line-height", "letter-spacing",
-                          "font-weight", "padding", "margin", "gap", "border-radius")
-
-
 def web_template_literals() -> list[str]:
-    """Numeric or family literals in the Web template's type and spacing.
+    """Every declaration in the Web template that decides a value itself.
 
     `0` is not a value the profile needs to own, and a custom-property
     declaration is the projection's own block, not the template's. Everything
-    else is a hard-coded design decision.
+    else is a design decision, judged by the same rule `check_web.py` applies to
+    the built page (`web_contracts.template_value_literal`), so the two gates
+    cannot disagree about what counts as a literal.
     """
+    import web_contracts
+
     path = Path(__file__).resolve().parents[1] / "assets" / "templates" / "web" / "base.css"
     if not path.is_file():
         return []
@@ -656,21 +673,12 @@ def web_template_literals() -> list[str]:
             if "}" in line:
                 in_root = 0
             continue
-        for prop in WEB_LITERAL_PROPERTIES:
-            match = re.match(rf"{prop}\s*:\s*(.+)", stripped)
-            if not match:
-                continue
-            value = match.group(1).rstrip(";")
-            if "var(" in value:
-                continue
-            if prop == "font-family":
-                findings.append(f"{prop}: {value}")
-            elif prop == "font-weight":
-                # A weight carries no unit, so the length test cannot see it.
-                if re.search(r"\b\d{3}\b|\bbold(er)?\b|\blight(er)?\b", value):
-                    findings.append(f"{prop}: {value}")
-            elif re.search(r"\b\d*\.?\d+(px|pt|em|rem)\b", value):
-                findings.append(f"{prop}: {value}")
+        match = re.match(r"([a-z-]+)\s*:\s*(.+)", stripped)
+        if not match:
+            continue
+        prop, value = match.group(1), match.group(2).rstrip(";").strip()
+        if web_contracts.template_value_literal(prop, value):
+            findings.append(f"{prop}: {value}")
     return findings
 
 

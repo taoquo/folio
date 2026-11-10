@@ -421,6 +421,18 @@ def fit_verdict(entry: dict, g: dict[str, float] | None = None) -> tuple[list[st
     variants = variant_entries(entry)
     single = bool(entry.get("single")) or tuple(variants) == (C.FIGURE_SINGLE_PLATE,)
 
+    # A single plate is legitimate only for a family that composes on the
+    # authored stage by design. When a stage-aware family is asked for a band
+    # and no stage resolves it, the builder falls back to the authored plate
+    # and records the bands it could not compose; that fallback is a failure
+    # of the contract, not a second kind of single plate.
+    uncomposed = tuple(entry.get("uncomposed") or ())
+    if uncomposed:
+        errors.append(
+            f"{', '.join(uncomposed)}: no stage composed this figure for the band "
+            f"({entry.get('kind') or 'unknown kind'} can compose per band); the page "
+            "falls back to the authored plate, which is not the band it was measured for")
+
     for key, plate in variants.items():
         coverage = float(plate.get("coverage") or 0.0)
         if coverage < fit["coverage_min"]:

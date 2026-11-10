@@ -42,6 +42,10 @@ profiles:
       latin_face_weight: 200 900
       face: LXGW WenKai
       face_file: LXGWWenKai-Regular.ttf
+      # Code and data labels are set in a mono face; without the file the page
+      # asks the reader's system for it and silently falls to whatever it has.
+      mono_face: JetBrains Mono
+      mono_face_file: JetBrainsMono.woff2
     type:
       body:
         size_px: 16
@@ -116,6 +120,10 @@ profiles:
       tight_em: -0.015
       snug_em: -0.01
       tighter_em: -0.02
+    underline:
+      # A link's rule sits this far below the baseline. It is a fraction of
+      # the type, so the gap holds at every size the page sets.
+      offset_em: 0.18
     line:
       hairline: 1
       marker: 3
@@ -196,6 +204,10 @@ profiles:
         - SF Mono
         - Menlo
         - monospace
+      # Code and data labels are set in a mono face; without the file the page
+      # asks the reader's system for it and silently falls to whatever it has.
+      mono_face: JetBrains Mono
+      mono_face_file: JetBrainsMono.woff2
     type:
       body:
         size_px: 16
@@ -270,6 +282,10 @@ profiles:
       tight_em: -0.015
       snug_em: -0.01
       tighter_em: -0.02
+    underline:
+      # A link's rule sits this far below the baseline. It is a fraction of
+      # the type, so the gap holds at every size the page sets.
+      offset_em: 0.18
     line:
       hairline: 1
       marker: 3

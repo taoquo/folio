@@ -11,7 +11,7 @@ the DSL stops the page.
 |---|---|---|
 | Stage width | 240–960 units, a multiple of 4, chosen by the host band | `drawing/stage.py` |
 | Canvas height | 400–800 units by family (graph 500–800, chart 400–720, notation 480–800) | `canvas_contract.py` |
-| Plate shape | 0.45–1.50 tall per unit wide | `web_contracts.py` |
+| Plate shape | 0.45–1.60 tall per unit wide | `web_contracts.py` |
 | Smallest tier | at least 7px in the band the plate is delivered in | `web_contracts.py` |
 | Architecture nodes | at most 9 | `drawing-dsl.md:171` |
 | Node tiers (architecture) | 144×64 / 176×72 / 224×80, scaled by the stage | `drawing/grammar/architecture.py:25` |
@@ -60,13 +60,16 @@ reader gets type twice the size another reader gets; the tablet range splits at
 the geometric mean of its bands, which is why the page has four figure classes
 and three typesetting classes.
 
-When a class cannot be composed — a family outside `STAGE_AWARE`, or a payload
-that needs an arrangement the band cannot hold — the figure falls back to a
-single plate (`data-folio-plate="all"`, `data-folio-single="true"`) that every
-class shows. That is a report, not a pass: the manifest records the classes it
-could not compose for, `web_plan.fit_verdict` states the size the reader gets
-there, and V-FIG-12 raises it as REVIEW. The work that closes such a gap is
-adding the family to `STAGE_AWARE`, never lowering the floor.
+A class that cannot be composed has two outcomes, and the difference is the
+contract. A family outside `STAGE_AWARE` composes on the authored stage by
+design; its single plate (`data-folio-plate="all"`, `data-folio-single="true"`)
+is the delivery, the manifest says `single`, and V-FIG-12 reports the size the
+reader gets as REVIEW. A stage-aware family that fails to compose for a class
+is a defect: the builder records the class in `uncomposed` and falls back to
+the authored plate, which is not the band it was measured for. The fit verdict
+in `web_plan.fit_verdict` fails that fallback (W-FIG-11), and `web_plan --gate`
+exits nonzero. The work that closes such a gap is an arrangement that fits the
+band, or adding the family to `STAGE_AWARE`; never lowering the floor.
 
 ### What a narrower plate keeps
 

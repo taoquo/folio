@@ -143,7 +143,14 @@ FIGURE = {
     # composition wraps its rows and arrives portrait (1.0-1.4); a wide one
     # arrives landscape (0.5-0.8). The band rejects both the strip and the
     # column-tall plate.
-    "rendered_aspect": (0.45, 1.50),
+    #
+    # The ceiling is 1.60, not 1.50, because a four-row layer diagram stays
+    # portrait however it wraps: the transformer plate measures 1.54 at 335px,
+    # 1.02 at 433, 0.86 at 541 and 0.73 at 660. Its frame is its own ink, so
+    # there is no smaller stage that squares it up without dropping the type
+    # below the floor -- a 1.50 ceiling sent that band to the authored 960
+    # plate at 3.4px. 1.60 still separates a portrait plate from a column.
+    "rendered_aspect": (0.45, 1.60),
     "architecture_nodes_max": 9,
     "rows_max": 10,
     "focal_max": 2,
@@ -204,6 +211,33 @@ FIGURE_FIT = {
     # the 108-unit hole this rule exists to catch sits well above the limit.
     "empty_band_max": 90,
 }
+
+# ------------------------------------------------------- template decisions
+
+# A length the template decided for itself. Percentages, viewport units, `ch`
+# and `fr` are ratios, so they are not fixed lengths; a duration (`0.18s`) is
+# not a size.
+_FIXED_LENGTH = re.compile(r"\b\d*\.?\d+(px|pt|em|rem)\b")
+_VAR_REFERENCE = re.compile(r"var\(\s*--[a-z0-9-]+\s*\)")
+_FONT_WEIGHT = re.compile(r"\b\d{3}\b|\bbold(er)?\b|\blight(er)?\b")
+
+
+def template_value_literal(prop: str, value: str) -> bool:
+    """Whether a declaration is a design decision the template made itself.
+
+    One rule, two readers: `projection.py check` runs it over the template
+    source and `check_web.py` over the built page's stylesheet, so the two
+    gates cannot disagree about what a literal is. `var()` references are
+    removed first, because a value that *reads* a token is the template doing
+    the right thing -- including a mixed value like `10px var(--gap)`, whose
+    first half is still a literal.
+    """
+    remaining = _VAR_REFERENCE.sub("", value or "").strip()
+    if prop == "font-family":
+        return bool(remaining)
+    if prop == "font-weight":
+        return bool(_FONT_WEIGHT.search(remaining))
+    return bool(_FIXED_LENGTH.search(remaining))
 
 # A figure is composed for the band it will be shown at, and the composition
 # changes with that band: a 320px column wraps rows a 660px column does not.

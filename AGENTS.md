@@ -97,8 +97,8 @@ python3 scripts/spacing_probe.py compare --genre one-pager   # rendered spacing 
 Web reading-page checks. The scenario is a static page, so its gate needs no browser:
 
 ```bash
-python3 scripts/check_web.py <page> --level 1                # structure, text, delivery
-python3 scripts/check_web.py <page> --level 3 --source <txt> # density, colour, geometry
+python3 scripts/check_web.py <page> --level 1                # structure, text, delivery, figures
+python3 scripts/check_web.py <page> --level 3 --source <txt> # density, colour, geometry audit
 python3 scripts/web_geometry.py <page>                       # figure geometry only
 python3 scripts/build_web.py --series <dir> --verify         # build and check a series
 python3 scripts/folio.py web --series <dir> --verify         # the same through the CLI
@@ -148,9 +148,12 @@ wrapped lines with the box raised to 76 units, or titles only when no node's
 descriptor fits in two. `layout/constraints.py` and `resolve.py` ask
 `fit_node_content` the same question so box heights and the drawn runs agree, and
 `compose_for_band()` bisects toward the 240-unit floor when a stage refuses to
-compile, because feasible stages are not an interval. The 960-unit artifact path
-keeps the per-node rule and is untouched, so `diagram-catalog` must stay
-byte-identical.
+compile, because feasible stages are not an interval. On the 960-unit artifact
+path the descriptor rule stays per node and the stage mechanism adds nothing —
+`scaled(1.0)` is the identity — so `diagram-catalog` stays byte-identical. A
+rule that holds on every stage, such as the connector-label reach below, can
+still move the authored plate; when it does, the catalog baseline is
+re-approved with a reason rather than excused by a branch.
 
 The stage owns the height as well as the width. A composed plate keeps the
 authored height as its ceiling and takes the shortest canvas the composition

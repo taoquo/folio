@@ -165,9 +165,14 @@ def check_structure(profiles: dict[str, dict[str, dict]], report: Report) -> Non
         font = body.get("font") or {}
         if not font.get("serif") or not font.get("mono"):
             report.error("PROFILE.WEB.NO_STACK", name, "web profile needs font.serif and font.mono")
-        if font.get("face") and not font.get("face_file"):
-            report.error("PROFILE.WEB.FACE_WITHOUT_FILE", name,
-                         "font.face names a family but font.face_file does not say which file")
+        for family_key, file_key in (("face", "face_file"),
+                                     ("latin_face", "latin_face_file"),
+                                     ("mono_face", "mono_face_file")):
+            if font.get(family_key) and not font.get(file_key):
+                report.error(
+                    "PROFILE.WEB.FACE_WITHOUT_FILE", name,
+                    f"font.{family_key} names a family but font.{file_key} does not "
+                    "say which file")
         body_type = body.get("type") or {}
         base = body_type.get("body") or {}
         if "size_px" not in base or "leading" not in base:

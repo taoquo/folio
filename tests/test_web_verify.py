@@ -114,5 +114,59 @@ class ContrastTests(unittest.TestCase):
         self.assertEqual("SKIP", web_verify.check_contrast({})["status"])
 
 
+def plate(tiers: tuple[float, ...], framed: float = 300.0, band: float = 335.0) -> dict:
+    return {"band": band, "view_box": [0, 0, framed, 400],
+            "ink_box": [0, 0, framed, 400],
+            "text_sizes": list(tiers), "title_units": 0}
+
+
+class FigureTypeTests(unittest.TestCase):
+    """V-FIG-12 judges every figure on the page, each on its own plate.
+
+    The first implementation read the module's first manifest entry and the
+    first visible plate, so a second figure could miss the floor on the
+    strength of the first one's number.
+    """
+
+    def manifest(self, weak: bool = False) -> dict:
+        return {"language": "en", "figures": {"m": {
+            "first": {"variants": {"narrow": plate((8,))}},
+            "second": {"variants": {"narrow": plate((6,) if weak else (8,))}},
+        }}}
+
+    def page(self) -> dict:
+        return {"plates": [
+            {"id": "first", "plates": 2,
+             "visible": [{"variant": "narrow", "width": 335}]},
+            {"id": "second", "plates": 2,
+             "visible": [{"variant": "narrow", "width": 335}]},
+        ]}
+
+    def test_the_weak_figure_is_the_one_that_fails(self) -> None:
+        row = web_verify.check_figure_type(
+            self.manifest(weak=True), self.page(), "m", 390)
+        self.assertEqual("FAIL", row["status"])
+        self.assertIn("second[narrow]", row["detail"])
+
+    def test_two_legible_plates_pass_together(self) -> None:
+        row = web_verify.check_figure_type(self.manifest(), self.page(), "m", 390)
+        self.assertEqual("PASS", row["status"])
+        self.assertIn("2 plate(s)", row["detail"])
+
+    def test_a_single_stage_family_is_reported_not_failed(self) -> None:
+        manifest = self.manifest(weak=True)
+        manifest["figures"]["m"]["second"]["single"] = True
+        row = web_verify.check_figure_type(manifest, self.page(), "m", 390)
+        self.assertEqual("REVIEW", row["status"])
+        self.assertIn("composes on one stage", row["detail"])
+
+    def test_a_figure_missing_from_the_manifest_fails(self) -> None:
+        manifest = self.manifest()
+        del manifest["figures"]["m"]["second"]
+        row = web_verify.check_figure_type(manifest, self.page(), "m", 390)
+        self.assertEqual("FAIL", row["status"])
+        self.assertIn("not in the figure manifest", row["detail"])
+
+
 if __name__ == "__main__":
     unittest.main()

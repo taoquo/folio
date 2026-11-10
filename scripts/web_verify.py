@@ -222,50 +222,71 @@ def check_figure_type(manifest: dict, page: dict, module_id: str, viewport: int)
     its title reads as a heading, not as another body line.
     """
     statement = "the plate's type lands where the plan says, title included"
-    entry = ((manifest or {}).get("figures") or {}).get(module_id) or {}
-    figure = next(iter(entry.values()), None)
-    shown = next(
-        (item for item in (page.get("plates") or []) if (item.get("visible") or [])),
-        None)
-    if not figure or not shown:
+    figures = ((manifest or {}).get("figures") or {}).get(module_id) or {}
+    shown = [item for item in (page.get("plates") or []) if (item.get("visible") or [])]
+    if not figures or not shown:
         return {"rule": "V-FIG-12", "statement": statement, "status": "SKIP",
                 "detail": "no figure manifest entry on this page"}
-    variant = shown["visible"][0]
-    record = (figure.get("variants") or {}).get(variant.get("variant")) or figure
-    tiers = record.get("text_sizes") or []
-    framed = web_plan.framed_width(record)
-    if not tiers or not framed:
-        return _fail("V-FIG-12", statement, "the manifest records no type tiers")
-    delivered = min(tiers) * variant["width"] / framed
-    floor = C.FIGURE_FIT["delivered_target_px"]
-    parts = [f"{variant.get('variant')} plate: smallest tier {delivered:.2f}px "
-             f"at a {variant['width']:g}px band (floor {floor:g}px)"]
-    legible = delivered + C.FIGURE_FIT["delivered_tolerance_px"] >= floor
 
-    # The title is read at the width the browser actually gave the plate, so
-    # this is the one check that sees the delivery instead of trusting the
-    # manifest's arithmetic. Its allowed range is the page's own: above H3,
-    # below the H2 share.
-    units = float(record.get("title_units") or figure.get("title_units") or 0.0)
-    heading_ok = True
-    if units:
-        page = web_plan.geometry((manifest or {}).get("language"))
-        at_plate = units * variant["width"] / framed
-        ceiling = float(page["h2"]) * float(C.FIGURE_FIT["title_h2_ratio"])
-        parts.append(f"title {at_plate:.2f}px (H3 {float(page['h3']):g}, ceiling {ceiling:.1f})")
-        heading_ok = (
-            at_plate + float(C.FIGURE_FIT["title_floor_tolerance_px"]) >= float(page["h3"])
-            and at_plate <= ceiling + TOLERANCE["figure_px"])
-    detail = "; ".join(parts)
-    if legible and heading_ok:
-        return _pass("V-FIG-12", statement, detail)
-    if figure.get("single"):
-        # The family composes on the authored stage only; no plate this page
-        # could emit would clear the floor here. Reported, not gated: the
-        # engine says what the reader gets and what would have to change.
+    # Every figure on the page, each against its own manifest entry. Reading
+    # the first entry and the first visible plate measured one figure and
+    # reported it for the module, so a second figure could miss the floor on
+    # the strength of the first one's number.
+    floor = C.FIGURE_FIT["delivered_target_px"]
+    page_scale = web_plan.geometry((manifest or {}).get("language"))
+    ceiling = float(page_scale["h2"]) * float(C.FIGURE_FIT["title_h2_ratio"])
+    floor_px = float(page_scale["h3"])
+    failures: list[str] = []
+    reviews: list[str] = []
+    agreed: list[str] = []
+    for item in shown:
+        figure = figures.get(item.get("id"))
+        variant = item["visible"][0]
+        label = f"{item.get('id') or '?'}[{variant.get('variant') or '?'}]"
+        if figure is None:
+            failures.append(f"{label}: not in the figure manifest")
+            continue
+        record = (figure.get("variants") or {}).get(variant.get("variant")) or figure
+        tiers = record.get("text_sizes") or []
+        framed = web_plan.framed_width(record)
+        if not tiers or not framed:
+            failures.append(f"{label}: the manifest records no type tiers")
+            continue
+        delivered = min(tiers) * variant["width"] / framed
+        legible = delivered + C.FIGURE_FIT["delivered_tolerance_px"] >= floor
+        parts = [f"{label}: smallest tier {delivered:.2f}px "
+                 f"at a {variant['width']:g}px band (floor {floor:g}px)"]
+
+        # The title is read at the width the browser actually gave the plate,
+        # so this is the one check that sees the delivery instead of trusting
+        # the manifest's arithmetic. Its allowed range is the page's own:
+        # above H3, below the H2 share.
+        units = float(record.get("title_units") or figure.get("title_units") or 0.0)
+        heading_ok = True
+        if units:
+            at_plate = units * variant["width"] / framed
+            parts.append(f"title {at_plate:.2f}px "
+                         f"(H3 {floor_px:g}, ceiling {ceiling:.1f})")
+            heading_ok = (
+                at_plate + float(C.FIGURE_FIT["title_floor_tolerance_px"]) >= floor_px
+                and at_plate <= ceiling + TOLERANCE["figure_px"])
+        detail = "; ".join(parts)
+        if legible and heading_ok:
+            agreed.append(detail)
+        elif figure.get("single"):
+            # The family composes on the authored stage only; no plate this
+            # page could emit would clear the floor here. Reported, not gated:
+            # the engine says what the reader gets and what would change.
+            reviews.append(detail + "; this family composes on one stage")
+        else:
+            failures.append(detail)
+    if failures:
+        return _fail("V-FIG-12", statement, "; ".join(failures[:3]))
+    if reviews:
         return {"rule": "V-FIG-12", "statement": statement, "status": "REVIEW",
-                "detail": detail + "; this family composes on one stage"}
-    return _fail("V-FIG-12", statement, detail)
+                "detail": "; ".join(reviews[:3])}
+    return _pass("V-FIG-12", statement,
+                 f"{len(agreed)} plate(s): " + "; ".join(agreed[:3]))
 
 
 def check_rhythm(projected: dict[str, str], page: dict) -> dict:

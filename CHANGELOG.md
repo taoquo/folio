@@ -4,6 +4,17 @@ Release highlights for the Folio design system and its Drawing DSL. Each entry l
 full bilingual release notes. Historical notes live in `docs/releases/`; the note for the
 current release stays at the repository root so packaging and release tooling can find it.
 
+## Unreleased - the web reading page
+
+A static reading-page scenario built from the same engine, and the checks that
+hold it.
+
+- Added the web reading-page scenario: a series index and module pages built from `series.json` and `.frag.html`, with the `W-*` static rules and the `V-*` measured rules.
+- Figures are composed for the band they are shown in. The host names a stage, only `STAGE_AWARE` families accept one, and the page carries one plate per width class. See ADR 0009.
+- Made an uncomposed band a gate failure instead of a silent fallback to the authored 960 plate, which delivered 3.4px type in a phone column.
+- Hardened the web checker: Chinese sources are measured, template values are read in every declaration, hex colours are scanned by brace depth, and V-FIG-12 judges every figure against its own plate.
+- Made catalog PDFs reproducible by pinning `SOURCE_DATE_EPOCH` during export, so a rebuild no longer rewrites all twenty-three PDF digests.
+
 ## V6.1 - 2026-08
 
 Twenty-three generator-backed diagram types on a bounded, schema-enforced canvas.

@@ -26,7 +26,7 @@ Steps 1–5 happen in the repository. Step 6 is the only step that needs a host.
 | 8 | Chapter and figure numbers continuous, no collisions | machine | W-TXT-02/02b |
 | 9 | No banned symbol in any title | machine | W-TXT-01 |
 | 10 | Anchors resolve, no external script, external links reachable | machine | W-ACC-10, W-DLV-01b |
-| 11 | L1/L2 colour compliance; every variable defined; every semantic mark names a meaning; at most four colours per figure | machine | W-COL-01/02/06/07 |
+| 11 | L1/L2 colour compliance; every variable defined; the template decides no value; every semantic mark names a meaning; at most four colours per figure | machine | W-COL-01/02/06/07, W-DEN-08/09 |
 | 12 | A case names the work it reads (work, author, year, link); a fixture is exempt | machine | W-CNT-05 |
 | 13 | Reading rail: one tick per chapter, active on scroll, title on hover | semi | W-DLV-06/07/08 |
 | 14 | Every figure traces to a DSL fixture and hash | machine | W-FIG-07 |
@@ -41,9 +41,9 @@ designed for verification.
 
 | Level | Runs | Needs | Where |
 |---|---|---|---|
-| L1 | structure, text, delivery, links | Python only | CI fast gate |
+| L1 | structure, text, delivery, links, the figure contract | Python only | CI fast gate |
 | L2 | declared density and colour, content coverage | Python only | CI or nightly |
-| L3 | figure geometry | Python only, static SVG | nightly or before publish |
+| L3 | the figure geometry audit (W-GEO-01) | Python only, static SVG | nightly or before publish |
 | L4 | the page computes what its plan says, in a browser | Chromium (Playwright) | nightly |
 
 L1–L3 need no browser, and a page never fails for want of one. L4 is the only

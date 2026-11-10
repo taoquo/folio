@@ -77,8 +77,9 @@ DOMAIN_FIELDS: dict[str, frozenset[str]] = {
     "web": frozenset({
         "font", "type", "space", "line", "radius", "measure", "layout",
         # Weight and tracking are type decisions the page used to make for
-        # itself, one declaration at a time.
-        "weight", "tracking", "genre",
+        # itself, one declaration at a time. An underline's offset is the same
+        # kind of decision: a fraction of the type, not a fixed length.
+        "weight", "tracking", "underline", "genre",
     }),
 }
 

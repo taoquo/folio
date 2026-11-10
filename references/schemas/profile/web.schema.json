@@ -31,7 +31,10 @@
               "face_weight": {"type": "string"},
               "latin_face": {"type": "string"},
               "latin_face_file": {"type": "string"},
-              "latin_face_weight": {"type": "string"}
+              "latin_face_weight": {"type": "string"},
+              "mono_face": {"type": "string"},
+              "mono_face_file": {"type": "string"},
+              "mono_face_weight": {"type": "string"}
             }
           },
           "type": {
@@ -66,6 +69,11 @@
             "description": "Letter spacing in em, by intent. Keys end in _em because the unit is part of the name.",
             "type": "object",
             "additionalProperties": {"type": "number", "minimum": -0.1, "maximum": 0.5}
+          },
+          "underline": {
+            "description": "Text-decoration metrics in em: a fraction of the type, not a fixed length.",
+            "type": "object",
+            "additionalProperties": {"type": "number", "minimum": 0, "maximum": 0.5}
           },
           "layout": {
             "type": "object",

@@ -226,6 +226,41 @@ class EmptyBandTests(unittest.TestCase):
         errors, _notes = web_plan.fit_verdict({"variants": {"wide": plate}})
         self.assertTrue(any("108-unit band" in item for item in errors), errors)
 
+    def test_a_band_no_stage_composed_fails_the_verdict(self) -> None:
+        # The builder records the bands it could not compose and falls back to
+        # the authored plate. That fallback is the contract failing, not a
+        # second kind of single plate, so the gate must not excuse it.
+        import web_plan
+
+        figure = web_figures.render_figure(
+            READING / "sign-off.json", "sign-off", band=BAND)
+        entry = {
+            "kind": "swimlane",
+            "single": True,
+            "uncomposed": ["narrow", "compact"],
+            "variants": {"all": figure.manifest_entry()},
+        }
+        errors, _notes = web_plan.fit_verdict(entry)
+        self.assertTrue(
+            any("narrow, compact" in item and "no stage composed" in item
+                for item in errors), errors)
+
+    def test_a_family_that_composes_on_one_stage_is_not_an_error(self) -> None:
+        # A family outside STAGE_AWARE composes on the authored stage by
+        # design; its single plate is the delivery, not a fallback.
+        import web_plan
+
+        figure = web_figures.render_figure(
+            READING / "release-gate.json", "release-gate", band=BAND)
+        entry = {
+            "kind": "flowchart",
+            "single": True,
+            "uncomposed": [],
+            "variants": {"all": figure.manifest_entry()},
+        }
+        errors, _notes = web_plan.fit_verdict(entry)
+        self.assertFalse(any("no stage composed" in item for item in errors), errors)
+
 
 def web_plan_variants() -> dict[str, float]:
     import web_plan

@@ -89,7 +89,15 @@ def style_css(language: str, theme: str | None) -> tuple[str, str]:
     theme_layer = projection.style_projection("web-reading", language, theme=theme)
     web_layer = projection.web_projection("web-reading", language, include_viewport_aliases=False)
     plan_layer = web_plan.plan_css(web_plan.viewport_plan(language))[0]
-    name = theme_layer.sources.get("theme") or theme or "default"
+    # The scheme's own name, not the word "default": the manifest is provenance,
+    # and a reader of it has to be able to name the scheme the page was built
+    # in. Every colour the projection emits records that source.
+    schemes = {
+        value.split(":", 1)[1]
+        for value in theme_layer.sources.values()
+        if value.startswith("theme:")
+    }
+    name = schemes.pop() if len(schemes) == 1 else (theme or "default")
     css = "\n\n".join(part.strip() for part in (theme_layer.css, web_layer.css, plan_layer)
                       if part.strip())
     if ":root" not in css:
@@ -126,7 +134,7 @@ def font_face_css(language: str, out_dir: Path, page_dir: Path) -> str:
         blocks.append(
             "@font-face {\n"
             f'  font-family: "{family}";\n'
-            f'  src: url("{relative}") format("truetype");\n'
+            f'  src: url("{relative}") format("{face.get("format") or "truetype"}");\n'
             f"{weight}"
             "  font-display: swap;\n"
             "}"
@@ -608,7 +616,8 @@ def main(argv: list[str]) -> int:
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--series", type=Path, required=True, help="directory holding series.json")
     parser.add_argument("--out", type=Path, default=ROOT / "dist" / "web")
-    parser.add_argument("--theme", default=None, help="FOLIO_THEME scheme name")
+    parser.add_argument("--theme", default=None,
+                        help="colour scheme; unset reads FOLIO_THEME, then the default")
     parser.add_argument("--verify", action="store_true")
     parser.add_argument("--source", type=Path, default=None)
     parser.add_argument("--level", type=int, default=3, choices=(1, 2, 3))
@@ -616,7 +625,11 @@ def main(argv: list[str]) -> int:
                         help="treat figure WARNING/TASTE diagnostics as build failures")
     args = parser.parse_args(argv)
 
-    pages = build(args.series, args.out, args.theme, strict=args.strict_figures)
+    # The same rule as the document build: the flag wins, then the environment,
+    # then the profile marked default. A page built with FOLIO_THEME set must
+    # not come out in another scheme because only the flag was read.
+    theme = args.theme or (os.environ.get("FOLIO_THEME") or "").strip() or None
+    pages = build(args.series, args.out, theme, strict=args.strict_figures)
     for page in pages:
         print(f"OK: wrote {page}")
     if args.verify:

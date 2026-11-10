@@ -9,8 +9,10 @@ listed in the acceptance table as `semi` or `manual`, never silently.
     python3 scripts/check_web.py dist/web/attention/index.html --series-dir dist/web/attention
     python3 scripts/check_web.py page.html --source /tmp/ain.txt --level 3
 
-Levels follow C4: L1 (structure, text, delivery) runs anywhere; L2 adds declared
-density and colour; L3 adds figure geometry.
+Levels follow C4: L1 (structure, text, delivery, the figure contract) runs
+anywhere; L2 adds declared density and colour; L3 adds the host's figure
+geometry audit. The figure *contract* is manifest arithmetic and runs at L1;
+the geometry audit needs the built SVG and is the only part that waits.
 """
 
 from __future__ import annotations
@@ -413,7 +415,19 @@ def check_components(root: Node, report: Report, source_text: str | None) -> Non
         if re.search(pattern, source_text):
             present = find_one(root, cls=component) is not None
             hits.append((name, component, present))
+    if not hits:
+        # A source with no runbook, table or list has nothing to componentize.
+        # Passing an empty set of hits would report the rule as satisfied when
+        # it was never exercised.
+        report.note("W-CNT-02", "SKIP", "the source matches no component pattern")
+        return
     report.add("W-CNT-02", all(present for _n, _c, present in hits), f"componentization: {hits}")
+
+
+# A source word is a Latin word or a run of Han characters. Chinese does not
+# separate words with spaces, so a Latin-only vocabulary counted zero words in
+# a Chinese source and reported full coverage of nothing.
+_WORD = re.compile(r"[a-z][a-z-]{2,}|[㐀-䶿一-鿿]{2,}")
 
 
 def check_content(root: Node, report: Report, source_text: str | None) -> None:
@@ -421,10 +435,16 @@ def check_content(root: Node, report: Report, source_text: str | None) -> None:
         report.note("W-CNT-01", "SKIP", "no --source given")
         return
     page_text = " ".join(node.text() for node in [root]).lower()
-    source_words = [word for word in re.findall(r"[a-z][a-z-]{2,}", source_text.lower())]
-    unique = sorted(set(source_words))
-    missing = [word for word in unique if word not in page_text]
-    coverage = 1 - len(missing) / max(1, len(unique))
+    # Inline markup makes `Node.text()` join children with a space, which can
+    # split a Han phrase that the source wrote as one run. Compare against the
+    # page with its whitespace removed as well.
+    compact = re.sub(r"\s+", "", page_text)
+    unique = sorted(set(_WORD.findall(source_text.lower())))
+    if not unique:
+        report.note("W-CNT-01", "SKIP", "the source carries no words to compare")
+        return
+    missing = [word for word in unique if word not in page_text and word not in compact]
+    coverage = 1 - len(missing) / len(unique)
     report.add("W-CNT-01", coverage >= 0.95, f"source word coverage {coverage:.3f} ({len(missing)} missing)")
 
 
@@ -484,6 +504,44 @@ def check_density(root: Node, css: dict[str, dict[str, str]], report: Report) ->
     report.add("W-DEN-07", not arrows, f"table cells with arrow flows: {arrows[:3] or 'none'}")
 
 
+def stylesheet_declarations(stylesheet: str) -> list[tuple[str, str, str]]:
+    """(selector, property, value) for every declaration, `@media` included.
+
+    `css_declarations` drops conditional blocks because a density check reads
+    the base value; a literal is a literal at every width, so the value scan
+    cannot use that view. `@font-face` is skipped: its family is a face the
+    builder injected, not a decision the template made.
+    """
+    text = re.sub(r"/\*[\s\S]*?\*/",
+                  lambda match: "\n" * match.group(0).count("\n"), stylesheet)
+    out: list[tuple[str, str, str]] = []
+    stack: list[str] = []
+    buffer: list[str] = []
+
+    def flush() -> None:
+        raw = "".join(buffer).strip()
+        if raw and ":" in raw and stack:
+            prop, value = raw.split(":", 1)
+            out.append((stack[-1], prop.strip(), value.strip()))
+
+    for index, char in enumerate(text):
+        if char == "{":
+            stack.append(_selector_before(text, index))
+            buffer = []
+        elif char == "}":
+            flush()
+            if stack:
+                stack.pop()
+            buffer = []
+        elif char == ";":
+            flush()
+            buffer = []
+        else:
+            buffer.append(char)
+    flush()
+    return out
+
+
 def check_styles(text: str, css: dict[str, dict[str, str]], report: Report) -> None:
     """Every variable the page reads is defined, and the template decides no value.
 
@@ -502,18 +560,18 @@ def check_styles(text: str, css: dict[str, dict[str, str]], report: Report) -> N
     missing = sorted(name for name in used if name not in variables)
     report.add("W-COL-06", not missing, f"undefined custom properties: {missing or 'none'}")
 
-    literal_properties = ("font-size", "font-family", "line-height", "padding",
-                          "margin", "gap", "border-radius")
+    # Every declaration, not a list of properties, and every block, not only
+    # the unconditional ones: a template that starts to set `letter-spacing` or
+    # `width` inside a media query is the same defect as one that sets
+    # `padding` at the top level. The rule itself lives in `web_contracts`,
+    # where `projection.py check` reads the template source with the same one.
+    style = re.search(r"<style[^>]*>([\s\S]*?)</style>", text)
     literals: list[str] = []
-    for selector, props in css.items():
-        if selector == ":root":
+    for selector, prop, value in stylesheet_declarations(style.group(1) if style else ""):
+        if ":root" in selector or selector.startswith("@font-face"):
             continue
-        for prop in literal_properties:
-            value = props.get(prop)
-            if not value:
-                continue
-            if re.search(r"\b\d*\.?\d+(px|pt|em|rem)\b", value):
-                literals.append(f"{selector} {prop}: {value}")
+        if C.template_value_literal(prop, value):
+            literals.append(f"{selector} {prop}: {value}")
     report.add("W-DEN-08", not literals,
                f"template-decided type/spacing values: {literals[:4] or 'none'}")
 
@@ -532,21 +590,56 @@ def check_semantics(root: Node, report: Report) -> None:
                f"semantic marks without a known data-role: {unlabelled or 'none'}")
 
 
+def hex_outside_root(stylesheet: str) -> list[str]:
+    """Hex colours written outside a `:root` block, with their line.
+
+    The scan follows braces, not lines. A `:root` block written on one line
+    would leave a line-based reader believing every rule after it is inside
+    `:root`, which is the one failure a colour rule cannot have. Comments are
+    blanked first -- a hex in prose is not a declaration -- and only a value
+    position counts, so a hex-shaped id in a selector is not a colour.
+    """
+    text = re.sub(r"/\*[\s\S]*?\*/",
+                  lambda match: "\n" * match.group(0).count("\n"), stylesheet)
+    selectors: list[str] = []
+    outside: list[str] = []
+    in_value = False
+    index = 0
+    while index < len(text):
+        char = text[index]
+        if char == "{":
+            selectors.append(_selector_before(text, index))
+            in_value = False
+        elif char == "}":
+            if selectors:
+                selectors.pop()
+            in_value = False
+        elif char == ";":
+            in_value = False
+        elif char == ":":
+            in_value = True
+        elif char == "#" and in_value and not any(":root" in item for item in selectors):
+            match = re.match(r"#[0-9a-fA-F]{3,8}\b", text[index:])
+            if match:
+                line = text.count("\n", 0, index) + 1
+                outside.append(f"line {line}: {match.group(0)}")
+                index += len(match.group(0))
+                continue
+        index += 1
+    return outside
+
+
+def _selector_before(text: str, brace: int) -> str:
+    """The selector whose block opens at ``brace``."""
+    start = max(text.rfind("}", 0, brace), text.rfind(";", 0, brace),
+                text.rfind("{", 0, brace))
+    return text[start + 1:brace].strip()
+
+
 def check_colour(root: Node, text: str, css: dict[str, dict[str, str]], report: Report) -> None:
     style = re.search(r"<style[^>]*>([\s\S]*?)</style>", text)
     body = style.group(1) if style else ""
-    depth = 0
-    outside = []
-    for line in body.splitlines():
-        if ":root" in line:
-            depth = 1
-        elif depth and "}" in line:
-            depth = 0
-            continue
-        if depth:
-            continue
-        if re.search(r"#[0-9a-fA-F]{3,6}\b", line) and "FOLIO" not in line:
-            outside.append(line.strip()[:60])
+    outside = hex_outside_root(body)
     report.add("W-COL-01", not outside, f"hex outside :root: {outside[:3] or 'none'}")
 
     required = ("--color-surface-page", "--color-text-primary", "--color-accent-brand",
@@ -782,6 +875,24 @@ def check_source(root: Node, report: Report, page_type: str, kind: str) -> None:
                f"source: {text[:60] or 'none'}" if not problems else "; ".join(problems))
 
 
+def discover_manifest(path: Path, series_dir: Path | None) -> Path | None:
+    """The figures manifest that belongs to a built page, without being told.
+
+    The builder writes `figures.manifest.json` at the series root, so a page at
+    `dist/web/<series>/<module>/index.html` finds it one level up and a page at
+    the series root finds it beside itself. The flag stays for a page copied
+    out of the tree; a documented command that fails without it is a command
+    that was never run as written.
+    """
+    candidates = [
+        path.parent / "figures.manifest.json",
+        path.parent.parent / "figures.manifest.json",
+    ]
+    if series_dir is not None:
+        candidates.insert(0, series_dir / "figures.manifest.json")
+    return next((item for item in candidates if item.is_file()), None)
+
+
 def acceptance(report: Report) -> list[tuple[str, str, str]]:
     status = {rule: state for rule, state, _detail in report.items}
     rows = []
@@ -790,10 +901,12 @@ def acceptance(report: Report) -> list[tuple[str, str, str]]:
         # A block only counts as componentized if the page model knows it: the
         # role vocabulary is what makes the component a contract.
         "componentized": ["W-CNT-02", "W-STR-05", "W-STR-06"],
-        "no-purple": ["W-CNT-03"],
+        # The row names the block rules, not only the clause count: a long
+        # insight block is the same defect as a list header.
+        "no-purple": ["W-CNT-03", "W-CNT-04"],
         "no-header-trio": ["W-STR-02"],
         "reading-rail": ["W-DLV-06", "W-DLV-07", "W-DLV-08"],
-        "table-shape": ["W-DEN-05"],
+        "table-shape": ["W-DEN-05", "W-DEN-07"],
         "figures": ["W-FIG-01", "W-FIG-03", "W-FIG-05", "W-FIG-06", "W-FIG-09",
                     "W-FIG-10", "W-FIG-11", "W-FIG-12"],
         "figure-provenance": ["W-FIG-07"],
@@ -845,7 +958,8 @@ def main(argv: list[str]) -> int:
     check_links(root, report)
     check_source(root, report, page_type, kind)
     check_rail(root, text, report, page_type)
-    manifest = json.loads(args.figures_manifest.read_text(encoding="utf-8")) if args.figures_manifest else None
+    manifest_path = args.figures_manifest or discover_manifest(args.path, args.series_dir)
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path else None
     module_id = args.path.parent.name
     check_figures(root, text, report, args.level, page_type, manifest, module_id)
     check_page_model(root, report, page_type, manifest, module_id)

@@ -91,8 +91,9 @@ page); `references/profiles/web/folio-v1.yaml` supplies the matching font stack
 and screen scale. The builder embeds the profile's face under `<out>/fonts/`
 and points at it relative to each page's depth.
 
-Levels follow C4: L1 structure, text and delivery (no browser); L2 adds declared
-density and colour; L3 adds figure geometry.
+Levels follow C4: L1 structure, text, delivery and the figure contract (no
+browser); L2 adds declared density and colour; L3 adds the host's figure
+geometry audit.
 
 ## Non-goals
 
