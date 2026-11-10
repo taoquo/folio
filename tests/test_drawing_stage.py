@@ -22,6 +22,7 @@ These tests pin the five invariants the mechanism exists to guarantee:
 
 from __future__ import annotations
 
+import json
 import sys
 import unittest
 from pathlib import Path
@@ -194,6 +195,88 @@ class DefaultStageTests(unittest.TestCase):
             self.assertEqual(PAGE_PREVIEW_MARGIN, ink[0] - view[0])
         if ink[1] - PAGE_PREVIEW_MARGIN >= 0:
             self.assertEqual(PAGE_PREVIEW_MARGIN, ink[1] - view[1])
+
+
+class ComposedFamilyStageTests(unittest.TestCase):
+    """A stage-aware family composes across the ladder, not at lucky widths.
+
+    The web host asks each family for a plate at the band its column provides,
+    so the family meets the whole ladder. A fixture that composes at 960 and
+    528 but not at 660 is not stage-aware; it is a family that happens to work
+    at two widths, and the reading page that asks for 660 gets a fallback plate.
+    """
+
+    # The bands the reading page actually asks for, plus the floor and the
+    # authored stage at the ends.
+    LADDER = (240, 336, 400, 464, 528, 660, 760, 960)
+
+    def _payload(self, name: str) -> dict:
+        return json.loads(
+            (ROOT / "references" / "fixtures" / "v3" / f"{name}.json").read_text())
+
+    def _errors(self, result) -> list[str]:
+        return [item.code for item in result.diagnostics if item.level == "ERROR"]
+
+    def test_the_architecture_composes_at_every_stage(self) -> None:
+        # The four-row layer plate is the one that needed the 1.60 shape
+        # ceiling, so its family is checked at every rung rather than only at
+        # the band the attention page happens to serve.
+        payload = json.loads(
+            (FIXTURES / "transformer.json").read_text())
+        for width in self.LADDER:
+            with self.subTest(stage=width):
+                result = compile_at(StageSpec(width), payload)
+                self.assertEqual(width, result.scene.width)
+                self.assertEqual([], self._errors(result))
+
+    def test_the_state_machine_composes_at_every_stage(self) -> None:
+        payload = self._payload("state-machine")
+        for width in self.LADDER:
+            with self.subTest(stage=width):
+                result = compile_at(StageSpec(width), payload)
+                self.assertEqual(width, result.scene.width)
+                self.assertEqual([], self._errors(result))
+
+    def test_the_swimlane_composes_above_its_lane_stack_floor(self) -> None:
+        # Three lanes need one node box each side by side; below that the
+        # stack cannot be drawn at all. Every stage from 336 up must compose.
+        payload = self._payload("swimlane")
+        for width in self.LADDER[1:]:
+            with self.subTest(stage=width):
+                result = compile_at(StageSpec(width), payload)
+                self.assertEqual(width, result.scene.width)
+                self.assertEqual([], self._errors(result))
+
+    def test_a_stage_below_the_floor_reports_one_reason(self) -> None:
+        # The layout below the floor was measured on a canvas this stage does
+        # not have, so every box is a symptom of the same cause; reporting all
+        # of them buries the one that says the stage is too narrow.
+        payload = self._payload("swimlane")
+        with self.assertRaises(DrawingCompilationError) as caught:
+            compile_at(StageSpec(MIN_STAGE_WIDTH), payload)
+        self.assertEqual(["SW024"], [item.code for item in caught.exception.diagnostics])
+
+    def test_lane_captions_collide_only_where_they_share_both_axes(self) -> None:
+        # A left-right plate stacks the lanes: every caption starts at the same
+        # x, so the y span is the only thing that separates them. A top-down
+        # plate puts them in one header strip: same y, different x.
+        from drawing.scene import SceneText
+        from drawing.structural import _caption_span
+
+        def span(x: int, y: int, text: str) -> tuple[float, float, float, float]:
+            return _caption_span(SceneText(text, x, y, "#000", 11, "sans"))
+
+        stacked = (span(56, 40, "Client"), span(56, 120, "Compiler"))
+        self.assertFalse(_overlaps(*stacked))
+        inline = (span(56, 40, "Client"), span(72, 40, "Compiler"))
+        self.assertTrue(_overlaps(*inline))
+
+
+def _overlaps(first: tuple[float, float, float, float],
+              second: tuple[float, float, float, float]) -> bool:
+    """The same test SW023 applies, stated once for the regression."""
+    return (first[0] < second[1] and second[0] < first[1]
+            and first[2] < second[3] and second[2] < first[3])
 
 
 class BandCompositionTests(unittest.TestCase):

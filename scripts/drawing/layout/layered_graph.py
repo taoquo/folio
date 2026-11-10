@@ -540,17 +540,28 @@ def _composed_gap(plan: GraphPlan, geometry: GraphGeometry) -> int:
 
 
 def _feedback_edges(plan: GraphPlan, depth: dict[str, int]) -> list[GraphEdgePlan]:
-    return [edge for edge in plan.edges if depth[edge.target] < depth[edge.source]]
+    """Edges that leave a node for one no further along the flow.
+
+    Same-depth returns count: they are drawn in the same lane above the row,
+    and the row's top has to clear them.
+    """
+    return [
+        edge for edge in plan.edges
+        if edge.source != edge.target and depth[edge.target] <= depth[edge.source]
+    ]
 
 
 def _composed_band_top(plan: GraphPlan, depth: dict[str, int], geometry: GraphGeometry) -> int:
-    """The top of the first band: the title's clearance plus any feedback lanes."""
+    """The top of the first band: the title's clearance plus any feedback lanes.
+
+    The lanes sit in the band between the title and the first row, so the row
+    starts below them rather than sharing their space. Reserving only the
+    larger of the two put a lane inside the title at narrow stages.
+    """
     feedback = len(_feedback_edges(plan, depth))
     reserve = geometry.title_clearance
     if feedback:
-        reserve = max(
-            reserve,
-            geometry.label_lane_offset + geometry.label_lane_pitch * feedback + 24)
+        reserve += geometry.label_lane_offset + geometry.label_lane_pitch * feedback
     return reserve
 
 
@@ -569,6 +580,29 @@ def _band_sizes(
         widths[level] = max(width for width, _height in items)
         heights[level] = sum(height for _width, height in items) + max(0, len(nodes) - 1) * gap
     return sizes, widths, heights
+
+
+def _row_metrics(
+    bands: dict[int, list[GraphNodePlan]],
+    sizes: dict[int, list[tuple[int, int]]],
+    gap: int,
+) -> tuple[list[int], list[int]]:
+    """Row width and row height for a top-down band, in band order.
+
+    A band on the top-down axis is a row: its width is the sum of its nodes
+    plus the gaps between them, and its height is the tallest node. The
+    column form `_band_sizes` returns (max width, summed height) is the
+    transpose and cannot be reused for both.
+    """
+    widths: list[int] = []
+    heights: list[int] = []
+    for level in bands:
+        items = sizes[level]
+        widths.append(
+            sum(width for width, _height in items)
+            + max(0, len(items) - 1) * gap)
+        heights.append(max((height for _width, height in items), default=0))
+    return widths, heights
 
 
 def _fold_cell(index: int, fold: int) -> tuple[int, int]:
@@ -645,8 +679,6 @@ def _place_rows(
     plan: GraphPlan,
     bands: dict[int, list[GraphNodePlan]],
     sizes: dict[int, list[tuple[int, int]]],
-    widths: dict[int, int],
-    heights: dict[int, int],
     geometry: GraphGeometry,
 ) -> dict[str, LayoutBox]:
     levels = list(bands)
@@ -656,16 +688,26 @@ def _place_rows(
     y = max(geometry.top_down_origin, geometry.title_clearance)
     boxes: dict[str, LayoutBox] = {}
     for level in levels:
-        count = len(bands[level])
+        items = sizes[level]
+        count = len(items)
+        # A row is the opposite of a column: its width is the sum of its nodes
+        # and its height is the tallest of them. `widths`/`heights` carry the
+        # column form (max width, summed height), so reusing them here made the
+        # row as wide as its widest node and gave every node the whole stack's
+        # height -- nodes overlapped their neighbours and left the canvas.
+        row_width = sum(width for width, _height in items)
+        row_height = max((height for _width, height in items), default=0)
         spread = gap
         if count > 1:
-            spread = max(gap, grid((available - widths[level]) / (count - 1)))
-        total = widths[level] + spread * (count - 1)
+            spread = max(gap, grid((available - row_width) / (count - 1)))
+        total = row_width + spread * (count - 1)
         cursor = side if total <= available else grid((plan.width - total) / 2)
-        for node, (width, _height) in zip(bands[level], sizes[level]):
-            boxes[node.id] = LayoutBox(grid(cursor), grid(y), width, heights[level])
+        for node, (width, height) in zip(bands[level], items):
+            # Each box keeps its own height; the row is centred on the tallest.
+            boxes[node.id] = LayoutBox(
+                grid(cursor), grid(y + (row_height - height) // 2), width, height)
             cursor += width + spread
-        y += heights[level] + gap
+        y += row_height + gap
     return boxes
 
 
@@ -721,7 +763,7 @@ def _layout_composed(
             plan, bands, sizes, widths, heights, geometry,
             _composed_band_top(plan, depth, geometry))
     else:
-        boxes = _place_rows(plan, bands, sizes, widths, heights, geometry)
+        boxes = _place_rows(plan, bands, sizes, geometry)
     edges = route_graph_edges(
         plan, boxes, plan.width, plan.height, (),
         geometry=geometry, axis=axis, fold=fold)
@@ -748,7 +790,8 @@ def _composed_height(
         return grid(_composed_band_top(plan, depth, geometry) + max(heights.values()) + side)
     gap = _composed_gap(plan, geometry)
     origin = max(geometry.top_down_origin, geometry.title_clearance)
-    return grid(origin + sum(heights.values()) + (len(bands) - 1) * gap + side)
+    _row_widths, row_heights = _row_metrics(bands, sizes, gap)
+    return grid(origin + sum(row_heights) + max(0, len(row_heights) - 1) * gap + side)
 
 
 def graph_extent(
@@ -778,9 +821,10 @@ def graph_extent(
         width = 2 * side + sum(widths.values()) + (len(bands) - 1) * gap
         height = _composed_band_top(plan, depth, geometry) + max(heights.values()) + side
         return width, height
-    width = 2 * side + max(widths.values())
+    row_widths, row_heights = _row_metrics(bands, sizes, gap)
+    width = 2 * side + max(row_widths, default=0)
     origin = max(geometry.top_down_origin, geometry.title_clearance)
-    height = origin + sum(heights.values()) + (len(bands) - 1) * gap + side
+    height = origin + sum(row_heights) + max(0, len(row_heights) - 1) * gap + side
     return width, height
 
 
@@ -851,6 +895,49 @@ def _route_composed(
     def _cross(value: LayoutBox) -> int:
         return value.y + value.h // 2 if axis == "left-right" else value.x + value.w // 2
 
+    # Every return on a left-right row shares one band above the row, and each
+    # takes a lane in it. The band's height is fixed before routing, so the
+    # lane index is counted from the far side of the band rather than from the
+    # row: counting down from the row put the first return inside the title.
+    single_row = axis == "left-right" and not (fold > 1 and len(plan.nodes) > fold)
+    feedback_total = (
+        sum(1 for edge in plan.edges
+            if edge.source != edge.target and not _forward(edge))
+        if single_row else 0)
+
+    # A row corridor leaves and enters through the top or bottom face, so a
+    # forward connector and the return that answers it share that face. They
+    # were fanned out in separate direction groups, which gave both the same
+    # attach point and drew one down the other's line. One group per face,
+    # ordered by where the other end sits, keeps them apart.
+    def _row_faces(edge: GraphEdgePlan) -> tuple[tuple[str, str], ...]:
+        if edge.source == edge.target:
+            return ()
+        start, end = boxes[edge.source], boxes[edge.target]
+        different = (
+            end.y >= start.y + start.h or end.y + end.h <= start.y)
+        if not (different and (axis == "top-down" or fold > 1)):
+            return ()
+        downward = end.y > start.y
+        return (
+            (edge.source, "bottom" if downward else "top"),
+            (edge.target, "top" if downward else "bottom"),
+        )
+
+    face_groups: dict[tuple[str, str], list[tuple[int, str]]] = defaultdict(list)
+    for grouped_edge in plan.edges:
+        for node_id, face in _row_faces(grouped_edge):
+            other = (grouped_edge.target if grouped_edge.source == node_id
+                     else grouped_edge.source)
+            face_groups[(node_id, face)].append((boxes[other].x, grouped_edge.id))
+    for ids in face_groups.values():
+        ids.sort()
+
+    def _face_offset(node_id: str, face: str, edge_id: str) -> int:
+        ids = [item_id for _x, item_id in face_groups.get((node_id, face), [])] or [edge_id]
+        rank = ids.index(edge_id)
+        return grid((rank - (len(ids) - 1) / 2) * geometry.fan_pitch)
+
     by_id = {edge.id: edge for edge in plan.edges}
     for ids in outgoing.values():
         ids.sort(key=lambda edge_id: (_cross(boxes[by_id[edge_id].target]), edge_id))
@@ -867,9 +954,18 @@ def _route_composed(
         target_rank = target_ids.index(edge.id)
         source_offset = grid((source_rank - (len(source_ids) - 1) / 2) * geometry.fan_pitch)
         target_offset = grid((target_rank - (len(target_ids) - 1) / 2) * geometry.fan_pitch)
-        horizontal_right = target.x >= source.x + source.w
-        horizontal_left = target.x + target.w <= source.x
-        clamp_height = horizontal_right or horizontal_left
+        # The faces a port sits on follow the geometry, whatever the direction.
+        horizontal = (
+            target.x >= source.x + source.w or target.x + target.w <= source.x)
+        clamp_height = horizontal
+        # A backward edge never runs inline. A return that spans more than one
+        # column would otherwise draw its lane between source and target, which
+        # is through the columns in between -- the default router only ever ran
+        # the forward direction inline and sent every return to the outside
+        # lane. Drawn inline here, `reset` crossed the nodes it points past.
+        forward = _forward(edge)
+        horizontal_right = forward and target.x >= source.x + source.w
+        horizontal_left = forward and target.x + target.w <= source.x
         # A forward edge and its return share one gutter. Give each direction its
         # own lane, or the two polylines land on the same y and read as one line.
         pair_gap = geometry.min_gap
@@ -900,10 +996,12 @@ def _route_composed(
         elif row_corridor:
             downward = target.y > source.y
             start = (
-                grid(source.x + source.w / 2 + source_offset),
+                grid(source.x + source.w / 2 + _face_offset(
+                    edge.source, "bottom" if downward else "top", edge.id)),
                 source.y + source.h if downward else source.y)
             end = (
-                grid(target.x + target.w / 2 + target_offset),
+                grid(target.x + target.w / 2 + _face_offset(
+                    edge.target, "top" if downward else "bottom", edge.id)),
                 target.y if downward else target.y + target.h)
             # Several connectors can leave one face for the same next row. Order
             # their corridors by how far they travel sideways, so the edge that
@@ -967,21 +1065,34 @@ def _route_composed(
             points = [start, (start[0], lane), (end[0], lane), end]
         else:
             feedback += 1
-            left_lane = (
-                min(source.x, target.x) - geometry.label_lane_offset
-                - geometry.label_lane_pitch * feedback)
-            if left_lane >= geometry.side_margin + geometry.min_gap:
-                start = (source.x, grid(source.y + source.h / 2 + source_offset))
-                end = (target.x, grid(target.y + target.h / 2 + target_offset))
-                lane = grid(left_lane)
+            if single_row:
+                # A return on a row runs in a lane above it. A side lane between
+                # source and target would be a straight horizontal line through
+                # every column in between -- the return has to leave the row.
+                # Only a true single row: a folded composition is several rows,
+                # and a lane above the first one crosses the rows beneath it.
+                start = (grid(source.x + source.w / 2 + source_offset), source.y)
+                end = (grid(target.x + target.w / 2 + target_offset), target.y)
+                lane = grid(
+                    geometry.title_clearance
+                    + geometry.label_lane_pitch * (feedback_total - feedback + 1))
+                points = [start, (start[0], lane), (end[0], lane), end]
             else:
-                start = (source.x + source.w, grid(source.y + source.h / 2 + source_offset))
-                end = (target.x + target.w, grid(target.y + target.h / 2 + target_offset))
-                lane = grid(min(
-                    width - geometry.side_margin,
-                    max(source.x + source.w, target.x + target.w)
-                    + geometry.label_lane_offset + geometry.label_lane_pitch * feedback))
-            points = [start, (lane, start[1]), (lane, end[1]), end]
+                left_lane = (
+                    min(source.x, target.x) - geometry.label_lane_offset
+                    - geometry.label_lane_pitch * feedback)
+                if left_lane >= geometry.side_margin + geometry.min_gap:
+                    start = (source.x, grid(source.y + source.h / 2 + source_offset))
+                    end = (target.x, grid(target.y + target.h / 2 + target_offset))
+                    lane = grid(left_lane)
+                else:
+                    start = (source.x + source.w, grid(source.y + source.h / 2 + source_offset))
+                    end = (target.x + target.w, grid(target.y + target.h / 2 + target_offset))
+                    lane = grid(min(
+                        width - geometry.side_margin,
+                        max(source.x + source.w, target.x + target.w)
+                        + geometry.label_lane_offset + geometry.label_lane_pitch * feedback))
+                points = [start, (lane, start[1]), (lane, end[1]), end]
         points = list(clean_polyline(points))
         label = edge.label if edge.label and len(edge.label) <= 24 else None
         results.append(LayoutEdge(edge.source, edge.target, points, label, None, edge.id))

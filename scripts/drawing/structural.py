@@ -387,31 +387,52 @@ def compile_swimlane_payload(payload: dict[str, Any]):
         need_width, _need_height = _swimlane_extent(
             plan, lanes, geometry, composition_axis)
         if need_width > plan.width:
+            # The stage cannot hold the lane stack at all. Say that once: the
+            # layout below was measured on a canvas this stage does not have,
+            # so every box reports a symptom (a step outside its lane) of the
+            # one cause. The floor is the fixture's, not the family's: a
+            # three-lane stack needs 292 units, a four-lane one more.
             diagnostics.append(DrawingDiagnostic(
                 "ERROR", "SW024", "swimlane cannot compose on this stage", "swimlane"))
-        regions_by_id = {region.id: region for region in regions}
-        for node in plan.nodes:
-            box = layout.boxes[node.id]
-            region = regions_by_id.get(node.lane or "")
-            if region is None or region.box is None:
-                continue
-            if box.y < region.box.y or box.y + box.h > region.box.y + region.box.h:
-                diagnostics.append(DrawingDiagnostic(
-                    "ERROR", "SW022", "step leaves its lane", node.id))
-        captions = [region.label for region in regions]
-        for index, first in enumerate(captions):
-            first_left, first_right = _caption_span(first)
-            for second in captions[index + 1:]:
-                second_left, second_right = _caption_span(second)
-                if first_left < second_right and second_left < first_right:
-                    diagnostics.append(DrawingDiagnostic(
-                        "ERROR", "SW023", "lane names collide", second.text))
+        else:
+            _check_swimlane_placements(plan, layout, regions, diagnostics)
         require_no_errors("stage", diagnostics)
     scene = resolve_graph_scene(
         plan, layout, regions=regions,
         description=_swimlane_description(semantic), geometry=geometry)
     scene_diagnostics = validate_resolved_scene(scene)
     return semantic, plan, layout, scene, tuple([*diagnostics, *scene_diagnostics])
+
+
+def _check_swimlane_placements(
+    plan: GraphPlan,
+    layout: Any,
+    regions: list[SceneRegion],
+    diagnostics: list[DrawingDiagnostic],
+) -> None:
+    """A step stays in its lane and no two lane captions overlap.
+
+    Only meaningful on a stage that holds the lane stack: on a narrower one
+    every box is a symptom of SW024, which the caller has already reported.
+    """
+    regions_by_id = {region.id: region for region in regions}
+    for node in plan.nodes:
+        box = layout.boxes[node.id]
+        region = regions_by_id.get(node.lane or "")
+        if region is None or region.box is None:
+            continue
+        if box.y < region.box.y or box.y + box.h > region.box.y + region.box.h:
+            diagnostics.append(DrawingDiagnostic(
+                "ERROR", "SW022", "step leaves its lane", node.id))
+    captions = [region.label for region in regions]
+    for index, first in enumerate(captions):
+        first_left, first_right, first_top, first_bottom = _caption_span(first)
+        for second in captions[index + 1:]:
+            second_left, second_right, second_top, second_bottom = _caption_span(second)
+            if (first_left < second_right and second_left < first_right
+                    and first_top < second_bottom and second_top < first_bottom):
+                diagnostics.append(DrawingDiagnostic(
+                    "ERROR", "SW023", "lane names collide", second.text))
 
 
 def _layout_swimlane(
@@ -753,12 +774,26 @@ def _grid(value: float | int) -> int:
     return int(round(float(value) / 4) * 4)
 
 
-def _caption_span(label) -> tuple[float, float]:
+def _caption_span(label) -> tuple[float, float, float, float]:
+    """The box a lane caption occupies: its x span, then its y span.
+
+    Captions can collide on either axis. A top-down plate puts every lane in
+    one header strip, so the lanes differ in x and the captions share a y. A
+    left-right plate stacks the lanes, so every caption starts at the same x
+    and only the y span separates them. Comparing x alone reported a collision
+    for every left-right lane stack on a composed stage, which is why the same
+    fixture passed at 528 but failed at 660.
+
+    ``y`` is a baseline: the glyphs sit above it and only the descenders go
+    below, so the box is the type size up and a quarter of it down.
+    """
     width = measure_text(label.text, label.size, label.family) + (
         label.tracking * label.size * len(label.text))
     if label.anchor == "middle":
-        return label.x - width / 2, label.x + width / 2
-    return label.x, label.x + width
+        left, right = label.x - width / 2, label.x + width / 2
+    else:
+        left, right = label.x, label.x + width
+    return left, right, label.y - label.size, label.y + label.size * 0.25
 
 
 def _swimlane_description(semantic: SwimlaneSemantic) -> str:
