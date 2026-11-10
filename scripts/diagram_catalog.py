@@ -6,12 +6,13 @@ import argparse
 import hashlib
 import json
 import math
+import os
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
-from contextlib import nullcontext
+from contextlib import contextmanager, nullcontext
 from copy import deepcopy
 from html import escape as html_escape
 from pathlib import Path
@@ -325,6 +326,27 @@ def _image_diff_ratio(baseline_path: Path, current_path: Path) -> tuple[bool, fl
     return True, round(changed / channels, 6)
 
 
+@contextmanager
+def reproducible_pdf():
+    """A committed catalog PDF must not change because it was built on a Tuesday.
+
+    WeasyPrint writes the render time into the PDF, so two exports of the same
+    drawing differ byte for byte and the manifest's `pdf` digest churns on every
+    build. `SOURCE_DATE_EPOCH` is the reproducible-build convention it honours;
+    the catalog pins it for the duration of the export and leaves the ambient
+    value alone. A document built for a reader keeps its real date.
+    """
+    previous = os.environ.get("SOURCE_DATE_EPOCH")
+    os.environ["SOURCE_DATE_EPOCH"] = "0"
+    try:
+        yield
+    finally:
+        if previous is None:
+            os.environ.pop("SOURCE_DATE_EPOCH", None)
+        else:
+            os.environ["SOURCE_DATE_EPOCH"] = previous
+
+
 def _render_dsl_fixture(
     item: dict[str, Any], output_png: Path, output_svg: Path, output_pdf: Path
 ) -> tuple[list[int], dict[str, Any]]:
@@ -340,7 +362,9 @@ def _render_dsl_fixture(
     output_svg.parent.mkdir(parents=True, exist_ok=True)
     output_pdf.parent.mkdir(parents=True, exist_ok=True)
     output_svg.write_text(render_svg(result.scene, "page-preview"), encoding="utf-8")
-    export_pdf(output_svg, output_pdf, result.scene.title.text, result.scene.language, "page-preview")
+    with reproducible_pdf():
+        export_pdf(output_svg, output_pdf, result.scene.title.text,
+                   result.scene.language, "page-preview")
     _pdf_to_png(output_pdf, output_png)
     digests = {"input": _sha256(source_path), "svg": _sha256(output_svg), "pdf": _sha256(output_pdf)}
     metadata = result.metadata
