@@ -1,5 +1,8 @@
 # Web Reading
 
+> Superseded. The current Web scenario is `references/web/README.md`; this file
+> is kept for history and must not be used to route new work.
+
 Use this guide for content-heavy browser pages: long articles, reports, case studies, research notes, release stories, manifestos, and document-to-Web publishing.
 
 Read `web-foundation.md` first.

@@ -580,22 +580,14 @@ def _showcase_demo_html(showcase: dict[str, str], generated_png_name: str) -> st
 <meta charset="UTF-8">
 <title>{heading} Demo</title>
 <style>
-  /* The page names Source Serif 4; declaring it is what makes a renderer use
-     the repository's face instead of whatever the machine happens to have. */
-  @font-face {{
-    font-family: "Source Serif 4";
-    src: url("../fonts/SourceSerif4Variable-Roman.ttf") format("truetype");
-    font-weight: 200 900;
-    font-style: normal;
-  }}
-
+  @font-face {{ font-family: "Source Serif 4"; src: url("../fonts/SourceSerif4Variable-Roman.ttf") format("truetype"); font-weight: 200 900; font-style: normal; }}
   :root {{
     --color-surface-page: #F6F0EA;
-    --ivory: #FBF7F3;
-    --near-black: #191514;
-    --olive: #5A4A43;
-    --stone: #85776F;
-    --brand: #B83D2E;
+    --color-surface-card: #FBF7F3;
+    --color-text-primary: #191514;
+    --color-text-secondary: #5A4A43;
+    --color-text-muted: #756A63;
+    --color-accent-brand: #B83D2E;
   }}
 
   * {{ box-sizing: border-box; }}
@@ -604,7 +596,7 @@ def _showcase_demo_html(showcase: dict[str, str], generated_png_name: str) -> st
     margin: 0;
     padding: 32px 24px;
     background: var(--color-surface-page);
-    color: var(--near-black);
+    color: var(--color-text-primary);
     font-family: "Source Serif 4", Charter, Georgia, serif;
   }}
 
@@ -615,7 +607,7 @@ def _showcase_demo_html(showcase: dict[str, str], generated_png_name: str) -> st
 
   .eyebrow {{
     margin: 0 0 8px;
-    color: var(--stone);
+    color: var(--color-text-muted);
     font-size: 12px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -630,8 +622,8 @@ def _showcase_demo_html(showcase: dict[str, str], generated_png_name: str) -> st
 
   .frame {{
     padding: 20px;
-    background: var(--ivory);
-    border: 1px solid #E9DED4;
+    background: var(--color-surface-card);
+    border: 1px solid #E6DACD;
   }}
 
   img {{
@@ -642,7 +634,7 @@ def _showcase_demo_html(showcase: dict[str, str], generated_png_name: str) -> st
 
   .caption {{
     margin: 14px 0 0;
-    color: var(--olive);
+    color: var(--color-text-secondary);
     font-size: 15px;
   }}
 </style>
@@ -669,7 +661,7 @@ def _write_showcase_png(source_png: Path, target_png: Path) -> None:
     canvas_size = (1241, 1754)
     parchment = (246, 240, 234)
     ivory = (251, 247, 243)
-    border = (233, 222, 212)
+    border = (230, 218, 205)
     pad_x = 88
     pad_top = 130
     frame_pad = 34

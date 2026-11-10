@@ -31,7 +31,7 @@
     <div class="hero-actions" aria-label="Next actions">
       <a class="action-link primary" href="#output-system">Browse outputs</a>
       <a class="action-link" href="#usage">Install</a>
-      <a class="action-link" href="#web-guidance">Read Web guidance</a>
+      <a class="action-link" href="#web-reading">Read Web pages</a>
     </div>
   </header>
 
@@ -44,7 +44,7 @@
     <a href="#rhythm"><span>05</span>Rhythm</a>
     <a href="#modules"><span>06</span>Modules</a>
     <a href="#artifacts"><span>07</span>Diagrams</a>
-    <a href="#web-guidance"><span>08</span>Web</a>
+    <a href="#web-reading"><span>08</span>Web</a>
     <a href="#travel"><span>09</span>Image Prompts</a>
     <a href="#lookup"><span>10</span>Lookup</a>
     <a href="#anti-patterns"><span>11</span>Avoid</a>
@@ -55,7 +55,7 @@
     <div class="section-head">
       <p class="section-num">00 · Master Index</p>
       <h2 class="section-title">Output System</h2>
-      <p class="section-lede">Choose what Folio should produce. The catalog maps user requests to PDF, PPTX, SVG, or Web guidance, and the specimen matrix shows the actual output language.</p>
+      <p class="section-lede">Choose what Folio should produce. The catalog maps user requests to PDF, PPTX, SVG or Web reading pages, and the specimen matrix shows the actual output language.</p>
     </div>
 
     <div class="master-index-shell">
@@ -103,7 +103,7 @@
             <tr><td>07</td><td>Equity Report</td><td>Investment memo and earnings brief</td><td>PDF</td></tr>
             <tr><td>08</td><td>Changelog</td><td>Release notes and version narrative</td><td>PDF</td></tr>
             <tr><td>09</td><td>Artifact Records</td><td>Architecture and UML diagram specimens</td><td>SVG · PNG · PDF</td></tr>
-            <tr><td>10</td><td>Web Guidance</td><td>Reading pages and product workspaces guided by Folio rules</td><td>Reference</td></tr>
+            <tr><td>10</td><td>Web Reading Pages</td><td>Static reading pages set by the engine's Web profile</td><td>HTML</td></tr>
           </table>
         </div>
 
@@ -235,7 +235,7 @@ bash scripts/package-skill.sh   # build dist/folio.zip, then install locally</pr
         </div>
         <p class="scheme-note">Warm parchment canvas, cinnabar accent. The system's own voice.</p>
         <div class="scheme-chips"><span class="scheme-chip" style="background:#F6F0EA"></span><span class="scheme-chip" style="background:#FBF7F3"></span><span class="scheme-chip" style="background:#191514"></span><span class="scheme-chip" style="background:#B83D2E"></span><span class="scheme-chip" style="background:#F7E6E1"></span></div>
-        <p class="scheme-count">23 palette entries · 22 roles</p>
+        <p class="scheme-count">23 palette entries · 42 roles</p>
       </article>
       <article class="scheme">
         <div class="scheme-head">
@@ -244,7 +244,7 @@ bash scripts/package-skill.sh   # build dist/folio.zip, then install locally</pr
         </div>
         <p class="scheme-note">Warm bone canvas, deep forest accent. Editorial and long-form.</p>
         <div class="scheme-chips"><span class="scheme-chip" style="background:#F5F2EA"></span><span class="scheme-chip" style="background:#FCFAF5"></span><span class="scheme-chip" style="background:#161813"></span><span class="scheme-chip" style="background:#2F5D46"></span><span class="scheme-chip" style="background:#E3EDE6"></span></div>
-        <p class="scheme-count">16 palette entries · 22 roles</p>
+        <p class="scheme-count">18 palette entries · 42 roles</p>
       </article>
       <article class="scheme">
         <div class="scheme-head">
@@ -253,7 +253,7 @@ bash scripts/package-skill.sh   # build dist/folio.zip, then install locally</pr
         </div>
         <p class="scheme-note">Cool neutral canvas, deep azure accent. Institutional research.</p>
         <div class="scheme-chips"><span class="scheme-chip" style="background:#F1F3F6"></span><span class="scheme-chip" style="background:#FAFBFC"></span><span class="scheme-chip" style="background:#14181D"></span><span class="scheme-chip" style="background:#1F4E8C"></span><span class="scheme-chip" style="background:#E4EBF4"></span></div>
-        <p class="scheme-count">16 palette entries · 22 roles</p>
+        <p class="scheme-count">18 palette entries · 42 roles</p>
       </article>
       </div>
       <p class="scheme-foot"><code>FOLIO_THEME=folio-slate-v1 python3 scripts/build.py</code> renders in a scheme; <code>python3 scripts/check_theme_schemes.py</code> holds every scheme to the bar. Unset, the profile marked <code>default</code> is used.</p>
@@ -581,35 +581,35 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
     </div>
   </section>
 
-  <!-- ============ 08 WEB GUIDANCE ============ -->
-  <section id="web-guidance">
+  <!-- ============ 08 WEB READING PAGES ============ -->
+  <section id="web-reading">
     <div class="section-head">
-      <p class="section-num">08 · Web Guidance</p>
-      <h2 class="section-title">Web Page Guidance</h2>
-      <p class="section-lede">A guidance reference, not a component gallery. It keeps Web pages aligned to page job, skeleton, state coverage, and semantic motion without adding a Web build chain.</p>
+      <p class="section-num">08 · Web</p>
+      <h2 class="section-title">Web Reading Pages</h2>
+      <p class="section-lede">A series index and its module archives, built as self-contained static HTML. Screen type, spacing, measure and figure geometry come from the Web profile; there is no component library, router or app shell.</p>
     </div>
     <div class="web-guidance-panel">
       <div class="catalog-head">
-        <p class="catalog-overline">Design Workflow</p>
-        <h3 class="catalog-title">Page Job First</h3>
-        <p class="catalog-copy">Every Web request starts with a contract before layout: page job, archetype, primary object, orientation, states, skeleton, motion thesis, and mobile collapse.</p>
+        <p class="catalog-overline">Two Page Kinds</p>
+        <h3 class="catalog-title">Case or Fixture</h3>
+        <p class="catalog-copy">A case is content: it names the work it reads and never describes the engine that set it. A fixture is the engine's conformance page, with a delivery status and a package path.</p>
       </div>
       <table class="catalog-table">
-        <tr><th>Mode</th><th>Skeleton</th><th>State focus</th><th>Reference</th></tr>
-        <tr><td>Reading</td><td>Opening block / contents rail / article body / figure band / source notes</td><td>Progress, sources, captions</td><td><code>web-reading.md</code></td></tr>
-        <tr><td>Workspace</td><td>Nav / toolbar / primary work area / inspector / feedback</td><td>Loading, empty, error, selected, success</td><td><code>web-workspace.md</code></td></tr>
-        <tr><td>Hybrid</td><td>Reading rail / document preview / operation panel / status</td><td>Selected document, generation state, review findings</td><td><code>web-foundation.md</code></td></tr>
+        <tr><th>Part</th><th>What it carries</th><th>Owner</th><th>Rule set</th></tr>
+        <tr><td>Series index</td><td>Series title, lead, one card per module</td><td><code>build_web.py</code></td><td><code>W-DLV</code>, <code>W-STR</code></td></tr>
+        <tr><td>Module archive</td><td>Doc head, contents, chapters, plates, sources</td><td><code>build_web.py</code></td><td><code>W-CNT</code>, <code>W-FIG</code></td></tr>
+        <tr><td>Measured page</td><td>Computed type, column, plates, captions</td><td><code>web_verify.py</code></td><td><code>V-*</code></td></tr>
       </table>
       <div class="catalog-head" style="margin-top:24px;">
-        <p class="catalog-overline">Motion Thesis</p>
-        <h3 class="catalog-title">Motion describes structure</h3>
-        <p class="catalog-copy">Each motion must be written as <code>This motion means ...</code>. Hover is control affordance only; it cannot become the whole motion system.</p>
+        <p class="catalog-overline">Build</p>
+        <h3 class="catalog-title">One command, then a check</h3>
+        <p class="catalog-copy"><code>folio.py web --series &lt;dir&gt;</code> writes the series; <code>check_web.py --level 3</code> verifies structure, density, colour and figure geometry. The browser measurement runs nightly.</p>
       </div>
       <table class="catalog-table">
-        <tr><th>Layer</th><th>Meaning</th><th>Homepage use</th><th>Limit</th></tr>
-        <tr><td>Page</td><td>This motion means the user is oriented within the page</td><td>Initial reveal only</td><td>Respect reduced motion</td></tr>
-        <tr><td>Object</td><td>This motion means this specimen can be inspected</td><td>Specimen hover</td><td>No layout shift</td></tr>
-        <tr><td>Control</td><td>This motion means the control is pressed or focused</td><td>Action link press / focus</td><td>Cannot replace page or object motion</td></tr>
+        <tr><th>Layer</th><th>Source</th><th>Rule</th><th>Limit</th></tr>
+        <tr><td>Type and measure</td><td><code>profiles/web/folio-v1.yaml</code></td><td><code>W-DEN</code>, <code>V-TYPE</code></td><td>No literal in <code>base.css</code></td></tr>
+        <tr><td>Colour</td><td><code>profiles/theme/*.yaml</code></td><td><code>W-COL</code>, <code>V-COL-01</code></td><td>No hex in a template</td></tr>
+        <tr><td>Figures</td><td>Drawing DSL</td><td><code>W-FIG</code>, <code>V-FIG</code></td><td>A page never hand-authors an SVG</td></tr>
       </table>
     </div>
   </section>

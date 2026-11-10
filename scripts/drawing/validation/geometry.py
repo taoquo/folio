@@ -1,6 +1,12 @@
 from __future__ import annotations
 
-from ..scene import ResolvedScene, SceneBox
+from ..scene import (
+    ResolvedScene,
+    SceneBox,
+    SceneGroup,
+    ScenePath,
+    ScenePolyline,
+)
 from ..typography.measure import measure_text
 from .models import DrawingDiagnostic
 
@@ -209,7 +215,82 @@ def validate_scene_geometry(
             text_width = measure_text(item.label.text, item.label.size, item.label.family)
             if item.label.x < scene.legend.box.x or item.label.x + text_width > scene.legend.box.x + scene.legend.box.w:
                 diagnostics.append(DrawingDiagnostic("ERROR", "DG131", "legend item text exceeds legend bounds", item.label.text))
+        if scene.legend:
+            for node in scene.nodes:
+                if _overlap(scene.legend.box, node.box):
+                    diagnostics.append(DrawingDiagnostic("ERROR", "DG141", f"legend overlaps node {node.id}", "legend"))
+            for edge in scene.edges:
+                if edge.label_box and _overlap(scene.legend.box, edge.label_box):
+                    diagnostics.append(DrawingDiagnostic("ERROR", "DG141", f"legend overlaps edge label {edge.id}", "legend"))
+            for region in scene.regions:
+                if region.box and _overlap(scene.legend.box, region.box):
+                    diagnostics.append(DrawingDiagnostic("ERROR", "DG141", f"legend overlaps region {region.id}", "legend"))
+
+    for edge in scene.edges:
+        target = boxes.get(edge.target)
+        if target is None or len(edge.arrow.points) != 3:
+            continue
+        # A corner entry is only a defect on a body-sized node. Terminals and small
+        # state boxes have no mid-edge room, and a self-loop attaches where it can.
+        if edge.source == edge.target or target.w < 144 or target.h < 64:
+            continue
+        tip = edge.arrow.points[1]
+        corner_distance = min(
+            abs(tip[0] - corner_x) + abs(tip[1] - corner_y)
+            for corner_x in (target.x, target.x + target.w)
+            for corner_y in (target.y, target.y + target.h)
+        )
+        if corner_distance < 24:
+            diagnostics.append(DrawingDiagnostic(
+                "TASTE", "DG142",
+                f"arrow enters within {corner_distance} units of a corner (preferred 24)",
+                edge.id,
+                hint="spread fan-in attachment points or widen the target node",
+            ))
+
+    for primitive in _parallelogram_primitives(scene):
+        points = _polygon_points(primitive)
+        if points is None:
+            diagnostics.append(DrawingDiagnostic("ERROR", "DG140", "parallelogram has no four points", primitive.id))
+            continue
+        a, b, c, d = points
+        first = (b[0] - a[0], b[1] - a[1])
+        second = (c[0] - b[0], c[1] - b[1])
+        opposite_first = (c[0] - d[0], c[1] - d[1])
+        opposite_second = (d[0] - a[0], d[1] - a[1])
+        if any(abs(left - right) > 1 for left, right in zip(first, opposite_first)) or any(
+            abs(left - right) > 1 for left, right in zip(second, opposite_second)
+        ):
+            diagnostics.append(DrawingDiagnostic("ERROR", "DG140", "parallelogram opposite sides are not equal vectors", primitive.id))
+
     for text in texts:
         if text.x % grid or text.y % grid:
             diagnostics.append(DrawingDiagnostic("ERROR", "DG119", "text anchor is off the 4-unit grid", text.text))
     return diagnostics
+
+
+def _flatten_primitives(items: tuple[object, ...]):
+    for item in items:
+        if isinstance(item, SceneGroup):
+            yield from _flatten_primitives(item.children)
+        else:
+            yield item
+
+
+def _parallelogram_primitives(scene: ResolvedScene):
+    for item in _flatten_primitives(scene.primitives):
+        if not isinstance(item, (ScenePolyline, ScenePath)):
+            continue
+        marker = f"{getattr(item, 'klass', '') or ''} {item.id}".lower()
+        if "parallelogram" in marker:
+            yield item
+
+
+def _polygon_points(primitive: object) -> tuple[tuple[int, int], ...] | None:
+    if isinstance(primitive, ScenePolyline):
+        points = tuple(primitive.points)
+        if len(points) == 5 and points[0] == points[-1]:
+            points = points[:4]
+        return points if len(points) == 4 else None
+    return None
+

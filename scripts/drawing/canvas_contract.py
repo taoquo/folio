@@ -7,9 +7,12 @@ different height bands because their layout math needs different floors.
 
 A payload also declares what it is for. A ``figure`` is an illustration inside a column of
 text, so it keeps the tight height band and the editorial node budget. A ``poster`` is the
-artifact itself, so it may grow downward until its content is placed. Width never moves in
-either mode: it is what makes an embedded diagram fit its column, and every gutter and
-legend constant in the system is measured against it.
+artifact itself, so it may grow downward until its content is placed.
+
+Width is neither the author's nor the mode's: the host names the stage it will render into
+(``drawing.stage``), and a payload that declares one is refused. Letting a drawing change
+its own units to fit a column moves the type scale with the units and delivers the same
+unreadable figure, which is the failure the stage mechanism exists to prevent.
 """
 
 from __future__ import annotations
@@ -79,15 +82,34 @@ class CanvasBand:
     def ceiling(self, mode: str = DEFAULT_CANVAS_MODE) -> int:
         return self.poster_maximum if mode == "poster" else self.maximum
 
-    def accepts(self, value: Any, mode: str = DEFAULT_CANVAS_MODE) -> bool:
+    def minimum_at(self, stage: int = CANVAS_WIDTH) -> int:
+        """The floor at ``stage``: a 960-unit measurement scaled to the stage.
+
+        The floor is layout math -- below it a family's bands and label rings
+        collide -- and that math is measured in stage units. A stage narrowed for
+        a host band scales its chrome with it, so the same arrangement needs
+        proportionally less height; holding the 960-unit floor would keep a
+        canvas the composition no longer fills, and a legend pinned to the
+        bottom edge turns that surplus into a hole. What still refuses a canvas
+        that is too short is the layout itself, which reports nodes and regions
+        outside it.
+        """
+        if stage >= CANVAS_WIDTH:
+            return self.minimum
+        height = self.minimum * stage // CANVAS_WIDTH
+        return height + (-height % 4)
+
+    def accepts(self, value: Any, mode: str = DEFAULT_CANVAS_MODE,
+                stage: int = CANVAS_WIDTH) -> bool:
         return (
             isinstance(value, int)
             and not isinstance(value, bool)
-            and self.minimum <= value <= self.ceiling(mode)
+            and self.minimum_at(stage) <= value <= self.ceiling(mode)
             and value % 4 == 0
         )
 
-    def resolve(self, payload: dict[str, Any], default: int | None = None) -> int:
+    def resolve(self, payload: dict[str, Any], default: int | None = None,
+                stage: int = CANVAS_WIDTH) -> int:
         """Return a layout-safe height, falling back when the payload value is out of band.
 
         Callers report the bad value through :func:`canvas_issues`; this only keeps the
@@ -95,7 +117,7 @@ class CanvasBand:
         """
         fallback = self.default if default is None else default
         value = payload.get("height", fallback)
-        return value if self.accepts(value, canvas_mode(payload)) else fallback
+        return value if self.accepts(value, canvas_mode(payload), stage) else fallback
 
 
 # Graph families (architecture, flowchart, structural, positional) need 500 units before the
@@ -115,20 +137,30 @@ def canvas_issues(
     kind: str,
     band: CanvasBand,
     default_height: int | None = None,
+    stage: int = CANVAS_WIDTH,
 ) -> list[str]:
-    """Report the canvas contract breaches for one payload."""
+    """Report the canvas contract breaches for one payload.
+
+    The stage width is the host's decision, not the author's. A payload that
+    states one is asking the drawing to fit a column by changing its own units,
+    which moves the type scale with it and delivers the same unreadable figure.
+    """
     issues: list[str] = []
-    if payload.get("width", CANVAS_WIDTH) != CANVAS_WIDTH:
-        issues.append(f"{kind} canvas width must be exactly {CANVAS_WIDTH}; use an output profile to rescale")
+    if payload.get("width", stage) != stage:
+        issues.append(
+            f"{kind} canvas width is declared by the host, not the payload "
+            f"(stage is {stage}); drop the width field")
     declared = payload.get("canvas", DEFAULT_CANVAS_MODE)
     if declared not in CANVAS_MODES:
         issues.append(f"{kind} canvas must be one of {', '.join(CANVAS_MODES)}")
     mode = canvas_mode(payload)
     fallback = band.default if default_height is None else default_height
     requested = payload.get("height", fallback)
-    if not band.accepts(requested, mode):
+    if not band.accepts(requested, mode, stage):
         ceiling = band.ceiling(mode)
-        issues.append(f"{kind} canvas height must be a multiple of 4 from {band.minimum} to {ceiling}")
+        issues.append(
+            f"{kind} canvas height must be a multiple of 4 from "
+            f"{band.minimum_at(stage)} to {ceiling}")
         # Only a height that clears the figure ceiling has anything to gain from poster mode.
         # An off-grid or below-floor height is wrong in either mode, and saying otherwise
         # would send an author to change modes when they needed to change the number.

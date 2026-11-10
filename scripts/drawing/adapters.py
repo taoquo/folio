@@ -5,6 +5,7 @@ from diagram_models import ArchitectureDiagramSpec, load_diagram_spec
 from .layout.models import LayoutConstraintSet
 from .models import DrawingPlan
 from .semantics.models import SemanticDiagram, SemanticEdge, SemanticGroup, SemanticNode
+from .stage import current as current_stage
 
 
 def semantic_from_legacy(spec: ArchitectureDiagramSpec) -> SemanticDiagram:
@@ -44,7 +45,10 @@ def semantic_from_legacy(spec: ArchitectureDiagramSpec) -> SemanticDiagram:
         focus_candidates=(spec.focus,) if spec.focus else (),
         focus_path=tuple(spec.focus_path),
         narrative=spec.focus_reason,
-        width=spec.width,
+        # The stage decides the width. A spec may not narrow the canvas by
+        # declaring a smaller width: that changes the drawing's units, not the
+        # column it lands in.
+        width=current_stage().width,
         height=spec.height,
         canvas=spec.canvas,
         subtitle=spec.subtitle,

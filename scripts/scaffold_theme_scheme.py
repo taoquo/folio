@@ -110,6 +110,7 @@ SCHEMES = {
 }
 
 
+
 def build(name: str, spec: dict) -> dict:
     """Solve for a palette that clears the bar, and name every entry it needs."""
     canvas, card = spec["canvas"], spec["card"]
@@ -184,6 +185,16 @@ def build(name: str, spec: dict) -> dict:
         "ink": ink,
         **{name: value for (base, value), name in names.items()},
     }
+
+    # The semantic layer needs ten distinguishable marks, not just the chart's
+    # six series. These are the two steps each scheme was missing: a mid accent
+    # for `passed` and a darker caution for `change`/`attention`.
+    if name == "folio-forest-v1":
+        entries["pine-600"] = "#48705C"
+        entries["amber-700"] = "#754C13"
+    elif name == "folio-slate-v1":
+        entries["azure-600"] = "#3A639A"
+        entries["amber-700"] = "#754C13"
 
     return {
         "palette": entries,

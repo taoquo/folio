@@ -4,8 +4,8 @@
 Turns a document's profile references into one resolved style, and records
 where every value came from.
 
-The profiles are already separated by domain -- typography, page, language,
-theme, taste -- and `extends` chains are already flattened. What was missing is
+The profiles are already separated by domain -- typography, page, web,
+language, theme, taste -- and `extends` chains are already flattened. What was missing is
 the step that combines them and can answer a question the plan treats as
 central: why is this paragraph this size, and which profile decided it?
 
@@ -70,6 +70,16 @@ DOMAIN_FIELDS: dict[str, frozenset[str]] = {
     }),
     "taste": frozenset({
         "context", "hard_requirements", "soft_objectives", "taste", "genre",
+    }),
+    # The screen counterpart of typography. It owns the values a Web page needs
+    # that the print scale does not: font stacks, px sizes, spacing, radii,
+    # measure and the reading page's structural geometry.
+    "web": frozenset({
+        "font", "type", "space", "line", "radius", "measure", "layout",
+        # Weight and tracking are type decisions the page used to make for
+        # itself, one declaration at a time. An underline's offset is the same
+        # kind of decision: a fraction of the type, not a fixed length.
+        "weight", "tracking", "underline", "genre",
     }),
 }
 
@@ -224,7 +234,7 @@ def resolve(
     names: Mapping[str, str] | None = None,
     template: str | None = None,
 ) -> ResolvedStyle:
-    """Combine the five profile kinds into one style.
+    """Combine the six profile kinds into one style.
 
     `names` maps a profile kind to the profile to use. Anything omitted is
     selected by genre and language, which is how the templates are chosen today.
@@ -274,7 +284,7 @@ def resolve(
 
     # Order matters: later domains may refine a shared field, and the order is
     # the documented precedence rather than an accident of iteration.
-    precedence = ("typography", "page", "language", "theme", "taste")
+    precedence = ("typography", "page", "web", "language", "theme", "taste")
 
     for kind in precedence:
         name = selected.get(kind)
@@ -349,7 +359,7 @@ def _select_by_genre(
     chosen: dict[str, str] = {}
     is_zh = bool(language and language.lower().startswith("zh"))
 
-    for kind in ("typography", "page", "language", "theme", "taste"):
+    for kind in ("typography", "page", "web", "language", "theme", "taste"):
         candidates = profiles.get(kind) or {}
         if not candidates:
             continue

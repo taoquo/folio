@@ -1,0 +1,4 @@
+A release stops at a gate when any visual check fails.
+The build reaches a release candidate in 3.5 days after a short warmup schedule.
+A build job moves from queued to rendered to signed.
+Sign-off crosses three lanes before the report ships.

@@ -19,6 +19,7 @@ from drawing.canvas_contract import (
     canvas_mode,
     height_for_rows,
 )
+from drawing.stage import current as current_stage
 
 ARCHITECTURE_LAYOUTS = {"horizontal-layers", "vertical-stack", "hub-and-spoke"}
 ARCHITECTURE_NODE_KINDS = {"external", "service", "store", "cloud"}
@@ -219,7 +220,8 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
     if layout not in ARCHITECTURE_LAYOUTS:
         raise ValueError(f"unsupported architecture layout: {layout}")
 
-    issues = canvas_issues(payload, kind="architecture", band=GRAPH_CANVAS)
+    issues = canvas_issues(payload, kind="architecture", band=GRAPH_CANVAS,
+                           stage=current_stage().width)
     if issues:
         raise ValueError("; ".join(issues))
     mode = canvas_mode(payload)
@@ -337,10 +339,16 @@ def _load_architecture(payload: dict[str, Any]) -> ArchitectureDiagramSpec:
             )
 
     height = _poster_height(payload, mode, 540)
-    if not GRAPH_CANVAS.accepts(height, mode):
+    stage = current_stage().width
+    if not GRAPH_CANVAS.accepts(height, mode, stage):
+        if height > GRAPH_CANVAS.ceiling(mode):
+            raise ValueError(
+                f"architecture derived canvas height {height} exceeds poster maximum "
+                f"{GRAPH_CANVAS.poster_maximum}; split the diagram"
+            )
         raise ValueError(
-            f"architecture derived canvas height {height} exceeds poster maximum "
-            f"{GRAPH_CANVAS.poster_maximum}; split the diagram"
+            f"architecture derived canvas height {height} is below the "
+            f"{GRAPH_CANVAS.minimum_at(stage)}-unit floor of a {stage}-unit stage"
         )
     return ArchitectureDiagramSpec(
         kind="architecture",

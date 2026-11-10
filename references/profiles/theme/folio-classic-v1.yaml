@@ -76,6 +76,56 @@ profiles:
           palette: cinnabar-100
         tag:
           palette: cinnabar-200
+      # L2 content semantics: the meanings a *document* states (delivered,
+      # risk, change...). They are not accents -- accents_per_document stays 1.
+      # Every scheme defines the same ten meanings, but each binds them to its
+      # own pigments: a forest page says "passed" in pine, a slate page in
+      # azure, so the meaning survives the scheme and the colour follows it.
+      #
+      # Within one scheme the ten are ten distinct colours. `check_theme_schemes.py`
+      # enforces that: aliasing two meanings onto one colour makes a badge or a
+      # phase bar indistinguishable from its neighbour, which is not a theme.
+      semantic:
+        delivered:
+          palette: cinnabar-600
+        delivered-strong:
+          palette: cinnabar-800
+        info:
+          palette: slate-600
+        info-strong:
+          palette: warm-850
+        component:
+          palette: warm-800
+        component-strong:
+          palette: ink
+        passed:
+          palette: sage-600
+        passed-strong:
+          palette: warm-850
+        attention:
+          palette: amber-600
+        attention-strong:
+          palette: amber-600
+        enhance:
+          palette: cinnabar-800
+        enhance-strong:
+          palette: ink
+        risk:
+          palette: ink
+        risk-strong:
+          palette: ink
+        change:
+          palette: warm-700
+        change-strong:
+          palette: warm-850
+        input:
+          palette: warm-500
+        input-strong:
+          palette: warm-800
+        pending:
+          palette: warm-600
+        pending-strong:
+          palette: warm-700
       status:
         positive:
           palette: cinnabar-600

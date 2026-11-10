@@ -20,7 +20,7 @@
 
 ## See Folio First
 
-Folio is a document design system for the AI era: eight document types, twenty-three generator-backed Drawing DSL diagram types, bilingual English/Chinese paths, and Web guidance for reading pages and product workspaces built for agent-generated deliverables.
+Folio is a document design system for the AI era: eight document types, twenty-three generator-backed Drawing DSL diagram types, bilingual English/Chinese paths, and Web reading pages built from the same profiles for agent-generated deliverables.
 
 It optimizes for stable, readable, professional output rather than novelty.
 
@@ -33,7 +33,7 @@ What matters on first contact:
 - eight document types, each with a stable editorial layout
 - twenty-three structured diagram grammars with `SVG + PNG + PDF` output
 - bilingual English and Chinese generation paths
-- Web guidance for reading pages and product workspaces without turning Folio into a frontend framework
+- Web reading pages, a series index and its module archives, without turning Folio into a frontend framework
 - PDF- and PPTX-oriented outputs instead of generic HTML mockups
 - visual consistency across one-pagers, reports, decks, resumes, and release notes
 
@@ -195,7 +195,6 @@ Example prompts:
 - `generate a system architecture diagram`
 - `draw a UML class diagram for this module`
 - `guide a web reading page for this report`
-- `design a Folio-style product workspace`
 
 Optional: create `~/.config/folio/brand.md` to persist identity, document defaults, and writing habits. Start from [brand.example.md](references/brand.example.md). Folio uses it as fallback context when the current request is ambiguous.
 
@@ -227,36 +226,76 @@ Folio treats current facts and branded assets as first-class inputs.
 - For branded documents, it checks whether logo, screenshot, product image, and brand color are available
 - If critical material is missing, the gap stays explicit instead of being filled with generic visuals
 
-### Web guidance
+### Web reading pages
 
-Folio can guide browser-page design while keeping its static document build pipeline unchanged.
+Folio turns a series of content fragments into static reading pages: a series
+index and one module archive per article. The profiles that typeset a PDF
+typeset the screen too; what changes is the medium, not the design system.
 
-Every Web request starts with a design contract before layout, mockup, or code:
+**What you author.** A series is a directory:
 
-| Step | Required decision | Visible result |
-|---|---|---|
-| 1 | Page job, archetype, primary object, and orientation | The first viewport explains what the page is for |
-| 2 | Content plan and page skeleton | Reading, workspace, or hybrid regions are named before components |
-| 3 | Required states and motion thesis | Loading, empty, error, selected, and success states have semantic motion |
-| 4 | Mobile collapse plan and final quality gate | Narrow screens do not depend on hover or hidden desktop-only controls |
+```text
+references/fixtures/web/attention/
+  series.json          identity, language, page kind, figure list and captions
+  attention.frag.html  the module body: chapter sections and their content
+  source.txt           the text the page must not delete from
+  figures/*.json       one Drawing DSL fixture per figure
+```
 
-Page skeletons replace component galleries:
+`series.json` names the language, so the page carries `lang`, selects the
+Chinese or English type profile, and picks its chrome strings. A fragment holds
+content only: no `<head>`, no navigation, no styling.
 
-- Reading: opening block / contents rail / article body / figure band / source notes
-- Workspace: nav / toolbar / primary work area / inspector / feedback
-- Hybrid: reading rail / document preview / operation panel / status
-- Web guidance is a design reference for agents; it does not add a Web app build chain or change Folio's PDF / PPTX / SVG outputs
+**What is built.** `dist/web/` holds one shared `fonts/` directory and one
+directory per series. The series directory holds `index.html` (the series
+index), `<module>/index.html` (the module archive), `plan.json` (the layout
+arithmetic) and `figures.manifest.json` (each plate's stage, framed box and
+delivered tiers). The page is self-contained: one `<style>` block projected from
+the profiles, no external stylesheet or script file, no app shell, no build step
+at view time. Only the reading rail's scroll activation is a few lines of inline
+script; the delivery contract counts external files, and there are none.
 
-Motion thesis must explain meaning, not decoration:
+**How it is typeset.** Screen type roles, font stacks, spacing, radii, measure
+and page geometry live in `references/profiles/web/folio-v1.yaml`; colours come
+from the theme profile as roles, never as hex in a page. `projection.py` emits
+them as custom properties in the page's `<style>` block, and
+`assets/templates/web/base.css` reads only those variables. Two gates enforce
+one rule from both sides: `scripts/projection.py check` reads the template
+source, `check_web.py` (W-DEN-08/09) reads the built page.
 
-| Layer | Template |
-|---|---|
-| Page motion | `This motion means the user is oriented within the page by ...` |
-| Region motion | `This motion means secondary context is attached to or removed from ...` |
-| Object motion | `This motion means the current object, row, figure, source, or section is ...` |
-| Control motion | `This motion means the control can be acted on, is being pressed, or has completed ...` |
+**Figures.** A drawing is composed for the band it will be shown in, not scaled
+down from the 960-unit artifact. Each figure is emitted once per width class
+(`narrow`, `compact`, `medium`, `wide`) as an inline SVG carrying its stage, its
+framed box and its fixture sha; CSS shows only the class the viewport asks for.
+Only the families in `STAGE_AWARE` may be compiled on another stage, and
+`compose_for_band()` picks the largest stage that keeps the smallest type on the
+7px floor. A stage-aware family that no stage can compose fails the plan gate
+instead of silently falling back to the authored plate.
 
-Use only the layers that serve the page job. Hover, active, and focus cannot become the whole motion system.
+A page is either a **case** or a **fixture**:
+
+- A case is content. It names the work it reads (work, author, year, link) and
+  does not describe the engine that set it.
+- A fixture is the engine's conformance page: it carries a delivery status and
+  a package path, and it exists to test the rules.
+
+```bash
+python3 scripts/folio.py web --series references/fixtures/web/attention
+python3 scripts/folio.py web --series references/fixtures/web/attention \
+  --verify --level 3 --source references/fixtures/web/attention/source.txt
+python3 scripts/web_plan.py --series attention --gate
+python3 scripts/check_web.py dist/web/attention/attention/index.html --level 3
+```
+
+The static gate runs in Python and needs no browser: L1 covers structure, text,
+delivery and the figure contract, L2 adds declared density and colour, L3 adds
+the figure geometry audit. The measured gate runs in the nightly job, because
+only the browser knows what the page computed: `scripts/web_measure.py` reports
+the layout and `scripts/web_verify.py` compares it with `plan.json` under the
+`V-*` rules. The rules, levels and acceptance list are in `references/web/`.
+
+This path does not add a Web app framework: no component library, no router, no
+client state, no dark-mode switch.
 
 ### Diagram routing
 
@@ -300,11 +339,12 @@ Mermaid and draw.io convert into typed diagram JSON with a fidelity ledger that 
 
 ### Output generation
 
-Folio supports two main output paths:
+Folio supports these output paths:
 
 - HTML templates -> PDF
 - Python slide templates -> PPTX
 - Diagram specs -> SVG + PNG + PDF
+- Reading-page series -> self-contained static HTML (`scripts/folio.py web`)
 
 Showcase demos usually keep `HTML + PDF + PNG` together so the homepage and README stay truthful.
 
@@ -316,7 +356,7 @@ Folio also carries a compact operating reference in [CHEATSHEET.md](CHEATSHEET.m
 - Use `references/design.md` when you need the full visual system
 - Use `references/writing.md` when structure is fine but content quality is weak
 - Use `references/production.md` when builds, page counts, or render behavior go wrong
-- Use `references/web-foundation.md`, `references/web-reading.md`, `references/web-workspace.md`, and `references/web-checklist.md` when guiding browser-page design
+- Use `references/web/README.md` for the static Web reading-page scenario; its styles come from the same theme and Web profiles as every other output
 
 ### Document engine
 
@@ -389,7 +429,8 @@ Use the short guide first, then go deeper only when needed.
 - [references/drawing-dsl.md](references/drawing-dsl.md): Drawing DSL scope, compiler stages, routing, and output layer
 - [references/drawing-dsl-authoring.md](references/drawing-dsl-authoring.md): intent-first diagram authoring workflow
 - [references/drawing-dsl-v6-final-audit.md](references/drawing-dsl-v6-final-audit.md): closing audit, gate evidence, and known limits
-- [references/web-foundation.md](references/web-foundation.md): Web guidance foundation for reading pages and product workspaces
+- [references/web/README.md](references/web/README.md): the Web reading-page scenario, delivery, figures, and acceptance
+- [references/profiles/web/folio-v1.yaml](references/profiles/web/folio-v1.yaml): screen font stacks, type scale, spacing, radii and measure
 - [CHANGELOG.md](CHANGELOG.md): release highlights with links to the full notes in `docs/releases/`
 
 ## Image Prompting

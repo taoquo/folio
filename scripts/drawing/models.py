@@ -4,6 +4,7 @@ from dataclasses import asdict, dataclass, field
 from typing import Any
 
 from .canvas_contract import NODES_PER_ROW, POSTER_MAX_NODES, rows_for_height
+from .stage import current as current_stage
 
 
 @dataclass(frozen=True)
@@ -230,7 +231,7 @@ class DrawingPlan:
                 for index, item in enumerate(payload.get("annotations", ()))
             ),
             legend=_legend_from_payload(payload.get("legend")),
-            width=int(payload.get("width", 960)),
+            width=current_stage().width,
             height=int(payload.get("height", 540)),
             canvas=str(payload.get("canvas", "figure")),
             subtitle=payload.get("subtitle"),

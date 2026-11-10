@@ -134,7 +134,7 @@ def check_structure(profiles: dict[str, dict[str, dict]], report: Report) -> Non
     # An empty kind almost always means a file failed to parse rather than that
     # the kind is unused: the taste set was silently invisible because its file
     # used `contracts:` as the top-level key.
-    for kind in ("typography", "page", "language", "theme", "taste"):
+    for kind in ("typography", "page", "web", "language", "theme", "taste"):
         if kind not in profiles:
             report.error("PROFILE.KIND.MISSING", kind, "no profile directory for this kind")
         elif not profiles[kind]:
@@ -160,6 +160,30 @@ def check_structure(profiles: dict[str, dict[str, dict]], report: Report) -> Non
             report.error("PROFILE.PAGE.HARD_NO_EXACT", name, "hard page count requires `exact`")
         elif mode == "soft" and "target" not in contract:
             report.error("PROFILE.PAGE.SOFT_NO_TARGET", name, "soft page count requires `target`")
+
+    for name, body in profiles.get("web", {}).items():
+        font = body.get("font") or {}
+        if not font.get("serif") or not font.get("mono"):
+            report.error("PROFILE.WEB.NO_STACK", name, "web profile needs font.serif and font.mono")
+        for family_key, file_key in (("face", "face_file"),
+                                     ("latin_face", "latin_face_file"),
+                                     ("mono_face", "mono_face_file")):
+            if font.get(family_key) and not font.get(file_key):
+                report.error(
+                    "PROFILE.WEB.FACE_WITHOUT_FILE", name,
+                    f"font.{family_key} names a family but font.{file_key} does not "
+                    "say which file")
+        body_type = body.get("type") or {}
+        base = body_type.get("body") or {}
+        if "size_px" not in base or "leading" not in base:
+            report.error("PROFILE.WEB.NO_BODY", name, "web type.body needs size_px and leading")
+        if not (body.get("space") or {}):
+            report.error("PROFILE.WEB.NO_SPACE", name, "web profile needs a spacing scale")
+        measure = (body.get("measure") or {}).get("body")
+        if measure is None:
+            report.error("PROFILE.WEB.NO_MEASURE", name, "web profile needs measure.body")
+        elif not 20 <= float(measure) <= 120:
+            report.error("PROFILE.WEB.MEASURE_RANGE", name, f"measure.body {measure} is outside 20-120ch")
 
     for name, body in profiles.get("taste", {}).items():
         hard = body.get("hard_requirements") or {}
@@ -391,6 +415,17 @@ def check_separation(profiles: dict[str, dict[str, dict]], report: Report) -> No
         if "font" in blob.lower() and "font_family" not in blob:
             report.warn("PROFILE.SEPARATION.FONT_IN_THEME", name, "theme mentions a font")
 
+    for profile_name, body in profiles.get("web", {}).items():
+        # The Web profile is the screen's typography: it must not carry colour.
+        # A hex in a font stack or a spacing scale is a theme leaking sideways.
+        blob = json.dumps(body)
+        if re.search(r"#[0-9a-fA-F]{3,6}\b", blob):
+            report.error(
+                "PROFILE.SEPARATION.COLOR_IN_WEB",
+                profile_name,
+                "web profile declares a colour; it belongs in a theme profile",
+            )
+
     for profile_name, body in profiles.get("typography", {}).items():
         # `subject` is passed explicitly: closing over the loop variable would
         # report whichever profile the loop reached last.
@@ -468,6 +503,7 @@ def _resolve_extends(profiles: dict[str, dict], kind: str, report: Report | None
 PROFILE_SCHEMAS = {
     "typography": "typography.schema.json",
     "page": "page.schema.json",
+    "web": "web.schema.json",
     "language": "language.schema.json",
     "theme": "theme.schema.json",
     "taste": "taste.schema.json",

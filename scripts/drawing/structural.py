@@ -4,19 +4,27 @@ from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass, replace
 from typing import Any
 
+from .canvas_contract import GRAPH_CANVAS, canvas_mode
+from .layout.graph_geometry import DEFAULT_GRAPH_GEOMETRY, GraphGeometry, graph_geometry_for_stage
 from .layout.models import LayoutBox
 from .scene import ResolvedScene, SceneBox, ScenePolyline, SceneRegion, SceneStyle
+from .stage import current as current_stage
 from .theme.folio import DEFAULT_FOLIO_THEME
-from .typography.roles import TextRole, role_text
+from .typography.fit import _wrap as _staged_wrap
+from .typography.fit import fit_wrap_width
+from .typography.measure import measure_text
+from .typography.roles import TextRole, resolve_text_style, role_text
 from .v3_common import (
     GraphComposition,
     GraphEdgePlan,
     GraphNodePlan,
     GraphPlan,
+    choose_graph_composition,
     common_payload_diagnostics,
     cycle_exists,
     dimensions,
     fit_layered_graph_height,
+    graph_axis_fits,
     graph_depths,
     infer_language,
     layout_layered_graph,
@@ -208,12 +216,33 @@ def compile_state_machine_payload(payload: dict[str, Any]):
     branching = any(item.get("type") == "choice" for item in states)
     pattern = "cyclic" if graph_cycles else "branching" if branching else "linear"
     plan = GraphPlan("state-machine", payload["title"], GraphComposition(pattern, axis, tuple(initial)), node_plans, edge_plans, width, height, language)
-    if "height" not in payload:
-        # A left-right lifecycle occupies one band. Trim the default 16:9 canvas to the band it
-        # needs so the diagram is not stranded in the vertical middle of empty parchment.
-        plan = replace(plan, height=fit_layered_graph_height(plan))
-    layout = layout_layered_graph(plan)
-    scene = resolve_graph_scene(plan, layout, description=_state_description(semantic))
+    stage = current_stage()
+    geometry = graph_geometry_for_stage(stage)
+    composition_axis, fold = axis, 0
+    if stage.is_default:
+        if "height" not in payload:
+            # A left-right lifecycle occupies one band. Trim the default 16:9 canvas to the band it
+            # needs so the diagram is not stranded in the vertical middle of empty parchment.
+            plan = replace(plan, height=fit_layered_graph_height(plan))
+    else:
+        composition_axis, fold = choose_graph_composition(
+            plan, geometry, width, GRAPH_CANVAS.ceiling(canvas_mode(payload)))
+        if not graph_axis_fits(
+                plan, geometry, composition_axis, fold, width,
+                GRAPH_CANVAS.ceiling(canvas_mode(payload))):
+            diagnostics.append(DrawingDiagnostic(
+                "ERROR", "SM025", "state machine cannot compose on this stage", "state-machine"))
+            require_no_errors("stage", diagnostics)
+        if composition_axis != axis:
+            plan = replace(
+                plan, composition=GraphComposition(pattern, composition_axis, tuple(initial)))
+        fitted = fit_layered_graph_height(
+            plan, geometry, axis=composition_axis, fold=fold)
+        plan = replace(plan, height=max(fitted, GRAPH_CANVAS.minimum_at(width)))
+    layout = layout_layered_graph(
+        plan, geometry, axis=composition_axis, fold=fold)
+    scene = resolve_graph_scene(
+        plan, layout, description=_state_description(semantic), geometry=geometry)
     scene_diagnostics = validate_resolved_scene(scene)
     return semantic, plan, layout, scene, tuple([*diagnostics, *scene_diagnostics])
 
@@ -341,13 +370,80 @@ def compile_swimlane_payload(payload: dict[str, Any]):
     edge_plans = tuple(GraphEdgePlan(item["id"], item["source"], item["target"], str(item.get("channel", "sequence")), item.get("label")) for item in flows)
     width, height = dimensions(payload)
     plan = GraphPlan("swimlane", payload["title"], GraphComposition("lanes", axis, tuple(starts)), node_plans, edge_plans, width, height, language)
-    layout, regions = _layout_swimlane(plan, lanes, focus_lane)
-    scene = resolve_graph_scene(plan, layout, regions=regions, description=_swimlane_description(semantic))
+    stage = current_stage()
+    geometry = graph_geometry_for_stage(stage)
+    composition_axis = axis
+    if not stage.is_default:
+        composition_axis = _choose_swimlane_axis(
+            plan, lanes, geometry, width, GRAPH_CANVAS.ceiling(canvas_mode(payload)))
+        if composition_axis != axis:
+            plan = replace(
+                plan, composition=GraphComposition("lanes", composition_axis, tuple(starts)))
+        fitted = _swimlane_height(plan, lanes, geometry, composition_axis)
+        plan = replace(plan, height=max(fitted, GRAPH_CANVAS.minimum_at(width)))
+    layout, regions = _layout_swimlane(
+        plan, lanes, focus_lane, geometry, composition_axis)
+    if not stage.is_default:
+        need_width, _need_height = _swimlane_extent(
+            plan, lanes, geometry, composition_axis)
+        if need_width > plan.width:
+            # The stage cannot hold the lane stack at all. Say that once: the
+            # layout below was measured on a canvas this stage does not have,
+            # so every box reports a symptom (a step outside its lane) of the
+            # one cause. The floor is the fixture's, not the family's: a
+            # three-lane stack needs 292 units, a four-lane one more.
+            diagnostics.append(DrawingDiagnostic(
+                "ERROR", "SW024", "swimlane cannot compose on this stage", "swimlane"))
+        else:
+            _check_swimlane_placements(plan, layout, regions, diagnostics)
+        require_no_errors("stage", diagnostics)
+    scene = resolve_graph_scene(
+        plan, layout, regions=regions,
+        description=_swimlane_description(semantic), geometry=geometry)
     scene_diagnostics = validate_resolved_scene(scene)
     return semantic, plan, layout, scene, tuple([*diagnostics, *scene_diagnostics])
 
 
-def _layout_swimlane(plan: GraphPlan, lanes: list[dict[str, Any]], focus_lane: str | None):
+def _check_swimlane_placements(
+    plan: GraphPlan,
+    layout: Any,
+    regions: list[SceneRegion],
+    diagnostics: list[DrawingDiagnostic],
+) -> None:
+    """A step stays in its lane and no two lane captions overlap.
+
+    Only meaningful on a stage that holds the lane stack: on a narrower one
+    every box is a symptom of SW024, which the caller has already reported.
+    """
+    regions_by_id = {region.id: region for region in regions}
+    for node in plan.nodes:
+        box = layout.boxes[node.id]
+        region = regions_by_id.get(node.lane or "")
+        if region is None or region.box is None:
+            continue
+        if box.y < region.box.y or box.y + box.h > region.box.y + region.box.h:
+            diagnostics.append(DrawingDiagnostic(
+                "ERROR", "SW022", "step leaves its lane", node.id))
+    captions = [region.label for region in regions]
+    for index, first in enumerate(captions):
+        first_left, first_right, first_top, first_bottom = _caption_span(first)
+        for second in captions[index + 1:]:
+            second_left, second_right, second_top, second_bottom = _caption_span(second)
+            if (first_left < second_right and second_left < first_right
+                    and first_top < second_bottom and second_top < first_bottom):
+                diagnostics.append(DrawingDiagnostic(
+                    "ERROR", "SW023", "lane names collide", second.text))
+
+
+def _layout_swimlane(
+    plan: GraphPlan,
+    lanes: list[dict[str, Any]],
+    focus_lane: str | None,
+    geometry: GraphGeometry = DEFAULT_GRAPH_GEOMETRY,
+    axis: str | None = None,
+):
+    if not geometry.is_default:
+        return _layout_swimlane_composed(plan, lanes, focus_lane, geometry, axis or plan.composition.axis)
     theme = DEFAULT_FOLIO_THEME
     lane_count = len(lanes)
     depths = graph_depths(plan)
@@ -411,8 +507,293 @@ def _layout_swimlane(plan: GraphPlan, lanes: list[dict[str, Any]], focus_lane: s
     return layout_result(boxes, edges), tuple(regions)
 
 
+def _swimlane_node_size(node: GraphNodePlan, geometry: GraphGeometry) -> tuple[int, int]:
+    """A lane node box sized by its own title, on the composed type scale."""
+    width, height = (
+        (geometry.lane_decision_width, geometry.lane_decision_height)
+        if node.archetype == "decision"
+        else (geometry.lane_node_width, geometry.lane_node_height)
+    )
+    title = resolve_text_style(TextRole.NODE_TITLE, DEFAULT_FOLIO_THEME)
+    width = max(width, geometry.lane_node_width_floor)
+    width = fit_wrap_width(node.label, width, title.size, 2, geometry.title_wrap_inset)
+    height = max(height, geometry.lane_node_height_floor)
+    lines = _staged_wrap(node.label, max(48, width - geometry.title_wrap_inset), title.size)
+    if len(lines) > 1:
+        height = max(height, geometry.node_subtitle_height)
+    return _grid(width), _grid(height)
+
+
+def _swimlane_sizes(plan: GraphPlan, geometry: GraphGeometry) -> dict[str, tuple[int, int]]:
+    return {node.id: _swimlane_node_size(node, geometry) for node in plan.nodes}
+
+
+def _swimlane_lane_widths(
+    plan: GraphPlan,
+    lanes: list[dict[str, Any]],
+    geometry: GraphGeometry,
+) -> list[int]:
+    """The narrowest lane that holds its widest step, before any spreading."""
+    sizes = _swimlane_sizes(plan, geometry)
+    needs: list[int] = []
+    for lane in lanes:
+        widths = [sizes[node.id][0] for node in plan.nodes if node.lane == lane["id"]]
+        base = max(widths) if widths else geometry.lane_node_width
+        needs.append(_grid(base + 2 * geometry.lane_pad))
+    return needs
+
+
+def _swimlane_header(geometry: GraphGeometry) -> int:
+    """The lane-caption strip above a top-down lane stack.
+
+    One line, centred over its lane. A caption a few units wider than the lane
+    overflows into the gutter between captions, which is why the check is that
+    the captions do not collide, not that each is inside its own lane.
+    """
+    return _grid(max(
+        geometry.lane_header,
+        geometry.title_clearance + geometry.lane_pad
+        + geometry.subtitle_pitch + geometry.lane_pad))
+
+
+def _swimlane_extent(
+    plan: GraphPlan,
+    lanes: list[dict[str, Any]],
+    geometry: GraphGeometry,
+    axis: str,
+) -> tuple[int, int]:
+    """The smallest canvas that holds this lane composition on ``axis``."""
+    sizes = _swimlane_sizes(plan, geometry)
+    depths = graph_depths(plan)
+    levels = max(depths.values(), default=0) + 1
+    if axis == "left-right":
+        level_widths: dict[int, int] = {}
+        lane_needs: dict[str, int] = {}
+        for node in plan.nodes:
+            level_widths[depths[node.id]] = max(
+                level_widths.get(depths[node.id], 0), sizes[node.id][0])
+            lane_needs[node.lane or ""] = max(
+                lane_needs.get(node.lane or "", 0), sizes[node.id][1])
+        body = sum(
+            max(lane_needs.get(lane["id"], 0), geometry.lane_header) + geometry.lane_pad
+            for lane in lanes)
+        width = (
+            geometry.lane_step_left + sum(level_widths.values())
+            + max(0, levels - 1) * geometry.min_gap + geometry.lane_right)
+        return _grid(width), _grid(geometry.lane_top + body + geometry.lane_bottom)
+    widths = _swimlane_lane_widths(plan, lanes, geometry)
+    level_heights: dict[int, int] = {}
+    for node in plan.nodes:
+        level_heights[depths[node.id]] = max(
+            level_heights.get(depths[node.id], 0), sizes[node.id][1])
+    gap = max(geometry.min_gap, geometry.node_gap)
+    side = geometry.min_side_margin
+    width = 2 * side + sum(widths)
+    height = (
+        _swimlane_header(geometry)
+        + sum(level_heights.values()) + max(0, levels - 1) * gap + geometry.lane_bottom)
+    return _grid(width), _grid(height)
+
+
+def _swimlane_fits(
+    plan: GraphPlan,
+    lanes: list[dict[str, Any]],
+    geometry: GraphGeometry,
+    axis: str,
+    width: int,
+    max_height: int,
+) -> bool:
+    need_width, need_height = _swimlane_extent(plan, lanes, geometry, axis)
+    return need_width <= width and need_height <= max_height
+
+
+def _choose_swimlane_axis(
+    plan: GraphPlan,
+    lanes: list[dict[str, Any]],
+    geometry: GraphGeometry,
+    width: int,
+    max_height: int,
+) -> str:
+    """Keep the authored axis when it fits; turn the lanes upright when it does not.
+
+    A horizontal lane is a row: four lanes need five steps' worth of columns,
+    which a narrow plate cannot hold. Turned upright each lane needs one step's
+    width, so the same flow reads down the page instead of across it.
+    """
+    authored = plan.composition.axis
+    if _swimlane_fits(plan, lanes, geometry, authored, width, max_height):
+        return authored
+    perpendicular = "top-down" if authored == "left-right" else "left-right"
+    if _swimlane_fits(plan, lanes, geometry, perpendicular, width, max_height):
+        return perpendicular
+    return authored
+
+
+def _swimlane_height(
+    plan: GraphPlan,
+    lanes: list[dict[str, Any]],
+    geometry: GraphGeometry,
+    axis: str,
+) -> int:
+    return _swimlane_extent(plan, lanes, geometry, axis)[1]
+
+
+def _layout_swimlane_composed(
+    plan: GraphPlan,
+    lanes: list[dict[str, Any]],
+    focus_lane: str | None,
+    geometry: GraphGeometry,
+    axis: str,
+):
+    theme = DEFAULT_FOLIO_THEME
+    sizes = _swimlane_sizes(plan, geometry)
+    depths = graph_depths(plan)
+    max_depth = max(depths.values(), default=0)
+    lane_index = {item["id"]: index for index, item in enumerate(lanes)}
+    lane_widths = _swimlane_lane_widths(plan, lanes, geometry)
+    boxes: dict[str, LayoutBox] = {}
+    regions: list[SceneRegion] = []
+    if axis == "left-right":
+        top, bottom = geometry.lane_top, plan.height - geometry.lane_bottom
+        lane_needs: dict[str, int] = {}
+        for node in plan.nodes:
+            lane_needs[node.lane or ""] = max(
+                lane_needs.get(node.lane or "", 0), sizes[node.id][1])
+        lane_height = max(
+            max((max(lane_needs.get(lane["id"], 0), geometry.lane_header)
+                 + geometry.lane_pad for lane in lanes), default=geometry.lane_header),
+            (bottom - top) // max(1, len(lanes)))
+        level_widths: dict[int, int] = {}
+        for node in plan.nodes:
+            level_widths[max(0, depths[node.id])] = max(
+                level_widths.get(max(0, depths[node.id]), 0), sizes[node.id][0])
+        left = geometry.lane_step_left
+        available = plan.width - left - geometry.lane_right
+        spread = geometry.min_gap
+        if max_depth > 0:
+            spread = max(
+                geometry.min_gap,
+                _grid((available - sum(level_widths.values())) / max_depth))
+        for node in plan.nodes:
+            level = max(0, depths[node.id])
+            width, height = sizes[node.id]
+            cursor = left + sum(
+                level_widths.get(item, 0) + spread for item in range(level))
+            x = _grid(cursor + (level_widths.get(level, width) - width) / 2)
+            y = _grid(
+                top + lane_index[node.lane or ""] * lane_height
+                + max(0, (lane_height - height) / 2))
+            boxes[node.id] = LayoutBox(x, y, width, height)
+        for index, lane in enumerate(lanes):
+            y = _grid(top + index * lane_height)
+            focal = lane["id"] == focus_lane
+            regions.append(SceneRegion(
+                lane["id"], "lane",
+                role_text(lane["label"], geometry.lane_label_x,
+                          y + geometry.lane_label_offset, TextRole.LANE_LABEL,
+                          theme, emphasis="focal" if focal else "normal", tracking=0),
+                SceneBox(geometry.lane_box_x, y,
+                         plan.width - geometry.lane_box_width_pad,
+                         max(geometry.lane_header, _grid(lane_height - geometry.lane_pad))),
+                SceneStyle(theme.brand_tint if focal else "none",
+                           theme.muted_stroke if focal else theme.border,
+                           1, radius=6, fill_opacity=0.32 if focal else None),
+            ))
+    else:
+        side = max(geometry.min_side_margin, (plan.width - sum(lane_widths)) // 2)
+        widths = lane_widths
+        header = _swimlane_header(geometry)
+        gap = max(geometry.min_gap, geometry.node_gap)
+        level_heights: dict[int, int] = {}
+        for node in plan.nodes:
+            level_heights[max(0, depths[node.id])] = max(
+                level_heights.get(max(0, depths[node.id]), 0), sizes[node.id][1])
+        level_y: dict[int, int] = {}
+        cursor = header
+        for level in range(max_depth + 1):
+            level_y[level] = _grid(cursor)
+            cursor += level_heights.get(level, 0) + gap
+        lane_x: dict[str, int] = {}
+        cursor = side
+        for lane, width in zip(lanes, widths):
+            lane_x[lane["id"]] = _grid(cursor)
+            cursor += width
+        for node in plan.nodes:
+            lane = node.lane or ""
+            width, height = sizes[node.id]
+            lane_width = widths[lane_index.get(lane, 0)]
+            boxes[node.id] = LayoutBox(
+                _grid(lane_x.get(lane, side)
+                      + max(0, (lane_width - width) / 2)),
+                _grid(level_y[max(0, depths[node.id])]), width, height)
+        for lane, width in zip(lanes, widths):
+            x = lane_x[lane["id"]]
+            focal = lane["id"] == focus_lane
+            caption = role_text(
+                lane["label"], _grid(x + width / 2),
+                geometry.title_clearance + geometry.lane_pad + geometry.subtitle_pitch,
+                TextRole.LANE_LABEL, theme,
+                emphasis="focal" if focal else "normal", anchor="middle", tracking=0)
+            regions.append(SceneRegion(
+                lane["id"], "lane", caption,
+                SceneBox(x, geometry.title_clearance, max(4, width - geometry.lane_pad),
+                         plan.height - geometry.title_clearance - geometry.lane_bottom),
+                SceneStyle(theme.brand_tint if focal else "none",
+                           theme.muted_stroke if focal else theme.border,
+                           1, radius=6, fill_opacity=0.32 if focal else None),
+            ))
+    label_obstacles: list[LayoutBox] = []
+    for region in regions:
+        label_obstacles.append(
+            LayoutBox(region.box.x, region.box.y - 2, region.box.w, 4))
+        label_obstacles.append(
+            LayoutBox(region.box.x, region.box.y + region.box.h - 2, region.box.w, 4))
+        caption = region.label
+        caption_width = int(measure_text(
+            caption.text, caption.size, caption.family)) + 8
+        label_obstacles.append(
+            LayoutBox(caption.x - 4, caption.y - 12, caption_width, 18))
+    if regions:
+        lane_top = min(region.box.y for region in regions)
+        lane_bottom = max(region.box.y + region.box.h for region in regions)
+        lane_left = min(region.box.x for region in regions)
+        lane_right = max(region.box.x + region.box.w for region in regions)
+        label_obstacles.append(
+            LayoutBox(0, lane_bottom, plan.width, max(4, plan.height - lane_bottom)))
+        label_obstacles.append(LayoutBox(0, 0, plan.width, max(4, lane_top)))
+        label_obstacles.append(LayoutBox(0, 0, max(4, lane_left), plan.height))
+        label_obstacles.append(
+            LayoutBox(lane_right, 0, max(4, plan.width - lane_right), plan.height))
+    edges = route_graph_edges(
+        plan, boxes, plan.width, plan.height, tuple(label_obstacles),
+        geometry, axis=axis)
+    return layout_result(boxes, edges), tuple(regions)
+
+
 def _grid(value: float | int) -> int:
     return int(round(float(value) / 4) * 4)
+
+
+def _caption_span(label) -> tuple[float, float, float, float]:
+    """The box a lane caption occupies: its x span, then its y span.
+
+    Captions can collide on either axis. A top-down plate puts every lane in
+    one header strip, so the lanes differ in x and the captions share a y. A
+    left-right plate stacks the lanes, so every caption starts at the same x
+    and only the y span separates them. Comparing x alone reported a collision
+    for every left-right lane stack on a composed stage, which is why the same
+    fixture passed at 528 but failed at 660.
+
+    ``y`` is a baseline: the glyphs sit above it and only the descenders go
+    below, so the box is the type size up and a quarter of it down.
+    """
+    width = measure_text(label.text, label.size, label.family) + (
+        label.tracking * label.size * len(label.text))
+    if label.anchor == "middle":
+        left, right = label.x - width / 2, label.x + width / 2
+    else:
+        left, right = label.x, label.x + width
+    return left, right, label.y - label.size, label.y + label.size * 0.25
 
 
 def _swimlane_description(semantic: SwimlaneSemantic) -> str:

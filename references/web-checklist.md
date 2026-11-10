@@ -1,5 +1,8 @@
 # Web Checklist
 
+> Superseded. The current Web scenario is `references/web/README.md`; this file
+> is kept for history and must not be used to route new work.
+
 Use this checklist before and after Web design work with Folio.
 
 ## 1. Choose The Mode

@@ -151,6 +151,25 @@ python3 scripts/folio.py batch-render-drawings references/fixtures/v5 \
 - The coordinate-bearing UML loader in `scripts/diagram_models.py` plus `scripts/diagram_layout.py:layout_uml_class` remain available only as a compatibility facade; production UML artifacts use the coordinate-free registry contract.
 - `scripts/diagram_models.py` is the Architecture spec contract shared by the registry compiler and `scripts/diagram_semantic_planning.py`; the latter is the supported text-to-Architecture planner, not a legacy path.
 
+### Labels and arrow approaches
+
+Two floors belong to the connector, not to any one family or stage, because both
+are statements about type:
+
+- **A label stays with its line.** `LABEL_REACH` is twice the label's own height
+  (`LABEL_HEIGHT × 2` = 32 units). A label that cannot be placed that close to
+  the connector it names is dropped, per label. The rule applies on every
+  stage: an authored 960 canvas used to let a word drift up to 72 units into a
+  free slot, where it reads as belonging to nothing. Labels longer than
+  `EDGE_LABEL_MAX_CHARS` are never drawn, and the room a row has to keep for a
+  label is measured with the same function the placer uses.
+- **An approach is longer than the arrowhead.** The arrowhead is type and does
+  not scale with the stage, while the gaps do. A route lane clamped to a face
+  leaves the final run at the arrowhead's own depth, and the tip then lands on
+  the corner it turned at (`DG137`). Every lane is therefore held back by
+  `approach_min` (two arrowheads) where the faces leave room for it; where they
+  do not, the geometry has no lane to hold.
+
 ## Canvas modes
 
 Run `python3 scripts/build_canvas_review.py` to regenerate the offline comparison at

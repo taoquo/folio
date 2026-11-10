@@ -27,11 +27,19 @@ trap 'rm -f "$MANIFEST" "$FILTERED_MANIFEST" "$ZIP_MANIFEST" "$MISSING_MANIFEST"
   done
   for source in \
     assets/diagrams/generated/catalog/png \
+    assets/templates/web \
+    references/web \
+    references/profiles/web \
     scripts/drawing \
     scripts/renderers \
     scripts/diagram_catalog.py \
     scripts/pdf_metadata.py \
     scripts/drawing_host_integration.py \
+    scripts/build_web.py \
+    scripts/check_web.py \
+    scripts/web_contracts.py \
+    scripts/web_figures.py \
+    scripts/web_geometry.py \
     CHANGELOG.md \
     references/decisions \
     references/schemas \

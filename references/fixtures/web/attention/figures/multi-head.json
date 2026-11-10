@@ -1,0 +1,72 @@
+{
+  "schema_version": "3.0",
+  "kind": "architecture",
+  "title": "Multi-head attention",
+  "layout": "horizontal-layers",
+  "height": 500,
+  "layers": [
+    {
+      "id": "heads",
+      "label": "Heads"
+    },
+    {
+      "id": "mix",
+      "label": "Mix"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "h1",
+      "kind": "external",
+      "label": "Head 1",
+      "layer": "heads"
+    },
+    {
+      "id": "h2",
+      "kind": "external",
+      "label": "Head 2",
+      "layer": "heads"
+    },
+    {
+      "id": "h3",
+      "kind": "external",
+      "label": "Head 3",
+      "layer": "heads"
+    },
+    {
+      "id": "mh",
+      "kind": "service",
+      "label": "Multi-head",
+      "sublabel": "8 heads in the paper",
+      "layer": "mix"
+    },
+    {
+      "id": "cat",
+      "kind": "service",
+      "label": "Concat + linear",
+      "layer": "mix"
+    }
+  ],
+  "edges": [
+    {
+      "source": "h1",
+      "target": "mh",
+      "kind": "primary"
+    },
+    {
+      "source": "h2",
+      "target": "mh",
+      "kind": "primary"
+    },
+    {
+      "source": "h3",
+      "target": "mh",
+      "kind": "primary"
+    },
+    {
+      "source": "mh",
+      "target": "cat",
+      "kind": "primary"
+    }
+  ]
+}

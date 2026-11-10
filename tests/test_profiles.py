@@ -20,9 +20,9 @@ class ShippedProfileTests(TestCase):
         report = pc.run_checks()
         self.assertEqual([], [f.message for f in report.errors])
 
-    def test_all_five_profile_kinds_are_present(self) -> None:
+    def test_all_six_profile_kinds_are_present(self) -> None:
         report = pc.run_checks()
-        self.assertEqual(5, report.checked.get("profile_kinds"))
+        self.assertEqual(6, report.checked.get("profile_kinds"))
 
     def test_every_genre_has_a_page_profile(self) -> None:
         profiles = pc.load_profiles()
@@ -65,6 +65,12 @@ class ProfileRuleTests(TestCase):
         profiles = {
             "typography": {"base": {"body": {"size_pt": 10}}},
             "page": {"base": {"page_count": {"mode": "soft", "target": 1}}},
+            "web": {"base": {
+                "font": {"serif": ["Charter"], "mono": ["Mono"]},
+                "type": {"body": {"size_px": 13, "leading": 1.55}},
+                "space": {"s1": 2},
+                "measure": {"body": 88},
+            }},
             "language": {"base": {"tag": "en-US"}},
             "theme": {"base": {"colors": {"paper": "#F6F0EA"}}},
             "taste": {"base": {"hard_requirements": {"overflow": 0}}},

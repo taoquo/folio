@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="{{LANG}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{PAGE_TITLE}}</title>
+<style>
+{{FONT_FACE}}
+{{THEME_ROOT}}
+
+{{BASE_CSS}}
+</style>
+</head>
+<body class="doc module-archive" id="top" data-folio-kind="{{KIND}}">
+<a class="skip" href="#content">{{SKIP}}</a>
+<header class="topbar">
+  <a class="back" href="../index.html">{{BACK_SERIES}}</a>
+  <span class="series-name">{{SERIES_TITLE}}</span>
+  <span class="now" aria-hidden="true"></span>
+  <span class="progress" aria-hidden="true"></span>
+</header>
+<main class="page" id="content">
+<header class="doc-head">
+  <p class="kicker">{{MODULE_LABEL}} · {{KICKER}}</p>
+  <h1>{{TITLE}}</h1>
+  <p class="lead">{{LEAD}}</p>
+{{SOURCE}}
+</header>
+<nav class="toc" aria-label="{{TOC_LABEL}}">
+<ol>
+{{TOC}}
+</ol>
+</nav>
+{{SECTIONS}}
+<nav class="doc-nav">
+  <a href="../index.html">{{BACK_SERIES}}</a><span class="dot">·</span><a href="#top">{{TO_TOP}}</a>
+</nav>
+</main>
+<nav class="rail" aria-label="{{RAIL_LABEL}}">
+{{RAIL}}
+</nav>
+<script>
+{{RAIL_SCRIPT}}
+</script>
+</body>
+</html>

@@ -110,6 +110,7 @@ jobs:
       - name: Check the demo showcase is current
         run: python scripts/build_demos.py --check
 
+
       - name: Upload the nightly evidence bundle
         if: always()
         uses: actions/upload-artifact@v4
@@ -122,3 +123,55 @@ jobs:
             dist/corpus/**/*.pdf
             dist/nightly/determinism/**
             dist/shadow/**
+            dist/web/*/metrics.json
+            dist/web/*/plan.json
+
+  web-reading:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: |
+            requirements-ci.txt
+            requirements-nightly.txt
+      - name: Install system dependencies
+        run: >-
+          sudo apt-get update && sudo apt-get install -y
+          libcairo2 libgdk-pixbuf-2.0-0 libglib2.0-0
+          libpango-1.0-0 libpangoft2-1.0-0 librsvg2-bin
+          poppler-utils shared-mime-info unzip zip
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --disable-pip-version-check -r requirements-ci.txt
+          python -m pip install --disable-pip-version-check -r requirements-nightly.txt
+          python -m playwright install --with-deps chromium
+
+      # The page is what Chromium renders, so the page is what Chromium
+      # measures. The fast gate keeps the plan arithmetic; this job keeps the
+      # truth, at the four widths the contract reviews.
+      - name: Build the reading pages
+        run: |
+          python scripts/folio.py web --series references/fixtures/web/reading-demo --verify --level 3
+          python scripts/folio.py web --series references/fixtures/web/attention --verify --level 3
+      - name: Measure the rendered pages
+        run: |
+          python scripts/web_measure.py --series reading-demo
+          python scripts/web_measure.py --series attention
+      - name: Check the pages against their layout plan
+        run: |
+          python scripts/web_verify.py --series reading-demo
+          python scripts/web_verify.py --series attention
+      - name: Upload the measurement
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-reading-metrics
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            dist/web/*/metrics.json
+            dist/web/*/plan.json

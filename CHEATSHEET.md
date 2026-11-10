@@ -301,60 +301,45 @@ Not sure which type? Route first: `scripts/folio.py route-diagram --content "...
 
 **Editing data**: edit semantic JSON only. Do not author coordinates, colors, paths, or typography.
 
-## Web guidance
+## Web reading pages
 
-Folio Web guidance is for browser-page design. It does not add a Web build chain.
+Folio builds static reading pages: a series index and one module archive per
+article. No component library, router, client state, or build step at view
+time. The old design-guidance notes (`references/web-foundation.md`,
+`web-reading.md`, `web-workspace.md`, `web-checklist.md`) are superseded and
+kept for history only.
 
-| Mode | Use | Read |
-|---|---|---|
-| Reading / Publication | Long articles, web reports, case studies, research pages | `references/web-foundation.md` + `references/web-reading.md` |
-| Workspace / Product UI | Dashboards, editors, review queues, admin tools | `references/web-foundation.md` + `references/web-workspace.md` |
-| Mixed | Pages with both prose and operations | Separate reading and workspace regions, then use `references/web-checklist.md` |
-
-Page structure:
-
-| Archetype | Page job | Must expose |
-|---|---|---|
-| Reading / Publication | Follow a claim and inspect evidence | title block, section path, captions, sources |
-| Workspace / Product UI | Inspect state and take repeated action | navigation, selected object, action state, feedback |
-| Hybrid / Document Tool | Separate prose from operations | reading rail plus operational panel or inspector |
-
-Design contract:
-
-| Step | Output |
+| Layer | Owner |
 |---|---|
-| Visual thesis | Mood, material, and energy in one sentence |
-| Page job | What the page helps the user understand or do |
-| Content plan | Required content regions, evidence, actions, and feedback in page order |
-| Primary object | What must be visible in the first viewport |
-| Page skeleton | Regions in reading or workspace order |
-| Interaction thesis | 2-3 motions using the Motion Thesis Template |
-| State coverage | Loading, empty, error, disabled, selected, success as needed |
-| Mobile collapse | Rails, inspectors, tables, and actions below 768px |
-| Final quality gate | Why the page is not a generic card grid or decorative animation |
+| Colours | `references/profiles/theme/*.yaml` |
+| Screen type, fonts, spacing, radii, measure, page geometry | `references/profiles/web/folio-v1.yaml` |
+| Figures | `references/drawing-dsl.md`, `scripts/drawing/` |
+| Delivery, content, density, figures, acceptance | `references/web/` |
 
-Motion Thesis Template:
+Two page kinds, declared in `series.json`:
 
-```text
-Motion thesis:
-- Page motion: This motion means the user is oriented within the page by ...
-- Region motion: This motion means secondary context is attached to or removed from ...
-- Object motion: This motion means the current object, row, figure, source, or section is ...
-- Control motion: This motion means the control can be acted on, is being pressed, or has completed ...
+- `case` — content. Names the work it reads (work, author, year, link) and
+  never describes the engine that set it.
+- `fixture` — the engine's conformance page. Carries a delivery status and a
+  package path, and exists to test the rules.
+
+```bash
+python3 scripts/folio.py web --series <dir>
+python3 scripts/check_web.py dist/web/<series>/<module>/index.html --level 3 \
+  --series-dir dist/web/<series> --figures-manifest dist/web/<series>/figures.manifest.json
 ```
 
-Use only the layers that serve the page job. Prefer 2-3 meaningful motions, include at least one page, region, or object motion unless the page is only a simple form or static notice, and write `Not used because ...` for omitted layers.
+Rules: `W-*` are static (`scripts/check_web.py`), `V-*` are measured in a
+browser (`scripts/web_verify.py`). Both are listed in `references/web/`.
 
 Fast rules:
 
-1. Keep parchment warmth, cinnabar-coral restraint, and warm neutrals.
-2. Start from the page job, not from components.
-3. Cards are for real repeated or selectable objects, not default section styling.
-4. Reading pages need orientation: contents, progress, captions, or source rails.
-5. Workspace pages need states: loading, empty, error, disabled, active, selected, success.
-6. Motion clarifies position, state, or progressive disclosure; it is never decoration.
-7. Dense operational UI may be more functional than editorial; keep Folio through material and restraint.
-8. Mobile-critical actions must not depend on hover.
+1. Start from the page job, not from components.
+2. A page is one column: prose, headings, plates, tables and captions share
+   one left and right edge.
+3. A case names its source; it does not report on the engine.
+4. Values come from the profiles; a literal in `base.css` is a defect.
+5. Figures are Drawing DSL products; a page never hand-authors an SVG.
 
 ## Dark section
 

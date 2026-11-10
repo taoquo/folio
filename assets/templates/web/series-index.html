@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="{{LANG}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{SERIES_TITLE}}</title>
+<style>
+{{FONT_FACE}}
+{{THEME_ROOT}}
+
+{{BASE_CSS}}
+</style>
+</head>
+<body class="doc series-index" id="top">
+<a class="skip" href="#content">{{SKIP}}</a>
+<main class="page" id="content">
+<header class="doc-head">
+  <p class="kicker">{{SERIES_LABEL}} · {{SERIES_KICKER}}</p>
+  <h1>{{SERIES_TITLE}}</h1>
+  <p class="lead">{{SERIES_LEAD}}</p>
+</header>
+<ul class="module-grid">
+{{MODULES}}
+</ul>
+</main>
+<nav class="rail" aria-label="{{RAIL_LABEL}}">
+{{RAIL}}
+</nav>
+<script>
+{{RAIL_SCRIPT}}
+</script>
+</body>
+</html>

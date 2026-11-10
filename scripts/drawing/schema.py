@@ -5,6 +5,7 @@ from copy import deepcopy
 from typing import Any
 
 from .canvas_contract import GRAPH_CANVAS, NODES_PER_ROW, canvas_issues, height_for_rows
+from .stage import current as current_stage
 
 SCHEMA_VERSION = "2.0"
 
@@ -233,7 +234,7 @@ def _validate_canvas_dimensions(payload: dict[str, Any], issues: list[str]) -> N
     start from the same 960-unit contract so hosts get one predictable input shape.
     """
     kind = str(payload.get("kind") or "diagram")
-    issues.extend(canvas_issues(payload, kind=kind, band=GRAPH_CANVAS))
+    issues.extend(canvas_issues(payload, kind=kind, band=GRAPH_CANVAS, stage=current_stage().width))
 
 
 def _validate_architecture_intent(payload: dict[str, Any], issues: list[str]) -> None:

@@ -1,0 +1,7 @@
+# The nightly tier's extra dependency: a real browser.
+#
+# The Web reading page is verified by what Chromium actually renders, because
+# the fast gate cannot run a browser on every push and WeasyPrint does not
+# evaluate screen media queries. Keep this out of requirements-ci.txt: the
+# build and the checker must not import Playwright.
+playwright==1.64.1

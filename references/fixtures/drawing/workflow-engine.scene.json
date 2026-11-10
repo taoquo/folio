@@ -325,7 +325,7 @@
       "label": {
         "text": "STATE",
         "x": 344,
-        "y": 348,
+        "y": 380,
         "fill": "#5A4A43",
         "size": 8.0,
         "family": "'JetBrains Mono', monospace",
@@ -336,7 +336,7 @@
       },
       "label_box": {
         "x": 328,
-        "y": 336,
+        "y": 368,
         "w": 32,
         "h": 16
       },

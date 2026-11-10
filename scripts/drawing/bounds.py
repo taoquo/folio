@@ -78,6 +78,15 @@ def union_boxes(boxes: Iterable[SceneBox]) -> SceneBox:
     return SceneBox(left, top, right - left, bottom - top)
 
 
+def intersect_box(box: SceneBox, bounds: tuple[int, int, int, int]) -> SceneBox:
+    """The part of ``box`` the canvas actually draws, which may be empty."""
+    left = max(box.x, bounds[0])
+    top = max(box.y, bounds[1])
+    right = min(box.x + box.w, bounds[0] + bounds[2])
+    bottom = min(box.y + box.h, bounds[1] + bounds[3])
+    return SceneBox(left, top, max(0, right - left), max(0, bottom - top))
+
+
 def scene_content_boxes(scene: ResolvedScene) -> list[SceneBox]:
     """Every box that carries ink below the diagram title."""
     boxes: list[SceneBox] = [node.box for node in scene.nodes]
@@ -98,6 +107,44 @@ def scene_content_boxes(scene: ResolvedScene) -> list[SceneBox]:
         elif isinstance(item, SceneText):
             boxes.append(text_box(item))
     return [box for box in boxes if box.w >= 0 and box.h >= 0]
+
+
+def largest_empty_band(scene: ResolvedScene) -> tuple[int, int]:
+    """The tallest horizontal band inside the content that nothing crosses.
+
+    Returns ``(units, content height)``. Coverage is measured on the ink's
+    bounding box, so a drawing that wraps two rows at the top and one at the
+    bottom, leaving a wide hole between them, still reports a filled plate.
+    This is the number that sees that hole: every drawn thing is an occupied
+    interval on the vertical axis, and the gap between two neighbours is a
+    band the reader reads as empty.
+
+    The title is not content: it sits above the drawing by design, and a band
+    between it and the first row is the page's, not the plate's. Region frames,
+    connector routes, labels and the legend all count as occupied, because each
+    one is ink inside the box.
+    """
+    boxes = scene_content_boxes(scene)
+    for region in scene.regions:
+        boxes.append(text_box(region.label))
+    for node in scene.nodes:
+        boxes.extend(text_box(item) for item in node.text_runs)
+    boxes = [box for box in boxes if box.w > 0 and box.h > 0]
+    if not boxes:
+        return (0, 0)
+    content = union_boxes(boxes)
+    top_edge, bottom_edge = content.y, content.y + content.h
+    spans = sorted(
+        (max(box.y, top_edge), min(box.y + box.h, bottom_edge)) for box in boxes)
+    tallest = 0
+    cursor = top_edge
+    for top, bottom in spans:
+        if top > cursor:
+            tallest = max(tallest, top - cursor)
+        cursor = max(cursor, bottom)
+    if bottom_edge > cursor:
+        tallest = max(tallest, bottom_edge - cursor)
+    return (tallest, content.h)
 
 
 def scene_ink_box(scene: ResolvedScene) -> SceneBox | None:

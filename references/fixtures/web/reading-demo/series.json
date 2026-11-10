@@ -1,0 +1,47 @@
+{
+  "series": "reading-demo",
+  "kind": "fixture",
+  "language": "en",
+  "kicker": "FIXTURE",
+  "title": "Web Reading Fixture",
+  "lead": "A small original page that exercises the scenario without a host or a browser.",
+  "figure_prefix": "W",
+  "figures": [
+    {
+      "id": "release-gate",
+      "fixture": "figures/release-gate.json",
+      "caption": "A release stops at a gate when any visual check fails",
+      "example": true
+    },
+    {
+      "id": "build-lifecycle",
+      "fixture": "figures/build-lifecycle.json",
+      "caption": "A build job moves from queued to rendered to signed"
+    },
+    {
+      "id": "sign-off",
+      "fixture": "figures/sign-off.json",
+      "caption": "Sign-off crosses three lanes before the report ships"
+    }
+  ],
+  "modules": [
+    {
+      "id": "reading",
+      "num": "01",
+      "name": "Web Reading Fixture",
+      "summary": "Release gates, build stages, sign-off and the gate record, as the conformance page.",
+      "kind": "fixture",
+      "status": "Implemented",
+      "package": "fixtures/web/reading-demo",
+      "title": "Web Reading Fixture",
+      "kicker": "FIXTURE",
+      "lead": "Four chapters and three figures, used to check the engine.",
+      "fragment": "reading.frag.html",
+      "figures": [
+        "release-gate",
+        "build-lifecycle",
+        "sign-off"
+      ]
+    }
+  ]
+}

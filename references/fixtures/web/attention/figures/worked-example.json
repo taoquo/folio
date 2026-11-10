@@ -1,0 +1,64 @@
+{
+  "schema_version": "3.0",
+  "kind": "architecture",
+  "title": "One head, concrete shapes",
+  "layout": "vertical-stack",
+  "height": 500,
+  "layers": [
+    {
+      "id": "in",
+      "label": "Input"
+    },
+    {
+      "id": "out",
+      "label": "One head"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "x",
+      "kind": "external",
+      "label": "x",
+      "sublabel": "4 x 512",
+      "layer": "in"
+    },
+    {
+      "id": "proj",
+      "kind": "service",
+      "label": "Wq Wk Wv",
+      "sublabel": "512 x 64 each",
+      "layer": "out"
+    },
+    {
+      "id": "score",
+      "kind": "service",
+      "label": "scores",
+      "sublabel": "4 x 4",
+      "layer": "out"
+    },
+    {
+      "id": "head",
+      "kind": "service",
+      "label": "softmax rows",
+      "sublabel": "head: 4 x 64",
+      "layer": "out"
+    }
+  ],
+  "edges": [
+    {
+      "source": "x",
+      "target": "proj",
+      "kind": "primary"
+    },
+    {
+      "source": "proj",
+      "target": "score",
+      "kind": "primary"
+    },
+    {
+      "source": "score",
+      "target": "head",
+      "kind": "primary"
+    }
+  ]
+}

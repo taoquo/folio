@@ -19,6 +19,7 @@ from drawing.scene import (
     SceneStyle,
     SceneText,
 )
+from drawing.stage import current as current_stage
 
 
 def _attribute(value: str) -> str:
@@ -51,7 +52,7 @@ def _style(style: SceneStyle) -> str:
     return " ".join(parts)
 
 
-def _text(item: SceneText) -> str:
+def _text(item: SceneText, halo: str | None = None) -> str:
     attrs = [f'x="{item.x}"', f'y="{item.y}"', f'fill="{item.fill}"', f'font-size="{_number(item.size)}"', _font_family_attr(item.family)]
     if item.anchor != "start":
         attrs.append(f'text-anchor="{item.anchor}"')
@@ -61,6 +62,10 @@ def _text(item: SceneText) -> str:
         attrs.append(f'font-weight="{item.weight}"')
     if item.klass:
         attrs.append(f'class="{item.klass}"')
+    if halo:
+        # A knockout behind the glyphs: whatever is drawn under the label reads
+        # as passing behind it, not through it.
+        attrs.append(f'stroke="{halo}" stroke-width="3" stroke-linejoin="round" paint-order="stroke"')
     return f'<text {" ".join(attrs)}>{escape(item.text)}</text>'
 
 
@@ -217,10 +222,21 @@ def render_svg(
         f'<rect data-folio-role="canvas" x="{view_x}" y="{view_y}" width="{view_width}" height="{view_height}" fill="{scene.background}" />',
         _text(scene.title),
     ]
+    # A region label sits where connectors enter: a band header above its row,
+    # a group label inside the boundary's top padding. On the authored stage the
+    # band header keeps to the left gutter, where no connector goes; a composed
+    # stage has no gutter to spare, so a label that could not be nudged clear is
+    # drawn last with a knockout, and the line reads as passing behind the words
+    # instead of through them. The authored stage keeps its order and its bytes.
+    deferred_headers: list[str] = []
+    composed = not current_stage().is_default
     for region in scene.regions:
         if region.box and region.style:
             fragments.append(f'<rect class="arch-group" x="{region.box.x}" y="{region.box.y}" width="{region.box.w}" height="{region.box.h}" rx="{region.style.radius}" {_style(region.style)} />')
-        fragments.append(_text(region.label))
+        if composed and region.label.text:
+            deferred_headers.append(_text(region.label, halo=scene.background))
+        else:
+            fragments.append(_text(region.label))
         if region.separator and region.style:
             start, end = region.separator
             fragments.append(f'<line x1="{start[0]}" y1="{start[1]}" x2="{end[0]}" y2="{end[1]}" stroke="{region.style.stroke}" stroke-width="{_number(region.style.stroke_width)}" />')
@@ -229,7 +245,10 @@ def render_svg(
         fragments.append(f'<path {_id_attrs(namespace, edge.id)} class="{edge.klass}" d="{_rounded_path(edge.points, edge.corner_radius, edge.bridges)}" {_style(edge.style)} stroke-linecap="round" stroke-linejoin="round" />')
         fragments.append(_arrow(edge.arrow, edge.style.stroke, edge.style.stroke_width))
         if edge.label:
-            fragments.append(_text(edge.label))
+            # Same rule as a region label: on a composed stage the connector
+            # label sits in a scaled gap, and a boundary rule can run across it.
+            # Drawn with a knockout, the rule reads as passing behind the word.
+            fragments.append(_text(edge.label, halo=scene.background if composed else None))
     for fallback_index, node in enumerate(scene.nodes, start=len(reading_order)):
         fragments.append(f'<g {_id_attrs(namespace, node.id)} data-reading-order="{reading_order.get(node.id, fallback_index)}">')
         if node.shape == "diamond":
@@ -270,5 +289,6 @@ def render_svg(
         fragments.append(f'<rect x="{item.box.x}" y="{item.box.y}" width="{item.box.w}" height="{item.box.h}" rx="{item.style.radius}" {_style(item.style)} />')
         fragments.append(_text(item.text))
         fragments.append("</g>")
+    fragments.extend(deferred_headers)
     fragments.append("</svg>")
     return "".join(fragments)

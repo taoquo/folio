@@ -5,7 +5,7 @@ from dataclasses import asdict, dataclass
 from typing import Any
 
 from .connectors.contract import assign_bridges, route_is_clear
-from .connectors.labels import place_edge_labels
+from .connectors.labels import LABEL_REACH, place_edge_labels
 from .connectors.postprocess import clean_polyline
 from .layout.models import LayoutBox, LayoutEdge, LayoutResult
 from .scene import ArrowGeometry, ResolvedScene, SceneBox, SceneEdge, SceneNode, SceneStyle, SceneText
@@ -402,7 +402,8 @@ def _flow_edges(plan: FlowchartDrawingPlan, boxes: dict[str, LayoutBox]) -> list
         route = list(clean_polyline(points))
         placed.extend(zip(route, route[1:]))
         results.append(LayoutEdge(edge.source, edge.target, route, label, None, edge.id))
-    return place_edge_labels(results, list(boxes.values()), plan.width, plan.height)
+    return place_edge_labels(results, list(boxes.values()), plan.width, plan.height,
+                             reach=LABEL_REACH)
 
 
 def resolve_flowchart_scene(plan: FlowchartDrawingPlan, layout: LayoutResult, theme: FolioTheme = DEFAULT_FOLIO_THEME) -> ResolvedScene:

@@ -334,7 +334,7 @@ class BuildScriptTests(TestCase):
                 "rhythm",
                 "modules",
                 "artifacts",
-                "web-guidance",
+                "web-reading",
                 "travel",
                 "lookup",
                 "anti-patterns",
@@ -352,8 +352,9 @@ class BuildScriptTests(TestCase):
             self.assertNotIn('id="components"', text)
 
         self.assertIn("Output System", english)
-        self.assertIn('<a href="#web-guidance"><span>08</span>Web</a>', english)
-        self.assertIn("08 · Web Guidance", english)
+        self.assertIn('<a href="#web-reading"><span>08</span>Web</a>', english)
+        self.assertIn("Web Reading Pages", english)
+        self.assertIn("Case or Fixture", english)
         self.assertIn("Hybrid / Document Tool", english)
         self.assertIn("Document Classes", english)
         self.assertIn("Specimen Matrix", english)
@@ -362,8 +363,9 @@ class BuildScriptTests(TestCase):
         self.assertIn("Browse outputs", english)
 
         self.assertIn("输出系统", chinese)
-        self.assertIn('<a href="#web-guidance"><span>08</span>Web</a>', chinese)
-        self.assertIn("08 · Web Guidance", chinese)
+        self.assertIn('<a href="#web-reading"><span>08</span>Web</a>', chinese)
+        self.assertIn("Web 阅读页", chinese)
+        self.assertIn("案例与夹具", chinese)
         self.assertIn("Hybrid / Document Tool", chinese)
         self.assertIn("文档类型", chinese)
         self.assertIn("样本矩阵", chinese)

@@ -1,5 +1,8 @@
 # Web Foundation
 
+> Superseded. The current Web scenario is `references/web/README.md`; this file
+> is kept for history and must not be used to route new work.
+
 Folio Web is guidance for browser-page design. It is not a frontend framework, component library, or build system.
 
 Use this file before designing any Web page with Folio's visual language. Then read `web-reading.md` for content-heavy pages or `web-workspace.md` for product UI surfaces. Finish with `web-checklist.md`.

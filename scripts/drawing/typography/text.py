@@ -5,7 +5,8 @@ from __future__ import annotations
 from collections.abc import Iterable
 from typing import Any
 
-from ..canvas_contract import CANVAS_WIDTH, GRAPH_CANVAS, CanvasBand
+from ..canvas_contract import GRAPH_CANVAS, CanvasBand
+from ..stage import current as current_stage
 from .measure import measure_text
 
 
@@ -46,5 +47,10 @@ def dimensions(
 
     ``common_payload_diagnostics`` already reports the bad value, so this only keeps the
     layout math safe until the diagnostics are raised.
+
+    The width is the stage the compile was given, never the payload: a drawing
+    that could choose its own width could make its type legible by shrinking
+    its units, which changes nothing on the screen.
     """
-    return CANVAS_WIDTH, band.resolve(payload, default_height)
+    stage = current_stage().width
+    return stage, band.resolve(payload, default_height, stage)

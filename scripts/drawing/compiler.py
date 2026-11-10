@@ -21,6 +21,7 @@ from .dataviz import (
     compile_waterfall_payload,
 )
 from .flowchart import compile_flowchart_payload, validate_flowchart
+from .grammar.architecture import DEFAULT_ARCHITECTURE_GRAMMAR, ArchitectureGrammar
 from .migrations import migrate_authoring_payload
 from .models import DrawingPlan
 from .notation import compile_er_payload, compile_sequence_payload, compile_uml_class_payload
@@ -33,6 +34,8 @@ from .schematic import (
     compile_org_chart_payload,
     compile_pyramid_payload,
 )
+from .stage import DEFAULT_STAGE, StageSpec, require_aware, use
+from .stage import current as current_stage
 from .structural import (
     compile_layer_stack_payload,
     compile_state_machine_payload,
@@ -40,6 +43,7 @@ from .structural import (
     compile_tree_payload,
 )
 from .theme import DEFAULT_FOLIO_THEME, normalize_theme_profile, resolve_theme, retheme_scene
+from .typography.roles import use_title_units
 from .validation import (
     DrawingCompilationError,
     DrawingDiagnostic,
@@ -115,6 +119,8 @@ class DiagramCompilerRegistry:
         theme: str = "folio",
         detail: str = "full",
         audience: str = "general",
+        stage: StageSpec | None = None,
+        title_units: float | None = None,
     ) -> CompilationResult:
         profile = normalize_output_profile(profile)
         theme = normalize_theme_profile(theme)
@@ -127,14 +133,26 @@ class DiagramCompilerRegistry:
         if not isinstance(kind, str) or kind not in self._compilers:
             diagnostic = DrawingDiagnostic("ERROR", "CP001", "unknown or missing diagram kind", str(kind))
             raise DrawingCompilationError("dispatch", (diagnostic,))
+        stage = stage or DEFAULT_STAGE
+        try:
+            require_aware(kind, stage)
+        except ValueError as exc:
+            diagnostic = DrawingDiagnostic("ERROR", "CP004", str(exc), kind)
+            raise DrawingCompilationError("stage", (diagnostic,)) from exc
         if "composition" in payload and "schema_version" not in payload:
             diagnostic = DrawingDiagnostic("ERROR", "CP003", "authored drawing plans require an explicit schema_version", kind)
             raise DrawingCompilationError("schema", (diagnostic,))
         try:
             payload = migrate_authoring_payload(payload)
-            result = self._compilers[kind](payload)
-            normalized = result.plan.to_dict() if kind == "architecture" and "composition" in payload else deepcopy(payload)
-            return self._finalize(result, normalized, profile, theme, detail, audience)
+            # The stage is in scope for the whole compile: every family reads it
+            # through `typography.text.dimensions`, and the architecture grammar
+            # scales its chrome against it. Nothing downstream may widen it.
+            # The title's units are a host input for the same reason: a figure
+            # in a reading column sets its title against the page's headings.
+            with use(stage), use_title_units(title_units):
+                result = self._compilers[kind](payload)
+                normalized = result.plan.to_dict() if kind == "architecture" and "composition" in payload else deepcopy(payload)
+                return self._finalize(result, normalized, profile, theme, detail, audience)
         except DrawingCompilationError:
             raise
         except (KeyError, TypeError, ValueError) as exc:
@@ -153,8 +171,11 @@ class DiagramCompilerRegistry:
         theme = normalize_theme_profile(theme)
         detail = normalize_output_detail(detail)
         audience = normalize_output_audience(audience)
-        semantic, plan, layout, scene = compile_architecture(spec)
-        return self._finalize(_architecture_result(semantic, plan, layout, scene), asdict(spec), profile, theme, detail, audience)
+        grammar = _architecture_grammar()
+        semantic, plan, layout, scene = compile_architecture(spec, grammar)
+        return self._finalize(
+            _architecture_result(semantic, plan, layout, scene, grammar),
+            asdict(spec), profile, theme, detail, audience)
 
     def _finalize(
         self,
@@ -217,26 +238,33 @@ def _dedupe_diagnostics(diagnostics: tuple[DrawingDiagnostic, ...]) -> tuple[Dra
     return tuple(result)
 
 
+def _architecture_grammar() -> ArchitectureGrammar:
+    """The grammar for the stage this compile is running on."""
+    return DEFAULT_ARCHITECTURE_GRAMMAR.scaled(current_stage().scale)
+
+
 def _architecture(payload: dict[str, Any]) -> CompilationResult:
+    grammar = _architecture_grammar()
     if "composition" in payload:
         plan = DrawingPlan.from_dict(payload)
-        layout, scene = compile_drawing_plan(plan)
-        return _architecture_result(None, plan, layout, scene)
+        layout, scene = compile_drawing_plan(plan, grammar)
+        return _architecture_result(None, plan, layout, scene, grammar)
     spec = load_diagram_spec(payload)
     if not isinstance(spec, ArchitectureDiagramSpec):
         raise ValueError("architecture compiler requires an ArchitectureDiagramSpec")
-    semantic, plan, layout, scene = compile_architecture(spec)
-    return _architecture_result(semantic, plan, layout, scene)
+    semantic, plan, layout, scene = compile_architecture(spec, grammar)
+    return _architecture_result(semantic, plan, layout, scene, grammar)
 
 
-def _architecture_result(semantic: Any, plan: Any, layout: Any, scene: Any) -> CompilationResult:
+def _architecture_result(semantic: Any, plan: Any, layout: Any, scene: Any,
+                         grammar: ArchitectureGrammar) -> CompilationResult:
     diagnostics = tuple([
         *validate_drawing_semantics(plan),
-        *validate_drawing_grammar(plan),
+        *validate_drawing_grammar(plan, grammar),
         *validate_canvas(scene),
         *validate_scene_primitives(scene),
         *validate_scene_accessibility(scene),
-        *validate_scene_geometry(scene),
+        *validate_scene_geometry(scene, grammar),
         *diagnose_taste(plan, scene),
     ])
     metrics = collect_metrics(plan, scene, semantic_node_count=len(semantic.nodes) if semantic else len(plan.nodes))

@@ -137,8 +137,10 @@ class DrawingDslTests(TestCase):
         pipeline = plan_drawing(semantic, overrides=DrawingOverrides(composition="pipeline", spine=spine))
         layout, scene = compile_drawing_plan(pipeline)
 
-        centers = [layout.boxes[node_id].x + layout.boxes[node_id].w // 2 for node_id in spine]
-        self.assertEqual(centers, sorted(centers))
+        # Declared layers band a pipeline into rows, so the spine reads in
+        # row-major order: one row per layer, left to right inside the row.
+        rows = sorted((layout.boxes[node_id].y, layout.boxes[node_id].x, node_id) for node_id in spine)
+        self.assertEqual([node_id for _y, _x, node_id in rows], list(spine))
         endpoints = [edge.points[0] for edge in scene.edges if edge.source == drawing.hierarchy.focus_node]
         self.assertEqual(len(endpoints), len(set(endpoints)))
 
@@ -184,7 +186,7 @@ class DrawingDslTests(TestCase):
 
         self.assertGreater(measure_text("模型", 12), measure_text("AI", 12))
         self.assertLessEqual(len(fitted.title), 2)
-        self.assertIsNone(fitted.metadata)
+        self.assertEqual((), fitted.metadata)
 
     def test_svg_renderer_contains_no_visual_semantic_branching(self) -> None:
         source = inspect.getsource(svg_renderer)
