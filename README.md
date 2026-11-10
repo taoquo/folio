@@ -229,14 +229,48 @@ Folio treats current facts and branded assets as first-class inputs.
 ### Web reading pages
 
 Folio turns a series of content fragments into static reading pages: a series
-index and one module archive per article. The output is self-contained HTML —
-no stylesheet links, no scripts, no app shell, no build step at view time.
+index and one module archive per article. The profiles that typeset a PDF
+typeset the screen too; what changes is the medium, not the design system.
 
-Every Web value comes from the engine. Screen type, font stacks, spacing,
-radii, measure and page geometry live in `references/profiles/web/folio-v1.yaml`;
-colours come from the theme profile; figures come from the Drawing DSL. The
-templates under `assets/templates/web/` read only the projected variables, and
-`scripts/projection.py check` rejects a literal in `base.css`.
+**What you author.** A series is a directory:
+
+```text
+references/fixtures/web/attention/
+  series.json          identity, language, page kind, figure list and captions
+  attention.frag.html  the module body: chapter sections and their content
+  source.txt           the text the page must not delete from
+  figures/*.json       one Drawing DSL fixture per figure
+```
+
+`series.json` names the language, so the page carries `lang`, selects the
+Chinese or English type profile, and picks its chrome strings. A fragment holds
+content only: no `<head>`, no navigation, no styling.
+
+**What is built.** `dist/web/` holds one shared `fonts/` directory and one
+directory per series. The series directory holds `index.html` (the series
+index), `<module>/index.html` (the module archive), `plan.json` (the layout
+arithmetic) and `figures.manifest.json` (each plate's stage, framed box and
+delivered tiers). The page is self-contained: one `<style>` block projected from
+the profiles, no external stylesheet or script file, no app shell, no build step
+at view time. Only the reading rail's scroll activation is a few lines of inline
+script; the delivery contract counts external files, and there are none.
+
+**How it is typeset.** Screen type roles, font stacks, spacing, radii, measure
+and page geometry live in `references/profiles/web/folio-v1.yaml`; colours come
+from the theme profile as roles, never as hex in a page. `projection.py` emits
+them as custom properties in the page's `<style>` block, and
+`assets/templates/web/base.css` reads only those variables. Two gates enforce
+one rule from both sides: `scripts/projection.py check` reads the template
+source, `check_web.py` (W-DEN-08/09) reads the built page.
+
+**Figures.** A drawing is composed for the band it will be shown in, not scaled
+down from the 960-unit artifact. Each figure is emitted once per width class
+(`narrow`, `compact`, `medium`, `wide`) as an inline SVG carrying its stage, its
+framed box and its fixture sha; CSS shows only the class the viewport asks for.
+Only the families in `STAGE_AWARE` may be compiled on another stage, and
+`compose_for_band()` picks the largest stage that keeps the smallest type on the
+7px floor. A stage-aware family that no stage can compose fails the plan gate
+instead of silently falling back to the authored plate.
 
 A page is either a **case** or a **fixture**:
 
@@ -247,13 +281,18 @@ A page is either a **case** or a **fixture**:
 
 ```bash
 python3 scripts/folio.py web --series references/fixtures/web/attention
-python3 scripts/check_web.py dist/web/attention/attention/index.html --level 3 \
-  --series-dir dist/web/attention --figures-manifest dist/web/attention/figures.manifest.json
+python3 scripts/folio.py web --series references/fixtures/web/attention \
+  --verify --level 3 --source references/fixtures/web/attention/source.txt
+python3 scripts/web_plan.py --series attention --gate
+python3 scripts/check_web.py dist/web/attention/attention/index.html --level 3
 ```
 
-The browser half (`scripts/web_measure.py` + `scripts/web_verify.py`) runs in
-the nightly job. The rules it enforces are `W-*` (static) and `V-*` (measured);
-both are listed in `references/web/`.
+The static gate runs in Python and needs no browser: L1 covers structure, text,
+delivery and the figure contract, L2 adds declared density and colour, L3 adds
+the figure geometry audit. The measured gate runs in the nightly job, because
+only the browser knows what the page computed: `scripts/web_measure.py` reports
+the layout and `scripts/web_verify.py` compares it with `plan.json` under the
+`V-*` rules. The rules, levels and acceptance list are in `references/web/`.
 
 This path does not add a Web app framework: no component library, no router, no
 client state, no dark-mode switch.

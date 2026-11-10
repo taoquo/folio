@@ -228,9 +228,25 @@ Folio 把“当前事实”和“品牌素材”当作一等输入，而不是�
 
 ### Web 阅读页
 
-Folio 把一组内容片段构建成静态阅读页：一个系列索引，加上每篇文章的模块页。产物是自包含 HTML——没有外链样式、没有脚本、没有应用外壳，阅读时不跑构建。
+Folio 把一组内容片段构建成静态阅读页：一个系列索引，加上每篇文章的模块页。排版 PDF 的那套 profile 同样排版屏幕；变的是介质，不是设计系统。
 
-Web 侧的每个值都由引擎给出。屏幕字号、字体栈、间距、圆角、行长与页面几何在 `references/profiles/web/folio-v1.yaml`；颜色来自主题 profile；图表来自 Drawing DSL。`assets/templates/web/` 下的模板只读取投影后的变量，`scripts/projection.py check` 会拒绝 `base.css` 里的字面量。
+**写什么。** 一个系列就是一个目录：
+
+```text
+references/fixtures/web/attention/
+  series.json          身份、语言、页面类型、图表清单与图注
+  attention.frag.html  模块正文：章节与其内容
+  source.txt           页面不得删减的原文
+  figures/*.json       每张图一个 Drawing DSL fixture
+```
+
+`series.json` 声明语言，页面据此带上 `lang`、选择中文或英文的排版 profile，并决定界面文案。片段只放内容：没有 `<head>`、没有导航、没有样式。
+
+**构建出什么。** `dist/web/` 下有一份共享的 `fonts/`，以及每个系列一个目录。系列目录里是 `index.html`（系列索引）、`<module>/index.html`（模块存档）、`plan.json`（版式算术）和 `figures.manifest.json`（每块图版的档位、外框与实际交付字号）。页面是自包含的：一个由 profile 投影出来的 `<style>`，没有外链样式或脚本文件，没有应用外壳，阅读时不跑构建。只有右侧章节刻度的滚动激活是几行内联脚本；交付合同统计的是外部文件，而页面没有任何外部文件。
+
+**怎么排版。** 屏幕字号角色、字体栈、间距、圆角、行长与页面几何在 `references/profiles/web/folio-v1.yaml`；颜色以角色形式来自主题 profile，页面里不写十六进制。`projection.py` 把它们作为自定义属性写进页面的 `<style>`，`assets/templates/web/base.css` 只读取这些变量。两道闸门从两侧执行同一条规则：`scripts/projection.py check` 读模板源文件，`check_web.py`（W-DEN-08/09）读构建后的页面。
+
+**图表。** 图表按它将被展示的宽度带构图，而不是把 960 单位的成品缩小。每张图按四个宽度类（`narrow`、`compact`、`medium`、`wide`）各输出一次内联 SVG，带上档位、外框尺寸与 fixture sha；CSS 只显示当前视口对应的那一块。只有 `STAGE_AWARE` 中的家族允许在其他档位编译，`compose_for_band()` 选择能让最小字号不低于 7px 下限的最大档位。一个 stage-aware 家族如果没有任何档位能构图，会让 plan 闸门失败，而不是悄悄回退到 960 成品图版。
 
 页面只有两种身份：
 
@@ -239,11 +255,13 @@ Web 侧的每个值都由引擎给出。屏幕字号、字体栈、间距、圆�
 
 ```bash
 python3 scripts/folio.py web --series references/fixtures/web/attention
-python3 scripts/check_web.py dist/web/attention/attention/index.html --level 3 \
-  --series-dir dist/web/attention --figures-manifest dist/web/attention/figures.manifest.json
+python3 scripts/folio.py web --series references/fixtures/web/attention \
+  --verify --level 3 --source references/fixtures/web/attention/source.txt
+python3 scripts/web_plan.py --series attention --gate
+python3 scripts/check_web.py dist/web/attention/attention/index.html --level 3
 ```
 
-浏览器那一半（`scripts/web_measure.py` + `scripts/web_verify.py`）在每夜任务里跑。规则分为 `W-*`（静态）与 `V-*`（实测），都列在 `references/web/` 下。
+静态闸门用 Python 跑，不需要浏览器：L1 覆盖结构、文本、交付与图表合同，L2 加上声明的密度与颜色，L3 加上图版几何审计。实测闸门在每夜任务里跑，因为只有浏览器知道页面最终算出了什么：`scripts/web_measure.py` 报告版式，`scripts/web_verify.py` 按 `V-*` 规则与 `plan.json` 比对。规则、层级与验收表都在 `references/web/` 下。
 
 这条路径不引入 Web 应用框架：没有组件库、路由、客户端状态或暗色模式开关。
 
