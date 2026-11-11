@@ -359,7 +359,7 @@ English documents:
 
 ### Emphasis is not bold
 
-Use `color: var(--brand)` alone - don't also add `font-weight: bold`. Bold breaks the single-weight design language.
+Use `color: var(--color-accent-brand)` alone - don't also add `font-weight: bold`. Bold breaks the single-weight design language.
 
 ---
 

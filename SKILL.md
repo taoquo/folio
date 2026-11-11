@@ -58,7 +58,7 @@ Apply when the current request is ambiguous. Use profile fields to fill in missi
 
 Apply after template content is filled, before calling `build.py`:
 
-- `brand_color`: edit the `--brand` CSS variable in the template `<style>` block. Warn if the hue departs significantly from cinnabar-coral — the warm palette constraint (parchment + neutrals) remains in force regardless.
+- `brand_color`: edit the `--color-accent-brand` CSS variable in the template `<style>` block. Warn if the hue departs significantly from cinnabar-coral — the warm palette constraint (parchment + neutrals) remains in force regardless.
 - `logo`: use it only where the active template already has an image slot or the user explicitly asks to add one. Portfolio has the clearest built-in image placeholders; otherwise keep the layout text-first.
 
 ### Layer D — Habit notes
@@ -274,7 +274,7 @@ After the material check, output a structured status block before continuing. Th
 ```
 Materials status:
 - Logo: OK assets/client-logo.svg
-- Brand colors: OK #B83D2E mapped to --brand
+- Brand colors: OK #B83D2E mapped to --color-accent-brand
 - Product screenshot: MISSING (proceeding with folio default placeholder)
 - UI screenshot: not required for this doc type
 ```
@@ -449,7 +449,7 @@ python3 scripts/document_baseline.py compare # documents match the approved base
 python3 scripts/quality_vector.py <doc.pdf> --genre <genre>   # correctness, typography, pagination
 ```
 
-`fidelity.py` reports SSIM and the changed-pixel ratio. All seven document types currently render at SSIM 1.0000 against the template path; a drop means the writer and the template have drifted apart, which is what a template edit can cause.
+`fidelity.py` reports SSIM and the changed-pixel ratio. All seven document types currently render to the same pages as the template path (average SSIM 0.9887; changelog 1.0000, one-pager 0.9211). A drop means the writer and the template have drifted apart, which is what a template edit can cause.
 
 Visual anomalies (tag double rectangle, font fallback, page break issues) -> `production.md` Part 4.
 

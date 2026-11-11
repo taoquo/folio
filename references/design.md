@@ -49,8 +49,8 @@ Folio is one design system, not one layout. Every template keeps the same paper,
 ### Brand
 
 ```css
---brand:       #B83D2E;   /* Cinnabar Coral - the only chromatic color. CTAs, accents, section-title left bar. */
---brand-light: #D06A5E;   /* Coral Light - brighter variant, for links on dark surfaces. */
+--color-accent-brand:      #B83D2E;   /* Cinnabar Coral - the only chromatic color. CTAs, accents, section-title left bar. */
+--color-accent-brand-tint: #F7E6E1;   /* The wash behind a focal mark or a tag. */
 ```
 
 **Rule**: cinnabar-coral covers ≤ **5% of document surface area**. More than that is ornament, not restraint.
@@ -58,33 +58,32 @@ Folio is one design system, not one layout. Every template keeps the same paper,
 ### Surface
 
 ```css
---parchment:    #F6F0EA;   /* Page background - warm cream, the emotional foundation */
---ivory:        #FBF7F3;   /* Card / lifted container - brighter than parchment */
---warm-sand:    #E9DED4;   /* Button default / interactive surface */
---dark-surface: #2E2521;   /* Dark-theme container - warm charcoal */
---deep-dark:    #191514;   /* Dark-theme page background - not pure black, slight brown-charcoal undertone */
+--color-surface-page: #F6F0EA;   /* Page background - warm cream, the emotional foundation */
+--color-surface-card: #FBF7F3;   /* Card / lifted container - brighter than parchment */
 ```
+
+A dark surface is a scheme's business, not a second set of variables on this one: a scheme rebinds these same role names.
 
 **Never**: `#FFFFFF` pure white as page background. `#f8f9fa` / `#f3f4f6` or any cool-gray surface.
 
 ### Text
 
 ```css
---near-black:  #191514;   /* Primary text - deepest but not pure black, warm brown-charcoal undertone */
---dark-warm:   #3A312D;   /* Secondary text, table headers, links */
---olive:       #5A4A43;   /* Subtext - descriptions, captions */
---stone:       #85776F;   /* Tertiary - dates, metadata */
+--color-text-primary:   #191514;   /* Primary text - deepest but not pure black, warm brown-charcoal undertone */
+--color-text-warm:      #3A312D;   /* Warmer heading tone, table headers */
+--color-text-secondary: #5A4A43;   /* Subtext - descriptions, captions */
+--color-text-muted:     #756A63;   /* Tertiary - dates, metadata */
 ```
 
-Four levels: near-black (primary) > dark-warm (secondary) > olive (subtext) > stone (tertiary). No fifth level needed.
+Four levels: primary > warm > secondary > muted. No fifth level needed.
 
 **Mnemonic**: every gray has a **yellow-brown undertone**. In `rgb()`, warm gray is R ≈ G > B (or R > G > B with small gaps). Cool gray is R < G < B or R = G = B (neutral).
 
 ### Border
 
 ```css
---border:      #E9DED4;   /* Primary border - section dividers, table headers, card borders */
---border-soft: #E8DED6;   /* Secondary border - row separators, subtle dividers */
+--color-border-default: #E6DACD;   /* Primary border - section dividers, table headers, card borders */
+--color-border-soft:    #E5DBCD;   /* Secondary border - row separators, subtle dividers */
 ```
 
 ### The palette and the roles
@@ -471,8 +470,8 @@ Print uses mm/pt; slides (screen) use px. The scale relationships differ:
 
 ```css
 .card {
-  background: var(--ivory);
-  border: 0.5pt solid var(--border-cream);
+  background: var(--color-surface-card);
+  border: 0.5pt solid var(--color-border-default);
   border-radius: 8pt;
   padding: 16pt 20pt;
 }
@@ -490,20 +489,20 @@ Radius scale: 4pt -> 6pt -> 8pt (default) -> 12pt -> 16pt -> 24pt -> 32pt (hero 
 ```css
 /* Primary - brand-colored */
 .btn-primary {
-  background: var(--brand);
-  color: var(--ivory);
+  background: var(--color-accent-brand);
+  color: var(--color-surface-card);
   padding: 8pt 16pt;
   border-radius: 8pt;
-  box-shadow: 0 0 0 1pt var(--brand);   /* ring shadow */
+  box-shadow: 0 0 0 1pt var(--color-accent-brand);   /* ring shadow */
 }
 
-/* Secondary - warm-sand */
+/* Secondary - card surface with a sand ring */
 .btn-secondary {
-  background: var(--warm-sand);
-  color: var(--dark-warm);
+  background: var(--color-surface-card);
+  color: var(--color-text-warm);
   padding: 8pt 16pt;
   border-radius: 8pt;
-  box-shadow: 0 0 0 1pt var(--border);
+  box-shadow: 0 0 0 1pt var(--color-border-default);
 }
 ```
 
@@ -514,8 +513,8 @@ Three tiers from weak to strong visual weight:
 **Lightest solid** (default, most restrained):
 ```css
 .tag {
-  background: #F7E6E1;      /* 0.08 solid equivalent */
-  color: var(--brand);
+  background: var(--color-accent-brand-tint);   /* #F7E6E1 */
+  color: var(--color-accent-brand);
   font-size: 9pt;
   font-weight: 600;
   padding: 1pt 5pt;
@@ -528,8 +527,8 @@ Three tiers from weak to strong visual weight:
 **Standard solid** (when more contrast needed):
 ```css
 .tag {
-  background: #F1D2CC;      /* 0.18 solid equivalent */
-  color: var(--brand);
+  background: var(--color-accent-tag);   /* #F1D2CC */
+  color: var(--color-accent-brand);
   padding: 1pt 6pt;
   border-radius: 4pt;
 }
@@ -539,7 +538,7 @@ Three tiers from weak to strong visual weight:
 ```css
 .tag {
   background: linear-gradient(to right, #E2B3A8, #F1D2CC 70%, #F7E6E1);
-  color: var(--brand);
+  color: var(--color-accent-brand);
   padding: 1pt 5pt;
   border-radius: 2pt;
 }
@@ -556,7 +555,7 @@ ul, ol {
   padding-left: 16pt;
   line-height: 1.55;
 }
-ul li::marker { color: var(--brand); }
+ul li::marker { color: var(--color-accent-brand); }
 ```
 
 Editorial bookish variant - **en-dash instead of bullet**:
@@ -566,7 +565,7 @@ ul.dash { list-style: none; padding-left: 0; }
 ul.dash li { padding-left: 14pt; }
 ul.dash li::before {
   content: "\2013";
-  color: var(--brand);
+  color: var(--color-accent-brand);
 }
 ```
 
@@ -574,9 +573,9 @@ ul.dash li::before {
 
 ```css
 .quote {
-  border-left: 2pt solid var(--brand);
+  border-left: 2pt solid var(--color-accent-brand);
   padding: 4pt 0 4pt 14pt;
-  color: var(--olive);
+  color: var(--color-text-secondary);
   line-height: 1.55;
 }
 ```
@@ -585,8 +584,8 @@ ul.dash li::before {
 
 ```css
 .code-block {
-  background: var(--ivory);
-  border: 0.5pt solid var(--border-cream);
+  background: var(--color-surface-card);
+  border: 0.5pt solid var(--color-border-default);
   border-radius: 6pt;
   padding: 10pt 14pt;
   font-family: var(--mono);
@@ -602,9 +601,9 @@ ul.dash li::before {
   font-family: var(--serif);
   font-size: 14pt;
   font-weight: 500;
-  color: var(--near-black);
+  color: var(--color-text-primary);
   margin: 24pt 0 10pt 0;
-  border-left: 2.5pt solid var(--brand);
+  border-left: 2.5pt solid var(--color-accent-brand);
   border-radius: 1.5pt;
   padding-left: 8pt;
 }
@@ -620,11 +619,11 @@ table, .folio-table {
   font-size: 9.5pt; margin: 12pt 0; break-inside: avoid;
 }
 table th, .folio-table th {
-  text-align: left; font-weight: 500; color: var(--dark-warm);
-  padding: 6pt 8pt; border-bottom: 1pt solid var(--border);
+  text-align: left; font-weight: 500; color: var(--color-text-warm);
+  padding: 6pt 8pt; border-bottom: 1pt solid var(--color-border-default);
 }
 table td, .folio-table td {
-  padding: 5pt 8pt; border-bottom: 0.3pt solid var(--border-soft);
+  padding: 5pt 8pt; border-bottom: 0.3pt solid var(--color-border-soft);
   vertical-align: top;
 }
 ```
@@ -635,7 +634,7 @@ table td, .folio-table td {
 |---|---|
 | `.compact` | 8pt font, tighter padding. For data-dense tables in resume/one-pager. |
 | `.financial` | Right-align all columns except the first, enable `tabular-nums`. For revenue, pricing, metrics. |
-| `.striped` | Alternating `var(--ivory)` background on even rows. Improves scanability for wide tables. |
+| `.striped` | Alternating `var(--color-surface-card)` background on even rows. Improves scanability for wide tables. |
 
 **Total row**: add `.total` to the final `<tr>` for a bold summary row with a `1pt` brand top border.
 
@@ -660,10 +659,10 @@ Key numbers side-by-side (one-pager header, resume top, portfolio cover):
   font-family: var(--serif);
   font-size: 16pt;
   font-weight: 500;
-  color: var(--brand);
+  color: var(--color-accent-brand);
   font-variant-numeric: tabular-nums;   /* align digits in columns */
 }
-.metric-label { font-size: 9pt; color: var(--olive); }
+.metric-label { font-size: 9pt; color: var(--color-text-secondary); }
 ```
 
 ### Section Header (`.folio-section-header`)
@@ -683,7 +682,7 @@ Lightweight section opener for content slides. Has an eyebrow and a horizontal r
   font-weight: 500;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: var(--stone);
+  color: var(--color-text-muted);
   margin-bottom: 14px;
 }
 .folio-section-header .eyebrow::before {
@@ -691,12 +690,12 @@ Lightweight section opener for content slides. Has an eyebrow and a horizontal r
   display: inline-block;
   width: 6px; height: 6px;
   border-radius: 50%;
-  background: var(--brand);
+  background: var(--color-accent-brand);
   flex-shrink: 0;
 }
 .folio-section-header .rule {
   height: 1px;
-  background: var(--border-warm);
+  background: var(--color-border-warm);
   margin-bottom: 36px;             /* gap below rule >= 36px (>= 2x the gap above) */
 }
 .folio-section-header h1 {
@@ -704,7 +703,7 @@ Lightweight section opener for content slides. Has an eyebrow and a horizontal r
   font-size: 38px;
   font-weight: 500;
   line-height: 1.1;
-  color: var(--near-black);
+  color: var(--color-text-primary);
 }
 ```
 
@@ -716,8 +715,8 @@ For displaying pseudocode or code snippets in slides. More structured than a pla
 
 ```css
 .folio-code-card {
-  background: var(--ivory);
-  border: 1px solid var(--border-cream);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border-default);
   border-radius: 8px;
   padding: 20px 24px;
   overflow: hidden;
@@ -726,13 +725,13 @@ For displaying pseudocode or code snippets in slides. More structured than a pla
   font-family: var(--mono);
   font-size: 13px;                 /* 14px for larger slides */
   line-height: 1.55;
-  color: var(--near-black);
+  color: var(--color-text-primary);
   margin: 0;
   white-space: pre;
 }
 /* Syntax colors: existing tokens only, no new colors */
-.folio-code-card .k { color: var(--brand); }    /* keyword / string */
-.folio-code-card .c { color: var(--stone); }    /* comment */
+.folio-code-card .k { color: var(--color-accent-brand); }    /* keyword / string */
+.folio-code-card .c { color: var(--color-text-muted); }    /* comment */
 
 /* Optional line numbers: 1px left divider */
 .folio-code-card.numbered {
@@ -744,9 +743,9 @@ For displaying pseudocode or code snippets in slides. More structured than a pla
   font-family: var(--mono);
   font-size: 13px;
   line-height: 1.55;
-  color: var(--stone);
+  color: var(--color-text-muted);
   text-align: right;
-  border-right: 1px solid var(--border-soft);
+  border-right: 1px solid var(--color-border-soft);
   padding-right: 12px;
   user-select: none;
 }
@@ -766,10 +765,10 @@ For **button** hover/focus states.
 
 ```css
 /* Button default */
-box-shadow: 0 0 0 1pt var(--ring-warm);
+box-shadow: 0 0 0 1pt var(--color-border-warm);
 
 /* Button hover/active */
-box-shadow: 0 0 0 1pt var(--ring-deep);
+box-shadow: 0 0 0 1pt var(--color-text-warm);
 ```
 
 **Do not use for card hover**: ring shadow is a border replacement. Layering it over an existing border creates three-layer visual stacking (border + ring + offset), which feels digital, not paper-like.
@@ -839,16 +838,16 @@ When you're not sure "what should I use":
 |---|---|
 | Big headline | serif 500, size by level, line-height 1.10-1.30 |
 | Reading body (EN) | serif 400, 9.5-10pt, line-height 1.55 |
-| Reading body (CN) | sans 400, 9.5-10pt, line-height 1.55 |
-| Emphasize a number | `color: var(--brand)`, no bold |
+| Reading body (CN) | serif 400 (LXGW WenKai), 9.5-10pt, line-height 1.55 |
+| Emphasize a number | `color: var(--color-accent-brand)`, no bold |
 | Divide two sections | 2.5pt brand left bar, or 0.5pt warm-gray dotted |
-| Quote someone | 2pt brand left border + olive color |
-| Show code | ivory background + 0.5pt border + 6pt radius + mono |
-| Primary vs secondary button | Primary = brand fill + ivory text; Secondary = warm-sand + dark-warm |
-| Highlight one card in a list | `border: 0.5pt solid var(--brand)` or `border-left: 3pt solid var(--brand)` |
+| Quote someone | 2pt brand left border + `--color-text-secondary` text |
+| Show code | card-surface background + 0.5pt border + 6pt radius + mono |
+| Primary vs secondary button | Primary = brand fill + card-surface text; Secondary = card surface + sand ring |
+| Highlight one card in a list | `border: 0.5pt solid var(--color-accent-brand)` or `border-left: 3pt solid var(--color-accent-brand)` |
 | Start a chapter | serif heading + 2.5pt brand left bar |
 | Cover page | Display-size heading + right-aligned author/date + heavy whitespace |
-| Data card | ivory background + 8pt radius + serif big number + sans small label |
+| Data card | card-surface background + 8pt radius + serif big number + sans small label |
 
 Not on this table -> return to first principles: **serif carries authority, sans carries utility, warm gray carries rhythm, cinnabar-coral carries focus**.
 
@@ -887,19 +886,19 @@ No dedicated `funnel.html` diagram prototype exists. When generating a horizonta
 .funnel-track {
   position: relative;
   height: 18pt;
-  background: var(--border-soft);
+  background: var(--color-border-soft);
   border-radius: 2pt;
 }
 .funnel-fill {
   position: absolute;
   inset: 0 auto 0 0;
-  background: var(--brand);
+  background: var(--color-accent-brand);
   border-radius: 2pt;
 }
 .funnel-pct {
   font-variant-numeric: tabular-nums;
   text-align: right;
-  color: var(--stone);
+  color: var(--color-text-muted);
   font-size: 9pt;
 }
 ```
@@ -919,7 +918,7 @@ Example row (77.8% fill):
 Key rules:
 
 - Use the three-column grid, not flex. The third column is always 40pt wide; the percentage never moves regardless of bar length.
-- Color: single `--brand` fill only. No color gradients or per-row hues. Vary opacity (e.g. `opacity: 0.7`) if a visual ranking is needed, not hue.
+- Color: single `--color-accent-brand` fill only. No color gradients or per-row hues. Vary opacity (e.g. `opacity: 0.7`) if a visual ranking is needed, not hue.
 - Inline labels inside the bar (count, name) go in an absolutely positioned child inside `.funnel-track`, not in the grid's third column.
 
 ---

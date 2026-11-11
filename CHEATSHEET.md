@@ -170,8 +170,8 @@ Any font-family that may render Chinese must include a CJK fallback, including `
 
 ```css
 .card {
-  background: var(--ivory);
-  border: 0.5pt solid var(--border-cream);
+  background: var(--color-surface-card);
+  border: 0.5pt solid var(--color-border-default);
   border-radius: 8pt;
   padding: 16pt 20pt;
   transition: box-shadow 0.2s;
@@ -185,8 +185,8 @@ Any font-family that may render Chinese must include a CJK fallback, including `
 
 ```css
 .tag {
-  background: #F7E6E1;            /* 0.08 equivalent */
-  color: var(--brand);
+  background: var(--color-accent-brand-tint);
+  color: var(--color-accent-brand);
   font-size: 9pt; font-weight: 600;
   padding: 1pt 5pt;
   border-radius: 2pt;
@@ -201,9 +201,9 @@ Any font-family that may render Chinese must include a CJK fallback, including `
 .section-title {
   font-family: var(--serif);
   font-size: 14pt; font-weight: 500;
-  color: var(--near-black);
+  color: var(--color-text-primary);
   margin: 24pt 0 10pt 0;
-  border-left: 2.5pt solid var(--brand);
+  border-left: 2.5pt solid var(--color-accent-brand);
   border-radius: 1.5pt;
   padding-left: 8pt;
 }
@@ -219,9 +219,9 @@ table, .folio-table {
   width: 100%; border-collapse: collapse;
   font-size: 9.5pt; margin: 12pt 0; break-inside: avoid;
 }
-table th { text-align: left; font-weight: 500; color: var(--dark-warm);
-  padding: 6pt 8pt; border-bottom: 1pt solid var(--border); }
-table td { padding: 5pt 8pt; border-bottom: 0.3pt solid var(--border-soft);
+table th { text-align: left; font-weight: 500; color: var(--color-text-warm);
+  padding: 6pt 8pt; border-bottom: 1pt solid var(--color-border-default); }
+table td { padding: 5pt 8pt; border-bottom: 0.3pt solid var(--color-border-soft);
   vertical-align: top; }
 ```
 
@@ -230,7 +230,7 @@ table td { padding: 5pt 8pt; border-bottom: 0.3pt solid var(--border-soft);
 | --------- | ------------------ | ---------------------------------------------------- |
 | Compact   | `.compact`         | 8pt font, tight padding (data-dense tables)          |
 | Financial | `.financial`       | Right-align all columns except first, `tabular-nums` |
-| Striped   | `.striped`         | Alternating `var(--ivory)` row background            |
+| Striped   | `.striped`         | Alternating `var(--color-surface-card)` row background |
 | Total row | `.total` on `<tr>` | Bold, brand top border, no bottom border             |
 
 
@@ -242,19 +242,19 @@ Combine freely: `<table class="folio-table financial striped">`.
 .metric { display: flex; align-items: baseline; gap: 6pt; }
 .metric-value {
   font-family: var(--serif); font-size: 16pt; font-weight: 500;
-  color: var(--brand);
+  color: var(--color-accent-brand);
   font-variant-numeric: tabular-nums;
 }
-.metric-label { font-size: 9pt; color: var(--olive); }
+.metric-label { font-size: 9pt; color: var(--color-text-secondary); }
 ```
 
 ### Quote
 
 ```css
 .quote {
-  border-left: 2pt solid var(--brand);
+  border-left: 2pt solid var(--color-accent-brand);
   padding: 4pt 0 4pt 14pt;
-  color: var(--olive);
+  color: var(--color-text-secondary);
   line-height: 1.55;
 }
 ```
@@ -297,7 +297,7 @@ Render flags: `--theme folio|dark|terminal` · `--size compact|standard|wide` (1
 
 Not sure which type? Route first: `scripts/folio.py route-diagram --content "..." [--goal compare|convince|explain|track]`. It maps intent to one of eight patterns (architecture, comparison, data, flow, hierarchy, relationship, state, time), returns one kind plus a trace, and flags cases better written as prose. Use `--pattern` / `--kind` to override.
 
-**Data chart colors**: primary series `#B83D2E` · secondary `#5A4A43` → `#85776F` → `#B9ACA3` → `#D7CBC2` → `#F7E6E1`.
+**Data chart colors**: the six series come from the scheme's `color.series.1..6`, never from a literal. Classic binds them to `#5A4A43` · `#74665F` · `#B9ACA3` · `#D7CBC2` · `#F7E6E1` · `#8B8078`; another scheme rebinds the same six names.
 
 **Editing data**: edit semantic JSON only. Do not author coordinates, colors, paths, or typography.
 
@@ -345,9 +345,9 @@ Fast rules:
 
 Alternate light/dark rhythm: add `.sd-alt` to any section container.
 
-- Background switches to `--deep-dark` (`#191514`)
+- Background switches to `--color-text-primary` (`#191514`)
 - Body text switches to warm gray `#b0aea5`
-- Headings switch to `--ivory`
+- Headings switch to `--color-surface-card`
 - Appropriate for: section-level light/dark alternation in long-doc / portfolio
 - Restriction: showcase pages only, never in print templates
 
@@ -413,12 +413,12 @@ Page 2 font sizes stay at template defaults. The density variant only tightens p
 | Headline            | serif 500, line-height 1.10-1.30                               |
 | Reading body (EN)   | serif 400, 9.5-10pt, 1.55                                      |
 | Reading body (CN)   | serif 400, 9.5-10pt, 1.55                                      |
-| Emphasize a number  | `color: var(--brand)`, no bold                                 |
+| Emphasize a number  | `color: var(--color-accent-brand)`, no bold                    |
 | Divide two sections | 2.5pt brand left bar, or 0.5pt warm dotted                     |
-| Quote               | 2pt brand left border + olive color                            |
-| Code                | ivory bg + 0.5pt border + 6pt radius + mono                    |
-| Primary button      | brand fill + ivory text                                        |
-| Secondary button    | warm-sand + dark-warm                                          |
+| Quote               | 2pt brand left border + `--color-text-secondary` text          |
+| Code                | card-surface bg + 0.5pt border + 6pt radius + mono             |
+| Primary button      | brand fill + card-surface text                                 |
+| Secondary button    | card surface + sand ring                                       |
 | Chapter start       | serif heading + 2.5pt brand left bar                           |
 | Cover               | Display heading + right-aligned author/date + heavy whitespace |
 

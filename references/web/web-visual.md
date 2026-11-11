@@ -82,7 +82,7 @@ not the engine's.
 
 ## 4. Code block
 
-The engine's own block: `--ivory` surface, 0.5pt border, 6pt radius, mono at
+The engine's own block: `--color-surface-card` surface, 0.5pt border, 6pt radius, mono at
 9pt / 1.5 line height. On screen that is 12px / 1.5. No syntax theme from
 another design system, no language-coloured background.
 

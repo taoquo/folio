@@ -6,7 +6,7 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 
 | Path | Purpose | Change frequency |
 |---|---|---|
-| `SKILL.md` | Codex routing and operating rules | Low |
+| `SKILL.md` | Skill routing and operating rules | Low |
 | `CHEATSHEET.md` | Quick design reference, English-only source | Low |
 | `references/design.md` | Design system spec, English-only source | Low |
 | `references/writing.md` | Content strategy + quality bars per document type, English-only source | Low |
@@ -43,11 +43,11 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 | `styles.css` | The two homepages' stylesheet; baked with the scheme like any other static page | Medium |
 | `scripts/document_build.py` | Builds a finished document from content, choosing the path by configuration | Medium |
 | `scripts/spacing_probe.py` | Reads a rendered document's spacing back and compares it with the model | Low |
-| `scripts/package-skill.sh` | Codex Desktop ZIP packager, excluding large fonts | Low |
+| `scripts/package-skill.sh` | Skill ZIP packager, excluding large fonts | Low |
 | `CHANGELOG.md` | Aggregated release highlights linking to full notes | Medium |
 | `docs/releases/` | Archived release notes for superseded versions | Low |
 | `pyproject.toml` | Interpreter floor and ruff lint configuration shared with CI | Low |
-| `dist/folio.zip` | Codex Desktop ZIP build output, rebuilt on demand, not tracked in git | Medium |
+| `dist/folio.zip` | Skill ZIP build output, rebuilt on demand, not tracked in git | Medium |
 
 Reference docs are English-only. Do not recreate `*.en.md` duplicates. Chinese / English output differences belong in the templates.
 Do not use graphic emoticons in docs, template comments, or script output. Use `OK:` / `ERROR:` for status and `Use` / `Avoid` for comparisons.
@@ -154,7 +154,7 @@ grades the page against it. Only `web_measure.py` imports Playwright, and only
 the nightly job runs it.
 
 A figure inside a page is composed for the band it will be shown at, not for the
-artifact's canvas: `drawing/stage.py` makes the stage a host input,
+artifact's canvas: `scripts/drawing/stage.py` makes the stage a host input,
 `web_figures.compose_for_band()` takes the largest stage that still clears the
 7px tier floor and the plate-shape band, and the page carries one inline plate
 per width class (`narrow` / `compact` / `medium` / `wide`) with `base.css`
@@ -166,7 +166,7 @@ geometry change plus a `STAGE_AWARE` entry, never a lower floor.
 
 A composed plate decides its descriptors once for the whole plate: one line, two
 wrapped lines with the box raised to 76 units, or titles only when no node's
-descriptor fits in two. `layout/constraints.py` and `resolve.py` ask
+descriptor fits in two. `scripts/drawing/layout/constraints.py` and `scripts/drawing/resolve.py` ask
 `fit_node_content` the same question so box heights and the drawn runs agree, and
 `compose_for_band()` bisects toward the 240-unit floor when a stage refuses to
 compile, because feasible stages are not an interval. On the 960-unit artifact
@@ -187,7 +187,7 @@ are packed by measured text advance and stack under their title when one row
 does not fit.
 
 Group boundaries are layout geometry, not render decoration:
-`layout/regions.py` computes each boundary's rectangle once, and both the
+`scripts/drawing/layout/regions.py` computes each boundary's rectangle once, and both the
 renderer and the label placer use it. A connector may cross a boundary but never
 run along its edge, the strip inside a boundary's top padding belongs to the
 boundary's own name, and a name that finds no free slot is dropped rather than
@@ -239,7 +239,7 @@ FOLIO_PIPELINE=legacy      # the template path alone, kept for rollback
 
 The compatibility writer fills the template's own markup rather than rebuilding it, because a template's appearance is its DOM shape and not its class names. Two consequences follow, and both matter:
 
-- **A template edit needs the mapping re-checked.** Run `python3 scripts/fidelity.py measure`. All seven document types render identically to the template path today (average SSIM 0.9887, changelog 1.0000, one-pager 0.9210); a drop means the writer and the template have drifted apart.
+- **A template edit needs the mapping re-checked.** Run `python3 scripts/fidelity.py measure`. All seven document types render identically to the template path today (average SSIM 0.9887, changelog 1.0000, one-pager 0.9211); a drop means the writer and the template have drifted apart.
 - **A structural label belongs in a placeholder.** If a template hard-codes wording that the IR should carry — a section heading, a stage label — promote it to a placeholder and give it a default in `scripts/section_defaults.py`, so the template still renders on its own.
 
 IR documents declare no font size, colour, margin or coordinate. A test walks every model field against a banned-vocabulary list, so a theme is referenced by name and never inlined. `references/schemas/document-1.0.schema.json` is the shape; `scripts/document_ir/validate.py` is the gate.
@@ -349,4 +349,4 @@ Keep the current release note as `RELEASE_NOTES_V<version>.md` at the repository
 `LXGWWenKai-Regular.ttf` is an open-source font from the LXGW WenKai project.
 Fallback without LXGW WenKai: Source Han Serif SC -> Noto Serif CJK SC -> Songti SC -> STSong -> Georgia.
 English templates use Charter serif.
-The Codex Desktop ZIP does not bundle LXGW WenKai TTF files. They are about 24MB each and can make upload or execution time out. Before building Chinese documents, the skill checks for missing fonts and downloads them from the official GitHub source into `assets/fonts/`. WeasyPrint then uses the existing relative `@font-face` paths without changing HTML.
+The skill ZIP does not bundle LXGW WenKai TTF files. They are about 24MB each and can make upload or execution time out. Before building Chinese documents, the skill checks for missing fonts and downloads them from the official GitHub source into `assets/fonts/`. WeasyPrint then uses the existing relative `@font-face` paths without changing HTML.

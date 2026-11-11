@@ -11,7 +11,7 @@ class FolioTheme:
     olive: str = "#5A4A43"
     # Deep enough to hold an edge at diagram scale, where a label sits on the
     # parchment canvas rather than on paper-white. Named `label` rather than
-    # `stone` because it is not the document stone (#85776F), and calling it
+    # `stone` because it is not the document's muted text role, and calling it
     # the same thing hid a real difference between the two themes.
     label: str = "#74665F"
     brand: str = "#B83D2E"

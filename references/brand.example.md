@@ -22,7 +22,7 @@ country: ""                 # e.g. "USA"
 company: ""                 # Company or project name for headers and footers
 tagline: ""                 # One-liner used in one-pager / long-doc footer
 logo: ""                    # Absolute path to logo file, e.g. "~/Downloads/logo.svg"
-brand_color: ""             # Hex to override --brand, e.g. "#B83D2E". Warm palette still applies.
+brand_color: ""             # Hex to override --color-accent-brand, e.g. "#B83D2E". Warm palette still applies.
 
 # ─── Document defaults ───
 language: ""                # cn / en. Used when the request language is ambiguous.

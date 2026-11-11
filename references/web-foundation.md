@@ -145,15 +145,15 @@ Workspace copy should be operational. If a sentence could sit in a landing-page 
 
 | Role | Token | Value | Web use |
 |---|---|---|---|
-| Page base | `--parchment` | `#F6F0EA` | Reading pages, warm app backgrounds |
-| Raised surface | `--ivory` | `#FBF7F3` | Panels, tables, inspectors, restrained controls |
-| Accent | `--brand` | `#B83D2E` | Primary action, active state, section mark |
-| Primary text | `--near-black` | `#191514` | Main copy and headings |
-| Secondary text | `--dark-warm` | `#3A312D` | Labels, navigation, dense UI copy |
-| Supporting text | `--olive` | `#5A4A43` | Descriptions, captions, inactive items |
-| Tertiary text | `--stone` | `#85776F` | Metadata, timestamps, disabled-adjacent copy |
+| Page base | `--color-surface-page` | `#F6F0EA` | Reading pages, warm app backgrounds |
+| Raised surface | `--color-surface-card` | `#FBF7F3` | Panels, tables, inspectors, restrained controls |
+| Accent | `--color-accent-brand` | `#B83D2E` | Primary action, active state, section mark |
+| Primary text | `--color-text-primary` | `#191514` | Main copy and headings |
+| Secondary text | `--color-text-warm` | `#3A312D` | Labels, navigation, dense UI copy |
+| Supporting text | `--color-text-secondary` | `#5A4A43` | Descriptions, captions, inactive items |
+| Tertiary text | `--color-text-muted` | `#756A63` | Metadata, timestamps, disabled-adjacent copy |
 
-Use `--brand` on no more than one focal path per viewport. For Web UI, this usually means one primary action, one active navigation item, or one data highlight.
+Use `--color-accent-brand` on no more than one focal path per viewport. For Web UI, this usually means one primary action, one active navigation item, or one data highlight.
 
 ## Type and Voice
 

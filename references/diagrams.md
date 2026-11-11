@@ -146,22 +146,26 @@ Shared tokens across the three diagrams, mapping directly to folio's design syst
 
 | SVG role | folio token | Value |
 |---|---|---|
-| Canvas | `--parchment` | `#F6F0EA` |
-| Standard node fill | (white) | `#FBF7F3` |
-| Standard node stroke | `--near-black` | `#191514` |
-| Store node fill | near-black 5% | `rgba(25,21,20,0.05)` |
-| Store node stroke | `--olive` | `#5A4A43` |
-| Cloud node fill | near-black 3% | `rgba(25,21,20,0.03)` |
-| Cloud node stroke | near-black 30% | `rgba(25,21,20,0.30)` |
-| External node fill | olive 8% | `rgba(90,74,67,0.08)` |
-| External node stroke | `--stone` | `#85776F` |
-| **Focal fill** | `--brand-tint` | `#F7E6E1` |
-| **Focal stroke** | `--brand` | `#B83D2E` |
-| Standard arrow | `--olive` | `#5A4A43` |
-| Focal arrow | `--brand` | `#B83D2E` |
-| Primary text | `--near-black` | `#191514` |
-| Secondary text | `--olive` | `#5A4A43` |
-| Tertiary text / small mono label | `--stone` | `#85776F` |
+| Canvas | `color.surface.page` | `#F6F0EA` |
+| Standard node fill | `color.surface.card` | `#FBF7F3` |
+| Standard node stroke | `color.text.primary` | `#191514` |
+| Store node fill | primary 5% | `rgba(25,21,20,0.05)` |
+| Store node stroke | `color.text.secondary` | `#5A4A43` |
+| Cloud node fill | primary 3% | `rgba(25,21,20,0.03)` |
+| Cloud node stroke | primary 30% | `rgba(25,21,20,0.30)` |
+| External node fill | secondary 8% | `rgba(90,74,67,0.08)` |
+| External node stroke | drawing `label` | `#74665F` |
+| **Focal fill** | `color.accent.brand-tint` | `#F7E6E1` |
+| **Focal stroke** | `color.accent.brand` | `#B83D2E` |
+| Standard arrow | `color.text.secondary` | `#5A4A43` |
+| Focal arrow | `color.accent.brand` | `#B83D2E` |
+| Primary text | `color.text.primary` | `#191514` |
+| Secondary text | `color.text.secondary` | `#5A4A43` |
+| Tertiary text / small mono label | drawing `label` | `#74665F` |
+
+`scripts/drawing/theme/folio.py` maps the shared names to the document scheme;
+`label` is the drawing theme's own because it is not the document's muted text
+role.
 
 Don't add a fourth state ("warning amber", "success green"). folio has one accent.
 
@@ -176,7 +180,7 @@ Icons live inside `<svg>` blocks alongside diagram nodes. Draw them with the sam
 - Stroke weight stays consistent within one diagram. Never mix 1pt and 1.5pt icons in the same figure
 - No drop shadow, gradient, 3D, or glassmorphism
 - No emoji-style faces, mascots, or expressive characters - this is editorial schematic, not playful
-- Focal icons may use `--brand` stroke or fill, but the figure's total cinnabar-coral area still respects the 5% cap
+- Focal icons may use `--color-accent-brand` stroke or fill, but the figure's total cinnabar-coral area still respects the 5% cap
 
 ### Canonical shapes
 
@@ -258,16 +262,20 @@ Five data-driven chart types support investment reports, financial comparisons, 
 
 ### Color palette (derived from folio warm palette)
 
-| Role | Value | Use |
+| Role | Classic value | Use |
 |---|---|---|
-| Primary series | `#B83D2E` cinnabar-coral | First group / focal data |
-| Series 2 | `#5A4A43` olive | Second group |
-| Series 3 | `#85776F` stone | Third group |
-| Series 4 | `#B9ACA3` light-stone | Fourth group |
-| Series 5 | `#D7CBC2` mist | Fifth group |
-| Series 6 | `#F7E6E1` brand-tint | Sixth group |
-| Grid lines | `#E6D9D1` | Axes / reference lines |
-| Data labels | `#191514` near-black | Numeric text |
+| Series 1 | `#5A4A43` | First group |
+| Series 2 | `#74665F` | Second group |
+| Series 3 | `#B9ACA3` | Third group |
+| Series 4 | `#D7CBC2` | Fourth group |
+| Series 5 | `#F7E6E1` | Fifth group |
+| Series 6 | `#8B8078` | Sixth group |
+| Grid lines | `color.border.default` `#E6DACD` | Axes / reference lines |
+| Data labels | `color.text.primary` `#191514` | Numeric text |
+
+The six series are `color.series.1..6` in the active scheme; the values above
+are what `folio-classic-v1` binds them to. A chart reads the scheme, never a
+literal.
 
 ### Data limits
 
