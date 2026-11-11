@@ -7,6 +7,7 @@
     "#4B3E39": "color.semantic.component",
     "#5A4A43": "color.text.secondary",
     "#5A6B7A": "color.status.negative",
+    "#74665F": "color.series.2",
     "#756A63": "color.text.muted",
     "#7E241C": "color.semantic.delivered-strong",
     "#8B8078": "color.series.6",
@@ -166,6 +167,22 @@
     "#5A6B7A": [
       "assets/templates/equity-report-en.html",
       "assets/templates/equity-report.html"
+    ],
+    "#74665F": [
+      "assets/diagrams/architecture.html",
+      "assets/diagrams/bar-chart.html",
+      "assets/diagrams/candlestick.html",
+      "assets/diagrams/donut-chart.html",
+      "assets/diagrams/flowchart.html",
+      "assets/diagrams/layer-stack.html",
+      "assets/diagrams/line-chart.html",
+      "assets/diagrams/quadrant.html",
+      "assets/diagrams/state-machine.html",
+      "assets/diagrams/swimlane.html",
+      "assets/diagrams/timeline.html",
+      "assets/diagrams/tree.html",
+      "assets/diagrams/venn.html",
+      "assets/diagrams/waterfall.html"
     ],
     "#756A63": [
       "assets/demos/demo-agent-ops-longdoc.html",
@@ -553,20 +570,6 @@
       "index.html"
     ],
     "#85776F": [
-      "assets/diagrams/architecture.html",
-      "assets/diagrams/bar-chart.html",
-      "assets/diagrams/candlestick.html",
-      "assets/diagrams/donut-chart.html",
-      "assets/diagrams/flowchart.html",
-      "assets/diagrams/layer-stack.html",
-      "assets/diagrams/line-chart.html",
-      "assets/diagrams/quadrant.html",
-      "assets/diagrams/state-machine.html",
-      "assets/diagrams/swimlane.html",
-      "assets/diagrams/timeline.html",
-      "assets/diagrams/tree.html",
-      "assets/diagrams/venn.html",
-      "assets/diagrams/waterfall.html",
       "assets/templates/equity-report-en.html",
       "assets/templates/equity-report.html",
       "references/fixtures/hosting/a4-chinese.html",
@@ -605,12 +608,7 @@
     ],
     "#E6D9D1": [
       "assets/demos/demo-nvidia-equity-report.html",
-      "assets/demos/demo-tesla.html",
-      "assets/diagrams/bar-chart.html",
-      "assets/diagrams/candlestick.html",
-      "assets/diagrams/donut-chart.html",
-      "assets/diagrams/line-chart.html",
-      "assets/diagrams/waterfall.html"
+      "assets/demos/demo-tesla.html"
     ],
     "#E8E5DA": [
       "assets/demos/demo-agent-slides-zh.html",
