@@ -1,0 +1,40 @@
+{
+  "cards": [
+    {
+      "page": "index.html",
+      "image": "assets/images/share-en.png",
+      "title": "Folio",
+      "source_description": "Turn raw notes into stable PDF, PPTX and SVG artifacts, and reading pages built from the same profiles.",
+      "description": "Turn raw notes into stable PDF, PPTX and SVG artifacts, and reading pages built from the same profiles.",
+      "width": 1200,
+      "height": 630,
+      "sha256": "936dc8b394c0d1613e112b2d0daa63604909166b3f6f0317e1c29eec0eeb21b1",
+      "title_px": 120,
+      "lead_px": 26,
+      "lines": {
+        "title": 1,
+        "lead": 2
+      },
+      "lead_w": 900,
+      "truncated": false
+    },
+    {
+      "page": "index-zh.html",
+      "image": "assets/images/share-zh.png",
+      "title": "Folio",
+      "source_description": "把原始笔记变成稳定的 PDF、PPTX、SVG 产物，以及由同一套档案生成的阅读页。",
+      "description": "把原始笔记变成稳定的 PDF、PPTX、SVG 产物，以及由同一套档案生成的阅读页。",
+      "width": 1200,
+      "height": 630,
+      "sha256": "3abf1c6d46fa5931d1bc0a37d2fd1d5edb79dccfa7deaf015e8b8ead3ca2d0e3",
+      "title_px": 120,
+      "lead_px": 26,
+      "lines": {
+        "title": 1,
+        "lead": 2
+      },
+      "lead_w": 740,
+      "truncated": false
+    }
+  ]
+}

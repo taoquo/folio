@@ -1,0 +1,38 @@
+{
+  "site_name": "Folio",
+  "origin": "https://taoquo.github.io/folio",
+  "stylesheet": "styles.css",
+  "manifest": "assets/images/share.manifest.json",
+  "pages": [
+    {
+      "key": "en",
+      "file": "index.html",
+      "path": "",
+      "language": "en",
+      "kicker": "Document design system",
+      "title": "Folio",
+      "description": "Turn raw notes into stable PDF, PPTX and SVG artifacts, and reading pages built from the same profiles.",
+      "footer": "For documents worth keeping",
+      "image_alt": "Folio: document design system",
+      "out": "assets/images/share-en.png"
+    },
+    {
+      "key": "zh",
+      "file": "index-zh.html",
+      "path": "index-zh.html",
+      "language": "zh-Hans-CN",
+      "kicker": "文档设计系统",
+      "title": "Folio",
+      "description": "把原始笔记变成稳定的 PDF、PPTX、SVG 产物，以及由同一套档案生成的阅读页。",
+      "footer": "为值得留下的文档",
+      "image_alt": "Folio：文档设计系统",
+      "out": "assets/images/share-zh.png"
+    }
+  ],
+  "redirects": [
+    {
+      "file": "index-en.html",
+      "to": ""
+    }
+  ]
+}

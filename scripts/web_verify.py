@@ -20,6 +20,7 @@ browser is allowed, which is the nightly job.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -485,10 +486,54 @@ def check_dom(manifest: dict, page: dict, module_id: str) -> dict:
         f"{got} block(s) rendered, {expected} in the model")
 
 
-def verify(plan: dict, metrics: dict, manifest: dict | None) -> list[dict]:
+def check_share(page_dir: Path) -> dict:
+    """The card a preview will fetch: the size the frame needs, and the bytes
+    the manifest describes.
+
+    The ink box is also held inside the canvas: a card whose title runs off the
+    edge is a card whose first words are cut in every client, and no browser
+    measurement would ever see it.
+    """
+    statement = "the share card is 1200x630, digest-recorded, and inside its margins"
+    image = page_dir / "share.png"
+    if not image.is_file():
+        return {"rule": "V-META-01", "statement": statement, "status": "SKIP",
+                "detail": "no share.png (no origin, or no rasterizer)"}
+    manifest_path = page_dir / "share.manifest.json"
+    record = (json.loads(manifest_path.read_text(encoding="utf-8"))
+              if manifest_path.is_file() else {})
+    digest = hashlib.sha256(image.read_bytes()).hexdigest()
+    from PIL import Image, ImageChops
+
+    try:
+        with Image.open(image) as opened:
+            size = opened.size
+            background = opened.convert("RGB").getpixel((4, 4))
+            diff = ImageChops.difference(opened.convert("RGB"),
+                                         Image.new("RGB", size, background)).convert("L")
+            box = diff.point(lambda value: 255 if value > 8 else 0).getbbox()
+    except OSError as exc:
+        return _fail("V-META-01", statement, f"{image.name} is unreadable: {exc}")
+    inside = bool(box) and box[0] >= 64 and box[2] <= 1136 and box[1] >= 32 and box[3] <= 606
+    ok = size == (1200, 630) and record.get("sha256") == digest and inside
+    return (_pass if ok else _fail)(
+        "V-META-01", statement,
+        f"{size[0]}x{size[1]}, sha {digest[:12]}, "
+        f"manifest {'absent' if not record else 'present'}, "
+        f"ink {box if box else 'blank'} {'inside' if inside else 'outside'} the margins")
+
+
+def verify(plan: dict, metrics: dict, manifest: dict | None,
+           series_root: Path | None = None) -> list[dict]:
     projected = web_projection(language=plan.get("language")).projected
     rows: list[dict] = []
+    shared: set[Path] = set()
     for page_path, widths in sorted((metrics.get("pages") or {}).items()):
+        if series_root is not None:
+            page_dir = series_root / Path(page_path).parent
+            if page_dir not in shared:
+                shared.add(page_dir)
+                rows.append({**check_share(page_dir), "width": 0})
         parts = Path(page_path).parts
         # `<series>/<module>/index.html` is a chapter page; the series index
         # (`<series>/index.html`) has no column, so the plan has nothing to say
@@ -523,7 +568,7 @@ def verify(plan: dict, metrics: dict, manifest: dict | None) -> list[dict]:
 
 RULE_ORDER = ("V-PLAN-01", "V-PLAN-02", "V-PLAN-03", "V-FIG-13", "V-FIG-12",
               "V-FIG-14", "V-TYPE-02", "V-COL-01",
-              "V-RHYTHM-01", "V-OVF-01", "V-DOM-01")
+              "V-RHYTHM-01", "V-OVF-01", "V-DOM-01", "V-META-01")
 SEVERITY = {"FAIL": 3, "REVIEW": 2, "PASS": 1, "SKIP": 0}
 
 
@@ -535,7 +580,8 @@ def summarise(rows: list[dict]) -> list[dict]:
         if not group:
             continue
         worst = max(group, key=lambda row: SEVERITY[row["status"]])
-        notes = [f"{row['width']}px {row['detail']}"
+        notes = [(f"{row['width']}px {row['detail']}" if row.get("width")
+                  else row["detail"])
                  for row in group if row["status"] == worst["status"]]
         out.append({
             "rule": rule,
@@ -579,7 +625,9 @@ def main(argv: list[str]) -> int:
         sibling = args.plan.parent / "figures.manifest.json"
         manifest = json.loads(sibling.read_text(encoding="utf-8")) if sibling.is_file() else None
 
-    rows = summarise(verify(plan, metrics, manifest))
+    # `metrics` keys are relative to the dist root, so the plan's
+    # grandparent is the root a card is found under.
+    rows = summarise(verify(plan, metrics, manifest, args.plan.parent.parent))
     failed = [row for row in rows if row["status"] == "FAIL"]
 
     if args.json:

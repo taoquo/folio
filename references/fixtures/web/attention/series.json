@@ -1,5 +1,6 @@
 {
   "series": "attention",
+  "origin": "https://taoquo.github.io/folio/web/attention",
   "kind": "case",
   "language": "zh-Hans-CN",
   "kicker": "TRANSFORMER · PAPER READING",

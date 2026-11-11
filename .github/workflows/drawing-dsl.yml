@@ -162,6 +162,8 @@ jobs:
         run: python scripts/color_sources.py check
       - name: Check the static pages hold the current palette
         run: python scripts/build_static_theme.py --check
+      - name: Check the share cards and their heads have not drifted
+        run: python scripts/share_card.py --site --check-heads
       - name: Check the palette numbers follow lightness
         run: python scripts/check_palette_scale.py
       - name: Check every colour scheme clears the same bar

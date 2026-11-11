@@ -32,7 +32,9 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 | `scripts/web_plan.py` | The page plan: viewport values, figure plates, breakpoints | Medium |
 | `scripts/web_page.py` | Top-level block index and roles, fail-closed | Medium |
 | `scripts/web_measure.py` | Chromium measurement (Playwright, nightly only) | Medium |
-| `scripts/web_verify.py` | Grades the measured page against the plan | Medium |
+| `scripts/web_verify.py` | Grades the measured page against the plan, including the share card | Medium |
+| `scripts/share_card.py` | Renders the 1200x630 share card and writes the page's `og:` head block | Medium |
+| `references/site/share.json` | The site's own pages: origin, card copy, card output, redirect canonical | Low |
 | `scripts/document_ir/` | Document IR: model, validator, readers, HTML and PPTX writers | Medium |
 | `scripts/renderers/` | Renderer protocol and the WeasyPrint adapter | Low |
 | `scripts/pipeline.py` | Chooses the render path via `FOLIO_PIPELINE` | Low |
@@ -110,6 +112,25 @@ python3 scripts/web_plan.py --series attention --gate        # the layout plan, 
 python3 scripts/web_measure.py --series attention            # what Chromium computed
 python3 scripts/web_verify.py --series attention             # what the plan required
 ```
+
+Share cards. Every page a reader can share carries a 1200x630 card and the
+`og:` / `twitter:` head block that points at it:
+
+```bash
+python3 scripts/share_card.py --site                 # the two homepages: card + head block
+python3 scripts/share_card.py --site --check         # byte drift, and head-block drift
+python3 scripts/share_card.py --site --check-heads   # head vs card on disk; the fast gate runs this
+```
+
+`--check` re-renders, so it belongs on the machine that authored the cards: text
+layout is deterministic but the PDF-to-PNG rasterizer is not guaranteed to agree
+across platforms. `--check-heads` compares the `?v=<digest>` in the head with the
+file, which is what a portable gate can hold.
+
+`series.json` declares `origin`; without it a series still builds but its
+absolute tags are omitted rather than emitted relative. `build_web.py` writes
+`share.png` and `share.manifest.json` beside every page, and `check_web.py`
+(`W-META-01..05`) plus `web_verify.py` (`V-META-01`) hold them to the contract.
 
 Web pages read the same theme as every document plus a screen profile in
 `references/profiles/web/`. `projection.py` emits both layers; the templates in

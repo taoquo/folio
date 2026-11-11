@@ -8,7 +8,10 @@ margin and a label at 2.1:1 are failures here, whatever the CSS says.
 
 from __future__ import annotations
 
+import hashlib
+import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -166,6 +169,47 @@ class FigureTypeTests(unittest.TestCase):
         row = web_verify.check_figure_type(manifest, self.page(), "m", 390)
         self.assertEqual("FAIL", row["status"])
         self.assertIn("not in the figure manifest", row["detail"])
+
+
+class ShareCardTests(unittest.TestCase):
+    """V-META-01 reads the artifact, and a broken artifact is a failure."""
+
+    def card(self, root: Path, *, ink: tuple[int, int, int, int] = (100, 100, 1100, 600)) -> None:
+        from PIL import Image, ImageDraw
+
+        image = Image.new("RGB", (1200, 630), "#F6F0EA")
+        ImageDraw.Draw(image).rectangle(ink, fill="#191514")
+        image.save(root / "share.png")
+        digest = hashlib.sha256((root / "share.png").read_bytes()).hexdigest()
+        (root / "share.manifest.json").write_text(
+            json.dumps({"sha256": digest, "width": 1200, "height": 630}), encoding="utf-8")
+
+    def test_a_recorded_card_inside_its_margins_passes(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            self.card(Path(raw))
+            self.assertEqual("PASS", web_verify.check_share(Path(raw))["status"])
+
+    def test_an_unrecorded_card_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            self.card(Path(raw))
+            (Path(raw) / "share.manifest.json").unlink()
+            self.assertEqual("FAIL", web_verify.check_share(Path(raw))["status"])
+
+    def test_ink_outside_the_margins_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            self.card(Path(raw), ink=(20, 100, 1100, 600))
+            self.assertEqual("FAIL", web_verify.check_share(Path(raw))["status"])
+
+    def test_an_unreadable_card_fails_rather_than_crashing(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            (Path(raw) / "share.png").write_bytes(b"not a png")
+            row = web_verify.check_share(Path(raw))
+        self.assertEqual("FAIL", row["status"])
+        self.assertIn("unreadable", row["detail"])
+
+    def test_a_missing_card_is_skipped_not_passed(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            self.assertEqual("SKIP", web_verify.check_share(Path(raw))["status"])
 
 
 if __name__ == "__main__":

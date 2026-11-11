@@ -25,6 +25,7 @@ import sys
 from dataclasses import dataclass, field
 from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -252,6 +253,107 @@ def check_delivery(root: Node, text: str, report: Report, path: Path, series: st
         report.add("W-DLV-03", shape, f"module url shape: {path.parent.parent.name}/{path.parent.name}/{path.name}")
     else:
         report.note("W-DLV-03", "SKIP", "not a module page")
+
+
+def meta_value(root: Node, *, name: str | None = None, prop: str | None = None) -> str | None:
+    """A meta tag's content, by `name` or by `property`."""
+    for node in find_all(root, "meta"):
+        if name is not None and (node.attrs.get("name") or "").lower() == name:
+            return node.attrs.get("content") or ""
+        if prop is not None and (node.attrs.get("property") or "").lower() == prop:
+            return node.attrs.get("content") or ""
+    return None
+
+
+def preview_width(text: str) -> int:
+    """Description length as a preview shows it: a CJK glyph counts as two."""
+    return sum(2 if ord(char) > 0x2E80 else 1 for char in text)
+
+
+def check_meta(root: Node, text: str, report: Report, path: Path) -> None:
+    """The head a link preview reads.
+
+    The rules are about presence and provenance, not taste. A page may have no
+    absolute address -- the origin is a build input -- and then it must have no
+    absolute tags either: omission is the contract, not a failure.
+    """
+    title_node = find_one(root, "title")
+    title = title_node.text().strip() if title_node else ""
+    description = meta_value(root, name="description") or ""
+    width = preview_width(description)
+    report.add("W-META-01", 40 <= width <= 160,
+               f"description {width} preview char(s)" if description else "no description")
+
+    og_title = meta_value(root, prop="og:title")
+    missing = [
+        name for name, value in (
+            ("og:title", og_title),
+            ("og:description", meta_value(root, prop="og:description")),
+            ("og:type", meta_value(root, prop="og:type")),
+            ("og:locale", meta_value(root, prop="og:locale")),
+        ) if not value
+    ]
+    # Same source: the preview title is the page's title, or the page's title
+    # begins with it (a module page prefixes its series).
+    same = bool(og_title) and (title == og_title or title.startswith(og_title))
+    report.add("W-META-02", not missing and same,
+               f"missing: {', '.join(missing)}" if missing
+               else f"og:title {'matches' if same else 'disagrees with'} <title>")
+
+    canonical_node = next(
+        (node for node in find_all(root, "link")
+         if "canonical" in (node.attrs.get("rel") or "")), None)
+    url = meta_value(root, prop="og:url")
+    image = meta_value(root, prop="og:image")
+    canonical = canonical_node.attrs.get("href") if canonical_node else None
+    card_file = path.parent / "share.png"
+
+    def absolute(value: str) -> bool:
+        return value.startswith(("http://", "https://"))
+
+    if url:
+        # With an origin, the address, the canonical and the card are one
+        # statement. The card is required exactly when the build produced one:
+        # a machine without the rasterizer emits no card and no card tag, and
+        # that is a complete build, not a missing tag.
+        ok = (
+            bool(canonical) and absolute(url) and absolute(canonical)
+            and urlsplit(url).netloc == urlsplit(canonical).netloc
+            and bool(image) == card_file.is_file()
+            and (not image or (absolute(image) and urlsplit(image).netloc == urlsplit(url).netloc))
+        )
+        detail = (f"url {url}, canonical {canonical or 'absent'}, "
+                  f"card tag {'yes' if image else 'no'}, card file "
+                  f"{'present' if card_file.is_file() else 'absent'}")
+    else:
+        # No origin: the contract is omission, all of it.
+        ok = not image and not canonical
+        detail = "no origin: absolute tags omitted" if ok else "tags without an origin"
+    report.add("W-META-03", ok, detail)
+
+    manifest_path = path.parent / "share.manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.is_file() else None
+    if not image:
+        report.note("W-META-04", "SKIP", "no og:image to resolve")
+    else:
+        target = path.parent / Path(urlsplit(image).path).name
+        digest = hashlib.sha256(target.read_bytes()).hexdigest() if target.is_file() else ""
+        recorded = manifest or {}
+        ok = (
+            target.is_file()
+            and recorded.get("sha256") == digest
+            and (recorded.get("width"), recorded.get("height")) == (1200, 630)
+        )
+        report.add("W-META-04", ok,
+                   f"{target.name} {'missing' if not target.is_file() else 'sha ' + digest[:12]}, "
+                   f"manifest {'absent' if manifest is None else 'present'}")
+
+    surface = re.search(r"--color-surface-page\s*:\s*([^;]+);", text)
+    theme = meta_value(root, name="theme-color")
+    ok = bool(theme) and bool(surface) and theme.strip().lower() == surface.group(1).strip().lower()
+    report.add("W-META-05", ok,
+               f"theme-color {theme or 'absent'} vs surface "
+               f"{surface.group(1).strip() if surface else 'unknown'}")
 
 
 def check_structure(root: Node, report: Report, series_dir: Path | None = None) -> str:
@@ -954,6 +1056,7 @@ def main(argv: list[str]) -> int:
     body = find_one(root, "body")
     kind = (body.attrs.get("data-folio-kind") if body else "") or ""
     check_delivery(root, text, report, args.path, series, page_type)
+    check_meta(root, text, report, args.path)
     check_text(root, report)
     check_links(root, report)
     check_source(root, report, page_type, kind)

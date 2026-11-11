@@ -36,12 +36,17 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
+import share_card as SC  # noqa: E402
 import web_contracts as C  # noqa: E402
 import web_figures as WF  # noqa: E402
 import web_page as WP  # noqa: E402
 import web_plan  # noqa: E402
 
 TEMPLATES = ROOT / "assets" / "templates" / "web"
+
+# The site a series belongs to. It goes into `og:site_name` and the footer of a
+# card whose page has no parent series of its own.
+SITE_NAME = "Folio"
 
 # Chrome strings follow the series language. They are page furniture, not
 # content, so they live with the builder rather than in each fragment.
@@ -412,8 +417,9 @@ def render_figures(
     language: str | None = None,
     figure_word: str = "图",
     figure_ids: dict[str, str] | None = None,
-) -> tuple[str, dict[str, dict]]:
+) -> tuple[str, dict[str, dict], dict[str, str]]:
     rendered: dict[str, dict[str, WF.RenderedFigure]] = {}
+    share_plates: dict[str, str] = {}
     uncomposed: dict[str, tuple[str, ...]] = {}
     variants = web_plan.figure_variants(language)
     bands = {item["key"]: item["band"] for item in variants}
@@ -447,6 +453,12 @@ def render_figures(
             plates[variant] = replace_fields(figure, svg=markup, svg_sha=digest)
         rendered[figure_id] = plates
         uncomposed[figure_id] = missing
+        # The share card shows a figure at a third of the page's width, so it
+        # takes the plate composed for the narrowest band: that is the one
+        # whose labels were sized to survive at this scale. A family that
+        # cannot recompose keeps its authored plate.
+        band_key = "narrow" if "narrow" in plates else next(iter(plates))
+        share_plates[figure_id] = plates[band_key].svg
 
     used: set[str] = set()
     number = 0
@@ -470,7 +482,74 @@ def render_figures(
         raise SystemExit(f"ERROR: figures rendered but not placed: {sorted(unused)}")
     manifest = {figure_id: WF.figure_manifest_entry(plates, uncomposed[figure_id])
                 for figure_id, plates in rendered.items()}
-    return fragment, manifest
+    return fragment, manifest, share_plates
+
+
+def share_page(
+    page_dir: Path,
+    *,
+    origin: str | None,
+    path: str,
+    title: str,
+    description: str,
+    card: SC.Card,
+    language: str,
+    palette: dict[str, str],
+    kind: str,
+    page_label: str | None = None,
+) -> tuple[list[str], dict | None]:
+    """One page's card and head block.
+
+    The image and its tags travel together: no rasterizer, no image tags; no
+    origin, no absolute addresses. A relative `og:image` is worse than none,
+    because a crawler resolves it against its own path.
+    """
+    record = None
+    image_ref: str | None = None
+    if SC.available():
+        record = SC.render(card, page_dir / "share.png")
+        # The digest is in the URL so a changed card is a changed address; a
+        # platform that cached the old picture fetches the new one.
+        image_ref = f'share.png?v={record["sha256"][:8]}'
+    else:
+        print("WARN: pdftoppm is not installed; share images and image tags are omitted")
+    url = SC.page_url(origin, path) if origin else None
+    lines = SC.share_meta(
+        title=title,
+        description=description,
+        url=url,
+        image=image_ref,
+        image_alt=title,
+        site=SITE_NAME,
+        locale=SC.locale_for(language),
+        kind=kind,
+        theme_color=palette["surface"],
+        image_base=f"{url}/" if url else None,
+    )
+    manifest = None
+    if record is not None:
+        manifest = {
+            "page": page_label or path,
+            "title": title,
+            "description": record["description"],
+            "image": "share.png",
+            "width": record["width"],
+            "height": record["height"],
+            "sha256": record["sha256"],
+            "title_px": record["title_px"],
+            "lead_px": record["lead_px"],
+            "lines": {"title": record["title_lines"], "lead": record["lead_lines"]},
+            "lead_w": record["lead_w"],
+            "truncated": record["truncated"],
+        }
+    return lines, manifest
+
+
+def write_share(page_dir: Path, manifest: dict | None) -> None:
+    if manifest is None:
+        return
+    (page_dir / "share.manifest.json").write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def render(template: str, values: dict[str, str]) -> str:
@@ -487,6 +566,11 @@ def build(series_dir: Path, out_dir: Path, theme: str | None, *, strict: bool = 
     language = str(data.get("language") or "zh-Hans-CN")
     ui = ui_for(language)
     root, page_theme = style_css(language, theme)
+    # The origin is a declared build input: without it a page still builds, but
+    # its share tags are omitted rather than emitted relative.
+    origin = (str(data.get("origin") or "").strip().rstrip("/")) or None
+    palette = SC.colours(root)
+    stack = SC.embedded_stack(SC.stack_of(root, SC.Card.stack, language))
     prefix = data.get("figure_prefix", "W")
     series_figures = {entry["id"]: entry for entry in data.get("figures", [])}
     manifest: dict = {
@@ -512,7 +596,7 @@ def build(series_dir: Path, out_dir: Path, theme: str | None, *, strict: bool = 
         figure_ids = {
             block.figure: block.id for block in model.blocks() if block.figure
         } if model is not None else {}
-        fragment, module_manifest = render_figures(
+        fragment, module_manifest, share_plates = render_figures(
             module, series_figures, fragment,
             page_theme=page_theme, prefix=prefix, strict=strict,
             language=language,
@@ -529,8 +613,38 @@ def build(series_dir: Path, out_dir: Path, theme: str | None, *, strict: bool = 
                 "counts": model.counts(),
             }
         target = out_dir / data["series"] / module["id"] / "index.html"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        plate = next((share_plates[figure_id] for figure_id in module.get("figures", [])
+                      if figure_id in share_plates), None)
+        description = SC.describe(module.get("summary") or module["lead"])
+        card = SC.card_from_page(
+            {
+                "kicker": (f'{data["kicker"]} · {module["num"]}'
+                           if module.get("num") else data["kicker"]),
+                "title": module["title"],
+                "description": description,
+                "footer": data["title"],
+                "language": language,
+            },
+            surface=palette["surface"], ink=palette["ink"],
+            secondary=palette["secondary"], muted=palette["muted"],
+            accent=palette["accent"], plate=plate, stack=stack,
+        )
+        head_meta, share_manifest = share_page(
+            target.parent,
+            origin=origin,
+            path=f'{module["id"]}/',
+            page_label=f'{data["series"]}/{module["id"]}/',
+            title=module["title"],
+            description=description,
+            card=card,
+            language=language,
+            palette=palette,
+            kind="article",
+        )
         page = render(module_template, {
             "LANG": language,
+            "HEAD_META": SC.meta_block(head_meta),
             "FONT_FACE": font_face_css(language, out_dir, target.parent),
             "THEME_ROOT": root,
             "BASE_CSS": base_css,
@@ -556,13 +670,39 @@ def build(series_dir: Path, out_dir: Path, theme: str | None, *, strict: bool = 
             "MODULE_LABEL": ui["module"],
             "SKIP": ui["skip"],
         })
-        target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(page, encoding="utf-8")
+        write_share(target.parent, share_manifest)
         written.append(target)
 
     target = out_dir / data["series"] / "index.html"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    series_card = SC.card_from_page(
+        {
+            "kicker": data.get("kicker", data["title"]),
+            "title": data["title"],
+            "description": SC.describe(data["lead"]),
+            "footer": SITE_NAME,
+            "language": language,
+        },
+        surface=palette["surface"], ink=palette["ink"],
+        secondary=palette["secondary"], muted=palette["muted"],
+        accent=palette["accent"], stack=stack,
+    )
+    head_meta, share_manifest = share_page(
+        target.parent,
+        origin=origin,
+        path="",
+        page_label=f'{data["series"]}/',
+        title=data["title"],
+        description=SC.describe(data["lead"]),
+        card=series_card,
+        language=language,
+        palette=palette,
+        kind="website",
+    )
     index = render(index_template, {
         "LANG": language,
+        "HEAD_META": SC.meta_block(head_meta),
         "FONT_FACE": font_face_css(language, out_dir, target.parent),
         "THEME_ROOT": root,
         "BASE_CSS": base_css,
@@ -576,8 +716,8 @@ def build(series_dir: Path, out_dir: Path, theme: str | None, *, strict: bool = 
         "RAIL_SCRIPT": RAIL_SCRIPT,
         "SKIP": ui["skip"],
     })
-    target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(index, encoding="utf-8")
+    write_share(target.parent, share_manifest)
     written.append(target)
 
     manifest_path = out_dir / data["series"] / "figures.manifest.json"

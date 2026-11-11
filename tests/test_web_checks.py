@@ -8,7 +8,10 @@ counted as a pass.
 
 from __future__ import annotations
 
+import hashlib
+import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -255,6 +258,93 @@ class AcceptanceMappingTests(unittest.TestCase):
             for rule in rules:
                 with self.subTest(row=key, rule=rule):
                     self.assertIn(f'"{rule}"', source)
+
+
+class MetaTests(unittest.TestCase):
+    """W-META reads the head a preview reads, and fails on what it finds there."""
+
+    SURFACE = "#F6F0EA"
+
+    def setUp(self) -> None:
+        import share_card
+
+        self.share_card = share_card
+        self.tmp = tempfile.TemporaryDirectory()
+        self.page = Path(self.tmp.name) / "index.html"
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def build(self, *, url: str | None = "https://example.com/a/",
+              title: str = "Page", description: str | None = None,
+              theme: str | None = "#F6F0EA", image: bool = True,
+              surface: str = "#F6F0EA") -> tuple[check_web.Node, str]:
+        description = description or "A description long enough to pass the preview rule."
+        lines = self.share_card.share_meta(
+            title=title, description=description, url=url,
+            image="share.png" if image else None, image_alt=title,
+            site="Folio", locale="en_US", kind="article", theme_color=theme)
+        if url and image:
+            target = Path(self.tmp.name) / "share.png"
+            target.write_bytes(b"png bytes")
+            digest = hashlib.sha256(target.read_bytes()).hexdigest()
+            manifest = {"sha256": digest, "width": 1200, "height": 630}
+            (Path(self.tmp.name) / "share.manifest.json").write_text(
+                json.dumps(manifest), encoding="utf-8")
+        block = "\n".join(lines)
+        text = (f'<html><head><title>{title}</title>{block}'
+                f'<style>:root {{ --color-surface-page: {surface}; }}</style>'
+                f'</head><body></body></html>')
+        return tree(text), text
+
+    def rows(self, root: check_web.Node, text: str) -> dict[str, tuple[str, str]]:
+        report = check_web.Report()
+        check_web.check_meta(root, text, report, self.page)
+        return {rule: (state, detail) for rule, state, detail in report.items}
+
+    def test_a_complete_head_passes(self) -> None:
+        rows = self.rows(*self.build())
+        for rule in ("W-META-01", "W-META-02", "W-META-03", "W-META-04", "W-META-05"):
+            with self.subTest(rule=rule):
+                self.assertEqual("PASS", rows[rule][0], rows[rule][1])
+
+    def test_without_an_origin_the_tags_are_omitted_and_that_is_the_contract(self) -> None:
+        rows = self.rows(*self.build(url=None, image=False))
+        self.assertEqual("PASS", rows["W-META-03"][0], rows["W-META-03"][1])
+        self.assertEqual("SKIP", rows["W-META-04"][0])
+
+    def test_a_rendered_card_without_an_origin_is_not_advertised(self) -> None:
+        row_root, text = self.build(url=None, image=False)
+        (Path(self.tmp.name) / "share.png").write_bytes(b"png bytes")
+        self.assertEqual("PASS", self.rows(row_root, text)["W-META-03"][0])
+
+    def test_a_relative_image_fails(self) -> None:
+        root, text = self.build()
+        text = text.replace("https://example.com/a/share.png", "share.png")
+        rows = self.rows(tree(text), text)
+        self.assertEqual("FAIL", rows["W-META-03"][0])
+
+    def test_a_preview_title_that_disagrees_with_the_page_fails(self) -> None:
+        root, text = self.build()
+        text = text.replace('property="og:title" content="Page"',
+                            'property="og:title" content="Something Else"')
+        rows = self.rows(tree(text), text)
+        self.assertEqual("FAIL", rows["W-META-02"][0])
+
+    def test_a_description_below_the_preview_floor_fails(self) -> None:
+        rows = self.rows(*self.build(description="Too short."))
+        self.assertEqual("FAIL", rows["W-META-01"][0])
+
+    def test_a_theme_colour_that_is_not_the_surface_fails(self) -> None:
+        rows = self.rows(*self.build(theme="#000000"))
+        self.assertEqual("FAIL", rows["W-META-05"][0])
+
+    def test_a_manifest_that_does_not_describe_the_file_fails(self) -> None:
+        root, text = self.build()
+        (Path(self.tmp.name) / "share.manifest.json").write_text(
+            json.dumps({"sha256": "0" * 64, "width": 1200, "height": 630}), encoding="utf-8")
+        rows = self.rows(root, text)
+        self.assertEqual("FAIL", rows["W-META-04"][0])
 
 
 if __name__ == "__main__":
