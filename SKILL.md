@@ -370,6 +370,8 @@ The full spec files for reference:
 - Resume content rules: `references/resume-writing.md`
 - Architecture diagram JSON facade: `references/architecture-diagram-spec.md`
 
+Facts, measured numbers and change rules are owned by `AGENTS.md`; this file quotes them. When the two disagree, `AGENTS.md` wins.
+
 ## Step 4 · Fill content into the template
 
 - For HTML documents, copy the nearest `.html` template into your working area; don't write the whole file from scratch

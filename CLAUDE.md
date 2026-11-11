@@ -57,6 +57,8 @@ CI has three tiers in `.github/workflows/`: a fast gate on every push/PR (lint, 
 
 ## Architecture
 
+This section is the short version for a working session. `AGENTS.md` owns the rules, the measured numbers and the full pipeline descriptions; when the two disagree, `AGENTS.md` wins.
+
 ### Two different builds
 
 - `scripts/build.py` renders **templates** to PDF/PPTX. Templates keep their `{{...}}` fields, so the output is a structural example. It also builds diagram artifacts and the generated catalog.

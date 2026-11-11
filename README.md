@@ -360,14 +360,9 @@ Folio also carries a compact operating reference in [CHEATSHEET.md](CHEATSHEET.m
 
 ### Document engine
 
-Documents are produced through a semantic model, and the HTML template is one renderer of it.
+Documents are produced through a semantic model, and the HTML template is one renderer of it. The model carries no font size, colour, margin or coordinate, so a theme is referenced by name and never inlined; the compatibility writer fills the template's own markup rather than rebuilding it; and `FOLIO_PIPELINE` chooses `ir` (default), `ir-shadow`, or `legacy` for rollback. Slides are their own path: `assets/templates/slides.py` and `slides-en.py` generate the deck. [AGENTS.md](AGENTS.md#the-ir-path) owns the details.
 
-- `scripts/document_ir/` holds the model: no font size, colour, margin or coordinate appears in it, so a theme is referenced by name and never inlined
-- The compatibility writer fills the template's own markup rather than rebuilding it, because a template's appearance is its DOM shape, not its class names
-- `FOLIO_PIPELINE` chooses the path: `ir` (default), `ir-shadow`, or `legacy` for rollback
-- PPTX is produced by the same model, so slide decks are no longer a separate code path
-
-Every claim about a document is checkable:
+Every claim about a document is checkable; the current measured values live in [AGENTS.md](AGENTS.md#verification):
 
 ```bash
 python3 scripts/fidelity.py measure          # IR path vs template path, seven types render identically (avg SSIM 0.9887)

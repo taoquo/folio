@@ -328,14 +328,9 @@ Folio 不只是模板集合，还带了一份紧凑的操作参考：[CHEATSHEET
 
 ### 文档引擎
 
-文档先经过语义模型生成，HTML 模板只是它的一个渲染器。
+文档先经过语义模型生成，HTML 模板只是它的一个渲染器。模型中不出现字号、颜色、页边距或坐标，主题只按名称引用，绝不内联取值；兼容 Writer 填充模板自身的标记，而不是重新生成一份；`FOLIO_PIPELINE` 选择渲染路径：`ir`（默认）、`ir-shadow`，以及用于回滚的 `legacy`。幻灯片是独立路径：由 `assets/templates/slides.py` 与 `slides-en.py` 生成。细节以 [AGENTS.md](AGENTS.md#the-ir-path) 为准。
 
-- `scripts/document_ir/` 存放这个模型：其中不出现字号、颜色、页边距或坐标，主题只按名称引用，绝不内联取值
-- 兼容 Writer 填充模板自身的标记，而不是重新生成一份；模板的外观在于它的 DOM 结构，而不只是类名
-- `FOLIO_PIPELINE` 选择渲染路径：`ir`（默认）、`ir-shadow`，以及用于回滚的 `legacy`
-- PPTX 由同一个模型产出，幻灯片不再是独立的代码路径
-
-关于文档的每一项结论都可以复核：
+关于文档的每一项结论都可以复核；当前实测值记录在 [AGENTS.md](AGENTS.md#verification)：
 
 ```bash
 python3 scripts/fidelity.py measure          # IR 路径与模板路径对比，七类渲染一致（平均 SSIM 0.9887）

@@ -46,11 +46,28 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 | `scripts/package-skill.sh` | Skill ZIP packager, excluding large fonts | Low |
 | `CHANGELOG.md` | Aggregated release highlights linking to full notes | Medium |
 | `docs/releases/` | Archived release notes for superseded versions | Low |
+| `docs/exploration/` | Design history, indexed by its `README.md`: adopted, superseded and reference notes | Low |
 | `pyproject.toml` | Interpreter floor and ruff lint configuration shared with CI | Low |
 | `dist/folio.zip` | Skill ZIP build output, rebuilt on demand, not tracked in git | Medium |
 
 Reference docs are English-only. Do not recreate `*.en.md` duplicates. Chinese / English output differences belong in the templates.
 Do not use graphic emoticons in docs, template comments, or script output. Use `OK:` / `ERROR:` for status and `Use` / `Avoid` for comparisons.
+
+## Where a fact lives
+
+Each kind of fact has one owner. When two files disagree, the owner wins, and the other file is the bug.
+
+| Fact | Owner |
+|---|---|
+| Verification matrix, measured numbers, change rules, release flow, high-risk pitfalls | this file |
+| Visual system, content strategy, build runbook, diagram rules | `references/*.md` |
+| Public introduction, examples and galleries | `README.md` / `README.zh-CN.md` |
+| Operating procedure for an agent building a document | `SKILL.md` |
+| Environment, commands, and the architecture that spans modules | `CLAUDE.md` |
+| Design history, rejected options and their evidence | `docs/exploration/` |
+| Page counts, tokens, roles and contracts | `scripts/page_contracts.py`, `references/profiles/` |
+
+A measured number is written here once. Another file may quote it, but a change starts here, after rerunning the gate that produced it. A claim that cannot be reproduced by a command in the Verification section is an opinion, and does not belong in a shipping document.
 
 ## Verification
 
