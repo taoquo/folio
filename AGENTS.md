@@ -264,7 +264,7 @@ Do not replace a template's spacing with the model's rules. A differential exper
 
 A diagram target keeps its own path: a diagram is not a document, and it is rendered from its template with an output profile applied.
 
-PPTX is produced by `scripts/document_ir/writers/pptx.py`. Slides have no template path, so `fidelity.py` does not measure them.
+PPTX comes from the slide templates' own generators, `assets/templates/slides.py` and `slides-en.py`, which `build.py` runs. Slides have no HTML template path, so `fidelity.py` does not measure them, and the IR has no PPTX writer.
 
 ## Documentation language
 

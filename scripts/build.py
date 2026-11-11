@@ -1607,6 +1607,13 @@ def _orphan_line(paragraph: list[dict[str, Any]]) -> str | None:
     last = paragraph[-1]["text"]
     body = [line["text"] for line in paragraph[:-1]]
 
+    if not any(char.isalnum() for char in last):
+        return None  # a list marker or a rule, not a line of prose
+
+    letters = [char for char in " ".join([*body, last]) if char.isalpha()]
+    if letters and all(char.isupper() for char in letters):
+        return None  # a display heading; its two-line break is deliberate
+
     if CJK_RANGE.search(last):
         # CJK has no word spacing; compare character count against the block.
         widest = max(len(text) for text in body)

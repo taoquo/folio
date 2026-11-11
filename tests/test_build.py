@@ -505,6 +505,20 @@ class OrphanCheckTests(TestCase):
         ]
         self.assertIsNone(build._orphan_line(paragraph))
 
+    def test_punctuation_only_last_line_is_ignored(self) -> None:
+        paragraph = [
+            _line("The structural view and the data view are compiled from typed"),
+            _line("–", y=88.0),
+        ]
+        self.assertIsNone(build._orphan_line(paragraph))
+
+    def test_all_caps_display_heading_is_ignored(self) -> None:
+        paragraph = [
+            _line("THANKS TO EVERYONE WHO PUT A DISAGREEMENT ABOUT DEFINITIONS ON THE"),
+            _line("TABLE.", y=88.0),
+        ]
+        self.assertIsNone(build._orphan_line(paragraph))
+
     def test_cjk_trailing_character_is_an_orphan(self) -> None:
         paragraph = [
             _line("结构视图与数据视图都由类型化夹具编译而来并通过同一套宿主契约验证"),

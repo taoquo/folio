@@ -186,7 +186,17 @@ def render(data: dict) -> str:
         match = re.match(r"^([a-z][a-z-]*)-(\d+)$", name)
         families[match.group(1) if match else "（无数字后缀）"].append(name)
 
+    def role(name: str) -> str:
+        """The page chrome follows the theme, so it cannot drift from it."""
+        return data["roles"][name]["value"]
+
     return _PAGE.format(
+        paper=role("color.surface.page"),
+        ivory=role("color.surface.card"),
+        ink=role("color.text.primary"),
+        muted=role("color.text.muted"),
+        line=role("color.border.default"),
+        accent=role("color.accent.brand"),
         theme=html.escape(data["theme"] or ""),
         palette_count=len(data["palette"]),
         role_count=len(roles),
@@ -207,8 +217,8 @@ _PAGE = """<!DOCTYPE html>
 <title>色彩系统参考 · Folio</title>
 <style>
   :root {{
-    --paper: #F6F0EA; --ivory: #FBF7F3; --ink: #191514; --muted: #85776F;
-    --line: #E5D9CE; --accent: #B83D2E; --ok: #2F6B4F;
+    --paper: {paper}; --ivory: {ivory}; --ink: {ink}; --muted: {muted};
+    --line: {line}; --accent: {accent}; --ok: #2F6B4F;
     --serif: "Source Serif 4", Charter, Georgia, serif;
   }}
   * {{ box-sizing: border-box; }}

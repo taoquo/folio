@@ -2,12 +2,9 @@
 """folio build manifest
 
 Records everything that decides what a build produces, so two builds can be
-told apart when they differ and trusted when they do not.
-
-`render_env.py` already records the machine: interpreter, libraries, tools and
-the fonts the renderer can see. This adds the parts that belong to the build
-itself -- which commit, which dependency lock, which renderer, which locale,
-which options -- and folds both into one fingerprint.
+told apart when they differ and trusted when they do not: which commit, which
+dependency lock, which fonts, which renderer, which locale, which options. All
+of it folds into one fingerprint.
 
 Usage:
     python3 scripts/build_manifest.py show

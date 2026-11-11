@@ -74,8 +74,8 @@ fixture / structured content
   -> model.py + containers.py     (frozen semantic nodes, declared template containers)
   -> validate.py                  (ids, references, structure)
   -> writers/skeleton.py          (fill the template's own markup; the compatibility path)
-     or writers/html.py / pptx.py (standalone document rendering)
-  -> WeasyPrint adapter / PPTX
+     or writers/html.py            (standalone document rendering)
+  -> WeasyPrint adapter
 ```
 
 `writers/skeleton.py` is the key design decision: a template's appearance is its DOM shape, not its class names. Rebuilding the markup from a flat block list scored SSIM 0.135, so the writer uses the template as the skeleton and the IR only supplies values and stable ids (`data-folio-id`). A template edit can therefore break the writer — rerun `fidelity.py measure`.
