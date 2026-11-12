@@ -35,7 +35,7 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 | `scripts/web_verify.py` | Grades the measured page against the plan, including the share card | Medium |
 | `scripts/share_card.py` | Renders the 1200x630 share card and writes the page's `og:` head block | Medium |
 | `references/site/share.json` | The site's own pages: origin, card copy, card output, redirect canonical | Low |
-| `scripts/document_ir/` | Document IR: model, validator, readers, HTML and PPTX writers | Medium |
+| `scripts/document_ir/` | Document IR: model, validator, readers, and the HTML writer | Medium |
 | `scripts/renderers/` | Renderer protocol and the WeasyPrint adapter | Low |
 | `scripts/pipeline.py` | Chooses the render path via `FOLIO_PIPELINE` | Low |
 | `scripts/fidelity.py` | Measures the IR path against the template path, per document type | Medium |
@@ -44,6 +44,7 @@ Folio is a document design system with warm parchment canvas, cinnabar-coral acc
 | `scripts/document_build.py` | Builds a finished document from content, choosing the path by configuration | Medium |
 | `scripts/spacing_probe.py` | Reads a rendered document's spacing back and compares it with the model | Low |
 | `scripts/package-skill.sh` | Skill ZIP packager, excluding large fonts | Low |
+| `THIRD_PARTY_NOTICES.md` | Licence notices for bundled fonts and the vendored layout engine, with the texts in `third_party/` | Low |
 | `CHANGELOG.md` | Aggregated release highlights linking to full notes | Medium |
 | `docs/releases/` | Archived release notes for superseded versions | Low |
 | `docs/exploration/` | Design history, indexed by its `README.md`: adopted, superseded and reference notes | Low |
@@ -66,6 +67,7 @@ Each kind of fact has one owner. When two files disagree, the owner wins, and th
 | Environment, commands, and the architecture that spans modules | `CLAUDE.md` |
 | Design history, rejected options and their evidence | `docs/exploration/` |
 | Page counts, tokens, roles and contracts | `scripts/page_contracts.py`, `references/profiles/` |
+| Licence obligations for redistributed third-party files | `THIRD_PARTY_NOTICES.md`, `third_party/` |
 
 A measured number is written here once. Another file may quote it, but a change starts here, after rerunning the gate that produced it. A claim that cannot be reproduced by a command in the Verification section is an opinion, and does not belong in a shipping document.
 
@@ -256,7 +258,7 @@ FOLIO_PIPELINE=legacy      # the template path alone, kept for rollback
 
 The compatibility writer fills the template's own markup rather than rebuilding it, because a template's appearance is its DOM shape and not its class names. Two consequences follow, and both matter:
 
-- **A template edit needs the mapping re-checked.** Run `python3 scripts/fidelity.py measure`. All seven document types render identically to the template path today (average SSIM 0.9887, changelog 1.0000, one-pager 0.9211); a drop means the writer and the template have drifted apart.
+- **A template edit needs the mapping re-checked.** Run `python3 scripts/fidelity.py measure`. All seven document types stay within the fidelity thresholds today (average SSIM 0.9887, changelog 1.0000, one-pager 0.9211); a drop means the writer and the template have drifted apart.
 - **A structural label belongs in a placeholder.** If a template hard-codes wording that the IR should carry — a section heading, a stage label — promote it to a placeholder and give it a default in `scripts/section_defaults.py`, so the template still renders on its own.
 
 IR documents declare no font size, colour, margin or coordinate. A test walks every model field against a banned-vocabulary list, so a theme is referenced by name and never inlined. `references/schemas/document-1.0.schema.json` is the shape; `scripts/document_ir/validate.py` is the gate.
@@ -268,7 +270,7 @@ IR documents declare no font size, colour, margin or coordinate. A test walks ev
 | Switch | Default | Effect |
 |---|---|---|
 | `FOLIO_STYLE_PROJECTION` | on | projects the resolved style as CSS variables |
-| `FOLIO_LAYOUT_POLICY` | off | projects keep and break rules |
+| `FOLIO_LAYOUT_POLICY` | on | projects keep and break rules |
 | `FOLIO_BUILD_MANIFEST` | on | writes a build manifest beside the artifact |
 
 Turning the style projection off restores the previous rendering exactly. That was measured rather than assumed: seven document types build to the same page count and SSIM 1.00000 with it on and off, because the values projected are the ones the templates already use.
@@ -302,7 +304,7 @@ Current demos in `assets/demos/`:
 
 Diagram demos and contact sheets are generated, never hand-assembled. Rebuild them with `python3 scripts/build.py <artifact-target>` and `python3 scripts/folio.py diagram-catalog`, then re-check the approved visual baseline with `python3 scripts/folio.py diagram-catalog --baseline references/fixtures/drawing/catalog-baseline-v3.json`.
 
-All demo PNG files use **1241x1754px** (first A4 portrait page at 150dpi).
+Document and diagram demo captures use **1241x1754px** (first A4 portrait page at 150dpi). The two contact sheets, `drawing-dsl-before-after.png` and the two `readme-overview-*.png` galleries are composed at their own sizes.
 
 For one-page and multi-page documents (one-pager / letter / resume / portfolio / long-doc / equity-report), capture page 1:
 ```bash
@@ -324,6 +326,7 @@ magick /tmp/stacked.png -gravity Center -background '#F6F0EA' -extent 1241x1754 
 - Style changes: update the theme profile in `references/profiles/theme/`, then run `python3 scripts/build_color_reference.py --design` to regenerate the tables in `references/design.md`, `build.py` to confirm page counts stay stable, and `build.py --sync` to confirm the templates' own declarations match. A new colour goes in `palette` once and is named by its lightness; roles point at it. A scheme needs the six `color.series.*` roles as well, and `check_theme_schemes.py` will say so: the drawing theme reads them, so their absence is a chart that ignores the scheme.
 - Content changes: keep CSS unchanged, edit only the body, then run `build.py`.
 - New templates: copy the nearest existing template, keep it aligned with `design.md`, add routing to `SKILL.md`, and add demos.
+- New bundled font or vendored library: put its licence text in `third_party/` and add an entry to `THIRD_PARTY_NOTICES.md`. A redistributed font needs its copyright line and licence to travel with it, including the LXGW files the ZIP leaves out but the repository still ships.
 
 ## High-Risk Pitfalls
 

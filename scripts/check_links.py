@@ -8,12 +8,16 @@ verified by hand. Hand verification does not survive the next removal, and a
 broken link is the visible form of an accidental deletion -- a reader clicks and
 the file is gone, with nothing having said so.
 
+A link must point at a file a clone receives. A file that exists only on the
+author's machine is not a published target: it resolves in `ls` and 404s for
+every reader, which is the failure a disk-only check cannot see.
+
 Some targets are deliberately absent, and they are listed rather than special-cased
 in the walk:
 
-  * an ignored path (`docs/plans/`, `build/`) is local by policy;
   * an external URL is not this repository's to resolve;
-  * an anchor (`#section`) is a link within a page.
+  * an anchor (`#section`) is a link within a page;
+  * a document rendered elsewhere resolves beside its rendered copy (`ALLOWED`).
 
     python3 scripts/check_links.py
     python3 scripts/check_links.py --format json
@@ -66,13 +70,14 @@ def tracked() -> list[str]:
     return [line for line in result.stdout.splitlines() if line]
 
 
-def ignored(paths: set[str]) -> set[str]:
-    """Which of these paths git ignores, asked in one call."""
-    if not paths:
-        return set()
-    result = subprocess.run(["git", "check-ignore", "--stdin"], cwd=ROOT,
-                            input="\n".join(sorted(paths)), capture_output=True, text=True)
-    return {line for line in result.stdout.splitlines() if line}
+def published_directories(files: list[str]) -> set[str]:
+    """Every directory a clone receives, derived from the files it receives."""
+    directories: set[str] = set()
+    for name in files:
+        parts = Path(name).parts
+        for depth in range(1, len(parts)):
+            directories.add(str(Path(*parts[:depth])))
+    return directories
 
 
 # Regions that cannot hold a live link: a fenced block, an inline code span, an
@@ -105,21 +110,26 @@ def candidates(text: str, suffix: str = ".md") -> list[str]:
     return found
 
 
-def check() -> list[dict[str, str]]:
-    files = tracked()
-    # Directories that exist, so a link to one is not a broken link.
-    directories = {str(Path(name).parent) for name in files if "/" in name}
-    directories |= {str(Path(name).parent.parent) for name in files if name.count("/") > 1}
+def check(root: Path = ROOT, files: list[str] | None = None) -> list[dict[str, str]]:
+    """Broken links in tracked documents.
+
+    `files` is the set of paths a clone receives; the default asks git. The
+    parameter exists so a test can describe a small tree without inventing a
+    repository.
+    """
+    root = root.resolve()
+    files = tracked() if files is None else files
+    published = set(files)
+    directories = published_directories(files)
 
     raw_targets: list[tuple[str, str, str]] = []
     for name in files:
         if Path(name).suffix.lower() not in SUFFIXES or name in ALLOWED:
             continue
-        text = (ROOT / name).read_text(encoding="utf-8", errors="ignore")
+        text = (root / name).read_text(encoding="utf-8", errors="ignore")
         for target in candidates(text, Path(name).suffix.lower()):
             raw_targets.append((name, target, target))
 
-    # Resolve first, then ask git once about the ones that look local and absent.
     resolved: list[tuple[str, str, Path]] = []
     for name, target, _raw in raw_targets:
         parsed = urlparse(target)
@@ -128,28 +138,23 @@ def check() -> list[dict[str, str]]:
         clean = unquote(parsed.path)
         if not clean:
             continue
-        resolved.append((name, target, (ROOT / Path(name).parent / clean).resolve()))
-
-    absent = {str(path.relative_to(ROOT)) for _n, _t, path in resolved
-              if path.is_relative_to(ROOT) and not path.exists()}
-    local_by_policy = ignored(absent)
+        resolved.append((name, target, (root / Path(name).parent / clean).resolve()))
 
     findings: list[dict[str, str]] = []
     for name, target, path in resolved:
-        if path.exists():
-            continue
-        if not path.is_relative_to(ROOT):
+        if not path.is_relative_to(root):
             continue  # outside the repository, not ours to resolve
-        relative = str(path.relative_to(ROOT))
-        if relative in local_by_policy:
-            continue
-        if relative in directories:
+        relative = str(path.relative_to(root))
+        present = path.exists() and (relative in published or relative in directories)
+        if present:
             continue
         findings.append({
             "document": name,
             "target": target,
             "resolves_to": relative,
-            "problem": "the target is not in the repository and is not ignored",
+            "problem": ("the target is not tracked, so a clone would not have it"
+                        if path.exists()
+                        else "the target is not in the repository"),
         })
     return findings
 

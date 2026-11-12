@@ -260,7 +260,7 @@ def render_text(results: list[Fidelity]) -> str:
     complete = sum(1 for r in results if r.complete)
     acceptable = sum(1 for r in results if r.acceptable)
     lines.append("")
-    lines.append(f"  renders identically     {acceptable}/{len(results)}")
+    lines.append(f"  within thresholds       {acceptable}/{len(results)}")
     lines.append(f"  every slot filled       {complete}/{len(results)}")
     lines.append("  The two are separate: a fixture in one language rendered through the")
     lines.append("  other's template leaves slots unfilled and still matches the page.")

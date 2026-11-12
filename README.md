@@ -365,8 +365,8 @@ Documents are produced through a semantic model, and the HTML template is one re
 Every claim about a document is checkable; the current measured values live in [AGENTS.md](AGENTS.md#verification):
 
 ```bash
-python3 scripts/fidelity.py measure          # IR path vs template path, seven types render identically (avg SSIM 0.9887)
-python3 scripts/corpus.py validate           # 197 fixtures across four writing systems
+python3 scripts/fidelity.py measure          # IR path vs template path, seven types within thresholds (avg SSIM 0.9887)
+python3 scripts/corpus.py validate           # 197 fixtures across six script profiles
 python3 scripts/document_baseline.py compare # documents match the approved baseline
 python3 scripts/migration.py status          # IR readiness per document type
 ```

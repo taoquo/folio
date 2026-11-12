@@ -13,10 +13,9 @@ from unittest import TestCase
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
+import build
 import page_contracts
 import stabilize
-
-import build
 
 
 class PageContractSourceTests(TestCase):

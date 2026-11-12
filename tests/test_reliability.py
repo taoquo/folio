@@ -13,12 +13,12 @@ from tempfile import TemporaryDirectory
 from unittest import TestCase, mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+import build
 import diagram_catalog as catalog
 import diagram_export as exports
 import folio
 import stabilize
 
-import build
 from drawing.review import _visual_diff
 
 ROOT = Path(__file__).resolve().parents[1]

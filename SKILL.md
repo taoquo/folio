@@ -161,7 +161,7 @@ new work to them.
 
 If a page mixes reading and workspace behavior, separate the reading region from the operational region instead of blending article hierarchy and app controls into one surface.
 
-### Diagrams (primitives, not a 7th doc type)
+### Diagrams (primitives, not a document type)
 
 When the user asks for any of the twenty-three official diagram types, use the diagram artifact pipeline first.
 

@@ -61,7 +61,7 @@ Do not add `flex-wrap: wrap`; it causes uneven line splits that look like layout
 
 ## Key-number highlight density
 
-`.hl` applies brand-blue color to mark the single most important figure or phrase in a line. It is not a general emphasis tool.
+`.hl` applies the brand accent to mark the single most important figure or phrase in a line. It is not a general emphasis tool.
 
 **Use:**
 - One `.hl` per project row, maximum two across all three rows of one project

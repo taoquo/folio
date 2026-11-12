@@ -50,7 +50,8 @@ Folio is one design system, not one layout. Every template keeps the same paper,
 
 ```css
 --color-accent-brand:      #B83D2E;   /* Cinnabar Coral - the only chromatic color. CTAs, accents, section-title left bar. */
---color-accent-brand-tint: #F7E6E1;   /* The wash behind a focal mark or a tag. */
+--color-accent-brand-tint: #F7E6E1;   /* The wash behind a focal mark or a badge. */
+--color-accent-tag:        #F1D2CC;   /* Tag and label background. */
 ```
 
 **Rule**: cinnabar-coral covers ≤ **5% of document surface area**. More than that is ornament, not restraint.
@@ -223,15 +224,14 @@ Colour that says what a value means. Declared in the theme profile, never in a
 template.
 
 ```css
---status-positive:    #B83D2E;   /* a gain. The brand red, deliberately */
---status-caution:     #A8722C;   /* something to watch */
---status-negative:    #5A6B7A;   /* a loss, or a limit */
---status-informative: #4A6B7A;   /* context that is neither good nor bad */
+--color-status-positive:     #B83D2E;   /* a gain. The brand red, deliberately */
+--color-status-caution:      #906327;   /* something to watch */
+--color-status-negative:     #5A6B7A;   /* a loss, or a limit */
+--color-status-caution-tint: #F6EBD9;   /* background behind a caution word */
 ```
 
-Each has a tint for a background behind the word: `--status-positive-tint`
-`#F7E6E1`, `--status-caution-tint` `#F6EBD9`, `--status-negative-tint`
-`#E4E9ED`, `--status-informative-tint` `#E3ECEF`.
+Only caution carries a tint today. A context that is neither good nor bad is
+plain text, so no informative role exists.
 
 **Rules:**
 
@@ -510,7 +510,7 @@ Radius scale: 4pt -> 6pt -> 8pt (default) -> 12pt -> 16pt -> 24pt -> 32pt (hero 
 
 Three tiers from weak to strong visual weight:
 
-**Lightest solid** (default, most restrained):
+**Lightest solid** (for a badge on an already-tinted surface):
 ```css
 .tag {
   background: var(--color-accent-brand-tint);   /* #F7E6E1 */
@@ -524,7 +524,7 @@ Three tiers from weak to strong visual weight:
 }
 ```
 
-**Standard solid** (when more contrast needed):
+**Standard solid** (the default the templates use):
 ```css
 .tag {
   background: var(--color-accent-tag);   /* #F1D2CC */

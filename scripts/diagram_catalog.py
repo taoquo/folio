@@ -379,6 +379,7 @@ def _render_dsl_fixture(
 def _render_html_template(item: dict[str, Any], output_png: Path) -> list[str]:
     sys.path.insert(0, str(SCRIPTS))
     import build
+
     from drawing.output import apply_html_output_profile
 
     source_path = ROOT / item["source"]

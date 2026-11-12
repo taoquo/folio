@@ -35,7 +35,17 @@ class LayeringTests(TestCase):
     def test_a_writer_may_speak_its_format(self) -> None:
         # A writer's job is to project the model onto a format, so importing
         # that format's library is the point of the module.
-        self.assertNotIn("scripts/document_ir/writers/pptx.py", architecture.LAYERS)
+        self.assertNotIn("scripts/document_ir/writers/html.py", architecture.LAYERS)
+        self.assertNotIn("scripts/document_ir/writers/skeleton.py", architecture.LAYERS)
+
+    def test_every_engine_module_resolves(self) -> None:
+        # A dead name is silently unchecked: the census reports every layer
+        # reachable because there is no file to ask about. `pptx` sat in the
+        # list after its writer was deleted, and `structured` sat there while
+        # the resolver only looked beside `document_ir/`, not in `readers/`.
+        missing = [name for name in architecture.ENGINE_MODULES
+                   if architecture._module_file(name) is None]
+        self.assertEqual([], missing)
 
 
 class ReachabilityTests(TestCase):

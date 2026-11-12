@@ -141,7 +141,7 @@ Branded documents should first make the subject recognizable, then use decoratio
 The most constrained document type in folio.
 
 **Hard constraints**:
-- Strictly 2 A4 pages
+- 2-3 A4 pages; one page means content was lost
 - Every project follows three-part: Role / Actions / Impact
 - 5 core skills, each with at least one brand-color emphasis
 - Team size, tech stack, narrative voice must stay consistent throughout
@@ -378,7 +378,7 @@ Run through before every draft:
 - [ ] Paragraph lengths even? No paragraph over 5 lines?
 - [ ] Number format consistent (commas, percent signs, arrows)?
 - [ ] Chinese punctuation and Chinese / Latin spacing consistent where applicable?
-- [ ] Page count within the document's constraint (resume 2, one-pager 1, letter 1)?
+- [ ] Page count within the document's constraint (resume 2-3, one-pager 1, letter 1)?
 
 ---
 

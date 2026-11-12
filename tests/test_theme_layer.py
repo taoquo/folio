@@ -6,6 +6,7 @@ whose name is hand-written, or a theme that cannot be selected.
 """
 
 import sys
+import tempfile
 from pathlib import Path
 from unittest import TestCase
 
@@ -535,3 +536,22 @@ class LinkIntegrityTests(TestCase):
         self.assertEqual(["docs/releases/RELEASE_NOTES_V6.0.md"],
                          self.module.candidates("see [notes](docs/releases/RELEASE_NOTES_V6.0.md)",
                                                 ".md"))
+
+    def test_a_local_only_target_is_reported(self) -> None:
+        # A file on the author's machine is not a link a clone can open.
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "doc.md").write_text("[notes](local.md)")
+            (root / "local.md").write_text("local")
+            findings = self.module.check(root, ["doc.md"])
+        self.assertEqual(["local.md"], [finding["target"] for finding in findings])
+        self.assertIn("not tracked", findings[0]["problem"])
+
+    def test_a_directory_with_tracked_files_resolves(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "docs").mkdir()
+            (root / "docs" / "note.md").write_text("x")
+            (root / "doc.md").write_text("[docs](docs/)")
+            findings = self.module.check(root, ["doc.md", "docs/note.md"])
+        self.assertEqual([], findings)

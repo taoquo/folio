@@ -37,7 +37,7 @@ and the plate-shape band, which is the smallest change a band requires.
 A stage other than 960 is refused for a family that has not earned it:
 `drawing/stage.py` lists the families whose geometry actually scales, and until
 a family is on that list, "compose for a 350px band" is not a number it can be
-given. Today the list holds `architecture`.
+given. Today the list holds `architecture`, `state-machine` and `swimlane`.
 
 ### One plate per class, or one plate
 

@@ -43,7 +43,8 @@ A page is one of two things, and `series.json` says which with `kind`.
 
 A rule is `W-<area>-<n>`, stable, and reported by `scripts/check_web.py`.
 Areas: `DLV` delivery, `STR` structure, `CNT` content, `TXT` text, `DEN`
-density, `COL` colour, `FIG` figures, `GEO` geometry, `ACC` acceptance.
+density, `COL` colour, `FIG` figures, `GEO` geometry, `ACC` acceptance,
+`META` metadata and the share card.
 
 `scripts/web_geometry.py` is the figure-measurement helper behind `W-GEO-*`; it
 does not report rule ids of its own.

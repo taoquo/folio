@@ -278,7 +278,7 @@ ENGINE_MODULES = (
     "visual_diff", "review_pair", "document_build", "section_defaults",
     # Reached through the package rather than by name, and each holds a
     # connection that matters.
-    "readers", "structured", "html", "skeleton", "pptx", "article",
+    "readers", "structured", "html", "skeleton",
 )
 
 
@@ -288,6 +288,7 @@ def _module_file(name: str) -> Path | None:
                       ROOT / "scripts" / "document_ir" / f"{name}.py",
                       ROOT / "scripts" / "renderers" / f"{name}.py",
                       ROOT / "scripts" / "document_ir" / "writers" / f"{name}.py",
+                      ROOT / "scripts" / "document_ir" / "readers" / f"{name}.py",
                       # A package's source is its `__init__`.
                       ROOT / "scripts" / "document_ir" / name / "__init__.py",
                       ROOT / "scripts" / name / "__init__.py"):

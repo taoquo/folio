@@ -125,7 +125,7 @@ embedding policy in `drawing-dsl.md`. Bounds come from `scripts/drawing/canvas_c
 | Chart | bar-chart, line-chart, donut-chart, candlestick, waterfall, scatter, gantt, heatmap | `960` exactly | 400-720, step 4 | 540 |
 | Notation | sequence, uml-class, er-diagram | `960` exactly | 480-800, step 4 | 640 (sequence 540) |
 
-An off-grid or out-of-band height is an `ERROR`, not a silent clamp: `<kind> canvas height must be a multiple of 4 from <min> to <max>`. A width other than 960 reports `use an output profile to rescale`, because responsive sizing belongs to `--size` and the host contract, never to the payload.
+An off-grid or out-of-band height is an `ERROR`, not a silent clamp: `<kind> canvas height must be a multiple of 4 from <min> to <max>`. A width other than 960 reports `<kind> canvas width is declared by the host, not the payload (stage is 960); drop the width field`, because responsive sizing belongs to `--size` and the host contract, never to the payload.
 
 Two compiler-owned exceptions stay adaptive after validation. Flowchart fits the stage to its widest row, so its scene width can land below 960 and its height only grows. State machine derives height from its layer count when the payload omits `height`. Both still validate any height you declare against the graph band.
 
@@ -251,7 +251,7 @@ register_theme_profile("dark-warm", palette)
 Contrast rules a palette must satisfy:
 
 - Body text on canvas, card, and accent tint reaches 4.5:1; large or reversed text on a filled shape reaches 3.0:1.
-- `muted_stroke`, `neutral_deep`, `brand`, `olive`, and `stone` reach 3.0:1 against the canvas because they paint strokes wider than one pixel.
+- `muted_stroke`, `neutral_deep`, `brand`, `olive`, and `label` reach 3.0:1 against the canvas because they paint strokes wider than one pixel.
 - `border` is a hairline token. Keep it at `stroke_width <= 1` and never use it as a text color.
 - `neutral_mid` and `neutral_light` are fill-only ramp steps. They paint bar, donut, and mark bodies that always ship with an adjacent labeled key, so they are exempt from non-text contrast and must never carry text or a stroke wider than one pixel.
 

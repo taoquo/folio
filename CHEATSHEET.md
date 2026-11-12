@@ -54,7 +54,8 @@ a different scheme, and `docs/acceptance/theme-schemes.html` compares them.
 | Secondary    | `#5A4A43`     | Secondary text · table headers · links              |
 | Muted        | `#756A63`     | Tertiary · metadata                                 |
 | **Brand**    | `**#B83D2E`** | **Accent · CTA · title left bar (<= 5% of surface)** |
-| Brand Tint   | `#F7E6E1`     | Tag background                                      |
+| Brand Tint   | `#F7E6E1`     | Badge / highlight wash                              |
+| Tag          | `#F1D2CC`     | Tag background (default)                            |
 | Border       | `#E6DACD`     | Primary border · section divider                    |
 | Border Soft  | `#E5DBCD`     | Secondary border · row separator                    |
 | Caution      | `#906327`     | Warning text                                        |
@@ -181,11 +182,11 @@ Any font-family that may render Chinese must include a CJK fallback, including `
 }
 ```
 
-### Tag (default lightest solid)
+### Tag (default solid)
 
 ```css
 .tag {
-  background: var(--color-accent-brand-tint);
+  background: var(--color-accent-tag);
   color: var(--color-accent-brand);
   font-size: 9pt; font-weight: 600;
   padding: 1pt 5pt;

@@ -56,7 +56,7 @@ Node titles keep a 12-unit minimum and wrap to at most two lines. Metadata keeps
 
 ## Theme
 
-Drawing plans contain emphasis roles, never palette values. The Folio theme maps focal objects to cinnabar-coral and brand tint, normal objects to warm neutrals, and background objects to low-contrast stone. Renderer code receives only resolved values.
+Drawing plans contain emphasis roles, never palette values. The Folio theme maps focal objects to cinnabar-coral and brand tint, normal objects to warm neutrals, and background objects to the low-contrast label tone. Renderer code receives only resolved values.
 
 ## Controlled visual review
 

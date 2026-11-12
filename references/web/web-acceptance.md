@@ -33,7 +33,7 @@ Steps 1–5 happen in the repository. Step 6 is the only step that needs a host.
 | 15 | Figures are DSL products with zero ERROR diagnostics | machine | W-GEO-01 |
 | 16 | Online verification pass | manual | — |
 
-Twelve items are machine-decided, three are machine-assisted with a human
+Thirteen items are machine-decided, two are machine-assisted with a human
 verdict, one is manual. A page that cannot state which kind an item is has not been
 designed for verification.
 

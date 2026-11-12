@@ -333,8 +333,8 @@ Folio 不只是模板集合，还带了一份紧凑的操作参考：[CHEATSHEET
 关于文档的每一项结论都可以复核；当前实测值记录在 [AGENTS.md](AGENTS.md#verification)：
 
 ```bash
-python3 scripts/fidelity.py measure          # IR 路径与模板路径对比，七类渲染一致（平均 SSIM 0.9887）
-python3 scripts/corpus.py validate           # 197 个 fixture，覆盖四种书写系统
+python3 scripts/fidelity.py measure          # IR 路径与模板路径对比，七类在阈值内（平均 SSIM 0.9887）
+python3 scripts/corpus.py validate           # 197 个 fixture，覆盖六种 script profile
 python3 scripts/document_baseline.py compare # 文档与已批准的基线一致
 python3 scripts/migration.py status          # 各类文档的 IR 就绪度
 ```

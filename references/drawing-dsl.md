@@ -60,7 +60,7 @@ Reduction decisions are serialized with their targets, reason, and whether they 
 - `CompilationResult` records normalized input, output profile, diagnostics, metrics, schema version, registry key, and input digest.
 - Canvas, primitive, accessibility, type, geometry, and taste checks have explicit stage ownership.
 - Output profiles are `artifact`, `embed`, and `page-preview`; the latter removes static minimum widths and validates fitted review bounds.
-- SVG, PNG, and PDF are exercised for every type across all three profiles; the V5 matrix contains 198 artifacts.
+- SVG, PNG, and PDF are exercised for every type across all three profiles; the current matrix contains 207 artifacts (23 types x 3 profiles x 3 formats).
 - Catalog manifest 3.0 records profile, source/output dimensions, content bounds, diagnostics, metrics, registry keys, versions, and SHA-256 digests for twenty-three generator-backed entries.
 - Review manifests preserve dimension mismatches instead of resizing them away and record an explicit approval state.
 - Host manifest 1.1 and review manifests both record the resolved `theme` and the render `variant`, and `verify-drawing-host` rejects variant metadata drift.
@@ -215,7 +215,7 @@ canvas that holds them is asking them to do the layout's job. The example above 
 
 The rule differs by whether content is placed at a fixed size or compressed to fit.
 
-**Fixed-size content** -- regular architecture node boxes stay 144x64 and their type stays 7/11/12 SVG user units
+**Fixed-size content** -- regular architecture node boxes stay 176x72 and their type stays 7/11/12 SVG user units
 at every count, so what bounds them is the pitch below which the layout reports an overlap.
 Measured at 72 units, giving `(height - 228) // 72 + 1` rows of five. Sixty nodes need 1020
 units; two hundred need 3036.
