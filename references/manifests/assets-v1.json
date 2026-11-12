@@ -34,19 +34,19 @@
         {
           "format": "pdf",
           "path": "assets/diagrams/generated/pdf/data-platform-demo.pdf",
-          "sha256": "30ae8533568099b9e14b11e9a83065978b143ca792effad8c216a3047d61a3d3",
+          "sha256": "f93238dc0d7b7c6c83ca6ed0a5f3a1422e2341db9dc3c57975efead9288e7c47",
           "media_type": "application/pdf"
         },
         {
           "format": "png",
           "path": "assets/diagrams/generated/png/data-platform-demo.png",
-          "sha256": "845cf91e1c0890d71c3c1429e81c6debb1f11e6f516450c36023e99d5f2b96c7",
+          "sha256": "c750fdfc48ddc33247e83710cbf7084e1bebfaf14baed2079d0ae3e076750f3f",
           "media_type": "image/png"
         },
         {
           "format": "svg",
           "path": "assets/diagrams/generated/svg/data-platform-demo.svg",
-          "sha256": "409dfe4c6300b73bd6a6b45fe137fa687f46c512689e0ef05a63d97d54ba5b47",
+          "sha256": "4fbf319c01969811bb04df2a2fe93b3e20fa43d281e8a77851d470df31a942a1",
           "media_type": "image/svg+xml"
         }
       ],
@@ -85,11 +85,11 @@
         {
           "format": "json",
           "path": "assets/diagrams/generated/catalog/manifest.json",
-          "sha256": "4487cc2a9c47d373b62fbc2c5a06424d453de8cf61993342d9368080c0f1870f"
+          "sha256": "deb3822dd5f366e8d59b7f2ef475e8ddacc09f09f1f0597eb536837ce811f079"
         }
       ],
       "source_ref": "assets/diagrams/generated/catalog/manifest.json",
-      "source_sha256": "4487cc2a9c47d373b62fbc2c5a06424d453de8cf61993342d9368080c0f1870f"
+      "source_sha256": "deb3822dd5f366e8d59b7f2ef475e8ddacc09f09f1f0597eb536837ce811f079"
     },
     {
       "asset_id": "diagram.uml-class-demo",
@@ -124,19 +124,19 @@
         {
           "format": "pdf",
           "path": "assets/diagrams/generated/pdf/workflow-engine-demo.pdf",
-          "sha256": "594d930324895e5dbed0203b51c7d27c785ab59f4f49fd886a6e2f654231d6e6",
+          "sha256": "4db1ea07a6ed0fe43e0a42986706ad4307f4905837414b59f69e57ec9cb75872",
           "media_type": "application/pdf"
         },
         {
           "format": "png",
           "path": "assets/diagrams/generated/png/workflow-engine-demo.png",
-          "sha256": "0942428c9c12adcd7c7854a36f99b6dd7d0d423d29841c72b7935e444042a1e3",
+          "sha256": "a7544a43dcf148fb370adc8a8fdb879ba742b5304f0405309c9282863554ce7a",
           "media_type": "image/png"
         },
         {
           "format": "svg",
           "path": "assets/diagrams/generated/svg/workflow-engine-demo.svg",
-          "sha256": "d7fb4e76d5a9800c2765551acc9551bbba73d0255580d0bb6b60bbd8160bd91f",
+          "sha256": "ab89cd9dd30b721078bf9cf4066b64400c39ba37047a4347b4bdb0bc3b7d53bd",
           "media_type": "image/svg+xml"
         }
       ],

@@ -124,7 +124,8 @@ changed it, and the solver's decisions never appear in a build artifact.
 **Fixed means**: solver decisions become observable `LayoutDecision` records on
 the build path, or the stabilizer's output becomes an explicit build input.
 
-**Scheduled**: M5-6 in `docs/plans/document-engine-implementation-plan.md`.
+**Scheduled**: M5-6 in the internal document-engine implementation plan, which
+is not part of the shipped tree.
 
 ---
 

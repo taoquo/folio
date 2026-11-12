@@ -1188,17 +1188,6 @@
     line-height: 1.4;
   }
 
-  /* Background text */
-  .background-text {
-    font-family: var(--serif);
-    font-size: 16px;
-    line-height: 1.6;
-    color: var(--color-text-warm);
-  }
-  .background-text p {
-    margin-bottom: 14px;
-  }
-
   /* Brand footer */
   .footer {
     margin-top: 24px;

@@ -13,9 +13,9 @@ the DSL stops the page.
 | Canvas height | 400–800 units by family (graph 500–800, chart 400–720, notation 480–800) | `canvas_contract.py` |
 | Plate shape | 0.45–1.60 tall per unit wide | `web_contracts.py` |
 | Smallest tier | at least 7px in the band the plate is delivered in | `web_contracts.py` |
-| Architecture nodes | at most 9 | `drawing-dsl.md:171` |
-| Node tiers (architecture) | 144×64 / 176×72 / 224×80, scaled by the stage | `drawing/grammar/architecture.py:25` |
-| Focal nodes | at most 2 | `drawing-dsl.md:30` |
+| Architecture nodes | at most 9 | `drawing-dsl.md:190` |
+| Node tiers (architecture) | 144×64 / 176×72 / 224×80, scaled by the stage | `drawing/grammar/architecture.py:76` |
+| Focal nodes | at most 2 | `drawing-architecture.md:8` |
 | Colour variables per figure | at most 4 | `web_contracts.py` |
 | Metadata | `<title>`, `<desc>`, stable id, reading order | DSL renderer |
 | Provenance | `data-folio-drawing`, `data-folio-sha`, `data-kind`, `data-folio-plate`, optional `data-composition`, `data-axis` | builder |

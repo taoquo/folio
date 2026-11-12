@@ -125,10 +125,6 @@ def _rasterise(pdf: Path, out_dir: Path, dpi: int, first_page_only: bool = True)
     return sorted(out_dir.glob(f"{pdf.stem}*.png"))
 
 
-def _text_excerpt(pdf: Path, limit: int = 400) -> str:
-    return _text_body(pdf)[:limit]
-
-
 def _text_body(pdf: Path) -> str:
     try:
         out = subprocess.run(

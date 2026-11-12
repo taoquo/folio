@@ -3,10 +3,10 @@
 
 Builds a blind A/B comparison from two rendered documents.
 
-The protocol it implements is in `docs/architecture/review-protocol.md`. The
-part that has to be mechanical is this one: a reviewer should not know which
-page is the new one, and the person preparing the comparison should not be able
-to bias it by choosing the labels after seeing the result.
+The review protocol is an internal engineering record, not part of the shipped
+tree. The part that has to be mechanical is this one: a reviewer should not know
+which page is the new one, and the person preparing the comparison should not
+be able to bias it by choosing the labels after seeing the result.
 
 So the assignment is random and the answer is written to a separate file that is
 meant to be opened afterwards. That is a small piece of discipline, and it is
@@ -173,7 +173,7 @@ def render_text(pair: Pair) -> str:
             lines.append("  change was meant to be visible.")
     lines.append("")
     lines.append("  Which label is new is in answer.json. Read it after choosing.")
-    lines.append("  The protocol is in docs/architecture/review-protocol.md.")
+    lines.append("  The review protocol is an internal engineering record.")
     return "\n".join(lines)
 
 

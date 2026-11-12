@@ -198,19 +198,6 @@ def _fixture_pdf(genre: str) -> Path | None:
     return None
 
 
-def _rule_value(pair: str) -> float | None:
-    """The declared preferred value for a pair, in points."""
-    import spacing
-
-    if "->" not in pair:
-        return None
-    left, right = (part.strip() for part in pair.split("->", 1))
-    spec = spacing.BASE_RULES.get((left, right))
-    if spec is None:
-        return None
-    return spec.preferred.as_pt()
-
-
 def compare(genre: str) -> dict[str, Any]:
     """Compare a genre's rendered spacing with the model's rules."""
     import spacing

@@ -868,14 +868,6 @@ def _layout_lines(plan: LinePlan) -> ChartLayout:
     return ChartLayout(plot, plan.scale, marks, tuple(x_values))
 
 
-def _is_iso_date(value: str) -> bool:
-    try:
-        date.fromisoformat(value)
-    except ValueError:
-        return False
-    return True
-
-
 def _resolve_lines(plan: LinePlan, layout: ChartLayout, source: str | None) -> ResolvedScene:
     theme = DEFAULT_FOLIO_THEME
     primitives: list[object] = _axes(layout.plot, plan.scale, plan.categories, plan.locale, layout.x_positions, plan.value_format)

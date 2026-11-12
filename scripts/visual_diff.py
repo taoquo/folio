@@ -46,10 +46,6 @@ L = 255.0
 C1 = (K1 * L) ** 2
 C2 = (K2 * L) ** 2
 
-# Local statistics window. 8px keeps small text blocks meaningful while staying
-# cheap; a larger window washes out line-level differences.
-WINDOW = 8
-
 # Pixels differing by more than this per channel count as changed. 8/255 is
 # below the threshold where anti-aliasing differences become visible.
 PIXEL_THRESHOLD = 8
@@ -134,27 +130,6 @@ def rasterise(pdf: Path, out_dir: Path, dpi: int) -> list[Path]:
     prefix = out_dir / pdf.stem
     _run(["pdftoppm", "-r", str(dpi), "-png", str(pdf), str(prefix)])
     return sorted(out_dir.glob(f"{pdf.stem}-*.png"))
-
-
-def _local_stats(image):
-    """Local mean and variance via band-wise box filtering.
-
-    Returns (mean, variance) as single-channel images. Both are computed from
-    the same window so the SSIM terms stay consistent with each other.
-    """
-    from PIL import ImageFilter, ImageStat
-
-    mean = image.filter(ImageFilter.BoxBlur(WINDOW // 2))
-    # var = E[x^2] - E[x]^2, computed on the same window.
-    squared = image.point(lambda v: (v * v) // 255)
-    mean_sq = squared.filter(ImageFilter.BoxBlur(WINDOW // 2))
-    mean_stat = ImageStat.Stat(mean)
-    if not mean_stat.mean:
-        return mean, mean
-    # Approximate variance per pixel by rescaling; exactness is not required for
-    # a regression gate, and this keeps the cost linear in page area.
-    variance = ImageStat.Stat(mean_sq).mean[0] - (mean_stat.mean[0] ** 2)
-    return mean, max(variance, 0.0)
 
 
 def ssim(a, b) -> float:

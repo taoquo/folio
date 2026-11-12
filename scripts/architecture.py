@@ -136,19 +136,6 @@ def _read(path: str | Path) -> str:
         return ""
 
 
-def _module_names() -> list[str]:
-    """Every importable module under scripts/."""
-    names: set[str] = set()
-    for path in (ROOT / "scripts").rglob("*.py"):
-        if "__pycache__" in path.parts or path.name == "__init__.py":
-            continue
-        names.add(path.stem)
-    for path in (ROOT / "scripts" / "document_ir").rglob("*.py"):
-        if path.name == "__init__.py":
-            names.add("document_ir")
-    return sorted(names)
-
-
 def _used(text: str, module: str) -> bool:
     """Whether a module is called, not merely imported.
 

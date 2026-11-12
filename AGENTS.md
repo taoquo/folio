@@ -91,6 +91,9 @@ Document engine checks. These gate the IR path and the measured quality of every
 python3 scripts/corpus.py validate            # every fixture is well formed
 python3 scripts/corpus.py coverage            # composition and adversarial share
 python3 scripts/profile_check.py              # 40 profiles, shape and meaning
+python3 scripts/architecture.py check         # every layer is reachable and none imports upward
+python3 scripts/assets.py verify --manifest references/manifests/assets-v1.json
+                                              # generated diagram assets match their recorded digests
 python3 scripts/document_baseline.py compare  # documents match the approved baseline
 python3 scripts/pipeline.py rollback-drill    # every mode can be left by configuration
 python3 scripts/migration.py status           # IR readiness per document type

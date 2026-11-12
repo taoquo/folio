@@ -116,7 +116,9 @@ jobs:
       - name: Check the spacing model is complete and explained
         run: python scripts/spacing.py pairs
       - name: Check the asset manifest resolves
-        run: python scripts/assets.py check
+        run: |
+          python scripts/assets.py check
+          python scripts/assets.py verify --manifest references/manifests/assets-v1.json
       - name: Check every coverage class has a fixture
         run: python scripts/corpus_matrix.py gaps
       - name: Compare rendered spacing with the model

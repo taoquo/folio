@@ -463,18 +463,3 @@ def resolve_scene(
         language=drawing.language,
         reading_order=tuple(node.id for node in drawing.nodes),
     )
-
-
-def _first_crossing(
-    left: tuple[tuple[int, int], ...],
-    right: tuple[tuple[int, int], ...],
-) -> tuple[int, int] | None:
-    for a, b in zip(left, left[1:]):
-        for c, d in zip(right, right[1:]):
-            if a[0] == b[0] and c[1] == d[1]:
-                if min(c[0], d[0]) < a[0] < max(c[0], d[0]) and min(a[1], b[1]) < c[1] < max(a[1], b[1]):
-                    return (a[0], c[1])
-            elif a[1] == b[1] and c[0] == d[0]:
-                if min(a[0], b[0]) < c[0] < max(a[0], b[0]) and min(c[1], d[1]) < a[1] < max(c[1], d[1]):
-                    return (c[0], a[1])
-    return None

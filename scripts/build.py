@@ -1511,36 +1511,6 @@ BRACKET_NOTE = re.compile(r"\[[^\]\n]{15,140}\]")
 NOTE_WORDS = ("placeholder", "占位", "replace with", "替换为", "compiled by the drawing dsl")
 
 
-def check_bracket_notes(paths: list[str] | None = None) -> int:
-    """Report a bracketed note left in markup a reader can see."""
-    if not paths:
-        roots = [ROOT / "assets" / "templates", ROOT / "assets" / "diagrams",
-                 ROOT / "assets" / "demos"]
-        candidates: list[Path] = []
-        for root in roots:
-            candidates.extend(sorted(root.glob("*.html")))
-        paths = [str(path.relative_to(ROOT)) for path in candidates]
-
-    failures = 0
-    for raw in paths:
-        path = Path(raw)
-        if not path.is_absolute():
-            path = ROOT / path
-        if not path.exists():
-            continue
-        text = path.read_text(encoding="utf-8", errors="replace")
-        scannable = re.sub(r"<!--.*?-->", "", text, flags=re.DOTALL)
-        found = [
-            note for note in BRACKET_NOTE.findall(scannable)
-            if any(word in note.lower() for word in NOTE_WORDS)
-        ]
-        if found:
-            rel = path.relative_to(ROOT) if path.is_relative_to(ROOT) else path
-            print(f"ERROR: {rel}: note left in the markup: {found[0]}")
-            failures += 1
-    return 0 if failures == 0 else 1
-
-
 # ------------------------- orphan check -------------------------
 
 CJK_RANGE = re.compile(r"[\u3400-\u9fff\u3040-\u30ff\uac00-\ud7af]")
