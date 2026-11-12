@@ -63,11 +63,28 @@
     right: 32px;
     transition: opacity 0.3s, transform 0.3s;
     display: flex;
-    gap: 0;
+    align-items: center;
+    gap: 8px;
     z-index: 100;
     font-family: var(--sans);
     font-size: 12px;
     font-weight: 500;
+  }
+  .lang-group { display: flex; }
+  .lang-switch .repo-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border-radius: 4px;
+  }
+  .lang-switch .repo-link svg {
+    display: block;
+    width: 15px;
+    height: 15px;
+    fill: currentColor;
   }
   .lang-switch a {
     display: block;
@@ -79,8 +96,8 @@
     background: var(--color-surface-card);
     transition: background 0.15s, color 0.15s;
   }
-  .lang-switch a:first-child { border-radius: 4px 0 0 4px; }
-  .lang-switch a:last-child { border-radius: 0 4px 4px 0; border-left: none; }
+  .lang-group a:first-child { border-radius: 4px 0 0 4px; }
+  .lang-group a:last-child { border-radius: 0 4px 4px 0; border-left: none; }
   .lang-switch a.active {
     background: var(--color-accent-brand);
     color: var(--color-surface-card);

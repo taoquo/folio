@@ -1,0 +1,12 @@
+# Headers for the static site Cloudflare serves.
+#
+# The CSP allows AdSense and its measurement frames, the inline scripts the
+# homepages carry (the language switch), inline style attributes, the upstream
+# LXGW fallback in styles.css, and the Web Analytics beacon Cloudflare injects
+# at the edge. Keep it aligned with the ad tags in index.html and index-zh.html.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.doubleclick.net https://www.google.com https://www.gstatic.com https://*.adtrafficquality.google https://fundingchoicesmessages.google.com; frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://*.doubleclick.net https://www.google.com https://*.adtrafficquality.google https://fundingchoicesmessages.google.com; connect-src 'self' https://cloudflareinsights.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.doubleclick.net https://www.google.com https://*.adtrafficquality.google https://fundingchoicesmessages.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.googlesyndication.com https://*.doubleclick.net https://www.google.com https://*.adtrafficquality.google; font-src 'self' data: https://raw.githubusercontent.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'

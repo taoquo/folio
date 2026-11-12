@@ -1,0 +1,17 @@
+{
+  // Static assets only: no Worker script, no runtime bindings.
+  "name": "folio-site",
+  "compatibility_date": "2026-11-12",
+  "assets": {
+    "directory": "./dist/site",
+    // Keep the .html paths the pages and canonical URLs use; the default
+    // auto-trailing-slash would redirect /index-zh.html to /index-zh.
+    "html_handling": "none"
+  },
+  "routes": [
+    {
+      "pattern": "folio.taoquo.com",
+      "custom_domain": true
+    }
+  ]
+}

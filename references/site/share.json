@@ -1,6 +1,6 @@
 {
   "site_name": "Folio",
-  "origin": "https://taoquo.github.io/folio",
+  "origin": "https://folio.taoquo.com",
   "stylesheet": "styles.css",
   "manifest": "assets/images/share.manifest.json",
   "pages": [

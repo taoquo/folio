@@ -10,6 +10,9 @@ __pycache__/
 # Node scratch space, Folio has no JS runtime dependency
 node_modules/
 
+# Wrangler keeps its local build and deploy state here
+.wrangler/
+
 # WeasyPrint native libraries, resolved per platform and never committed
 .font-libs/
 

@@ -1,0 +1,3 @@
+# Serve the homepage at the root. `html_handling: none` keeps the .html URLs
+# intact, so the directory index needs this rewrite instead of a redirect.
+/ /index.html 200
